@@ -18,6 +18,7 @@ allprojects {
         plugin(rootProject.libs.plugins.kotlinx.serialization.get().pluginId)
         plugin(rootProject.libs.plugins.kover.get().pluginId)
         plugin(rootProject.libs.plugins.detekt.get().pluginId)
+        plugin(rootProject.libs.plugins.ktor.get().pluginId)
     }
 
     dependencies {
@@ -38,6 +39,7 @@ dependencies {
     implementation(projects.shared)
     implementation(projects.server.core.config)
     implementation(projects.server.core.database)
+    implementation(projects.server.core.security)
     implementation(libs.logback)
     implementation(libs.bundles.ktor.security)
     implementation(libs.bundles.ktor.core)
