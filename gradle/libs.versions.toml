@@ -19,16 +19,16 @@ logback = "1.5.18"
 
 ktor = "3.3.0-openapi-eap-1394"
 ktor-plugin = "3.3.0-openapi-eap-156"
-exposed = "1.0.0-beta-4"
-h2 = "2.2.224"
-postgres = "42.7.2"
-hikari = "5.1.0"
+exposed = "1.0.0-beta-5"
+h2 = "2.3.232"
+postgres = "42.7.7"
+postgres-r2dbc = "1.0.7.RELEASE"
+hikari = "7.0.2"
 koin = "4.1.0"
-prometheus = "1.12.4"
-testcontainers = "1.19.7"
-kotest = "6.0.0.M4"
+prometheus = "1.15.3"
+testcontainers = "1.21.3"
+kotest = "6.0.1"
 arrow = "2.1.2"
-datetime = "0.6.2"
 kover = "0.9.1"
 detekt = "1.23.8"
 jjwt = "0.13.0"
@@ -47,6 +47,7 @@ androidx-activity-compose = { module = "androidx.activity:activity-compose", ver
 androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
 kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
 
 # Ktor Client
@@ -79,11 +80,12 @@ swagger-codegen = { module = "io.swagger.codegen.v3:swagger-codegen", version.re
 
 # Database Backend
 exposed-core = { group = "org.jetbrains.exposed", name = "exposed-core", version.ref = "exposed" }
-exposed-jdbc = { group = "org.jetbrains.exposed", name = "exposed-jdbc", version.ref = "exposed" }
+exposed-r2dbc = { group = "org.jetbrains.exposed", name = "exposed-r2dbc", version.ref = "exposed" }
 exposed-dao = { group = "org.jetbrains.exposed", name = "exposed-dao", version.ref = "exposed" }
 exposed-date-time = { group = "org.jetbrains.exposed", name = "exposed-kotlin-datetime", version.ref = "exposed" }
 h2 = { group = "com.h2database", name = "h2", version.ref = "h2" }
 postgresql = { group = "org.postgresql", name = "postgresql", version.ref = "postgres" }
+postgresql-r2dbc = { module = "org.postgresql:r2dbc-postgresql", version.ref = "postgres-r2dbc" }
 hikari = { group = "com.zaxxer", name = "HikariCP", version.ref = "hikari" }
 
 # Auth
@@ -107,11 +109,19 @@ koin-ktor = { group = "io.insert-koin", name = "koin-ktor", version.ref = "koin"
 koin-core = { group = "io.insert-koin", name = "koin-core", version.ref = "koin" }
 koin-logger-slf4j = { group = "io.insert-koin", name = "koin-logger-slf4j", version.ref = "koin" }
 
+# Testing
+testcontainers = { group = "org.testcontainers", name = "testcontainers", version.ref = "testcontainers" }
+testcontainers-postgresql = { group = "org.testcontainers", name = "postgresql", version.ref = "testcontainers" }
+koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
+koin-test-junit4 = { group = "io.insert-koin", name = "koin-test-junit4", version.ref = "koin" }
+kotest-assertionsCore = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
+kotest-arrow = { module = "io.kotest:kotest-assertions-arrow", version.ref = "kotest" }
+kotest-arrow-fx = { module = "io.kotest:kotest-assertions-arrow-fx-coroutines", version.ref = "kotest" }
+
 [bundles]
 ktor-core = [
     "ktor-server-core",
     "ktor-server-netty",
-    "ktor-server-test-host",
     "ktor-server-auth",
     "ktor-server-auth-jwt",
     "ktor-server-content-negotiation",
@@ -142,12 +152,13 @@ ktor-monitoring = [
 
 database-backend = [
     "exposed-core",
-    "exposed-jdbc",
+    "exposed-r2dbc",
     "exposed-dao",
     "exposed-date-time",
     "h2",
     "postgresql",
-    "hikari"
+    "hikari",
+    "postgresql-r2dbc",
 ]
 
 suspendapp = [
@@ -180,6 +191,18 @@ di = [
     "koin-ktor",
     "koin-core",
     "koin-logger-slf4j",
+]
+
+testing-server = [
+    "ktor-server-test-host",
+    "kotlin-testJunit",
+    "testcontainers",
+    "testcontainers-postgresql",
+    "koin-test",
+    "koin-test-junit4",
+    "kotest-assertionsCore",
+    "kotest-arrow",
+    "kotest-arrow-fx",
 ]
 
 [plugins]
