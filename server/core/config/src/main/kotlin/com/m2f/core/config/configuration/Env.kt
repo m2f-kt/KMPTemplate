@@ -6,6 +6,7 @@ import kotlin.time.Duration.Companion.seconds
 
 private const val PORT: Int = 8080
 private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKeyForJWT123!@#$%^&*()"
+private const val AUTH_AUDIENCE: String = "jwt-audience"
 private const val AUTH_ISSUER: String = "IssuerName"
 private const val REALM: String = "Access to Your Application"
 
@@ -21,6 +22,7 @@ data class Env(
 
     data class Auth(
         val secret: String = System.getenv("JWT_SECRET") ?: AUTH_SECRET,
+        val audience: String = System.getenv("JWT_AUDIENCE") ?: AUTH_AUDIENCE,
         val issuer: String = System.getenv("JWT_ISSUER") ?: AUTH_ISSUER,
         val jwtRealm: String = System.getenv("JWT_REALM") ?: REALM,
     )

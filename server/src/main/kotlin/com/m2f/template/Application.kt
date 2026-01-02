@@ -4,16 +4,19 @@ import arrow.continuations.SuspendApp
 import arrow.fx.coroutines.resourceScope
 import com.m2f.core.config.configuration.Configuration
 import com.m2f.core.database.startDatabase
+import com.m2f.core.security.configureSecurity
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
 import io.ktor.server.application.Application
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.openapi.OpenAPISource
 import io.ktor.server.plugins.openapi.openAPI
+import io.ktor.server.response.respond
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 
 fun main() = SuspendApp {
@@ -32,6 +35,7 @@ fun main() = SuspendApp {
 
 context(_: Configuration, _: R2dbcDatabase)
 fun Application.module() {
+    configureSecurity()
     routing {
         openAPI("openapi")
     }
