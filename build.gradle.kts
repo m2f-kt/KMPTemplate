@@ -7,5 +7,16 @@ plugins {
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinJvm) apply false
+    alias(libs.plugins.kotlinx.serialization) apply false
+    alias(libs.plugins.kover) apply false
+    alias(libs.plugins.detekt) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+    }
 }

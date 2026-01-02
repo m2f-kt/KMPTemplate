@@ -37,3 +37,6 @@ plugins {
 include(":composeApp")
 include(":server")
 include(":shared")
+include("server:core")
+include("server:core:config")
+include("server:core:database")
