@@ -41,7 +41,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
+            api(libs.kermit)
+            api(libs.koin.core)
+            api(projects.core.models)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
