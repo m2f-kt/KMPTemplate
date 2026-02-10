@@ -65,7 +65,10 @@ internal object Migrations {
 
             // Execute migrations that haven't been applied yet
             migs.sortedBy { it.version }.filter { it.version !in appliedMigrations }.forEach { migration ->
-                    logger.info("Executing migration | version={}, description={}", migration.version, migration.description)
+                logger.info(
+                    "Executing migration | version={}, description={}",
+                    migration.version, migration.description
+                )
                     migration.migrate()
 
                     // Record the migration as applied using DBO

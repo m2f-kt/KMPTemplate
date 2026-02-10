@@ -74,7 +74,10 @@ data class InvalidParameter(val name: String, val value: String, val expectedTyp
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(error.code, "Invalid $name parameter: '$value' cannot be converted to $expectedType")
+        routingContext.unprocessable(
+            error.code,
+            "Invalid $name parameter: '$value' cannot be converted to $expectedType"
+        )
     }
 }
 

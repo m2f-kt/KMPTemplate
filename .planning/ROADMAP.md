@@ -12,7 +12,7 @@ This roadmap delivers a production-ready Kotlin Multiplatform template in 6 phas
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation & Module Structure** - Establish module boundaries, upgrade dependencies, wire cross-cutting patterns
+- [x] **Phase 1: Foundation & Module Structure** - Establish module boundaries, upgrade dependencies, wire cross-cutting patterns (completed 2026-02-10)
 - [ ] **Phase 2: Server Auth & Users** - Complete server-side authentication and user management
 - [ ] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence
 - [ ] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming
@@ -35,10 +35,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 4 plans
 
 Plans:
-- [ ] 01-01-PLAN.md -- Dependency upgrades, version catalog, BOMs, and buildSrc convention plugins
-- [ ] 01-02-PLAN.md -- Module restructuring (:core:models, :core:sdk, :core:storage, stubs), AppError hierarchy, shared DTOs
-- [ ] 01-03-PLAN.md -- Koin DI wiring across all targets + Arrow validation helpers with context parameters
-- [ ] 01-04-PLAN.md -- Logging infrastructure (Kermit + Log4j) and println replacement
+- [x] 01-01-PLAN.md -- Dependency upgrades, version catalog, BOMs, and buildSrc convention plugins
+- [x] 01-02-PLAN.md -- Module restructuring (:core:models, :core:sdk, :core:storage, stubs), AppError hierarchy, shared DTOs
+- [x] 01-03-PLAN.md -- Koin DI wiring across all targets + Arrow validation helpers with context parameters
+- [x] 01-04-PLAN.md -- Logging infrastructure (Kermit + Log4j) and println replacement
 
 ### Phase 2: Server Auth & Users
 **Goal**: A developer can register, log in, refresh tokens, log out, view/update a profile, and hit role-protected endpoints against a running server -- all through documented API endpoints.
@@ -130,7 +130,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Module Structure | 0/4 | Not started | - |
+| 1. Foundation & Module Structure | 4/4 | Complete | 2026-02-10 |
 | 2. Server Auth & Users | 0/3 | Not started | - |
 | 3. Client SDK & Storage | 0/3 | Not started | - |
 | 4. Navigation & UI Components | 0/2 | Not started | - |
