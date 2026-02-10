@@ -20,4 +20,15 @@ allprojects {
         mavenCentral()
         maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
+
+    // Force Kotlin stdlib to match compiler version across all configurations.
+    // Arrow 2.2.0 (compiled with Kotlin 2.2.21) pulls in a newer stdlib that
+    // causes WASM compilation failures due to compiler/stdlib version mismatch.
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "org.jetbrains.kotlin" && requested.name.startsWith("kotlin-stdlib")) {
+                useVersion(libs.versions.kotlin.get())
+            }
+        }
+    }
 }
