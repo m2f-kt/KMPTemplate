@@ -6,6 +6,7 @@ import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.insert
 import org.jetbrains.exposed.v1.r2dbc.select
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.slf4j.LoggerFactory
 import kotlin.time.ExperimentalTime
 
 /**
@@ -35,6 +36,7 @@ internal interface Migration {
  * Object to register and execute migrations.
  */
 internal object Migrations {
+    private val logger = LoggerFactory.getLogger("DATABASE")
     private val migs = mutableListOf<Migration>()
 
     /**
@@ -63,7 +65,7 @@ internal object Migrations {
 
             // Execute migrations that haven't been applied yet
             migs.sortedBy { it.version }.filter { it.version !in appliedMigrations }.forEach { migration ->
-                    println("Executing migration ${migration.version}: ${migration.description}")
+                    logger.info("Executing migration | version={}, description={}", migration.version, migration.description)
                     migration.migrate()
 
                     // Record the migration as applied using DBO
@@ -72,7 +74,7 @@ internal object Migrations {
                         it[description] = migration.description
                     }
 
-                    println("Migration ${migration.version} executed successfully")
+                    logger.info("Migration executed successfully | version={}", migration.version)
                 }
             }
 
