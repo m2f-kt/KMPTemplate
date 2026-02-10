@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 1 of 6 (Foundation & Module Structure)
-Plan: 2 of 4 in current phase
-Status: Executing Wave 2
-Last activity: 2026-02-10 -- Plan 01-02 complete (module structure + shared models)
+Plan: 4 of 4 in current phase
+Status: Executing Wave 3 (01-04 complete, awaiting 01-03 summary)
+Last activity: 2026-02-10 -- Plan 01-04 complete (structured logging)
 
-Progress: [██______________] 12% (2/17 plans)
+Progress: [███_____________] 18% (3/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: ~12 min
-- Total execution time: ~24 min
+- Total plans completed: 3
+- Average duration: ~10 min
+- Total execution time: ~29 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 2/4 | ~24 min | ~12 min |
+| 1 | 3/4 | ~29 min | ~10 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~8 min), 01-02 (~16 min)
-- Trend: Ramping up
+- Last 5 plans: 01-01 (~8 min), 01-02 (~16 min), 01-04 (~5 min)
+- Trend: Accelerating
 
 *Updated after each plan completion*
 
@@ -51,6 +51,9 @@ Recent decisions affecting current work:
 - [01-02]: Used id("com.android.library") instead of alias because AGP is on buildSrc classpath
 - [01-02]: Error response functions take code+message params for structured error codes
 - [01-02]: DomainError.toAppError() added as interface method for shared error mapping
+- [01-04]: Used EcsLayout.json (Elastic Common Schema) for server JSON log format
+- [01-04]: Kermit exposed as api() in shared module for transitive availability
+- [01-04]: SLF4J bridged to Log4j2 via log4j-slf4j2-impl, logback removed
 
 ### Pending Todos
 
@@ -64,5 +67,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 01-02-PLAN.md (module structure + shared models)
+Stopped at: Completed 01-04-PLAN.md (structured logging)
 Resume file: None
