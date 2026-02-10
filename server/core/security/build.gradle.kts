@@ -1,3 +1,7 @@
+plugins {
+    id("server-module-convention")
+}
+
 group = "com.m2f.core"
 
 dependencies {
@@ -7,11 +11,4 @@ dependencies {
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.kotlinx.coroutines)
     implementation(projects.server.core.config)
-
-}
-
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.set(listOf("-Xcontext-parameters"))
-    }
 }

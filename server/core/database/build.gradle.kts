@@ -1,3 +1,7 @@
+plugins {
+    id("server-module-convention")
+}
+
 group = "com.m2f.core"
 
 dependencies {
@@ -5,7 +9,6 @@ dependencies {
     implementation(libs.bundles.ktor.core)
     implementation(libs.bundles.fp)
     implementation(projects.server.core.config)
-
 
     // Testing
     testImplementation(libs.bundles.testing.server)

@@ -1,16 +1,17 @@
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
+    id("com.android.application") apply false
+    id("com.android.library") apply false
     alias(libs.plugins.composeHotReload) apply false
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false
-    alias(libs.plugins.kotlinJvm) apply false
-    alias(libs.plugins.kotlinx.serialization) apply false
-    alias(libs.plugins.kover) apply false
-    alias(libs.plugins.detekt) apply false
-    alias(libs.plugins.kotlinMultiplatform) apply false
+    // Plugins provided by buildSrc — declared without version to avoid classpath conflict
+    id("org.jetbrains.kotlin.jvm") apply false
+    id("org.jetbrains.kotlin.plugin.serialization") apply false
+    id("org.jetbrains.kotlinx.kover") apply false
+    id("io.gitlab.arturbosch.detekt") apply false
+    id("org.jetbrains.kotlin.multiplatform") apply false
 }
 
 allprojects {

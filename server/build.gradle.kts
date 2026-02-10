@@ -1,29 +1,7 @@
 plugins {
-    alias(libs.plugins.kotlinJvm)
+    id("server-module-convention")
     alias(libs.plugins.ktor)
     application
-}
-
-// Apply all plugins to subprojects
-allprojects {
-    repositories {
-        mavenCentral()
-        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-    }
-}
-
-allprojects {
-    apply {
-        plugin(rootProject.libs.plugins.kotlinJvm.get().pluginId)
-        plugin(rootProject.libs.plugins.kotlinx.serialization.get().pluginId)
-        plugin(rootProject.libs.plugins.kover.get().pluginId)
-        plugin(rootProject.libs.plugins.detekt.get().pluginId)
-        plugin(rootProject.libs.plugins.ktor.get().pluginId)
-    }
-
-    dependencies {
-        implementation(rootProject.libs.bundles.di)
-    }
 }
 
 group = "com.m2f.template"
@@ -40,7 +18,7 @@ dependencies {
     implementation(projects.server.core.config)
     implementation(projects.server.core.database)
     implementation(projects.server.core.security)
-    implementation(libs.logback)
+    implementation(libs.bundles.logging.server)
     implementation(libs.bundles.ktor.security)
     implementation(libs.bundles.ktor.core)
     implementation(libs.bundles.ktor.monitoring)
@@ -48,12 +26,6 @@ dependencies {
     implementation(libs.bundles.suspendapp)
     implementation(libs.bundles.fp)
     testImplementation(libs.kotlin.testJunit)
-}
-
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.set(listOf("-Xcontext-parameters"))
-    }
 }
 
 ktor {
