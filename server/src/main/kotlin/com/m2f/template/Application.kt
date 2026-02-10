@@ -7,7 +7,10 @@ import com.m2f.core.database.startDatabase
 import com.m2f.core.security.configureSecurity
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
+import com.m2f.core.config.configuration.configurationModule
+import com.m2f.template.di.serverModule
 import io.ktor.server.application.Application
+import io.ktor.server.application.install
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.openapi.OpenAPISource
 import io.ktor.server.plugins.openapi.openAPI
@@ -18,6 +21,7 @@ import io.ktor.server.routing.routing
 import kotlinx.coroutines.awaitCancellation
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
+import org.koin.ktor.plugin.Koin
 
 fun main() = SuspendApp {
     resourceScope {
@@ -35,6 +39,9 @@ fun main() = SuspendApp {
 
 context(_: Configuration, _: R2dbcDatabase)
 fun Application.module() {
+    install(Koin) {
+        modules(configurationModule, serverModule)
+    }
     configureSecurity()
     routing {
         openAPI("openapi")
