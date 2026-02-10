@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 1 of 6 (Foundation & Module Structure)
-Plan: 0 of 3 in current phase
-Status: Ready to plan
-Last activity: 2026-02-10 -- Roadmap created
+Plan: 1 of 4 in current phase
+Status: Executing Wave 2
+Last activity: 2026-02-10 -- Plan 01-01 complete (dependency upgrades + convention plugins)
 
-Progress: [________________] 0% (0/16 plans)
+Progress: [█_______________] 6% (1/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: ~8 min
+- Total execution time: ~8 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1 | 1/4 | ~8 min | ~8 min |
 
 **Recent Trend:**
-- Last 5 plans: -
-- Trend: -
+- Last 5 plans: 01-01 (~8 min)
+- Trend: Starting
 
 *Updated after each plan completion*
 
@@ -46,6 +46,8 @@ Recent decisions affecting current work:
 - [Roadmap]: Cross-cutting requirements (CC-01, CC-02) mapped to Phase 1 since Arrow Raise patterns must be established before features
 - [Roadmap]: DX-01 (Setup CLI) placed in Phase 5 with dashboard since CLI needs final project structure
 - [Roadmap]: Phase 6 (AI Agents) depends only on Phase 2, enabling parallel execution with Phases 3-5
+- [01-01]: Used hardcoded plugin coordinates in buildSrc (dynamic libs.plugins unreliable in buildSrc classpath)
+- [01-01]: Removed logback from ktor-monitoring bundle; server logging moves to Log4j
 
 ### Pending Todos
 
@@ -59,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Roadmap created, ready to plan Phase 1
+Stopped at: Phase 1 Wave 1 complete, executing Wave 2
 Resume file: None
