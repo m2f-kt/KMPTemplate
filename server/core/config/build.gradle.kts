@@ -5,6 +5,7 @@ plugins {
 group = "com.m2f.core"
 
 dependencies {
+    api(projects.core.models)
     implementation(libs.bundles.fp)
     implementation(libs.bundles.ktor.core)
     implementation(libs.koin.core)

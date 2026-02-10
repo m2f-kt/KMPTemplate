@@ -7,6 +7,7 @@ import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
 import arrow.core.raise.recover
+import com.m2f.template.models.dto.ErrorResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.jwt.JWTPrincipal
 import io.ktor.server.auth.principal
@@ -70,32 +71,35 @@ fun getStringQuery(name: String): String = with(raise) {
 }
 
 suspend inline fun RoutingContext.unexpected(
+    code: String,
     error: String,
 ): Unit = call.respond(
     HttpStatusCode.InternalServerError,
-    GenericErrorModel(GenericErrorModelErrors(listOf(error))),
+    ErrorResponse(code = code, message = error),
 )
 
 
 suspend inline fun RoutingContext.unprocessable(
+    code: String,
     error: String,
 ): Unit = call.respond(
     HttpStatusCode.UnprocessableEntity,
-    GenericErrorModel(GenericErrorModelErrors(listOf(error))),
+    ErrorResponse(code = code, message = error),
 )
 
 suspend inline fun RoutingContext.unprocessable(
+    code: String,
+    message: String,
     errors: List<String>,
 ): Unit = call.respond(
     HttpStatusCode.UnprocessableEntity,
-    GenericErrorModel(GenericErrorModelErrors(errors)),
+    ErrorResponse(code = code, message = message, errors = errors),
 )
 
 suspend inline fun RoutingContext.unauthorized(
+    code: String,
     error: String,
 ): Unit = call.respond(
     HttpStatusCode.Unauthorized,
-    GenericErrorModel(GenericErrorModelErrors(listOf(error))),
+    ErrorResponse(code = code, message = error),
 )
-
-

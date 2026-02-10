@@ -14,6 +14,7 @@ application {
 }
 
 dependencies {
+    implementation(projects.core.models)
     implementation(projects.shared)
     implementation(projects.server.core.config)
     implementation(projects.server.core.database)
