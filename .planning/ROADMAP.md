@@ -32,12 +32,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Koin dependency injection resolves correctly on every target (verified with koin.verify() or equivalent test per target)
   4. All domain error handling uses Arrow Raise API with context parameters -- zero try/catch for domain errors anywhere in the codebase
   5. Structured logging (Kermit) produces formatted output on at least one target, replacing all println calls
-**Plans**: 3 plans
+**Plans**: 4 plans
 
 Plans:
 - [ ] 01-01-PLAN.md -- Dependency upgrades, version catalog, BOMs, and buildSrc convention plugins
 - [ ] 01-02-PLAN.md -- Module restructuring (:core:models, :core:sdk, :core:storage, stubs), AppError hierarchy, shared DTOs
-- [ ] 01-03-PLAN.md -- Cross-cutting patterns (Koin DI across all targets, Arrow validation, Kermit + Log4j logging)
+- [ ] 01-03-PLAN.md -- Koin DI wiring across all targets + Arrow validation helpers with context parameters
+- [ ] 01-04-PLAN.md -- Logging infrastructure (Kermit + Log4j) and println replacement
 
 ### Phase 2: Server Auth & Users
 **Goal**: A developer can register, log in, refresh tokens, log out, view/update a profile, and hit role-protected endpoints against a running server -- all through documented API endpoints.
@@ -129,7 +130,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Module Structure | 0/3 | Not started | - |
+| 1. Foundation & Module Structure | 0/4 | Not started | - |
 | 2. Server Auth & Users | 0/3 | Not started | - |
 | 3. Client SDK & Storage | 0/3 | Not started | - |
 | 4. Navigation & UI Components | 0/2 | Not started | - |
