@@ -28,6 +28,7 @@ koin = "4.1.1"
 prometheus = "1.15.3"
 testcontainers = "1.21.3"
 kotest = "6.0.1"
+kotlinx-serialization = "1.8.1"
 arrow = "2.2.0"
 kermit = "2.0.5"
 log4j = "2.24.3"
@@ -104,6 +105,9 @@ jjwt-api = { group = "io.jsonwebtoken", name = "jjwt-api", version.ref = "jjwt" 
 jjwt-impl = { group = "io.jsonwebtoken", name = "jjwt-impl", version.ref = "jjwt" }
 jjwt-jackson = { group = "io.jsonwebtoken", name = "jjwt-jackson", version.ref = "jjwt" }
 jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
+
+# Serialization (multiplatform)
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 #fp
 arrow-bom = { module = "io.arrow-kt:arrow-stack", version.ref = "arrow" }

@@ -41,3 +41,16 @@ include("server:core")
 include("server:core:config")
 include("server:core:database")
 include("server:core:security")
+
+// Shared core modules
+include("core:models")
+include("core:sdk")
+include("core:storage")
+
+// Server feature modules
+include("server:auth")
+include("server:ai")
+
+// App feature modules
+include("app:auth")
+include("app:dashboard")
