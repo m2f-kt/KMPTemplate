@@ -57,6 +57,7 @@ Recent decisions affecting current work:
 - [01-04]: Used EcsLayout.json (Elastic Common Schema) for server JSON log format
 - [01-04]: Kermit exposed as api() in shared module for transitive availability
 - [01-04]: SLF4J bridged to Log4j2 via log4j-slf4j2-impl, logback removed
+- [01-fix]: Forced kotlin-stdlib version resolution to match compiler 2.2.10 (Arrow 2.2.0 pulls in 2.2.21, breaking WASM)
 
 ### Pending Todos
 
@@ -70,5 +71,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-10
-Stopped at: Completed 01-03-PLAN.md (Koin DI + Arrow validation) -- Phase 1 fully complete
+Stopped at: Phase 1 all waves complete, proceeding to verification
 Resume file: None
