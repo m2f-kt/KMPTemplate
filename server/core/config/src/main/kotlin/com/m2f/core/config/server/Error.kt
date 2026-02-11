@@ -103,3 +103,19 @@ suspend inline fun RoutingContext.unauthorized(
     HttpStatusCode.Unauthorized,
     ErrorResponse(code = code, message = error),
 )
+
+suspend inline fun RoutingContext.forbidden(
+    code: String,
+    error: String,
+): Unit = call.respond(
+    HttpStatusCode.Forbidden,
+    ErrorResponse(code = code, message = error),
+)
+
+suspend inline fun RoutingContext.notFound(
+    code: String,
+    error: String,
+): Unit = call.respond(
+    HttpStatusCode.NotFound,
+    ErrorResponse(code = code, message = error),
+)

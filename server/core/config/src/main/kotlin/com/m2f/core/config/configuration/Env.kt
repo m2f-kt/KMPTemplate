@@ -9,6 +9,8 @@ private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKe
 private const val AUTH_AUDIENCE: String = "jwt-audience"
 private const val AUTH_ISSUER: String = "IssuerName"
 private const val REALM: String = "Access to Your Application"
+private const val ACCESS_TOKEN_EXPIRY: Long = 900000L // 15 minutes in milliseconds
+private const val REFRESH_TOKEN_EXPIRY: Long = 604800000L // 7 days in milliseconds
 
 data class Env(
     val http: Http = Http(),
@@ -25,6 +27,10 @@ data class Env(
         val audience: String = System.getenv("JWT_AUDIENCE") ?: AUTH_AUDIENCE,
         val issuer: String = System.getenv("JWT_ISSUER") ?: AUTH_ISSUER,
         val jwtRealm: String = System.getenv("JWT_REALM") ?: REALM,
+        val accessTokenExpiry: Long = System.getenv("JWT_ACCESS_EXPIRY")?.toLongOrNull()
+            ?: ACCESS_TOKEN_EXPIRY,
+        val refreshTokenExpiry: Long = System.getenv("JWT_REFRESH_EXPIRY")?.toLongOrNull()
+            ?: REFRESH_TOKEN_EXPIRY,
     )
 
     data class ServerConfig(

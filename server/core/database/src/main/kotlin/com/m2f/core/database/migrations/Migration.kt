@@ -13,7 +13,7 @@ import kotlin.time.ExperimentalTime
  * Base interface for database migrations.
  * All migrations should implement this interface and be registered in the [Migrations] object.
  */
-internal interface Migration {
+interface Migration {
     /**
      * The version of the migration. This should be a unique identifier for the migration.
      * It's recommended to use a timestamp in the format YYYYMMDDHHMMSS.
@@ -35,7 +35,7 @@ internal interface Migration {
 /**
  * Object to register and execute migrations.
  */
-internal object Migrations {
+object Migrations {
     private val logger = LoggerFactory.getLogger("DATABASE")
     private val migs = mutableListOf<Migration>()
 
