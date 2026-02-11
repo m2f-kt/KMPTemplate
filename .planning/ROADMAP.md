@@ -51,12 +51,12 @@ Plans:
   3. An expired access token can be renewed via POST /api/auth/refresh using a valid refresh token, without requiring re-login
   4. A logged-in user can GET and PUT their own profile, and access to other users' data is denied based on role permissions
   5. All auth endpoint error responses use structured Arrow Raise error types (not exception stack traces), with validation errors accumulated (e.g., multiple signup field errors returned at once)
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: User table, repository, and registration
-- [ ] 02-02: Login, JWT tokens, refresh, and logout
-- [ ] 02-03: Profile CRUD and role-based access control
+- [ ] 02-01-PLAN.md -- Tables, repositories, security utilities, registration endpoint, Koin wiring, migration visibility fix
+- [ ] 02-02-PLAN.md -- Login, token refresh with rotation, and logout endpoints
+- [ ] 02-03-PLAN.md -- Profile CRUD (GET/PUT /me, admin GET /{id}) and RBAC plugin
 
 ### Phase 3: Client SDK & Storage
 **Goal**: Client code can call every server endpoint through typed Kotlin functions that return Either<ClientError, T>, with tokens persisted locally and refreshed automatically -- no direct HTTP or manual token management anywhere in UI code.
