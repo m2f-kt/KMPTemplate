@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Module Structure** - Establish module boundaries, upgrade dependencies, wire cross-cutting patterns (completed 2026-02-10)
 - [x] **Phase 2: Server Auth & Users** - Complete server-side authentication and user management (completed 2026-02-11)
-- [ ] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence
+- [x] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence (completed 2026-02-11)
 - [ ] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming
 - [ ] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding
 - [ ] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management
@@ -72,9 +72,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md -- SDK module foundation: Ktor Client deps, platform engines (OkHttp/Darwin/CIO), HttpClient factory, apiCall error mapper
-- [ ] 03-02-PLAN.md -- Storage module: multiplatform-settings for TokenStorage and PreferencesStorage with Flow observation
-- [ ] 03-03-PLAN.md -- Auth interceptor, AuthApi, UserApi, SdkModule Koin wiring, DI integration into composeApp
+- [x] 03-01-PLAN.md -- SDK module foundation: Ktor Client deps, platform engines (OkHttp/Darwin/CIO), HttpClient factory, apiCall error mapper
+- [x] 03-02-PLAN.md -- Storage module: multiplatform-settings for TokenStorage and PreferencesStorage with Flow observation
+- [x] 03-03-PLAN.md -- Auth interceptor, AuthApi, UserApi, SdkModule Koin wiring, DI integration into composeApp
 
 ### Phase 4: Navigation & UI Components
 **Goal**: The app has type-safe multiplatform navigation between screens, a reusable component library (buttons, inputs, cards, dialogs), and a custom theme system -- all working identically on every KMP target.
@@ -132,7 +132,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation & Module Structure | 4/4 | Complete | 2026-02-10 |
 | 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
-| 3. Client SDK & Storage | 0/3 | Planned | - |
+| 3. Client SDK & Storage | 3/3 | Complete | 2026-02-11 |
 | 4. Navigation & UI Components | 0/2 | Not started | - |
 | 5. Auth Screens, Dashboard & Setup CLI | 0/3 | Not started | - |
 | 6. AI Agent Infrastructure | 0/2 | Not started | - |
