@@ -31,10 +31,8 @@ class AuthApi(
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
-        }.also { result ->
-            result.onRight { response ->
-                tokenStorage.saveTokens(response.accessToken, response.refreshToken)
-            }
+        }.onRight { response ->
+            tokenStorage.saveTokens(response.accessToken, response.refreshToken)
         }
 
     suspend fun login(request: LoginRequest): Either<AppError, AuthResponse> =
@@ -43,10 +41,8 @@ class AuthApi(
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
-        }.also { result ->
-            result.onRight { response ->
-                tokenStorage.saveTokens(response.accessToken, response.refreshToken)
-            }
+        }.onRight { response ->
+            tokenStorage.saveTokens(response.accessToken, response.refreshToken)
         }
 
     suspend fun refresh(request: RefreshTokenRequest): Either<AppError, AuthResponse> =
@@ -55,10 +51,8 @@ class AuthApi(
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
-        }.also { result ->
-            result.onRight { response ->
-                tokenStorage.saveTokens(response.accessToken, response.refreshToken)
-            }
+        }.onRight { response ->
+            tokenStorage.saveTokens(response.accessToken, response.refreshToken)
         }
 
     suspend fun logout(): Either<AppError, Unit> {

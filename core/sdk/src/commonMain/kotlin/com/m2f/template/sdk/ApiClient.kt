@@ -25,7 +25,7 @@ import kotlinx.serialization.json.Json
  */
 fun createApiClient(
     authInterceptor: AuthInterceptor,
-    baseUrl: String = "http://localhost:8080",
+    baseUrl: String = defaultBaseUrl(),
 ): HttpClient {
     val client = HttpClient(platformEngine()) {
         expectSuccess = false
