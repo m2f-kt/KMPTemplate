@@ -29,12 +29,3 @@ dependencies {
     implementation(libs.bundles.fp)
     testImplementation(libs.kotlin.testJunit)
 }
-
-ktor {
-    openApi {
-        title = "OpenAPI Documentation"
-        version = "1.0"
-        summary = "This is the API documentation for the project: M2F Template"
-        enabled = true
-    }
-}

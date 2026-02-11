@@ -159,9 +159,6 @@ ktor-security = [
 ]
 
 ktor-monitoring = [
-    "ktor-server-openapi",
-    "ktor-server-swagger",
-    "swagger-codegen",
     "ktor-server-call-logging",
     "ktor-server-call-id",
     "ktor-server-metrics",

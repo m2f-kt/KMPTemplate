@@ -9,6 +9,9 @@ import io.ktor.server.response.respond
 import io.ktor.server.application.RouteScopedPlugin
 import io.ktor.server.application.createRouteScopedPlugin
 import io.ktor.server.routing.Route
+import io.ktor.server.routing.RouteSelector
+import io.ktor.server.routing.RouteSelectorEvaluation
+import io.ktor.server.routing.RoutingResolveContext
 
 /**
  * Configuration for the role-based authorization plugin.
@@ -44,6 +47,11 @@ val RoleAuthorizationPlugin: RouteScopedPlugin<RoleConfig> = createRouteScopedPl
  * Usage: `withRole("ADMIN") { get("/admin-endpoint") { ... } }`
  */
 fun Route.withRole(vararg roles: String, build: Route.() -> Unit) {
-    install(RoleAuthorizationPlugin) { this.roles = roles.toSet() }
-    build()
+    val authorizedRoute = createChild(object : RouteSelector() {
+        override suspend fun evaluate(context: RoutingResolveContext, segmentIndex: Int) =
+            RouteSelectorEvaluation.Transparent
+        override fun toString() = "(roles: ${roles.joinToString()})"
+    })
+    authorizedRoute.install(RoleAuthorizationPlugin) { this.roles = roles.toSet() }
+    authorizedRoute.build()
 }
