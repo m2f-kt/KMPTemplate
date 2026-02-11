@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - [02-01]: Used getKoin().declare(database) for R2dbcDatabase runtime DI registration
 - [02-01]: Called registerAuthMigrations() in main() before startDatabase() for migration ordering
 - [02-01]: Arrow zipOrAccumulate with withError maps FieldError to IncorrectInput for accumulated validation
+- [02-02]: Same InvalidCredentials error for both missing user and wrong password (prevents user enumeration)
+- [02-02]: Uuid.parse() for JWT userId string to kotlin.uuid.Uuid conversion (consistent with Exposed layer)
+- [02-02]: Refresh token rotation revokes old token before issuing new (fail-safe design)
 - [02-03]: Used io.ktor.server.application for createRouteScopedPlugin (not io.ktor.server.routing)
 - [02-03]: Uuid.parse() for string-to-UUID conversion in service layer
 - [02-03]: Optional field validation with zipOrAccumulate: null fields pass through, non-null fields validated
