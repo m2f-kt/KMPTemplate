@@ -31,7 +31,12 @@ suspend inline fun <reified T> apiCall(
 ): Either<AppError, T> = try {
     val response = block()
     if (response.status.isSuccess()) {
-        response.body<T>().right()
+        if (T::class == Unit::class) {
+            @Suppress("UNCHECKED_CAST")
+            (Unit as T).right()
+        } else {
+            response.body<T>().right()
+        }
     } else {
         mapHttpError(response).left()
     }

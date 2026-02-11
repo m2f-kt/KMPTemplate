@@ -1,0 +1,36 @@
+package com.m2f.template.sdk.api
+
+import arrow.core.Either
+import com.m2f.template.models.AppError
+import com.m2f.template.models.dto.UpdateProfileRequest
+import com.m2f.template.models.dto.UserResponse
+import com.m2f.template.sdk.apiCall
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+
+/**
+ * SDK functions for user profile endpoints.
+ *
+ * All functions return [Either<AppError, T>] for consistent error handling.
+ * Auth token is automatically attached by the [AuthInterceptor].
+ */
+class UserApi(private val client: HttpClient) {
+
+    suspend fun getProfile(): Either<AppError, UserResponse> =
+        apiCall { client.get("/api/users/me") }
+
+    suspend fun updateProfile(request: UpdateProfileRequest): Either<AppError, UserResponse> =
+        apiCall {
+            client.put("/api/users/me") {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+        }
+
+    suspend fun getUserById(id: String): Either<AppError, UserResponse> =
+        apiCall { client.get("/api/users/$id") }
+}

@@ -1,12 +1,13 @@
 package com.m2f.template.di
 
+import com.m2f.template.sdk.di.sdkModule
+import com.m2f.template.storage.di.storageModule
 import org.koin.dsl.module
 
 /**
  * Shared DI module available to all KMP targets.
- * Contains platform-agnostic service definitions.
+ * Includes storageModule and sdkModule for transitive DI graph resolution.
  */
 val sharedModule = module {
-    // Platform-agnostic dependencies go here
-    // Features will add their own modules in subsequent phases
+    includes(storageModule, sdkModule)
 }
