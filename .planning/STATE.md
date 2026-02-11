@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 3 of 6 (Client SDK & Storage)
-Plan: 2 of 3 in current phase (03-02 complete)
+Plan: 2 of 3 in current phase (03-01, 03-02 complete)
 Status: Executing Phase 3
-Last activity: 2026-02-11 -- Plan 03-02 complete (Storage module)
+Last activity: 2026-02-11 -- Plan 03-01 complete (SDK HTTP infrastructure)
 
-Progress: [████████________] 47% (8/17 plans)
+Progress: [████████________] 53% (9/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: ~14 min
-- Total execution time: ~109 min
+- Total plans completed: 9
+- Average duration: ~13 min
+- Total execution time: ~114 min
 
 **By Phase:**
 
@@ -29,10 +29,10 @@ Progress: [████████________] 47% (8/17 plans)
 |-------|-------|-------|----------|
 | 1 | 4/4 | ~46 min | ~12 min |
 | 2 | 3/3 | ~58 min | ~19 min |
-| 3 | 1/3 | ~5 min | ~5 min |
+| 3 | 2/3 | ~10 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-03 (~17 min), 02-01 (~53 min), 02-03 (~5 min), 03-02 (~5 min)
+- Last 5 plans: 02-01 (~53 min), 02-03 (~5 min), 03-02 (~5 min), 03-01 (~5 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -74,6 +74,9 @@ Recent decisions affecting current work:
 - [03-02]: Used multiplatform-settings-no-arg Settings() factory for cross-platform Settings creation (no expect/actual needed)
 - [03-02]: Cast Settings() to ObservableSettings for Flow-based preference observation (all no-arg platforms support it)
 - [03-02]: multiplatform-settings 1.3.0 confirmed compatible with Kotlin 2.3.10 on all targets including WasmJs
+- [03-01]: Used class simpleName matching for exception mapping in apiCall (uniform across KMP targets)
+- [03-01]: CancellationException re-thrown in apiCall to preserve structured concurrency
+- [03-01]: CIO engine used for both JVM and WasmJs targets (CIO has WasmJs support in Ktor 3.x)
 
 ### Pending Todos
 
@@ -87,5 +90,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 03-02-PLAN.md (Storage module)
+Stopped at: Completed 03-01-PLAN.md (SDK HTTP infrastructure)
 Resume file: None
