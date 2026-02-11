@@ -7,7 +7,9 @@ import com.m2f.core.database.startDatabase
 import com.m2f.core.security.configureSecurity
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.routes.authRoutes
+import com.m2f.server.auth.routes.userRoutes
 import com.m2f.server.auth.service.AuthService
+import com.m2f.server.auth.service.UserService
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
 import com.m2f.core.config.configuration.configurationModule
@@ -61,6 +63,8 @@ fun Application.module() {
             source = OpenApiDocSource.File("openapi/generated-api.json")
         }
         val authService: AuthService by inject()
+        val userService: UserService by inject()
         authRoutes(authService)
+        userRoutes(userService)
     }
 }

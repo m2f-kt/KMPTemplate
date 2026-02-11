@@ -6,6 +6,7 @@ import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.security.JwtTokenProvider
 import com.m2f.server.auth.security.PasswordHasher
 import com.m2f.server.auth.service.AuthService
+import com.m2f.server.auth.service.UserService
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.koin.dsl.module
 
@@ -18,4 +19,5 @@ val authModule = module {
     single { UserRepository(get<R2dbcDatabase>()) }
     single { RefreshTokenRepository(get<R2dbcDatabase>()) }
     single { AuthService(get(), get(), get(), get()) }
+    single { UserService(get()) }
 }
