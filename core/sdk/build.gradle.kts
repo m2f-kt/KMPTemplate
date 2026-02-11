@@ -24,6 +24,7 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.models)
+            api(projects.core.storage)
             implementation(libs.arrow.core)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)

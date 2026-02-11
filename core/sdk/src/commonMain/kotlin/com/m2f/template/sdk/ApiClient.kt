@@ -15,19 +15,19 @@ import kotlinx.serialization.json.Json
  *
  * Key design decisions:
  * - [expectSuccess] is set to `false` so that HTTP 4xx/5xx responses are NOT thrown as exceptions.
- *   This is required for the auth interceptor (Plan 03-03) to see 401 responses and attempt token refresh.
+ *   This allows the [AuthInterceptor] to see 401 responses and attempt token refresh.
  * - ContentNegotiation with kotlinx-serialization handles JSON serialization/deserialization.
- * - The [tokenProvider] parameter is reserved for future use by the AuthInterceptor (Plan 03-03).
+ * - The [AuthInterceptor] is installed after client creation to attach bearer tokens and handle
+ *   401 refresh+retry with Mutex-based concurrency protection.
  *
+ * @param authInterceptor The interceptor that attaches bearer tokens and handles 401 refresh+retry.
  * @param baseUrl The base URL for all API requests (e.g., "http://localhost:8080").
- * @param tokenProvider Optional lambda that returns the current access token. Unused in this plan;
- *        will be wired by the AuthInterceptor in Plan 03-03.
  */
 fun createApiClient(
+    authInterceptor: AuthInterceptor,
     baseUrl: String = "http://localhost:8080",
-    tokenProvider: (() -> String?)? = null,
 ): HttpClient {
-    return HttpClient(platformEngine()) {
+    val client = HttpClient(platformEngine()) {
         expectSuccess = false
 
         install(ContentNegotiation) {
@@ -46,4 +46,6 @@ fun createApiClient(
             contentType(ContentType.Application.Json)
         }
     }
+    authInterceptor.install(client)
+    return client
 }
