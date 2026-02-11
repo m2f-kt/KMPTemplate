@@ -13,7 +13,7 @@ This roadmap delivers a production-ready Kotlin Multiplatform template in 6 phas
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation & Module Structure** - Establish module boundaries, upgrade dependencies, wire cross-cutting patterns (completed 2026-02-10)
-- [ ] **Phase 2: Server Auth & Users** - Complete server-side authentication and user management
+- [x] **Phase 2: Server Auth & Users** - Complete server-side authentication and user management (completed 2026-02-11)
 - [ ] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence
 - [ ] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming
 - [ ] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding
@@ -54,9 +54,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Tables, repositories, security utilities, registration endpoint, Koin wiring, migration visibility fix
-- [ ] 02-02-PLAN.md -- Login, token refresh with rotation, and logout endpoints
-- [ ] 02-03-PLAN.md -- Profile CRUD (GET/PUT /me, admin GET /{id}) and RBAC plugin
+- [x] 02-01-PLAN.md -- Tables, repositories, security utilities, registration endpoint, Koin wiring, migration visibility fix
+- [x] 02-02-PLAN.md -- Login, token refresh with rotation, and logout endpoints
+- [x] 02-03-PLAN.md -- Profile CRUD (GET/PUT /me, admin GET /{id}) and RBAC plugin
 
 ### Phase 3: Client SDK & Storage
 **Goal**: Client code can call every server endpoint through typed Kotlin functions that return Either<ClientError, T>, with tokens persisted locally and refreshed automatically -- no direct HTTP or manual token management anywhere in UI code.
@@ -131,7 +131,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Module Structure | 4/4 | Complete | 2026-02-10 |
-| 2. Server Auth & Users | 0/3 | Not started | - |
+| 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
 | 3. Client SDK & Storage | 0/3 | Not started | - |
 | 4. Navigation & UI Components | 0/2 | Not started | - |
 | 5. Auth Screens, Dashboard & Setup CLI | 0/3 | Not started | - |
