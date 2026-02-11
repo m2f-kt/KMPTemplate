@@ -5,33 +5,34 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 1 - Foundation & Module Structure
+**Current focus:** Phase 2 - Server Auth & Users
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation & Module Structure) -- COMPLETE
-Plan: 4 of 4 in current phase (all done)
-Status: Phase 1 complete
-Last activity: 2026-02-10 -- Plan 01-03 complete (Koin DI + Arrow validation)
+Phase: 2 of 6 (Server Auth & Users)
+Plan: 1 of 3 in current phase (02-01 complete)
+Status: Executing Phase 2
+Last activity: 2026-02-11 -- Plan 02-01 complete (Auth foundation + registration)
 
-Progress: [████____________] 24% (4/17 plans)
+Progress: [█████___________] 29% (5/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 4
-- Average duration: ~12 min
-- Total execution time: ~46 min
+- Total plans completed: 5
+- Average duration: ~20 min
+- Total execution time: ~99 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 | 4/4 | ~46 min | ~12 min |
+| 2 | 1/3 | ~53 min | ~53 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (~8 min), 01-02 (~16 min), 01-04 (~5 min), 01-03 (~17 min)
-- Trend: Stable
+- Last 5 plans: 01-02 (~16 min), 01-04 (~5 min), 01-03 (~17 min), 02-01 (~53 min)
+- Trend: Phase 2 plans larger scope (auth infrastructure)
 
 *Updated after each plan completion*
 
@@ -58,6 +59,11 @@ Recent decisions affecting current work:
 - [01-04]: Kermit exposed as api() in shared module for transitive availability
 - [01-04]: SLF4J bridged to Log4j2 via log4j-slf4j2-impl, logback removed
 - [01-fix]: Forced kotlin-stdlib version resolution to match compiler 2.2.10 (Arrow 2.2.0 pulls in 2.2.21, breaking WASM)
+- [02-01]: Used kotlin.uuid.Uuid with @OptIn(ExperimentalUuidApi) for Exposed 1.0 table columns
+- [02-01]: Used top-level Exposed operators (eq, and, greater) instead of deprecated SqlExpressionBuilder
+- [02-01]: Used getKoin().declare(database) for R2dbcDatabase runtime DI registration
+- [02-01]: Called registerAuthMigrations() in main() before startDatabase() for migration ordering
+- [02-01]: Arrow zipOrAccumulate with withError maps FieldError to IncorrectInput for accumulated validation
 
 ### Pending Todos
 
@@ -70,6 +76,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-10
-Stopped at: Phase 1 all waves complete, proceeding to verification
+Last session: 2026-02-11
+Stopped at: Completed 02-01-PLAN.md (Auth foundation + registration)
 Resume file: None
