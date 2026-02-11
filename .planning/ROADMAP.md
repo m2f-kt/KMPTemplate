@@ -69,12 +69,12 @@ Plans:
   3. Auth tokens survive app restart on all platforms (persisted via DataStore or platform-appropriate secure storage)
   4. User preferences (theme, language) persist across app restarts via local storage
   5. ClientError is a sealed class hierarchy that maps HTTP status codes to typed errors (Unauthorized, NotFound, ValidationFailed, NetworkError) -- no raw HTTP codes leak to callers
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: SDK module with platform engines and Either-based API layer
-- [ ] 03-02: Token refresh interceptor and error mapping
-- [ ] 03-03: Storage module with DataStore preferences
+- [ ] 03-01-PLAN.md -- SDK module foundation: Ktor Client deps, platform engines (OkHttp/Darwin/CIO), HttpClient factory, apiCall error mapper
+- [ ] 03-02-PLAN.md -- Storage module: multiplatform-settings for TokenStorage and PreferencesStorage with Flow observation
+- [ ] 03-03-PLAN.md -- Auth interceptor, AuthApi, UserApi, SdkModule Koin wiring, DI integration into composeApp
 
 ### Phase 4: Navigation & UI Components
 **Goal**: The app has type-safe multiplatform navigation between screens, a reusable component library (buttons, inputs, cards, dialogs), and a custom theme system -- all working identically on every KMP target.
@@ -132,7 +132,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Foundation & Module Structure | 4/4 | Complete | 2026-02-10 |
 | 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
-| 3. Client SDK & Storage | 0/3 | Not started | - |
+| 3. Client SDK & Storage | 0/3 | Planned | - |
 | 4. Navigation & UI Components | 0/2 | Not started | - |
 | 5. Auth Screens, Dashboard & Setup CLI | 0/3 | Not started | - |
 | 6. AI Agent Infrastructure | 0/2 | Not started | - |
