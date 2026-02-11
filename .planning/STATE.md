@@ -9,30 +9,30 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 
 ## Current Position
 
-Phase: 2 of 6 (Server Auth & Users)
-Plan: 1 of 3 in current phase (02-01 complete)
-Status: Executing Phase 2
-Last activity: 2026-02-11 -- Plan 02-01 complete (Auth foundation + registration)
+Phase: 2 of 6 (Server Auth & Users) -- COMPLETE
+Plan: 3 of 3 in current phase (02-01, 02-02, 02-03 complete)
+Status: Phase 2 Complete
+Last activity: 2026-02-11 -- Plan 02-03 complete (User profile & RBAC)
 
-Progress: [█████___________] 29% (5/17 plans)
+Progress: [███████_________] 41% (7/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 5
-- Average duration: ~20 min
-- Total execution time: ~99 min
+- Total plans completed: 7
+- Average duration: ~15 min
+- Total execution time: ~104 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1 | 4/4 | ~46 min | ~12 min |
-| 2 | 1/3 | ~53 min | ~53 min |
+| 2 | 3/3 | ~58 min | ~19 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-02 (~16 min), 01-04 (~5 min), 01-03 (~17 min), 02-01 (~53 min)
-- Trend: Phase 2 plans larger scope (auth infrastructure)
+- Last 5 plans: 01-04 (~5 min), 01-03 (~17 min), 02-01 (~53 min), 02-03 (~5 min)
+- Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
 
@@ -64,6 +64,9 @@ Recent decisions affecting current work:
 - [02-01]: Used getKoin().declare(database) for R2dbcDatabase runtime DI registration
 - [02-01]: Called registerAuthMigrations() in main() before startDatabase() for migration ordering
 - [02-01]: Arrow zipOrAccumulate with withError maps FieldError to IncorrectInput for accumulated validation
+- [02-03]: Used io.ktor.server.application for createRouteScopedPlugin (not io.ktor.server.routing)
+- [02-03]: Uuid.parse() for string-to-UUID conversion in service layer
+- [02-03]: Optional field validation with zipOrAccumulate: null fields pass through, non-null fields validated
 
 ### Pending Todos
 
@@ -77,5 +80,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-11
-Stopped at: Completed 02-01-PLAN.md (Auth foundation + registration)
+Stopped at: Completed 02-03-PLAN.md (User profile & RBAC) -- Phase 2 complete
 Resume file: None
