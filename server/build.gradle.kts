@@ -19,6 +19,7 @@ dependencies {
     implementation(projects.server.core.config)
     implementation(projects.server.core.database)
     implementation(projects.server.core.security)
+    implementation(projects.server.auth)
     implementation(libs.bundles.logging.server)
     implementation(libs.bundles.ktor.security)
     implementation(libs.bundles.ktor.core)

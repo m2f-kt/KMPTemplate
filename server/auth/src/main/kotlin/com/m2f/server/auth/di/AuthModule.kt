@@ -1,0 +1,21 @@
+package com.m2f.server.auth.di
+
+import com.m2f.core.config.configuration.Configuration
+import com.m2f.server.auth.repository.RefreshTokenRepository
+import com.m2f.server.auth.repository.UserRepository
+import com.m2f.server.auth.security.JwtTokenProvider
+import com.m2f.server.auth.security.PasswordHasher
+import com.m2f.server.auth.service.AuthService
+import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
+import org.koin.dsl.module
+
+/**
+ * Koin module wiring all auth dependencies.
+ */
+val authModule = module {
+    single { PasswordHasher() }
+    single { JwtTokenProvider(get<Configuration>()) }
+    single { UserRepository(get<R2dbcDatabase>()) }
+    single { RefreshTokenRepository(get<R2dbcDatabase>()) }
+    single { AuthService(get(), get(), get(), get()) }
+}
