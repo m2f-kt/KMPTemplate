@@ -24,6 +24,11 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.core.models)
+            implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.noarg)
+            implementation(libs.multiplatform.settings.coroutines)
+            implementation(libs.kotlinx.coroutines)
+            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
