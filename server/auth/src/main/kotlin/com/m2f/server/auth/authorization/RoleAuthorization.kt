@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.m2f.server.auth.authorization
 
 import com.m2f.template.models.dto.ErrorResponse

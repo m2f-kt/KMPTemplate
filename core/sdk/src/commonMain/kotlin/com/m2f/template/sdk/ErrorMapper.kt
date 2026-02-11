@@ -1,14 +1,15 @@
 package com.m2f.template.sdk
 
 import arrow.core.Either
-import arrow.core.left
-import arrow.core.right
+import arrow.core.raise.catch
+import arrow.core.raise.context.either
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.raise
 import com.m2f.template.models.AppError
 import com.m2f.template.models.dto.ErrorResponse
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.isSuccess
-import kotlinx.coroutines.CancellationException
 
 /**
  * Wraps an HTTP call in [Either], mapping success responses to [Right] and
@@ -28,22 +29,14 @@ import kotlinx.coroutines.CancellationException
  */
 suspend inline fun <reified T> apiCall(
     block: () -> HttpResponse,
-): Either<AppError, T> = try {
-    val response = block()
-    if (response.status.isSuccess()) {
-        if (T::class == Unit::class) {
-            @Suppress("UNCHECKED_CAST")
-            (Unit as T).right()
-        } else {
-            response.body<T>().right()
-        }
-    } else {
-        mapHttpError(response).left()
-    }
-} catch (e: CancellationException) {
-    throw e // Never swallow coroutine cancellation
-} catch (e: Exception) {
-    mapException(e).left()
+): Either<AppError, T> = either {
+    catch(block = {
+        val response = block()
+        ensure(response.status.isSuccess()) { mapHttpError(response) }
+        response.body<T>()
+    }, catch = { e ->
+        raise(mapException(e))
+    })
 }
 
 /**
@@ -107,7 +100,7 @@ suspend fun mapHttpError(response: HttpResponse): AppError {
  * - [kotlinx.coroutines.TimeoutCancellationException] -> [AppError.Client.Timeout]
  * - Any other exception -> [AppError.Client.Unknown]
  */
-fun mapException(e: Exception): AppError = when {
+fun mapException(e: Throwable): AppError = when {
     e::class.simpleName == "TimeoutCancellationException" -> AppError.Client.Timeout()
     e::class.simpleName?.contains("IOException") == true -> AppError.Client.Network()
     else -> AppError.Client.Unknown(detail = e.message)

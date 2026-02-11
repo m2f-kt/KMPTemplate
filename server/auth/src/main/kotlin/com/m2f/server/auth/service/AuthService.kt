@@ -4,6 +4,8 @@ package com.m2f.server.auth.service
 
 import arrow.core.nonEmptyListOf
 import arrow.core.raise.Raise
+import arrow.core.raise.context.ensure
+import arrow.core.raise.context.ensureNotNull
 import arrow.core.raise.withError
 import arrow.core.raise.zipOrAccumulate
 import com.m2f.core.config.server.DomainError
@@ -72,10 +74,7 @@ class AuthService(
         }
 
         // Step 2: Check for duplicate email
-        val existingUser = userRepository.findByEmail(validEmail)
-        if (existingUser != null) {
-            raise.raise(UserAlreadyExists())
-        }
+        ensureNotNull(userRepository.findByEmail(validEmail)) { UserAlreadyExists() }
 
         // Step 3: Hash password
         val hash = passwordHasher.hash(validPassword)
@@ -113,10 +112,7 @@ class AuthService(
             ?: raise.raise(InvalidCredentials())
 
         // Step 2: Verify password -- same generic error
-        val passwordValid = passwordHasher.verify(request.password, user.passwordHash)
-        if (!passwordValid) {
-            raise.raise(InvalidCredentials())
-        }
+        ensure(passwordHasher.verify(request.password, user.passwordHash)) { InvalidCredentials() }
 
         // Step 3: Generate token pair
         val (authResponse, rawRefreshToken) = tokenProvider.generateTokenPair(

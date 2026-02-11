@@ -4,6 +4,7 @@ import com.m2f.template.sdk.AuthInterceptor
 import com.m2f.template.sdk.api.AuthApi
 import com.m2f.template.sdk.api.UserApi
 import com.m2f.template.sdk.createApiClient
+import com.m2f.template.sdk.defaultBaseUrl
 import org.koin.dsl.module
 
 /**
@@ -22,7 +23,7 @@ val sdkModule = module {
     single {
         createApiClient(
             authInterceptor = get(),
-            baseUrl = getProperty("BASE_URL", "http://localhost:8080"),
+            baseUrl = defaultBaseUrl(),
         )
     }
     single { AuthApi(client = get(), tokenStorage = get()) }
