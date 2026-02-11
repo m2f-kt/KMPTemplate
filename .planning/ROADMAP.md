@@ -85,11 +85,11 @@ Plans:
   1. Navigation between screens uses type-safe route objects (serializable data classes) -- no string-based routing anywhere
   2. A shared component library provides at minimum: buttons (primary, secondary, outlined), text inputs (with validation states), cards, and dialogs -- all themed consistently
   3. The app renders with a custom theme (colors, typography) that a developer can change by editing a single theme configuration, and it applies uniformly across all targets
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: Navigation setup with type-safe routes
-- [ ] 04-02: Shared UI component library and theme system
+- [ ] 04-01-PLAN.md -- Navigation deps, serialization plugin, @Serializable routes, NavHost, App.kt wiring
+- [ ] 04-02-PLAN.md -- Custom theme system (Color, Type, Shape, AppTheme) and shared component library (buttons, inputs, cards, dialogs)
 
 ### Phase 5: Auth Screens, Dashboard & Setup CLI
 **Goal**: A developer who clones the template can run a setup script to customize it, then see a working app with login/signup screens, a sample dashboard behind auth, and form validation -- proving the entire architecture works end-to-end.
