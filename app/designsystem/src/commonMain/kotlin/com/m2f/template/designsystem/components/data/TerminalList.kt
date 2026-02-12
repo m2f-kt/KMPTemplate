@@ -20,6 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
 
 /**
@@ -195,6 +197,25 @@ fun TerminalListItem(
                     .height(borders.thin)
                     .background(colors.border),
             )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalListPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+        ) {
+            TerminalList(title = "Team Members", count = 4) {
+                TerminalListItem(text = "Alice", subtitle = "Admin", state = ListItemState.Default)
+                TerminalListItem(text = "Bob", subtitle = "Editor", state = ListItemState.Hover)
+                TerminalListItem(text = "Charlie", subtitle = "Viewer", state = ListItemState.Selected)
+                TerminalListItem(text = "Dave", subtitle = "Locked", state = ListItemState.Disabled, showBottomBorder = false)
+            }
         }
     }
 }

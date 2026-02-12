@@ -15,6 +15,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
 
 /**
@@ -115,6 +117,24 @@ fun TerminalTableRow(
                     .height(borders.thin)
                     .background(colors.border),
             )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalTablePreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+        ) {
+            TerminalTable(headers = listOf("Name", "Role", "Status")) {
+                TerminalTableRow(cells = listOf("Alice", "Admin", "Active"))
+                TerminalTableRow(cells = listOf("Bob", "User", "Pending"))
+                TerminalTableRow(cells = listOf("Charlie", "User", "Inactive"), showBottomBorder = false)
+            }
         }
     }
 }
