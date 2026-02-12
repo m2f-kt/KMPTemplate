@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 10: Align toggles with Pencil design and add selection table
+Last activity: 2026-02-12 -- Completed quick task 11: Align TerminalListItem with Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -131,6 +131,10 @@ Recent decisions affecting current work:
 - [quick-10]: btnPrimaryBg for switch on-track (consistent with checkbox checked fill; both #525252 in light)
 - [quick-10]: 16dp inline table checkbox in 32dp touch target cell (proportionally smaller than standalone 18dp)
 - [quick-10]: triStateToggleable for tri-state checkbox accessibility (ToggleableState.On/Off/Indeterminate)
+- [quick-11]: Leading/trailing content lambdas changed from () -> Unit to (Color) -> Unit for state-aware icon coloring
+- [quick-11]: showBottomBorder removed entirely from TerminalListItem (Pencil has no individual item borders)
+- [quick-11]: drawBehind pattern from TerminalAlert reused for selected state left accent border
+- [quick-11]: Literal dp values (16dp/12dp/2dp) since Pencil tokens dont map to existing spacing tokens
 
 ### Pending Todos
 
@@ -150,6 +154,7 @@ None yet.
 | 8 | Align TerminalProgress with Pencil design -- label/percentage, 8dp track, accentMuted, gradient indicator | 2026-02-12 | fb28c8a | [8-align-terminalprogress-with-pencil-desig](./quick/8-align-terminalprogress-with-pencil-desig/) |
 | 9 | Align TerminalTable with Pencil design -- 4 table tokens, composable row content, TerminalTableCell | 2026-02-12 | 8f5ba33 | [9-align-table-components-with-pencil-desig](./quick/9-align-table-components-with-pencil-desig/) |
 | 10 | Align toggles with Pencil design -- tri-state checkbox, switch alignment, selectable table | 2026-02-12 | 811eb08 | [10-align-toggles-with-pencil-design-and-add](./quick/10-align-toggles-with-pencil-design-and-add/) |
+| 11 | Align TerminalListItem with Pencil design -- per-state colors, drawBehind selected border, color lambdas | 2026-02-12 | 6ce7515 | [11-align-terminallistitem-with-pencil-desig](./quick/11-align-terminallistitem-with-pencil-desig/) |
 
 ### Blockers/Concerns
 
@@ -159,5 +164,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-10 (Align toggles with Pencil design) -- tri-state checkbox, Pencil-aligned switch, TerminalSelectableTable with checkbox column
+Stopped at: Completed quick-11 (Align TerminalListItem with Pencil design) -- per-state colors, drawBehind selected border, color-passing content lambdas
 Resume file: None
