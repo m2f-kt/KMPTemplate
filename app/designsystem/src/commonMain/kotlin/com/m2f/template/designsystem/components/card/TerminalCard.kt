@@ -94,14 +94,14 @@ fun TerminalCard(
         }
 
         CardVariant.Accent -> {
-            containerBg = colors.bg
+            containerBg = colors.cardAccentBg
             borderColor = Color.Transparent
             hasBorder = false
-            headerBg = colors.textMuted
-            titleColor = colors.surface
+            headerBg = colors.cardAccentHeaderBg
+            titleColor = colors.cardAccentHeaderText
             titleWeight = FontWeight.Medium
-            descriptionColor = colors.surface.copy(alpha = 0.7f)
-            iconTint = colors.surface
+            descriptionColor = colors.cardAccentHeaderText.copy(alpha = 0.7f)
+            iconTint = colors.cardAccentHeaderText
             hasHeaderBottomBorder = false
         }
 
@@ -417,7 +417,7 @@ private fun TerminalCardPreview() {
                     TerminalText(
                         text = "~",
                         style = TerminalTheme.typography.sm,
-                        color = TerminalTheme.colors.surface,
+                        color = TerminalTheme.colors.cardAccentHeaderText,
                     )
                 },
             ) {
