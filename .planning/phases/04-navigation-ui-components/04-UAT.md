@@ -1,9 +1,9 @@
 ---
-status: complete
+status: diagnosed
 phase: 04-navigation-ui-components
 source: [04-01-SUMMARY.md, 04-02-SUMMARY.md, 04-03-SUMMARY.md, 04-04-SUMMARY.md, 04-05-SUMMARY.md]
 started: 2026-02-12T12:00:00Z
-updated: 2026-02-12T12:10:00Z
+updated: 2026-02-12T12:15:00Z
 ---
 
 ## Current Test
@@ -61,7 +61,13 @@ skipped: 0
   reason: "User reported: they compile but there are no previews and this is critical to have"
   severity: major
   test: 8
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Missing preview dependencies (compose.ui.tooling.preview, compose.preview, compose.uiTooling) in app:designsystem/build.gradle.kts and zero @Preview annotated functions across all 17 component files"
+  artifacts:
+    - path: "app/designsystem/build.gradle.kts"
+      issue: "Missing compose.ui.tooling.preview, compose.preview, compose.uiTooling dependencies"
+    - path: "app/designsystem/src/commonMain/kotlin/com/m2f/template/designsystem/components/"
+      issue: "17 component files have zero @Preview composables"
+  missing:
+    - "Add preview dependencies to app:designsystem build.gradle.kts"
+    - "Add @Preview functions to each component file showing all variants wrapped in TerminalTheme"
+  debug_session: ".planning/debug/missing-component-previews.md"
