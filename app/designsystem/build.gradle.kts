@@ -26,9 +26,12 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.ui.tooling)
         }
     }
+}
+
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
 }
 
 android {
