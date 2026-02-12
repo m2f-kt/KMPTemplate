@@ -55,6 +55,18 @@ data class TerminalColors(
     val tableRowTextPrimary: Color,
     val tableRowTextSecondary: Color,
     val tableRowSelectedBg: Color,
+    // Chart tokens
+    val chartBg: Color,
+    val chartGrid: Color,
+    val chartAxis: Color,
+    val chartAxisText: Color,
+    val chartSeries1: Color,
+    val chartSeries1Muted: Color,
+    val chartSeries2: Color,
+    val chartBar1: Color,
+    val chartBar2: Color,
+    val chartBar3: Color,
+    val chartBarHighlight: Color,
 )
 
 val LocalTerminalColors = staticCompositionLocalOf {
@@ -104,6 +116,17 @@ val LocalTerminalColors = staticCompositionLocalOf {
         tableRowTextPrimary = Color.Unspecified,
         tableRowTextSecondary = Color.Unspecified,
         tableRowSelectedBg = Color.Unspecified,
+        chartBg = Color.Unspecified,
+        chartGrid = Color.Unspecified,
+        chartAxis = Color.Unspecified,
+        chartAxisText = Color.Unspecified,
+        chartSeries1 = Color.Unspecified,
+        chartSeries1Muted = Color.Unspecified,
+        chartSeries2 = Color.Unspecified,
+        chartBar1 = Color.Unspecified,
+        chartBar2 = Color.Unspecified,
+        chartBar3 = Color.Unspecified,
+        chartBarHighlight = Color.Unspecified,
     )
 }
 
@@ -154,6 +177,17 @@ val TerminalLightColors = TerminalColors(
     tableRowTextPrimary = Color(0xFF171717),
     tableRowTextSecondary = Color(0xFF525252),
     tableRowSelectedBg = Color(0xFFEDF2EE),
+    chartBg = Color(0xFFFFFFFF),
+    chartGrid = Color(0xFFE5E5E5),
+    chartAxis = Color(0xFFD4D4D4),
+    chartAxisText = Color(0xFF737373),
+    chartSeries1 = Color(0xFF4A9B6E),
+    chartSeries1Muted = Color(0x304A9B6E),
+    chartSeries2 = Color(0xFF4A7EB0),
+    chartBar1 = Color(0xFF525252),
+    chartBar2 = Color(0xFF737373),
+    chartBar3 = Color(0xFFA3A3A3),
+    chartBarHighlight = Color(0xFF4A9B6E),
 )
 
 // Dark theme -- extracted from terminal_design_system.pen variables
@@ -203,4 +237,15 @@ val TerminalDarkColors = TerminalColors(
     tableRowTextPrimary = Color(0xFFE5E5E5),
     tableRowTextSecondary = Color(0xFFA3A3A3),
     tableRowSelectedBg = Color(0xFF1A231C),
+    chartBg = Color(0xFF171717),
+    chartGrid = Color(0xFF2A2A2A),
+    chartAxis = Color(0xFF333333),
+    chartAxisText = Color(0xFF6B6B6B),
+    chartSeries1 = Color(0xFF6BAF8A),
+    chartSeries1Muted = Color(0x206BAF8A),
+    chartSeries2 = Color(0xFF7AA4CA),
+    chartBar1 = Color(0xFFA3A3A3),
+    chartBar2 = Color(0xFF8A8A8A),
+    chartBar3 = Color(0xFF6B6B6B),
+    chartBarHighlight = Color(0xFF6BAF8A),
 )
