@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 6: Add card-accent color tokens for CardVariant.Accent
+Last activity: 2026-02-12 -- Completed quick task 7: Align TerminalBadge with Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -118,6 +118,9 @@ Recent decisions affecting current work:
 - [quick-04]: widthDp=1024 for Desktop preview to simulate wide-screen/landscape layout
 - [quick-05]: String-only changes in preview function -- no structural or composable modifications
 - [quick-06]: Dedicated per-variant color tokens (cardAccent*) instead of reusing generic theme colors for CardVariant.Accent
+- [quick-07]: Literal dp values for badge padding (10dp/4dp) and icon gap (6dp) since Pencil tokens dont map to spacing tokens
+- [quick-07]: Literal 10.sp fontSize for badge (Pencil specifies 10, typography.xs is 11.sp)
+- [quick-07]: FontWeight.Medium for Default badge variant, SemiBold for Accent/Success/Warning/Error
 
 ### Pending Todos
 
@@ -133,6 +136,7 @@ None yet.
 | 4 | Create @TerminalPreview multi-mode annotation — Light, Dark, Desktop previews across 17 files | 2026-02-12 | 045f538 | [4-create-custom-multi-mode-preview-annotat](./quick/4-create-custom-multi-mode-preview-annotat/) |
 | 5 | Align TerminalCard previews with Pencil design — process_info, active_session, system_info, featured_process, process.log | 2026-02-12 | 09aa429 | [5-align-terminalcard-previews-network-stat](./quick/5-align-terminalcard-previews-network-stat/) |
 | 6 | Add 4 card-accent color tokens and wire into CardVariant.Accent | 2026-02-12 | 0601e7a | [6-add-card-accent-bg-color-token-for-cardv](./quick/6-add-card-accent-bg-color-token-for-cardv/) |
+| 7 | Align TerminalBadge with Pencil design -- sm radius, btnPrimary Accent, icon param, font weights | 2026-02-12 | e8ae2bf | [7-align-terminalbadge-with-pencil-design](./quick/7-align-terminalbadge-with-pencil-design/) |
 
 ### Blockers/Concerns
 
@@ -142,5 +146,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-06 (Add card-accent color tokens) -- 4 dedicated cardAccent* tokens in TerminalColors, CardVariant.Accent wired to use them
+Stopped at: Completed quick-07 (Align TerminalBadge with Pencil design) -- sm radius, btnPrimary Accent colors, icon parameter, per-variant font weights, 10sp fontSize
 Resume file: None
