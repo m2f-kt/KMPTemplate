@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.m2f.template.designsystem.theme.TerminalPreview
@@ -52,8 +51,6 @@ fun TerminalDropdownMenu(
     val colors = TerminalTheme.colors
     val borders = TerminalTheme.borders
     val radius = TerminalTheme.radius
-    val shadows = TerminalTheme.shadows
-
     val shape = RoundedCornerShape(radius.md)
 
     Popup(
@@ -62,7 +59,6 @@ fun TerminalDropdownMenu(
         Column(
             modifier = modifier
                 .width(160.dp)
-                .shadow(shadows.sm.blur, shape)
                 .clip(shape)
                 .background(colors.surface)
                 .border(borders.thin, colors.border, shape)
@@ -132,13 +128,11 @@ private fun TerminalDropdownMenuPreview() {
             val colors = TerminalTheme.colors
             val borders = TerminalTheme.borders
             val radius = TerminalTheme.radius
-            val shadows = TerminalTheme.shadows
             val shape = RoundedCornerShape(radius.md)
 
             Box(
                 modifier = Modifier
                     .width(160.dp)
-                    .shadow(shadows.sm.blur, shape)
                     .clip(shape)
                     .background(colors.surface)
                     .border(borders.thin, colors.border, shape)
