@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 12: Add contextual dropdown menu to TerminalListItem
+Last activity: 2026-02-12 -- Completed quick task 13: Fix white corner artifacts on TerminalDropdownMenu
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -159,6 +159,7 @@ None yet.
 | 10 | Align toggles with Pencil design -- tri-state checkbox, switch alignment, selectable table | 2026-02-12 | 811eb08 | [10-align-toggles-with-pencil-design-and-add](./quick/10-align-toggles-with-pencil-design-and-add/) |
 | 11 | Align TerminalListItem with Pencil design -- per-state colors, drawBehind selected border, color lambdas | 2026-02-12 | 6ce7515 | [11-align-terminallistitem-with-pencil-desig](./quick/11-align-terminallistitem-with-pencil-desig/) |
 | 12 | Add contextual dropdown menu to TerminalListItem -- TerminalDropdownMenu, ellipsis trigger, menuItems param | 2026-02-12 | afdff59 | [12-add-contextual-dropdown-menu-to-terminal](./quick/12-add-contextual-dropdown-menu-to-terminal/) |
+| 13 | Fix white corner artifacts on TerminalDropdownMenu -- remove .shadow() modifier | 2026-02-12 | 50dde46 | [13-fix-white-corner-artifacts-on-terminaldr](./quick/13-fix-white-corner-artifacts-on-terminaldr/) |
 
 ### Blockers/Concerns
 
