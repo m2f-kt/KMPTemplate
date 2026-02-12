@@ -380,8 +380,8 @@ private fun TerminalCardPreview() {
         ) {
             // 1. Default Card -- with footer
             TerminalCard(
-                title = "Terminal Session",
-                description = "Active connection",
+                title = "process_info",
+                description = "// system process details",
                 variant = CardVariant.Default,
                 modifier = Modifier.fillMaxWidth(),
                 icon = {
@@ -393,24 +393,24 @@ private fun TerminalCardPreview() {
                 },
                 footer = {
                     TerminalButton(
-                        text = "Cancel",
+                        text = "kill",
                         onClick = {},
                         variant = ButtonVariant.Ghost,
                     )
                     TerminalButton(
-                        text = "Connect",
+                        text = "restart",
                         onClick = {},
                         variant = ButtonVariant.Default,
                     )
                 },
             ) {
-                TerminalText("Session content goes here")
+                TerminalText("PID: 1337\nCPU: 12.4%\nMEM: 256MB\nSTATUS: running")
             }
 
             // 2. Accent Card -- dark header, no footer
             TerminalCard(
-                title = "Network Status",
-                description = "All systems operational",
+                title = "active_session",
+                description = "// current connection",
                 variant = CardVariant.Accent,
                 modifier = Modifier.fillMaxWidth(),
                 icon = {
@@ -421,13 +421,13 @@ private fun TerminalCardPreview() {
                     )
                 },
             ) {
-                TerminalText("Monitoring dashboard content")
+                TerminalText("HOST: 192.168.1.42\nPORT: 8080\nLATENCY: 12ms")
             }
 
             // 3. Info Card
             TerminalCard(
-                title = "System Notice",
-                description = "Scheduled maintenance",
+                title = "system_info",
+                description = "// important notice",
                 variant = CardVariant.Info,
                 modifier = Modifier.fillMaxWidth(),
                 icon = {
@@ -438,13 +438,13 @@ private fun TerminalCardPreview() {
                     )
                 },
             ) {
-                TerminalText("The server will be restarted at 02:00 UTC.")
+                TerminalText("System update available.\nVersion: 2.4.1\nSize: 145MB")
             }
 
             // 4. Highlighted Card
             TerminalCard(
-                title = "Featured Project",
-                description = "Pinned repository",
+                title = "featured_process",
+                description = "// high priority",
                 variant = CardVariant.Highlighted,
                 modifier = Modifier.fillMaxWidth(),
                 icon = {
@@ -455,13 +455,13 @@ private fun TerminalCardPreview() {
                     )
                 },
             ) {
-                TerminalText("Project details and stats")
+                TerminalText("Priority: HIGH\nCPU: 45.2%\nThreads: 12")
             }
 
             // 5. Compact Card
             TerminalCompactCard(
-                title = "config.yaml",
-                details = "Modified 2 hours ago",
+                title = "process.log",
+                details = "2.4MB \u2022 Modified 2h ago",
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = {
                     TerminalText(
