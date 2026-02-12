@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 3: Align TerminalButton with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 4: Create @TerminalPreview multi-mode annotation
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -113,6 +113,9 @@ Recent decisions affecting current work:
 - [quick-03]: Disabled is not a ButtonVariant; handled via enabled param with specific btnDisabled* color tokens
 - [quick-03]: Literal dp values (16/12/8) for button padding since Pencil tokens dont map to existing spacing tokens
 - [quick-03]: Foundation hover pattern: MutableInteractionSource + collectIsHoveredAsState + hoverable modifier
+- [quick-04]: @TerminalPreview annotation uses AndroidUiModes for uiMode constants (consistent with commonMain usage)
+- [quick-04]: TerminalPreview lives in theme package alongside TerminalTheme (design-system-level concern)
+- [quick-04]: widthDp=1024 for Desktop preview to simulate wide-screen/landscape layout
 
 ### Pending Todos
 
@@ -125,6 +128,7 @@ None yet.
 | 1 | Align TerminalCard with Pencil design — structured header/content/footer, 5 variants | 2026-02-12 | 4516ed7 | [1-align-design-system-components-with-penc](./quick/1-align-design-system-components-with-penc/) |
 | 2 | Align TerminalInput with Pencil design — prefix, conditional border, password variant | 2026-02-12 | 8a93f6d | [2-align-terminalinput-with-pencil-design-a](./quick/2-align-terminalinput-with-pencil-design-a/) |
 | 3 | Align TerminalButton with Pencil design — 5 variants, hover, disabled tokens, padding/typography | 2026-02-12 | 5fff28c | [3-align-terminalbutton-with-pencil-design-](./quick/3-align-terminalbutton-with-pencil-design-/) |
+| 4 | Create @TerminalPreview multi-mode annotation — Light, Dark, Desktop previews across 17 files | 2026-02-12 | 045f538 | [4-create-custom-multi-mode-preview-annotat](./quick/4-create-custom-multi-mode-preview-annotat/) |
 
 ### Blockers/Concerns
 
@@ -134,5 +138,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-03 (Align TerminalButton with Pencil design) -- 5 variants, hover states, disabled tokens, correct padding/typography
+Stopped at: Completed quick-04 (Create @TerminalPreview multi-mode annotation) -- Light/Dark/Desktop previews, 17 files migrated
 Resume file: None
