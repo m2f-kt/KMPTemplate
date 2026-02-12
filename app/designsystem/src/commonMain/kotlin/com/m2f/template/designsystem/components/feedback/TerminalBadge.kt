@@ -2,18 +2,21 @@ package com.m2f.template.designsystem.components.feedback
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import com.m2f.template.designsystem.theme.TerminalTheme
-import com.m2f.template.designsystem.theme.TerminalPreview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.m2f.template.designsystem.theme.TerminalPreview
+import com.m2f.template.designsystem.theme.TerminalTheme
 
 /**
  * Badge display variants mapping to theme color pairs.
@@ -29,34 +32,40 @@ enum class BadgeVariant {
 /**
  * A terminal-styled badge component for displaying short inline labels.
  *
- * Renders a small pill-shaped label with variant-colored background and text.
+ * Renders a small rounded (not pill) label with variant-colored background and text.
  * Badges are display-only and have no click handler.
  * Reads all styling exclusively from [TerminalTheme] CompositionLocals.
  *
  * @param text The label text displayed inside the badge.
  * @param modifier Modifier applied to the root layout.
+ * @param icon Optional leading icon text displayed before the label (e.g., checkmark, warning symbol).
  * @param variant Display variant controlling color scheme.
  */
 @Composable
 fun TerminalBadge(
     text: String,
     modifier: Modifier = Modifier,
+    icon: String? = null,
     variant: BadgeVariant = BadgeVariant.Default,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
     val radius = TerminalTheme.radius
-    val spacing = TerminalTheme.spacing
     val borders = TerminalTheme.borders
 
-    val shape = RoundedCornerShape(radius.pill)
+    val shape = RoundedCornerShape(radius.sm)
 
     val (bgColor, fgColor, borderColor) = when (variant) {
         BadgeVariant.Default -> Triple(colors.surface, colors.text, colors.border)
-        BadgeVariant.Accent -> Triple(colors.accentMuted, colors.accent, colors.accentMuted)
+        BadgeVariant.Accent -> Triple(colors.btnPrimaryBg, colors.btnPrimaryText, colors.btnPrimaryBg)
         BadgeVariant.Success -> Triple(colors.successBg, colors.success, colors.successBg)
         BadgeVariant.Warning -> Triple(colors.warningBg, colors.warning, colors.warningBg)
         BadgeVariant.Error -> Triple(colors.errorBg, colors.error, colors.errorBg)
+    }
+
+    val fontWeight = when (variant) {
+        BadgeVariant.Default -> FontWeight.Medium
+        else -> FontWeight.SemiBold
     }
 
     val badgeModifier = modifier
@@ -69,13 +78,32 @@ fun TerminalBadge(
                 Modifier
             },
         )
-        .padding(horizontal = spacing.sm, vertical = spacing.xs)
+        .padding(horizontal = 10.dp, vertical = 4.dp)
 
-    BasicText(
-        text = text,
+    Row(
         modifier = badgeModifier,
-        style = typography.xs.copy(color = fgColor),
-    )
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (icon != null) {
+            BasicText(
+                text = icon,
+                style = typography.xs.copy(
+                    color = fgColor,
+                    fontWeight = fontWeight,
+                    fontSize = 10.sp,
+                ),
+            )
+        }
+        BasicText(
+            text = text,
+            style = typography.xs.copy(
+                color = fgColor,
+                fontWeight = fontWeight,
+                fontSize = 10.sp,
+            ),
+        )
+    }
 }
 
 @TerminalPreview
@@ -88,9 +116,11 @@ private fun TerminalBadgePreview() {
                 .padding(16.dp),
         ) {
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                BadgeVariant.entries.forEach { variant ->
-                    TerminalBadge(text = variant.name, variant = variant)
-                }
+                TerminalBadge(text = "v1.0.0", variant = BadgeVariant.Default)
+                TerminalBadge(text = "RUNNING", variant = BadgeVariant.Accent)
+                TerminalBadge(text = "PASSED", icon = "\u2713", variant = BadgeVariant.Success)
+                TerminalBadge(text = "PENDING", icon = "\u25D0", variant = BadgeVariant.Warning)
+                TerminalBadge(text = "FAILED", icon = "\u2715", variant = BadgeVariant.Error)
             }
         }
     }
