@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 11: Align TerminalListItem with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 12: Add contextual dropdown menu to TerminalListItem
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -135,6 +135,9 @@ Recent decisions affecting current work:
 - [quick-11]: showBottomBorder removed entirely from TerminalListItem (Pencil has no individual item borders)
 - [quick-11]: drawBehind pattern from TerminalAlert reused for selected state left accent border
 - [quick-11]: Literal dp values (16dp/12dp/2dp) since Pencil tokens dont map to existing spacing tokens
+- [quick-12]: Popup onDismissRequest used for dismiss-on-click-outside (Foundation Popup supports it)
+- [quick-12]: U+22EF midline horizontal ellipsis for three-dots trigger character
+- [quick-12]: Preview renders menu content directly in Box (Popup not visible in static previews)
 
 ### Pending Todos
 
@@ -155,6 +158,7 @@ None yet.
 | 9 | Align TerminalTable with Pencil design -- 4 table tokens, composable row content, TerminalTableCell | 2026-02-12 | 8f5ba33 | [9-align-table-components-with-pencil-desig](./quick/9-align-table-components-with-pencil-desig/) |
 | 10 | Align toggles with Pencil design -- tri-state checkbox, switch alignment, selectable table | 2026-02-12 | 811eb08 | [10-align-toggles-with-pencil-design-and-add](./quick/10-align-toggles-with-pencil-design-and-add/) |
 | 11 | Align TerminalListItem with Pencil design -- per-state colors, drawBehind selected border, color lambdas | 2026-02-12 | 6ce7515 | [11-align-terminallistitem-with-pencil-desig](./quick/11-align-terminallistitem-with-pencil-desig/) |
+| 12 | Add contextual dropdown menu to TerminalListItem -- TerminalDropdownMenu, ellipsis trigger, menuItems param | 2026-02-12 | afdff59 | [12-add-contextual-dropdown-menu-to-terminal](./quick/12-add-contextual-dropdown-menu-to-terminal/) |
 
 ### Blockers/Concerns
 
@@ -164,5 +168,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-11 (Align TerminalListItem with Pencil design) -- per-state colors, drawBehind selected border, color-passing content lambdas
+Stopped at: Completed quick-12 (Add contextual dropdown menu to TerminalListItem) -- TerminalDropdownMenu, TerminalDropdownMenuItem, ellipsis trigger, menuItems param
 Resume file: None
