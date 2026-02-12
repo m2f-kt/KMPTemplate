@@ -1,6 +1,7 @@
 package com.m2f.template
 
 import androidx.compose.runtime.Composable
+import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.di.allAppModules
 import com.m2f.template.navigation.AppNavHost
 import org.koin.compose.KoinApplication
@@ -10,6 +11,8 @@ fun App() {
     KoinApplication(application = {
         modules(allAppModules)
     }) {
-        AppNavHost()
+        TerminalTheme {
+            AppNavHost()
+        }
     }
 }
