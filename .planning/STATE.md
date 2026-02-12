@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 4 of 6 (Navigation & UI Components)
-Plan: 2 of 5 in current phase (04-01, 04-02 complete)
+Plan: 3 of 5 in current phase (04-01, 04-02, 04-03 complete)
 Status: Executing Phase 4
-Last activity: 2026-02-12 -- Plan 04-02 complete (Design system theme with CompositionLocals)
+Last activity: 2026-02-12 -- Plan 04-03 complete (Core interactive components: button, input, textarea, card)
 
-Progress: [███████████░____] 71% (12/17 plans)
+Progress: [████████████░___] 76% (13/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: ~11 min
-- Total execution time: ~131 min
+- Total plans completed: 13
+- Average duration: ~10 min
+- Total execution time: ~133 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [███████████░____] 71% (12/17 plans)
 | 1 | 4/4 | ~46 min | ~12 min |
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
-| 4 | 2/5 | ~12 min | ~6 min |
+| 4 | 3/5 | ~14 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (~5 min), 03-03 (~5 min), 04-01 (~4 min), 04-02 (~8 min)
+- Last 5 plans: 03-03 (~5 min), 04-01 (~4 min), 04-02 (~8 min), 04-03 (~2 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -90,6 +90,9 @@ Recent decisions affecting current work:
 - [04-02]: isSystemInDarkTheme() available from compose.foundation alone (no Material3 needed in designsystem)
 - [04-02]: Removed compose.material3 from app:auth and app:dashboard (terminal design system replaces it)
 - [04-02]: Font files use underscore naming for Compose Resources accessor generation
+- [04-03]: Used drawBehind modifier for Accent card left edge (4dp colored left border) instead of nested Box layout
+- [04-03]: TerminalInput uses decorationBox parameter on BasicTextField for custom border/padding/placeholder/icons
+- [04-03]: Spacer with Modifier.padding used for icon gaps inside input fields
 
 ### Pending Todos
 
@@ -103,5 +106,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed 04-02-PLAN.md (Design system theme with CompositionLocals)
+Stopped at: Completed 04-03-PLAN.md (Core interactive components: button, input, textarea, card)
 Resume file: None
