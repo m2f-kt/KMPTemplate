@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 15: Add swipe-to-reveal actions and drag-to-reorder gestures
+Last activity: 2026-02-12 -- Completed quick task 16: Fix TerminalSwipeReveal height, layering, and gesture bugs
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -167,6 +167,7 @@ None yet.
 | 13 | Fix white corner artifacts on TerminalDropdownMenu -- remove .shadow() modifier | 2026-02-12 | 50dde46 | [13-fix-white-corner-artifacts-on-terminaldr](./quick/13-fix-white-corner-artifacts-on-terminaldr/) |
 | 14 | Fix ui-tooling dependency -- move to Android debugImplementation only | 2026-02-12 | 0f92825 | [14-fix-ui-tooling-dependency-restrict-to-de](./quick/14-fix-ui-tooling-dependency-restrict-to-de/) |
 | 15 | Add swipe-to-reveal actions and drag-to-reorder gestures | 2026-02-12 | 32de96a | [15-add-swipe-to-reveal-actions-and-drag-to-](./quick/15-add-swipe-to-reveal-actions-and-drag-to-/) |
+| 16 | Fix TerminalSwipeReveal -- IntrinsicSize.Min height, opaque foreground bg, single awaitEachGesture | 2026-02-12 | a0f1688 | [16-fix-terminalswipereveal-actions-visible-](./quick/16-fix-terminalswipereveal-actions-visible-/) |
 
 ### Blockers/Concerns
 
