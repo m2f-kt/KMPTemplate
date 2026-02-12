@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 5: Align TerminalCard previews with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 6: Add card-accent color tokens for CardVariant.Accent
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -117,6 +117,7 @@ Recent decisions affecting current work:
 - [quick-04]: TerminalPreview lives in theme package alongside TerminalTheme (design-system-level concern)
 - [quick-04]: widthDp=1024 for Desktop preview to simulate wide-screen/landscape layout
 - [quick-05]: String-only changes in preview function -- no structural or composable modifications
+- [quick-06]: Dedicated per-variant color tokens (cardAccent*) instead of reusing generic theme colors for CardVariant.Accent
 
 ### Pending Todos
 
@@ -131,6 +132,7 @@ None yet.
 | 3 | Align TerminalButton with Pencil design — 5 variants, hover, disabled tokens, padding/typography | 2026-02-12 | 5fff28c | [3-align-terminalbutton-with-pencil-design-](./quick/3-align-terminalbutton-with-pencil-design-/) |
 | 4 | Create @TerminalPreview multi-mode annotation — Light, Dark, Desktop previews across 17 files | 2026-02-12 | 045f538 | [4-create-custom-multi-mode-preview-annotat](./quick/4-create-custom-multi-mode-preview-annotat/) |
 | 5 | Align TerminalCard previews with Pencil design — process_info, active_session, system_info, featured_process, process.log | 2026-02-12 | 09aa429 | [5-align-terminalcard-previews-network-stat](./quick/5-align-terminalcard-previews-network-stat/) |
+| 6 | Add 4 card-accent color tokens and wire into CardVariant.Accent | 2026-02-12 | 0601e7a | [6-add-card-accent-bg-color-token-for-cardv](./quick/6-add-card-accent-bg-color-token-for-cardv/) |
 
 ### Blockers/Concerns
 
@@ -140,5 +142,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-05 (Align TerminalCard previews with Pencil design) -- 5 card preview blocks updated with Pencil-accurate content
+Stopped at: Completed quick-06 (Add card-accent color tokens) -- 4 dedicated cardAccent* tokens in TerminalColors, CardVariant.Accent wired to use them
 Resume file: None
