@@ -3,14 +3,16 @@ package com.m2f.template.designsystem.components.data
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -21,14 +23,18 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalPreview
 import com.m2f.template.designsystem.theme.TerminalTheme
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 /**
@@ -48,7 +54,7 @@ import kotlin.math.roundToInt
 @Composable
 fun TerminalSwipeReveal(
     modifier: Modifier = Modifier,
-    revealWidth: androidx.compose.ui.unit.Dp = 80.dp,
+    revealWidth: Dp = 80.dp,
     swipeActions: @Composable RowScope.() -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -62,60 +68,73 @@ fun TerminalSwipeReveal(
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .height(IntrinsicSize.Min)
             .clipToBounds(),
     ) {
-        // Actions row -- positioned at the end (right side)
+        // Actions row — behind the foreground, matching item height
         Row(
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .width(revealWidth)
-                .fillMaxHeight()
-                .background(TerminalTheme.colors.errorBg),
+                .fillMaxHeight(),
             content = swipeActions,
         )
 
-        // Foreground content -- slides left to reveal actions
+        // Foreground content — opaque background, slides left to reveal actions
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .offset { IntOffset(-offsetX.value.roundToInt(), 0) }
+                .background(TerminalTheme.colors.surface)
                 .pointerInput(Unit) {
-                    detectTapGestures {
-                        if (offsetX.value > 0f) {
-                            coroutineScope.launch {
-                                offsetX.animateTo(0f, spring())
+                    val touchSlop = viewConfiguration.touchSlop
+                    awaitEachGesture {
+                        // Wait for initial press
+                        do {
+                            val pressEvent = awaitPointerEvent()
+                        } while (pressEvent.type != PointerEventType.Press)
+                        var dragging = false
+                        var totalX = 0f
+
+                        while (true) {
+                            val event = awaitPointerEvent()
+                            if (event.changes.all { !it.pressed }) {
+                                // Pointer up — end of gesture
+                                if (dragging) {
+                                    coroutineScope.launch {
+                                        if (offsetX.value > thresholdPx) {
+                                            offsetX.animateTo(maxRevealPx, spring())
+                                        } else {
+                                            offsetX.animateTo(0f, spring())
+                                        }
+                                    }
+                                } else if (offsetX.value > 0f) {
+                                    // Tap while revealed — close
+                                    coroutineScope.launch {
+                                        offsetX.animateTo(0f, spring())
+                                    }
+                                }
+                                break
+                            }
+
+                            val change = event.changes.first()
+                            val dx = change.positionChange().x
+                            totalX += dx
+
+                            if (!dragging && abs(totalX) > touchSlop) {
+                                dragging = true
+                            }
+
+                            if (dragging) {
+                                change.consume()
+                                coroutineScope.launch {
+                                    val newOffset = (offsetX.value - dx)
+                                        .coerceIn(0f, maxRevealPx)
+                                    offsetX.snapTo(newOffset)
+                                }
                             }
                         }
                     }
-                }
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures(
-                        onDragEnd = {
-                            coroutineScope.launch {
-                                if (offsetX.value > thresholdPx) {
-                                    offsetX.animateTo(maxRevealPx, spring())
-                                } else {
-                                    offsetX.animateTo(0f, spring())
-                                }
-                            }
-                        },
-                        onDragCancel = {
-                            coroutineScope.launch {
-                                if (offsetX.value > thresholdPx) {
-                                    offsetX.animateTo(maxRevealPx, spring())
-                                } else {
-                                    offsetX.animateTo(0f, spring())
-                                }
-                            }
-                        },
-                        onHorizontalDrag = { _, dragAmount ->
-                            coroutineScope.launch {
-                                val newOffset = (offsetX.value - dragAmount)
-                                    .coerceIn(0f, maxRevealPx)
-                                offsetX.snapTo(newOffset)
-                            }
-                        },
-                    )
                 },
         ) {
             content()
