@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 14: Fix ui-tooling dependency for iOS/WasmJs builds
+Last activity: 2026-02-12 -- Completed quick task 15: Add swipe-to-reveal actions and drag-to-reorder gestures
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -138,6 +138,11 @@ Recent decisions affecting current work:
 - [quick-12]: Popup onDismissRequest used for dismiss-on-click-outside (Foundation Popup supports it)
 - [quick-12]: U+22EF midline horizontal ellipsis for three-dots trigger character
 - [quick-12]: Preview renders menu content directly in Box (Popup not visible in static previews)
+- [quick-15]: Animatable<Float> for swipe offset (allows imperative snapTo + spring animateTo)
+- [quick-15]: Fixed revealWidth Dp parameter (default 80dp) instead of SubcomposeLayout measurement
+- [quick-15]: Separate pointerInput blocks for tap and drag detection (chaining avoids gesture conflicts)
+- [quick-15]: mutableIntStateOf/mutableFloatStateOf for ReorderState (Compose primitive state performance)
+- [quick-15]: graphicsLayer for drag visual feedback (translationY, scaleX/Y 1.02, shadowElevation 8f)
 
 ### Pending Todos
 
@@ -161,6 +166,7 @@ None yet.
 | 12 | Add contextual dropdown menu to TerminalListItem -- TerminalDropdownMenu, ellipsis trigger, menuItems param | 2026-02-12 | afdff59 | [12-add-contextual-dropdown-menu-to-terminal](./quick/12-add-contextual-dropdown-menu-to-terminal/) |
 | 13 | Fix white corner artifacts on TerminalDropdownMenu -- remove .shadow() modifier | 2026-02-12 | 50dde46 | [13-fix-white-corner-artifacts-on-terminaldr](./quick/13-fix-white-corner-artifacts-on-terminaldr/) |
 | 14 | Fix ui-tooling dependency -- move to Android debugImplementation only | 2026-02-12 | 0f92825 | [14-fix-ui-tooling-dependency-restrict-to-de](./quick/14-fix-ui-tooling-dependency-restrict-to-de/) |
+| 15 | Add swipe-to-reveal actions and drag-to-reorder gestures | 2026-02-12 | 32de96a | [15-add-swipe-to-reveal-actions-and-drag-to-](./quick/15-add-swipe-to-reveal-actions-and-drag-to-/) |
 
 ### Blockers/Concerns
 
@@ -170,5 +176,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-12 (Add contextual dropdown menu to TerminalListItem) -- TerminalDropdownMenu, TerminalDropdownMenuItem, ellipsis trigger, menuItems param
+Stopped at: Completed quick-15 (Add swipe-to-reveal actions and drag-to-reorder gestures) -- TerminalSwipeReveal, TerminalDeleteAction, TerminalReorderableList, ReorderState
 Resume file: None
