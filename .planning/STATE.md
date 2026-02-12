@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 4 of 6 (Navigation & UI Components)
-Plan: 1 of 5 in current phase (04-01 complete)
+Plan: 2 of 5 in current phase (04-01, 04-02 complete)
 Status: Executing Phase 4
-Last activity: 2026-02-12 -- Plan 04-01 complete (Navigation setup with type-safe routes)
+Last activity: 2026-02-12 -- Plan 04-02 complete (Design system theme with CompositionLocals)
 
-Progress: [██████████░_____] 65% (11/17 plans)
+Progress: [███████████░____] 71% (12/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 11
+- Total plans completed: 12
 - Average duration: ~11 min
-- Total execution time: ~123 min
+- Total execution time: ~131 min
 
 **By Phase:**
 
@@ -30,10 +30,10 @@ Progress: [██████████░_____] 65% (11/17 plans)
 | 1 | 4/4 | ~46 min | ~12 min |
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
-| 4 | 1/5 | ~4 min | ~4 min |
+| 4 | 2/5 | ~12 min | ~6 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-01 (~5 min), 03-02 (~5 min), 03-03 (~5 min), 04-01 (~4 min)
+- Last 5 plans: 03-02 (~5 min), 03-03 (~5 min), 04-01 (~4 min), 04-02 (~8 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -86,6 +86,10 @@ Recent decisions affecting current work:
 - [04-01]: popUpTo<LoginRoute> { inclusive = true } clears auth back stack on login success
 - [04-01]: MaterialTheme removed from App.kt; TerminalTheme will wrap AppNavHost in plan 04-02
 - [04-01]: BasicText with hardcoded colors for placeholder screens (to be replaced by TerminalTheme components)
+- [04-02]: Custom TerminalShadow data class used instead of CMP DropShadow (API availability uncertain in 1.10.1)
+- [04-02]: isSystemInDarkTheme() available from compose.foundation alone (no Material3 needed in designsystem)
+- [04-02]: Removed compose.material3 from app:auth and app:dashboard (terminal design system replaces it)
+- [04-02]: Font files use underscore naming for Compose Resources accessor generation
 
 ### Pending Todos
 
@@ -99,5 +103,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed 04-01-PLAN.md (Navigation setup with type-safe routes)
+Stopped at: Completed 04-02-PLAN.md (Design system theme with CompositionLocals)
 Resume file: None
