@@ -21,17 +21,16 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.models)
-            implementation(projects.core.sdk)
-            implementation(projects.app.designsystem)
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(compose.ui)
+            implementation(compose.components.resources)
         }
     }
 }
 
 android {
-    namespace = "com.m2f.template.app.dashboard"
+    namespace = "com.m2f.template.app.designsystem"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

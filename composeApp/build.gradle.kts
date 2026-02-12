@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
 
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
+    id("org.jetbrains.kotlin.plugin.serialization")
     id("com.android.application")
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
@@ -71,9 +72,12 @@ kotlin {
             implementation(libs.kermit)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
+            implementation(libs.koin.compose.viewmodel.navigation)
             implementation(projects.shared)
             implementation(projects.core.models)
             implementation(projects.core.sdk)
+            implementation(projects.app.designsystem)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

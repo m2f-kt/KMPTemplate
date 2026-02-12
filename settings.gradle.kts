@@ -54,3 +54,4 @@ include("server:ai")
 // App feature modules
 include("app:auth")
 include("app:dashboard")
+include("app:designsystem")
