@@ -20,6 +20,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.m2f.template.designsystem.theme.TerminalTheme
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.unit.dp
 
 /**
  * Semantic alert variants mapping to theme color pairs.
@@ -116,6 +119,41 @@ fun TerminalAlert(
                     color = fgColor,
                     fontWeight = FontWeight.Bold,
                 ),
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalAlertPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TerminalAlert(
+                message = "This is an informational message.",
+                variant = AlertVariant.Info,
+                title = "Info",
+                onDismiss = {},
+            )
+            TerminalAlert(
+                message = "Operation completed successfully.",
+                variant = AlertVariant.Success,
+                title = "Success",
+            )
+            TerminalAlert(
+                message = "Please review before proceeding.",
+                variant = AlertVariant.Warning,
+                title = "Warning",
+            )
+            TerminalAlert(
+                message = "Something went wrong.",
+                variant = AlertVariant.Error,
+                title = "Error",
             )
         }
     }

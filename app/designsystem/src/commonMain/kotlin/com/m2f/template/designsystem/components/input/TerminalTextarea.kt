@@ -16,6 +16,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import com.m2f.template.designsystem.theme.TerminalTheme
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.unit.dp
 
 /**
  * A terminal-styled multi-line text area composable.
@@ -89,5 +92,30 @@ fun TerminalTextarea(
                 }
             },
         )
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalTextareaPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TerminalTextarea(
+                value = "",
+                onValueChange = {},
+                label = "Description",
+                placeholder = "Enter description...",
+            )
+            TerminalTextarea(
+                value = "Line one\nLine two\nLine three",
+                onValueChange = {},
+                label = "Notes",
+            )
+        }
     }
 }

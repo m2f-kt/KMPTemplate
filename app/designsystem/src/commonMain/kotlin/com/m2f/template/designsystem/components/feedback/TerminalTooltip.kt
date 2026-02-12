@@ -18,6 +18,11 @@ import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.window.Popup
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.TerminalText
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 
 /**
  * A terminal-styled tooltip component that shows floating text on hover.
@@ -77,6 +82,22 @@ fun TerminalTooltip(
                         style = typography.xs.copy(color = colors.text),
                     )
                 }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalTooltipPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+        ) {
+            TerminalTooltip(text = "This is a tooltip") {
+                TerminalText("Hover me")
             }
         }
     }

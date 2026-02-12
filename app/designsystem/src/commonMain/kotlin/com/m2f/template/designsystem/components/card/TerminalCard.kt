@@ -15,6 +15,11 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.TerminalText
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 
 /**
  * Card variants matching the Pencil terminal design system.
@@ -102,4 +107,26 @@ fun TerminalCard(
             .padding(contentPadding),
         content = content,
     )
+}
+
+@Preview
+@Composable
+private fun TerminalCardPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            CardVariant.entries.forEach { variant ->
+                TerminalCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    variant = variant,
+                ) {
+                    TerminalText(variant.name)
+                }
+            }
+        }
+    }
 }

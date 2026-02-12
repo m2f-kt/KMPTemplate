@@ -18,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import com.m2f.template.designsystem.theme.TerminalTheme
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.unit.dp
 
 /**
  * A terminal-styled text input composable with optional label, placeholder, error state,
@@ -119,6 +122,42 @@ fun TerminalInput(
             BasicText(
                 text = errorMessage,
                 style = typography.xs.copy(color = colors.error),
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalInputPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TerminalInput(
+                value = "",
+                onValueChange = {},
+                placeholder = "Enter text...",
+            )
+            TerminalInput(
+                value = "Hello",
+                onValueChange = {},
+            )
+            TerminalInput(
+                value = "",
+                onValueChange = {},
+                label = "Email",
+                placeholder = "you@example.com",
+            )
+            TerminalInput(
+                value = "bad@",
+                onValueChange = {},
+                label = "Email",
+                isError = true,
+                errorMessage = "Invalid email",
             )
         }
     }

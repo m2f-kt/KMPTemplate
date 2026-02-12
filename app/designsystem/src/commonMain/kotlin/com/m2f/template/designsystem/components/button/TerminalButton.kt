@@ -17,6 +17,11 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.TerminalText
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 
 /**
  * Button variants matching the Pencil terminal design system.
@@ -155,5 +160,43 @@ fun TerminalIconButton(
         contentAlignment = Alignment.Center,
     ) {
         content()
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalButtonPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TerminalButton(text = "Default", onClick = {}, variant = ButtonVariant.Default)
+            TerminalButton(text = "Secondary", onClick = {}, variant = ButtonVariant.Secondary)
+            TerminalButton(text = "Ghost", onClick = {}, variant = ButtonVariant.Ghost)
+            TerminalButton(text = "Destructive", onClick = {}, variant = ButtonVariant.Destructive)
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalIconButtonPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TerminalIconButton(onClick = {}, enabled = true) {
+                TerminalText("X", style = TerminalTheme.typography.sm)
+            }
+            TerminalIconButton(onClick = {}, enabled = false) {
+                TerminalText("X", style = TerminalTheme.typography.sm)
+            }
+        }
     }
 }

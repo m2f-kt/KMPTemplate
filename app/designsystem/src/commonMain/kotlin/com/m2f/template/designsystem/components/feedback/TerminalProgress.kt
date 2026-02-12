@@ -21,6 +21,11 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
 
 /**
  * A terminal-styled progress bar component supporting determinate and indeterminate states.
@@ -91,6 +96,23 @@ fun TerminalProgress(
                     cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
                 )
             }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun TerminalProgressPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            TerminalProgress(progress = 0.3f)
+            TerminalProgress(progress = 0.7f)
+            TerminalProgress(progress = null)
         }
     }
 }

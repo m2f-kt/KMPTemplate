@@ -9,6 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import com.m2f.template.designsystem.theme.TerminalTheme
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.unit.dp
 
 /**
  * Badge display variants mapping to theme color pairs.
@@ -71,4 +76,22 @@ fun TerminalBadge(
         modifier = badgeModifier,
         style = typography.xs.copy(color = fgColor),
     )
+}
+
+@Preview
+@Composable
+private fun TerminalBadgePreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+        ) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                BadgeVariant.entries.forEach { variant ->
+                    TerminalBadge(text = variant.name, variant = variant)
+                }
+            }
+        }
+    }
 }
