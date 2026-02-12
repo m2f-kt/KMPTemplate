@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 2: Align TerminalInput with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 3: Align TerminalButton with Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -109,6 +109,10 @@ Recent decisions affecting current work:
 - [04-06]: Used androidx.compose.ui.tooling.preview.Preview (not org.jetbrains.compose) -- JetBrains library re-exports AndroidX annotation
 - [04-06]: TerminalColors uses `bg` property (not `background`) for background color token
 - [04-06]: Preview functions use private visibility + TerminalTheme wrapper + colors.bg background Column pattern
+- [quick-03]: Primary button uses dark gray (#525252/#D4D4D4) not green accent -- matches Pencil design
+- [quick-03]: Disabled is not a ButtonVariant; handled via enabled param with specific btnDisabled* color tokens
+- [quick-03]: Literal dp values (16/12/8) for button padding since Pencil tokens dont map to existing spacing tokens
+- [quick-03]: Foundation hover pattern: MutableInteractionSource + collectIsHoveredAsState + hoverable modifier
 
 ### Pending Todos
 
@@ -120,6 +124,7 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 1 | Align TerminalCard with Pencil design — structured header/content/footer, 5 variants | 2026-02-12 | 4516ed7 | [1-align-design-system-components-with-penc](./quick/1-align-design-system-components-with-penc/) |
 | 2 | Align TerminalInput with Pencil design — prefix, conditional border, password variant | 2026-02-12 | 8a93f6d | [2-align-terminalinput-with-pencil-design-a](./quick/2-align-terminalinput-with-pencil-design-a/) |
+| 3 | Align TerminalButton with Pencil design — 5 variants, hover, disabled tokens, padding/typography | 2026-02-12 | 5fff28c | [3-align-terminalbutton-with-pencil-design-](./quick/3-align-terminalbutton-with-pencil-design-/) |
 
 ### Blockers/Concerns
 
@@ -129,5 +134,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-02 (Align TerminalInput with Pencil design) -- TerminalInput rewritten with prefix/conditional border/password variant
+Stopped at: Completed quick-03 (Align TerminalButton with Pencil design) -- 5 variants, hover states, disabled tokens, correct padding/typography
 Resume file: None
