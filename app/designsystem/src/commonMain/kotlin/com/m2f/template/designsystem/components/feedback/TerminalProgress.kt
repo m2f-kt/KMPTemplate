@@ -7,10 +7,16 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -19,13 +25,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.designsystem.theme.TerminalPreview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.ui.unit.dp
+import com.m2f.template.designsystem.theme.TerminalTheme
 
 /**
  * A terminal-styled progress bar component supporting determinate and indeterminate states.
@@ -34,67 +38,111 @@ import androidx.compose.ui.unit.dp
  * When [progress] is null, renders an indeterminate animated sliding indicator.
  * Reads all styling exclusively from [TerminalTheme] CompositionLocals.
  *
- * @param modifier Modifier applied to the track container.
+ * @param modifier Modifier applied to the root container.
  * @param progress Determinate progress value (0.0 to 1.0), or null for indeterminate animation.
+ * @param label Optional label text displayed above the track. For determinate mode, a percentage
+ *   is shown to the right of the label.
  */
 @Composable
 fun TerminalProgress(
     modifier: Modifier = Modifier,
     progress: Float? = null,
+    label: String? = null,
 ) {
     val colors = TerminalTheme.colors
-    val radius = TerminalTheme.radius
+    val typography = TerminalTheme.typography
 
-    val trackHeight = 6.dp
-    val shape = RoundedCornerShape(radius.pill)
-    val trackColor = colors.inset
+    val trackHeight = 8.dp
+    val shape = RoundedCornerShape(2.dp)
+    val trackColor = colors.accentMuted
     val fillColor = colors.accent
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(trackHeight)
-            .clip(shape)
-            .background(trackColor),
-    ) {
-        if (progress != null) {
-            // Determinate: fill proportional to progress
-            val clampedProgress = progress.coerceIn(0f, 1f)
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth(clampedProgress)
-                    .height(trackHeight)
-                    .clip(shape)
-                    .background(fillColor)
-                    .align(Alignment.CenterStart),
-            )
-        } else {
-            // Indeterminate: sliding indicator via Canvas for precise positioning
-            val infiniteTransition = rememberInfiniteTransition()
-            val offsetFraction by infiniteTransition.animateFloat(
-                initialValue = -0.3f,
-                targetValue = 1.0f,
-                animationSpec = infiniteRepeatable(
-                    animation = tween(durationMillis = 1200, easing = LinearEasing),
-                ),
-            )
-
-            val indicatorWidthFraction = 0.3f
-
-            Canvas(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(trackHeight),
-            ) {
-                val indicatorWidthPx = size.width * indicatorWidthFraction
-                val startX = offsetFraction * size.width
-                val cornerRadiusPx = size.height / 2f
-                drawRoundRect(
-                    color = fillColor,
-                    topLeft = Offset(startX, 0f),
-                    size = Size(indicatorWidthPx, size.height),
-                    cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
+    Column(modifier = modifier) {
+        if (label != null) {
+            if (progress != null) {
+                // Determinate: label left, percentage right
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    BasicText(
+                        text = label,
+                        style = typography.xs.copy(
+                            color = colors.textMuted,
+                            fontWeight = FontWeight.Normal,
+                        ),
+                    )
+                    BasicText(
+                        text = "${(progress.coerceIn(0f, 1f) * 100).toInt()}%",
+                        style = typography.xs.copy(
+                            color = colors.textMuted,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                    )
+                }
+            } else {
+                // Indeterminate: label only
+                BasicText(
+                    text = label,
+                    style = typography.xs.copy(
+                        color = colors.textMuted,
+                        fontWeight = FontWeight.Normal,
+                    ),
                 )
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+        }
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(trackHeight)
+                .clip(shape)
+                .background(trackColor),
+        ) {
+            if (progress != null) {
+                // Determinate: fill proportional to progress
+                val clampedProgress = progress.coerceIn(0f, 1f)
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(clampedProgress)
+                        .height(trackHeight)
+                        .clip(shape)
+                        .background(fillColor)
+                        .align(Alignment.CenterStart),
+                )
+            } else {
+                // Indeterminate: sliding indicator via Canvas for precise positioning
+                val infiniteTransition = rememberInfiniteTransition()
+                val offsetFraction by infiniteTransition.animateFloat(
+                    initialValue = -0.3f,
+                    targetValue = 1.0f,
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(durationMillis = 1200, easing = LinearEasing),
+                    ),
+                )
+
+                val indicatorWidthFraction = 0.3f
+
+                Canvas(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(trackHeight),
+                ) {
+                    val indicatorWidthPx = size.width * indicatorWidthFraction
+                    val startX = offsetFraction * size.width
+                    val cornerRadiusPx = 2.dp.toPx()
+                    drawRoundRect(
+                        brush = Brush.linearGradient(
+                            colors = listOf(fillColor, fillColor.copy(alpha = 0.5f)),
+                            start = Offset(startX, 0f),
+                            end = Offset(startX + indicatorWidthPx, 0f),
+                        ),
+                        topLeft = Offset(startX, 0f),
+                        size = Size(indicatorWidthPx, size.height),
+                        cornerRadius = CornerRadius(cornerRadiusPx, cornerRadiusPx),
+                    )
+                }
             }
         }
     }
@@ -108,11 +156,20 @@ private fun TerminalProgressPreview() {
             modifier = Modifier
                 .background(TerminalTheme.colors.bg)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            TerminalProgress(progress = 0.3f)
-            TerminalProgress(progress = 0.7f)
-            TerminalProgress(progress = null)
+            // Determinate with label (Pencil OvoQ4)
+            TerminalProgress(
+                progress = 0.67f,
+                label = "downloading...",
+            )
+            // Indeterminate with label (Pencil YP7h8)
+            TerminalProgress(
+                progress = null,
+                label = "compiling assets...",
+            )
+            // Without label (API completeness)
+            TerminalProgress(progress = 0.4f)
         }
     }
 }
