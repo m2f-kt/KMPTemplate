@@ -47,6 +47,11 @@ data class TerminalColors(
     val cardAccentHeaderBg: Color,
     val cardAccentHeaderText: Color,
     val cardAccentBodyText: Color,
+    // Table tokens
+    val tableHeaderBg: Color,
+    val tableHeaderText: Color,
+    val tableRowTextPrimary: Color,
+    val tableRowTextSecondary: Color,
 )
 
 val LocalTerminalColors = staticCompositionLocalOf {
@@ -90,6 +95,10 @@ val LocalTerminalColors = staticCompositionLocalOf {
         cardAccentHeaderBg = Color.Unspecified,
         cardAccentHeaderText = Color.Unspecified,
         cardAccentBodyText = Color.Unspecified,
+        tableHeaderBg = Color.Unspecified,
+        tableHeaderText = Color.Unspecified,
+        tableRowTextPrimary = Color.Unspecified,
+        tableRowTextSecondary = Color.Unspecified,
     )
 }
 
@@ -134,6 +143,10 @@ val TerminalLightColors = TerminalColors(
     cardAccentHeaderBg = Color(0xFF525252),
     cardAccentHeaderText = Color(0xFFE8EBE4),
     cardAccentBodyText = Color(0xFF525252),
+    tableHeaderBg = Color(0xFFE5E5E5),
+    tableHeaderText = Color(0xFF525252),
+    tableRowTextPrimary = Color(0xFF171717),
+    tableRowTextSecondary = Color(0xFF525252),
 )
 
 // Dark theme -- extracted from terminal_design_system.pen variables
@@ -177,4 +190,8 @@ val TerminalDarkColors = TerminalColors(
     cardAccentHeaderBg = Color(0xFFD4D4D4),
     cardAccentHeaderText = Color(0xFF171717),
     cardAccentBodyText = Color(0xFFA3A3A3),
+    tableHeaderBg = Color(0xFF1F1F1F),
+    tableHeaderText = Color(0xFFA3A3A3),
+    tableRowTextPrimary = Color(0xFFE5E5E5),
+    tableRowTextSecondary = Color(0xFFA3A3A3),
 )
