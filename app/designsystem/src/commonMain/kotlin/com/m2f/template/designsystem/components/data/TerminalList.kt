@@ -16,6 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.m2f.template.designsystem.theme.TerminalTheme
 
 /**
@@ -115,6 +120,7 @@ fun TerminalList(
  * @param onClick Click handler; item is clickable when provided and not [ListItemState.Disabled].
  * @param leadingContent Optional composable content shown before the text. Receives the state-appropriate icon color.
  * @param trailingContent Optional composable content shown after the text. Receives the state-appropriate action color.
+ * @param menuItems Optional dropdown menu content. When provided, an ellipsis trigger replaces [trailingContent].
  */
 @Composable
 fun TerminalListItem(
@@ -125,6 +131,7 @@ fun TerminalListItem(
     onClick: (() -> Unit)? = null,
     leadingContent: (@Composable (iconColor: Color) -> Unit)? = null,
     trailingContent: (@Composable (actionColor: Color) -> Unit)? = null,
+    menuItems: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -168,6 +175,8 @@ fun TerminalListItem(
     val accentColor = colors.accent
 
     val itemAlpha = if (state == ListItemState.Disabled) opacity.medium else opacity.full
+
+    var menuExpanded by remember { mutableStateOf(false) }
 
     Column(
         modifier = modifier
@@ -223,7 +232,29 @@ fun TerminalListItem(
                 }
             }
 
-            if (trailingContent != null) {
+            if (menuItems != null) {
+                Spacer(modifier = Modifier.width(12.dp))
+                Box {
+                    BasicText(
+                        text = "\u22EF",
+                        modifier = Modifier
+                            .clickable(enabled = state != ListItemState.Disabled) {
+                                menuExpanded = true
+                            }
+                            .padding(horizontal = 4.dp, vertical = 2.dp),
+                        style = typography.sm.copy(
+                            color = actionColor,
+                            letterSpacing = 2.sp,
+                        ),
+                    )
+                    TerminalDropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false },
+                    ) {
+                        menuItems()
+                    }
+                }
+            } else if (trailingContent != null) {
                 Spacer(modifier = Modifier.width(12.dp))
                 trailingContent(actionColor)
             }
@@ -240,11 +271,28 @@ private fun TerminalListPreview() {
                 .background(TerminalTheme.colors.bg)
                 .padding(16.dp),
         ) {
-            TerminalList(title = "process_list", count = 4) {
-                TerminalListItem(text = "node_process", subtitle = "PID: 1234", state = ListItemState.Default)
+            TerminalList(title = "process_list", count = 5) {
+                TerminalListItem(
+                    text = "node_process",
+                    subtitle = "PID: 1234",
+                    state = ListItemState.Default,
+                    menuItems = {
+                        TerminalDropdownMenuItem(text = "View Details", onClick = {})
+                        TerminalDropdownMenuItem(text = "Terminate", onClick = {})
+                        TerminalDropdownMenuItem(text = "Copy PID", onClick = {})
+                    },
+                )
                 TerminalListItem(text = "python_script", subtitle = "PID: 5678", state = ListItemState.Hover)
                 TerminalListItem(text = "docker_container", subtitle = "PID: 9012", state = ListItemState.Selected)
-                TerminalListItem(text = "legacy_service", subtitle = "PID: 3456", state = ListItemState.Disabled)
+                TerminalListItem(
+                    text = "legacy_service",
+                    subtitle = "PID: 3456",
+                    state = ListItemState.Disabled,
+                    menuItems = {
+                        TerminalDropdownMenuItem(text = "View Details", onClick = {})
+                    },
+                )
+                TerminalListItem(text = "background_worker", subtitle = "PID: 7890", state = ListItemState.Default)
             }
         }
     }
