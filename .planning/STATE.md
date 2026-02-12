@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 8: Align TerminalProgress with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 9: Align TerminalTable with Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -124,6 +124,9 @@ Recent decisions affecting current work:
 - [quick-08]: RoundedCornerShape(2.dp) literal for track corners (Pencil specifies 2dp, no matching token)
 - [quick-08]: Brush.linearGradient from accent to accent@50% alpha for indeterminate indicator
 - [quick-08]: Column wrapper with conditional label row for backward-compatible label=null API
+- [quick-09]: Literal 10.sp for header fontSize (Pencil specifies 10, typography.xs is 11.sp)
+- [quick-09]: Literal dp values (16dp/10dp header, 16dp/12dp row) since Pencil tokens dont map to spacing tokens
+- [quick-09]: RowScope extension for TerminalTableCell to enable weight(1f) usage
 
 ### Pending Todos
 
@@ -141,6 +144,7 @@ None yet.
 | 6 | Add 4 card-accent color tokens and wire into CardVariant.Accent | 2026-02-12 | 0601e7a | [6-add-card-accent-bg-color-token-for-cardv](./quick/6-add-card-accent-bg-color-token-for-cardv/) |
 | 7 | Align TerminalBadge with Pencil design -- sm radius, btnPrimary Accent, icon param, font weights | 2026-02-12 | e8ae2bf | [7-align-terminalbadge-with-pencil-design](./quick/7-align-terminalbadge-with-pencil-design/) |
 | 8 | Align TerminalProgress with Pencil design -- label/percentage, 8dp track, accentMuted, gradient indicator | 2026-02-12 | fb28c8a | [8-align-terminalprogress-with-pencil-desig](./quick/8-align-terminalprogress-with-pencil-desig/) |
+| 9 | Align TerminalTable with Pencil design -- 4 table tokens, composable row content, TerminalTableCell | 2026-02-12 | 8f5ba33 | [9-align-table-components-with-pencil-desig](./quick/9-align-table-components-with-pencil-desig/) |
 
 ### Blockers/Concerns
 
@@ -150,5 +154,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-08 (Align TerminalProgress with Pencil design) -- label/percentage row, 8dp track, accentMuted, linearGradient indeterminate indicator
+Stopped at: Completed quick-09 (Align TerminalTable with Pencil design) -- 4 table color tokens, composable TerminalTableRow with RowScope, TerminalTableCell primary/secondary helper
 Resume file: None
