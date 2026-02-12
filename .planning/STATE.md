@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 1: Align TerminalCard with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 2: Align TerminalInput with Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -96,6 +96,9 @@ Recent decisions affecting current work:
 - [quick-01]: borders.default (2dp) for Highlighted variant border width; borders.thin (1dp) for all others
 - [04-03]: TerminalInput uses decorationBox parameter on BasicTextField for custom border/padding/placeholder/icons
 - [04-03]: Spacer with Modifier.padding used for icon gaps inside input fields
+- [quick-02]: Removed leadingIcon parameter from TerminalInput; Pencil design specifies only ">" prefix, no generic leading icon
+- [quick-02]: Literal 6.dp for label gap (Pencil specifies 6dp, which falls between gap.xs=4 and gap.sm=8)
+- [quick-02]: Canvas-based EyeIcon for password toggle (follows TerminalCheckbox/TerminalRadio Canvas icon pattern)
 - [04-04]: Canvas-based checkmark drawing for TerminalCheckbox (cross-platform consistency over unicode)
 - [04-04]: Canvas-based radio ring+dot for TerminalRadio (pixel-perfect circles)
 - [04-04]: animateDpAsState for TerminalSwitch knob sliding animation (150ms tween)
@@ -116,6 +119,7 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Align TerminalCard with Pencil design — structured header/content/footer, 5 variants | 2026-02-12 | 4516ed7 | [1-align-design-system-components-with-penc](./quick/1-align-design-system-components-with-penc/) |
+| 2 | Align TerminalInput with Pencil design — prefix, conditional border, password variant | 2026-02-12 | 8a93f6d | [2-align-terminalinput-with-pencil-design-a](./quick/2-align-terminalinput-with-pencil-design-a/) |
 
 ### Blockers/Concerns
 
@@ -125,5 +129,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-01 (Align TerminalCard with Pencil design) -- TerminalCard rewritten with header/content/footer structure
+Stopped at: Completed quick-02 (Align TerminalInput with Pencil design) -- TerminalInput rewritten with prefix/conditional border/password variant
 Resume file: None
