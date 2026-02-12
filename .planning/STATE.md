@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 3 - Client SDK & Storage
+**Current focus:** Phase 4 - Navigation & UI Components
 
 ## Current Position
 
-Phase: 3 of 6 (Client SDK & Storage) -- COMPLETE
-Plan: 3 of 3 in current phase (03-01, 03-02, 03-03 complete)
-Status: Phase 3 Complete
-Last activity: 2026-02-11 -- Plan 03-03 complete (Auth interceptor & SDK API integration)
+Phase: 4 of 6 (Navigation & UI Components)
+Plan: 1 of 5 in current phase (04-01 complete)
+Status: Executing Phase 4
+Last activity: 2026-02-12 -- Plan 04-01 complete (Navigation setup with type-safe routes)
 
-Progress: [██████████______] 59% (10/17 plans)
+Progress: [██████████░_____] 65% (11/17 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
-- Average duration: ~12 min
-- Total execution time: ~119 min
+- Total plans completed: 11
+- Average duration: ~11 min
+- Total execution time: ~123 min
 
 **By Phase:**
 
@@ -30,9 +30,10 @@ Progress: [██████████______] 59% (10/17 plans)
 | 1 | 4/4 | ~46 min | ~12 min |
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
+| 4 | 1/5 | ~4 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-03 (~5 min), 03-02 (~5 min), 03-01 (~5 min), 03-03 (~5 min)
+- Last 5 plans: 03-01 (~5 min), 03-02 (~5 min), 03-03 (~5 min), 04-01 (~4 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -81,6 +82,10 @@ Recent decisions affecting current work:
 - [03-03]: apiCall<T> checks T::class == Unit::class to skip body deserialization for logout endpoint
 - [03-03]: SharedModule uses Koin includes() to compose storageModule and sdkModule transitively
 - [03-03]: SdkModule uses Koin getProperty for BASE_URL with localhost default, overridable per platform
+- [04-01]: All routes defined as @Serializable data objects in navigation/Routes.kt (type-safe, compile-time checked)
+- [04-01]: popUpTo<LoginRoute> { inclusive = true } clears auth back stack on login success
+- [04-01]: MaterialTheme removed from App.kt; TerminalTheme will wrap AppNavHost in plan 04-02
+- [04-01]: BasicText with hardcoded colors for placeholder screens (to be replaced by TerminalTheme components)
 
 ### Pending Todos
 
@@ -93,6 +98,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-11
-Stopped at: Completed 03-03-PLAN.md (Auth interceptor & SDK API integration) -- Phase 3 complete
+Last session: 2026-02-12
+Stopped at: Completed 04-01-PLAN.md (Navigation setup with type-safe routes)
 Resume file: None
