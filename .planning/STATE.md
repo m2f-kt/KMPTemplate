@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 16: Fix TerminalSwipeReveal height, layering, and gesture bugs
+Last activity: 2026-02-13 -- Completed quick task 17: Implement TerminalLineChart and TerminalBarChart from Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -143,6 +143,9 @@ Recent decisions affecting current work:
 - [quick-15]: Separate pointerInput blocks for tap and drag detection (chaining avoids gesture conflicts)
 - [quick-15]: mutableIntStateOf/mutableFloatStateOf for ReorderState (Compose primitive state performance)
 - [quick-15]: graphicsLayer for drag visual feedback (translationY, scaleX/Y 1.02, shadowElevation 8f)
+- [quick-17]: Canvas-based Path.arcTo for bar top-corner radius (rounded top-left/top-right, flat bottom)
+- [quick-17]: Non-highlight bars cycle through chartBar1/2/3 by index; highlight bars use dedicated chartBarHighlight token
+- [quick-17]: Series1 area fill uses chartSeries1Muted token directly; series2+ uses seriesColor.copy(alpha=0.15f)
 
 ### Pending Todos
 
@@ -168,6 +171,7 @@ None yet.
 | 14 | Fix ui-tooling dependency -- move to Android debugImplementation only | 2026-02-12 | 0f92825 | [14-fix-ui-tooling-dependency-restrict-to-de](./quick/14-fix-ui-tooling-dependency-restrict-to-de/) |
 | 15 | Add swipe-to-reveal actions and drag-to-reorder gestures | 2026-02-12 | 32de96a | [15-add-swipe-to-reveal-actions-and-drag-to-](./quick/15-add-swipe-to-reveal-actions-and-drag-to-/) |
 | 16 | Fix TerminalSwipeReveal -- IntrinsicSize.Min height, opaque foreground bg, single awaitEachGesture | 2026-02-12 | a0f1688 | [16-fix-terminalswipereveal-actions-visible-](./quick/16-fix-terminalswipereveal-actions-visible-/) |
+| 17 | Implement TerminalLineChart and TerminalBarChart from Pencil design -- 11 chart tokens, area gradient, tier bars | 2026-02-13 | 08075a2 | [17-implement-chart-components-from-pencil-d](./quick/17-implement-chart-components-from-pencil-d/) |
 
 ### Blockers/Concerns
 
@@ -176,6 +180,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-12
-Stopped at: Completed quick-15 (Add swipe-to-reveal actions and drag-to-reorder gestures) -- TerminalSwipeReveal, TerminalDeleteAction, TerminalReorderableList, ReorderState
+Last session: 2026-02-13
+Stopped at: Completed quick-17 (Implement TerminalLineChart and TerminalBarChart) -- 11 chart tokens, ChartDataPoint/ChartSeries/BarData models, Canvas rendering
 Resume file: None
