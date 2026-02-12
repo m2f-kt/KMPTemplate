@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation & Module Structure** - Establish module boundaries, upgrade dependencies, wire cross-cutting patterns (completed 2026-02-10)
 - [x] **Phase 2: Server Auth & Users** - Complete server-side authentication and user management (completed 2026-02-11)
 - [x] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence (completed 2026-02-11)
-- [x] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming (completed 2026-02-12)
+- [ ] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming (gap closure in progress)
 - [ ] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding
 - [ ] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management
 
@@ -85,7 +85,7 @@ Plans:
   1. Navigation between screens uses type-safe route objects (serializable data classes) -- no string-based routing anywhere
   2. A shared component library provides at minimum: buttons (primary, secondary, outlined), text inputs (with validation states), cards, and dialogs -- all themed consistently
   3. The app renders with a custom theme (colors, typography) that a developer can change by editing a single theme configuration, and it applies uniformly across all targets
-**Plans**: 5 plans
+**Plans**: 7 plans
 
 Plans:
 - [x] 04-01-PLAN.md -- Navigation deps, serialization plugin, @Serializable routes, NavHost, App.kt wiring
@@ -93,6 +93,8 @@ Plans:
 - [x] 04-03-PLAN.md -- Button, Input, Textarea, Card components (13 of 41 Pencil components)
 - [x] 04-04-PLAN.md -- Alert, Badge, Progress, Tooltip, Checkbox, Switch, Radio components (18 of 41)
 - [x] 04-05-PLAN.md -- Table, List, Kbd, Avatar, Divider components + TerminalTheme integration (10 of 41)
+- [ ] 04-06-PLAN.md -- Preview dependency + @Preview for core and feedback components (gap closure)
+- [ ] 04-07-PLAN.md -- @Preview for selection, data, and display components (gap closure)
 
 ### Phase 5: Auth Screens, Dashboard & Setup CLI
 **Goal**: A developer who clones the template can run a setup script to customize it, then see a working app with login/signup screens, a sample dashboard behind auth, and form validation -- proving the entire architecture works end-to-end.
@@ -136,6 +138,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation & Module Structure | 4/4 | Complete | 2026-02-10 |
 | 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
 | 3. Client SDK & Storage | 3/3 | Complete | 2026-02-11 |
-| 4. Navigation & UI Components | 5/5 | Complete | 2026-02-12 |
+| 4. Navigation & UI Components | 5/7 | Gap closure | - |
 | 5. Auth Screens, Dashboard & Setup CLI | 0/3 | Not started | - |
 | 6. AI Agent Infrastructure | 0/2 | Not started | - |
