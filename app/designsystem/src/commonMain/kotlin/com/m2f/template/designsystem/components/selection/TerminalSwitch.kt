@@ -51,8 +51,6 @@ fun TerminalSwitch(
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
-    val gap = TerminalTheme.gap
-    val radius = TerminalTheme.radius
     val opacity = TerminalTheme.opacity
 
     val trackWidth = 40.dp
@@ -60,8 +58,8 @@ fun TerminalSwitch(
     val knobSize = 16.dp
     val knobPadding = 3.dp
 
-    val trackColor = if (checked) colors.accent else colors.inset
-    val knobColor = if (checked) colors.surface else colors.textDim
+    val trackColor = if (checked) colors.btnPrimaryBg else colors.accentMuted
+    val knobColor = if (checked) colors.btnPrimaryText else colors.textDim
     val contentAlpha = if (enabled) opacity.full else opacity.medium
 
     // Animate knob position
@@ -85,7 +83,7 @@ fun TerminalSwitch(
             modifier = Modifier
                 .width(trackWidth)
                 .height(trackHeight)
-                .clip(RoundedCornerShape(radius.pill))
+                .clip(RoundedCornerShape(10.dp))
                 .background(trackColor),
         ) {
             Box(
@@ -99,7 +97,7 @@ fun TerminalSwitch(
         }
 
         if (label != null) {
-            Spacer(modifier = Modifier.width(gap.sm))
+            Spacer(modifier = Modifier.width(10.dp))
             BasicText(
                 text = label,
                 style = typography.sm.copy(color = colors.text),

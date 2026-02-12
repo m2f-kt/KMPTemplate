@@ -42,6 +42,8 @@ data class TerminalColors(
     val btnDisabledBg: Color,
     val btnDisabledText: Color,
     val btnDisabledBorder: Color,
+    // Checkbox tokens
+    val checkboxBg: Color,
     // Card accent tokens
     val cardAccentBg: Color,
     val cardAccentHeaderBg: Color,
@@ -52,6 +54,7 @@ data class TerminalColors(
     val tableHeaderText: Color,
     val tableRowTextPrimary: Color,
     val tableRowTextSecondary: Color,
+    val tableRowSelectedBg: Color,
 )
 
 val LocalTerminalColors = staticCompositionLocalOf {
@@ -91,6 +94,7 @@ val LocalTerminalColors = staticCompositionLocalOf {
         btnDisabledBg = Color.Unspecified,
         btnDisabledText = Color.Unspecified,
         btnDisabledBorder = Color.Unspecified,
+        checkboxBg = Color.Unspecified,
         cardAccentBg = Color.Unspecified,
         cardAccentHeaderBg = Color.Unspecified,
         cardAccentHeaderText = Color.Unspecified,
@@ -99,6 +103,7 @@ val LocalTerminalColors = staticCompositionLocalOf {
         tableHeaderText = Color.Unspecified,
         tableRowTextPrimary = Color.Unspecified,
         tableRowTextSecondary = Color.Unspecified,
+        tableRowSelectedBg = Color.Unspecified,
     )
 }
 
@@ -139,6 +144,7 @@ val TerminalLightColors = TerminalColors(
     btnDisabledBg = Color(0xFFF5F5F5),
     btnDisabledText = Color(0xFFA3A3A3),
     btnDisabledBorder = Color(0xFFE5E5E5),
+    checkboxBg = Color(0xFFF5F5F5),
     cardAccentBg = Color(0xFFE5E5E5),
     cardAccentHeaderBg = Color(0xFF525252),
     cardAccentHeaderText = Color(0xFFE8EBE4),
@@ -147,6 +153,7 @@ val TerminalLightColors = TerminalColors(
     tableHeaderText = Color(0xFF525252),
     tableRowTextPrimary = Color(0xFF171717),
     tableRowTextSecondary = Color(0xFF525252),
+    tableRowSelectedBg = Color(0xFFEDF2EE),
 )
 
 // Dark theme -- extracted from terminal_design_system.pen variables
@@ -186,6 +193,7 @@ val TerminalDarkColors = TerminalColors(
     btnDisabledBg = Color(0xFF1C1C1C),
     btnDisabledText = Color(0xFF525252),
     btnDisabledBorder = Color(0xFF2A2A2A),
+    checkboxBg = Color(0xFF262626),
     cardAccentBg = Color(0xFF262626),
     cardAccentHeaderBg = Color(0xFFD4D4D4),
     cardAccentHeaderText = Color(0xFF171717),
@@ -194,4 +202,5 @@ val TerminalDarkColors = TerminalColors(
     tableHeaderText = Color(0xFFA3A3A3),
     tableRowTextPrimary = Color(0xFFE5E5E5),
     tableRowTextSecondary = Color(0xFFA3A3A3),
+    tableRowSelectedBg = Color(0xFF1A231C),
 )
