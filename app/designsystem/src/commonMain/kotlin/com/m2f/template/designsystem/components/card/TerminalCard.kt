@@ -18,7 +18,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.components.button.ButtonVariant
@@ -368,7 +368,7 @@ fun TerminalCompactCard(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalCardPreview() {
     TerminalTheme {

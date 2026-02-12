@@ -33,7 +33,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
 
@@ -299,7 +299,7 @@ private fun EyeIcon(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalInputPreview() {
     TerminalTheme {

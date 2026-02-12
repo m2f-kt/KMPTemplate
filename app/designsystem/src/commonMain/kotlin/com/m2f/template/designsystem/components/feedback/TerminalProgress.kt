@@ -21,7 +21,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -100,7 +100,7 @@ fun TerminalProgress(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalProgressPreview() {
     TerminalTheme {

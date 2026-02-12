@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import com.m2f.template.designsystem.theme.TerminalTheme
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.unit.dp
 
@@ -95,7 +95,7 @@ fun TerminalTextarea(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalTextareaPreview() {
     TerminalTheme {

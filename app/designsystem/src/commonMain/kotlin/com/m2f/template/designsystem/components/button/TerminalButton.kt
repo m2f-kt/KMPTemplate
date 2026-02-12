@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.theme.TerminalTheme
@@ -230,7 +230,7 @@ fun TerminalIconButton(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalButtonPreview() {
     TerminalTheme {
@@ -250,7 +250,7 @@ private fun TerminalButtonPreview() {
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalIconButtonPreview() {
     TerminalTheme {

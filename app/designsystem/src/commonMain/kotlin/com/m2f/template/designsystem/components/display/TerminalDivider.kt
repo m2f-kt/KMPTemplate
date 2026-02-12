@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.theme.TerminalTheme
@@ -33,7 +33,7 @@ fun TerminalDivider(
     )
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalDividerPreview() {
     TerminalTheme {

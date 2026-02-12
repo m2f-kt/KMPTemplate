@@ -20,7 +20,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.m2f.template.designsystem.theme.TerminalTheme
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.unit.dp
 
@@ -124,7 +124,7 @@ fun TerminalAlert(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalAlertPreview() {
     TerminalTheme {

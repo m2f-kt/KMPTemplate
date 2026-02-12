@@ -19,7 +19,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.window.Popup
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.designsystem.components.TerminalText
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
@@ -87,7 +87,7 @@ fun TerminalTooltip(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalTooltipPreview() {
     TerminalTheme {

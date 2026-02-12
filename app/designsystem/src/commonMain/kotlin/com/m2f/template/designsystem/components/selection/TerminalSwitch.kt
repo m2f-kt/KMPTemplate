@@ -24,7 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.tooling.preview.Preview
+import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
 
@@ -108,7 +108,7 @@ fun TerminalSwitch(
     }
 }
 
-@Preview
+@TerminalPreview
 @Composable
 private fun TerminalSwitchPreview() {
     TerminalTheme {
