@@ -1,20 +1,54 @@
 # Phase 4: Navigation & UI Components - Research
 
-**Researched:** 2026-02-11
-**Domain:** Compose Multiplatform navigation (type-safe routes), Material3 theming, shared component library
+**Researched:** 2026-02-12
+**Domain:** Custom CompositionLocal theme system, 41-component terminal design system, type-safe KMP navigation, JetBrains Mono font loading
 **Confidence:** HIGH
+
+<user_constraints>
+## User Constraints (from CONTEXT.md)
+
+### Locked Decisions
+- Mirror Pencil design token names 1:1 in Compose: `TerminalTheme.colors.bg`, `.surface`, `.accent`, `.text`, `.textMuted`, `.textDim`, `.border`, `.inset`, `.accentMuted`
+- Semantic colors: `.success`, `.successBg`, `.warning`, `.warningBg`, `.error`, `.errorBg`, `.info`, `.infoBg`
+- All theme properties exposed as CompositionLocals (colors, spacing, typography, shadows, opacity, corner radius)
+- Spacing as CompositionLocal: `LocalTerminalSpacing.current` with `.xs` (4px), `.sm` (8px), `.md` (12px), `.lg` (16px), `.xl` (20px)
+- Gap as CompositionLocal: `LocalTerminalGap.current` with `.xs` (4px), `.sm` (8px), `.md` (12px), `.lg` (16px), `.xl` (24px)
+- Shadows as CompositionLocal: `LocalTerminalShadows.current` with `.none`, `.sm`, `.md`, `.lg`
+- Opacity as CompositionLocal: `LocalTerminalOpacity.current` with `.full` (1.0), `.high` (0.75), `.medium` (0.50), `.low` (0.25)
+- Corner radius as CompositionLocal: `LocalTerminalRadius.current` with `.none` (0), `.sm` (4), `.md` (6), `.lg` (12), `.pill`, `.full`
+- Single font: JetBrains Mono for all UI elements
+- Exact Pencil sizes, no mobile adaptation: text-xs (11px), text-sm (12px), text-base (13px), text-md (14px), text-2xl (32px)
+- Three weights: normal (400), semibold (600), bold (700)
+- Implement ALL 41 components from the Pencil design system (`terminal_design_system.pen`)
+- Consolidated components with enum/parameter variants, NOT separate composables per variant
+- Example: `TerminalButton(variant = ButtonVariant.Secondary)` not `TerminalButtonSecondary()`
+- Every component reads ALL styling from theme CompositionLocals -- no hardcoded values
+- Dark mode works automatically through theme switching
+- Pencil MCP as source of truth: executing agent reads exact specs from .pen file during implementation
+- Three border thicknesses: thin (1px), default (2px), thick (3px)
+- Border color from `--terminal-border` token
+
+### Claude's Discretion
+- Navigation route hierarchy and auth/main graph separation
+- Deep linking configuration
+- Back stack behavior
+- Dark mode toggle mechanism (system-follow vs manual)
+- Component internal implementation patterns (state management, animation)
+- File organization for 41 components (single file vs package per component group)
+
+### Deferred Ideas (OUT OF SCOPE)
+None -- discussion stayed within phase scope
+</user_constraints>
 
 ## Summary
 
-Phase 4 adds three capabilities to the KMP template: type-safe multiplatform navigation, a reusable UI component library, and a custom theme system. The project already has Compose Multiplatform 1.10.1 with Material3 (`compose.material3`), Koin Compose integration (`koin-compose`, `koin-compose-viewmodel`), lifecycle ViewModel support, and two feature modules (`app:auth`, `app:dashboard`) with empty screen composables. The `composeApp` module currently renders a simple `MaterialTheme { }` wrapper around demo content with `KoinApplication` for DI.
+Phase 4 adds three capabilities: (1) type-safe multiplatform navigation with Navigation Compose 2.9.2, (2) a custom TerminalTheme system built entirely on CompositionLocals (NOT MaterialTheme), and (3) a 41-component UI library matching the Pencil terminal design system. This is a fundamental departure from the standard Material3 theming approach -- the user has chosen a custom muted/monospace aesthetic with JetBrains Mono font, desaturated colors, and terminal-inspired components.
 
-**Navigation decision:** Use Navigation Compose 2.9.2 (the stable multiplatform library bundled with Compose Multiplatform 1.10.1). Navigation 3 is also available as `1.0.0-alpha06` for multiplatform but is still alpha on non-Android targets and lacks browser history support for WasmJs. Since this is a template project that must work reliably on all 4 targets (Android, iOS, Desktop, WasmJs), the stable Nav 2.9.2 with type-safe `@Serializable` routes is the correct choice. The project can migrate to Nav 3 when it reaches stable for multiplatform.
+The theme system uses `@Immutable` data classes for colors, spacing, gap, typography, shadows, opacity, and corner radius, each provided via `staticCompositionLocalOf`. A `TerminalTheme` object exposes all systems via `@Composable get()` properties. Components are built on `compose.foundation` primitives (`Box`, `Row`, `Column`, `BasicText`, `BasicTextField`, `Canvas`) with custom drawing, NOT Material3 wrappers. This is necessary because Material3 components (Button, TextField, Checkbox, Switch, Radio) impose Material Design styling that conflicts with the terminal aesthetic.
 
-**Theme decision:** Use Material3's `MaterialTheme` composable with custom `lightColorScheme`/`darkColorScheme`, custom `Typography` (using Compose resources for custom fonts), and custom `Shapes`. All theme configuration lives in a single `theme/` package within `composeApp` so a developer can change colors, fonts, and shapes by editing one file.
+Navigation uses the stable Navigation Compose 2.9.2 bundled with CMP 1.10.1, with `@Serializable` route objects and `koin-compose-viewmodel-navigation:4.1.1` for DI-aware ViewModel injection. Feature modules (`app:auth`, `app:dashboard`) expose screen composables with callback parameters; `composeApp` owns the NavHost and all routing logic.
 
-**Component library decision:** Place reusable composables in `composeApp/src/commonMain/.../ui/components/` as thin wrappers around Material3 components. These wrappers enforce the project's design system (consistent padding, colors from theme, standardized sizes) while remaining customizable via parameters. The feature modules (`app:auth`, `app:dashboard`) consume these components.
-
-**Primary recommendation:** Add `navigation-compose:2.9.2` and `koin-compose-viewmodel-navigation:4.1.1` to the version catalog; define routes as `@Serializable` data objects/classes in a shared navigation package; build the theme as a single-file configuration using Material3 APIs; implement the component library as composable functions that delegate to Material3 with project-specific defaults.
+**Primary recommendation:** Build a fully custom theme system with CompositionLocals (no MaterialTheme dependency), implement all 41 components using Foundation primitives and Canvas drawing, load JetBrains Mono via Compose Resources, and wire navigation with type-safe `@Serializable` routes.
 
 ## Standard Stack
 
@@ -22,11 +56,12 @@ Phase 4 adds three capabilities to the KMP template: type-safe multiplatform nav
 
 | Library | Version | Purpose | Why Standard |
 |---------|---------|---------|--------------|
-| Navigation Compose | 2.9.2 | Type-safe multiplatform navigation | Bundled with CMP 1.10.1; stable on all targets; `@Serializable` route support |
-| Material3 | 1.10.0-alpha05 | UI component foundation + theming | Bundled with CMP 1.10.1; `compose.material3` DSL accessor already in use |
-| Lifecycle ViewModel Compose | 2.10.0-alpha06 | ViewModel integration for navigation | Already in `libs.versions.toml` as `androidx-lifecycle-viewmodelCompose` |
-| Lifecycle Runtime Compose | 2.10.0-alpha06 | `collectAsState` and lifecycle-aware composition | Already in `libs.versions.toml` as `androidx-lifecycle-runtimeCompose` |
-| Compose Resources | 1.10.1 | Custom fonts, drawables | Already used (`compose.components.resources`); font loading via `Res.font.*` |
+| Compose Foundation | 1.10.1 | Base layer: `Box`, `Row`, `Column`, `BasicText`, `BasicTextField`, `Canvas`, `clickable`, `toggleable` | Foundation of all custom components; no Material3 styling imposed |
+| Compose Runtime | 1.10.1 | `CompositionLocal`, `staticCompositionLocalOf`, `@Composable`, state management | Required for custom theme system |
+| Compose UI | 1.10.1 | `Modifier`, `graphicsLayer`, `drawBehind`, `drawWithContent`, `dropShadow`, `innerShadow` | Drawing, shadows, layout modifiers |
+| Navigation Compose | 2.9.2 | Type-safe multiplatform navigation with `@Serializable` routes | Bundled with CMP 1.10.1; stable on all targets |
+| Lifecycle ViewModel Compose | 2.9.6 | ViewModel integration for navigation | Already in `libs.versions.toml` |
+| Compose Resources | 1.10.1 | JetBrains Mono font loading via `Res.font.*` | Already used; font loading via composable `Font()` API |
 
 ### New Dependencies Required
 
@@ -34,16 +69,15 @@ Phase 4 adds three capabilities to the KMP template: type-safe multiplatform nav
 |---------|---------|---------|--------------|
 | Navigation Compose (JetBrains) | 2.9.2 | `NavHost`, `composable<T>`, `NavController` | Official JetBrains KMP adaptation of Jetpack Navigation |
 | Koin Compose ViewModel Navigation | 4.1.1 | `koinNavViewModel()` for nav-scoped ViewModels | Koin 4.1.1 multiplatform artifact; navigation-aware DI |
-| kotlinx-serialization-core | (transitive) | `@Serializable` for route definitions | Required by navigation-compose type-safe APIs; already transitive via kotlinx-serialization-json |
 
 ### Alternatives Considered
 
 | Instead of | Could Use | Tradeoff |
 |------------|-----------|----------|
-| Navigation Compose 2.9.2 | Navigation 3 (`navigation3-ui:1.0.0-alpha06`) | Nav 3 is alpha on multiplatform, no WasmJs browser history, requires polymorphic serialization boilerplate. More flexible back stack model but premature for a template that must be stable. **Recommendation: Nav 2.9.2 now, migrate to Nav 3 when stable.** |
-| Navigation Compose 2.9.2 | Voyager / Decompose / Circuit | Third-party; adds external dependency for something the official library does well. Template should use official stack. **Recommendation: Official Navigation Compose.** |
-| Material3 built-in components | Custom hand-drawn components | Massive effort, no accessibility, no platform-specific behavior. **Recommendation: Wrap M3 components.** |
-| MaterialKolor (dynamic palette) | Manual color definitions | MaterialKolor generates full M3 palette from a seed color. Nice but adds a dependency for something a static palette handles. **Recommendation: Manual lightColorScheme/darkColorScheme. Mention MaterialKolor in docs as optional enhancement.** |
+| Custom CompositionLocal theme | MaterialTheme with custom ColorScheme | Material3 imposes 29 color roles, elevation system, shape system that don't match the terminal design. Custom theme maps 1:1 to Pencil tokens. **Decision: Custom theme (LOCKED).** |
+| Foundation primitives for components | Material3 component wrappers | Material3 Button/TextField/Checkbox/Switch impose Material Design ripple, elevation, shape, color layers. Terminal aesthetic requires flat, bordered, monospace components. **Decision: Foundation-based (LOCKED).** |
+| Manual component drawing | compose-unstyled library (composables.com) | compose-unstyled provides accessibility primitives but adds a dependency. Foundation's `toggleable`, `selectable`, `clickable` modifiers provide the same state+accessibility handling. **Recommendation: Use Foundation modifiers, skip the dependency.** |
+| Navigation Compose 2.9.2 | Navigation 3 (1.0.0-alpha06) | Nav 3 is alpha on multiplatform. **Decision: Nav 2.9.2 (from prior research).** |
 
 ### Dependencies to Add
 
@@ -71,7 +105,7 @@ commonMain.dependencies {
 }
 ```
 
-Feature modules (`app:auth`, `app:dashboard`) already have `kmp-library-convention` which applies the serialization plugin, and already depend on `compose.material3`. They will need `navigation-compose` added if they define their own `NavGraphBuilder` extension functions.
+**Note:** Feature modules already apply `kmp-library-convention` which includes the serialization plugin. They do NOT need `navigation-compose` because they expose screen composables with callback lambdas, not NavGraphBuilder extensions.
 
 ## Architecture Patterns
 
@@ -79,649 +113,882 @@ Feature modules (`app:auth`, `app:dashboard`) already have `kmp-library-conventi
 
 ```
 composeApp/src/commonMain/kotlin/com/m2f/template/
-├── App.kt                          # Root composable: theme + KoinApplication + NavHost
+├── App.kt                                # Root: TerminalTheme + KoinApplication + NavHost
 ├── di/
-│   └── AppModule.kt                # Client DI module
+│   └── AppModule.kt                      # Client DI module
 ├── navigation/
-│   ├── Routes.kt                   # All @Serializable route definitions
-│   └── AppNavHost.kt               # NavHost with composable<Route> registrations
-├── theme/
-│   ├── Theme.kt                    # AppTheme composable (MaterialTheme wrapper)
-│   ├── Color.kt                    # Light/dark color scheme definitions
-│   ├── Type.kt                     # Typography configuration
-│   └── Shape.kt                    # Shape configuration
+│   ├── Routes.kt                         # All @Serializable route definitions
+│   └── AppNavHost.kt                     # NavHost with composable<Route> registrations
 └── ui/
+    ├── theme/
+    │   ├── TerminalTheme.kt              # Theme composable + TerminalTheme accessor object
+    │   ├── TerminalColors.kt             # @Immutable TerminalColors data class + light/dark instances
+    │   ├── TerminalTypography.kt         # @Immutable TerminalTypography + JetBrains Mono loading
+    │   ├── TerminalSpacing.kt            # @Immutable TerminalSpacing data class
+    │   ├── TerminalGap.kt               # @Immutable TerminalGap data class
+    │   ├── TerminalShadows.kt            # @Immutable TerminalShadows data class
+    │   ├── TerminalOpacity.kt            # @Immutable TerminalOpacity data class
+    │   ├── TerminalRadius.kt             # @Immutable TerminalRadius data class
+    │   └── TerminalBorders.kt            # @Immutable TerminalBorders data class
     └── components/
-        ├── AppButton.kt            # Primary, secondary, outlined button variants
-        ├── AppTextField.kt         # Text input with validation state
-        ├── AppCard.kt              # Card with standard elevation/padding
-        └── AppDialog.kt            # Confirmation and info dialog patterns
+        ├── button/
+        │   └── TerminalButton.kt         # Default, Secondary, Ghost, Destructive, Icon variants
+        ├── input/
+        │   ├── TerminalInput.kt          # Input Group (Default, Filled)
+        │   └── TerminalTextarea.kt       # Textarea
+        ├── card/
+        │   └── TerminalCard.kt           # Default, Accent, Info, Highlighted, Compact variants
+        ├── feedback/
+        │   ├── TerminalAlert.kt          # Info, Success, Warning, Error variants
+        │   ├── TerminalBadge.kt          # Default, Accent, Success, Warning, Error variants
+        │   ├── TerminalProgress.kt       # Default, Indeterminate variants
+        │   └── TerminalTooltip.kt        # Tooltip
+        ├── selection/
+        │   ├── TerminalCheckbox.kt       # Default/Checked via boolean state
+        │   ├── TerminalSwitch.kt         # Default/Checked via boolean state
+        │   └── TerminalRadio.kt          # Default/Checked via boolean state
+        ├── data/
+        │   ├── TerminalTable.kt          # Table + Table Row
+        │   └── TerminalList.kt           # List + List Items (Default, Hover, Selected, Disabled)
+        └── display/
+            ├── TerminalKbd.kt            # Keyboard shortcut display
+            ├── TerminalAvatar.kt         # Avatar with initials
+            └── TerminalDivider.kt        # Horizontal divider
 
 composeApp/src/commonMain/composeResources/
 └── font/
-    └── *.ttf                       # Custom font files (if using custom fonts)
-
-app/auth/src/commonMain/kotlin/com/m2f/template/app/auth/
-├── AuthScreen.kt                   # Login/signup UI (uses shared components)
-├── AuthViewModel.kt                # Handles auth state
-└── AuthNavigation.kt               # NavGraphBuilder.authGraph() extension
-
-app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/
-├── DashboardScreen.kt              # Dashboard UI
-├── DashboardViewModel.kt           # Dashboard state
-└── DashboardNavigation.kt          # NavGraphBuilder.dashboardGraph() extension
+    ├── JetBrainsMono_Regular.ttf         # Weight 400
+    ├── JetBrainsMono_SemiBold.ttf        # Weight 600
+    └── JetBrainsMono_Bold.ttf            # Weight 700
 ```
 
-### Pattern 1: Type-Safe Route Definitions with @Serializable
+**File organization rationale:** Components are grouped by functional category (button, input, card, feedback, selection, data, display) with one file per logical component type. This keeps related variants together (e.g., all button variants in one file with an enum) while avoiding a single massive components file. With 41 Pencil components consolidating to ~15 Kotlin files, this is manageable.
 
-**What:** Define all navigation destinations as `@Serializable` data objects (no arguments) or data classes (with arguments). Place them in a shared `navigation/Routes.kt` file so both `composeApp` and feature modules can reference them.
-**When to use:** Every navigation destination in the app.
+### Pattern 1: Custom CompositionLocal Theme System
+
+**What:** A fully custom theme system using `@Immutable` data classes and `staticCompositionLocalOf` for each design subsystem. No dependency on `MaterialTheme`.
+**When to use:** Always -- this is the foundation for all components.
 
 ```kotlin
-// Source: JetBrains Navigation Compose docs (kotlinlang.org/docs/multiplatform/compose-navigation-routing.html)
-package com.m2f.template.navigation
+// Source: https://developer.android.com/develop/ui/compose/designsystems/custom
 
-import kotlinx.serialization.Serializable
+// --- TerminalColors.kt ---
+@Immutable
+data class TerminalColors(
+    val bg: Color,
+    val surface: Color,
+    val accent: Color,
+    val accentMuted: Color,
+    val text: Color,
+    val textMuted: Color,
+    val textDim: Color,
+    val border: Color,
+    val inset: Color,
+    val success: Color,
+    val successBg: Color,
+    val warning: Color,
+    val warningBg: Color,
+    val error: Color,
+    val errorBg: Color,
+    val info: Color,
+    val infoBg: Color,
+)
 
-// --- Auth flow ---
-@Serializable
-data object LoginRoute
+val LocalTerminalColors = staticCompositionLocalOf {
+    TerminalColors(
+        bg = Color.Unspecified,
+        surface = Color.Unspecified,
+        accent = Color.Unspecified,
+        accentMuted = Color.Unspecified,
+        text = Color.Unspecified,
+        textMuted = Color.Unspecified,
+        textDim = Color.Unspecified,
+        border = Color.Unspecified,
+        inset = Color.Unspecified,
+        success = Color.Unspecified,
+        successBg = Color.Unspecified,
+        warning = Color.Unspecified,
+        warningBg = Color.Unspecified,
+        error = Color.Unspecified,
+        errorBg = Color.Unspecified,
+        info = Color.Unspecified,
+        infoBg = Color.Unspecified,
+    )
+}
 
-@Serializable
-data object RegisterRoute
+// Light theme values extracted from Pencil design system variables
+val TerminalLightColors = TerminalColors(
+    bg = Color(0xFFE8E8E8),
+    surface = Color(0xFFF5F5F5),
+    accent = Color(0xFF4A9B6E),
+    accentMuted = Color(0xFFD8E8DE),
+    text = Color(0xFF1F1F1F),
+    textMuted = Color(0xFF5A5A5A),
+    textDim = Color(0xFF787878),
+    border = Color(0xFFD0D0D0),
+    inset = Color(0xFFEFEFEF),
+    success = Color(0xFF4A9B6E),
+    successBg = Color(0xFFD8E8DE),
+    warning = Color(0xFFA08840),
+    warningBg = Color(0xFFEDE8D8),
+    error = Color(0xFFB05A5A),
+    errorBg = Color(0xFFEDDCDC),
+    info = Color(0xFF4A7EB0),
+    infoBg = Color(0xFFDCE6EF),
+)
 
-// --- Main app flow ---
-@Serializable
-data object DashboardRoute
-
-@Serializable
-data class ProfileRoute(val userId: String? = null) // null = current user
+// Dark theme values extracted from Pencil design system variables
+val TerminalDarkColors = TerminalColors(
+    bg = Color(0xFF101012),
+    surface = Color(0xFF1A1A1C),
+    accent = Color(0xFF6BAF8A),
+    accentMuted = Color(0xFF1F3028),
+    text = Color(0xFFD4D4D4),
+    textMuted = Color(0xFF8A8A8A),
+    textDim = Color(0xFF5A5A5A),
+    border = Color(0xFF2A2A2E),
+    inset = Color(0xFF212124),
+    success = Color(0xFF6BAF8A),
+    successBg = Color(0xFF1A2820),
+    warning = Color(0xFFC4A860),
+    warningBg = Color(0xFF28241A),
+    error = Color(0xFFCA7A7A),
+    errorBg = Color(0xFF2A1A1A),
+    info = Color(0xFF7AA4CA),
+    infoBg = Color(0xFF1A2530),
+)
 ```
 
-### Pattern 2: NavHost with composable<Route> Registration
+```kotlin
+// --- TerminalSpacing.kt ---
+@Immutable
+data class TerminalSpacing(
+    val xs: Dp,  // 4.dp
+    val sm: Dp,  // 8.dp
+    val md: Dp,  // 12.dp
+    val lg: Dp,  // 16.dp
+    val xl: Dp,  // 20.dp
+)
 
-**What:** A single `NavHost` in `composeApp` that registers all routes using the type-safe `composable<T>` builder. Feature modules contribute their screens via `NavGraphBuilder` extension functions.
-**When to use:** App entry point, called once in `App.kt`.
+val LocalTerminalSpacing = staticCompositionLocalOf {
+    TerminalSpacing(xs = 4.dp, sm = 8.dp, md = 12.dp, lg = 16.dp, xl = 20.dp)
+}
+
+// --- TerminalGap.kt ---
+@Immutable
+data class TerminalGap(
+    val xs: Dp,  // 4.dp
+    val sm: Dp,  // 8.dp
+    val md: Dp,  // 12.dp
+    val lg: Dp,  // 16.dp
+    val xl: Dp,  // 24.dp
+)
+
+val LocalTerminalGap = staticCompositionLocalOf {
+    TerminalGap(xs = 4.dp, sm = 8.dp, md = 12.dp, lg = 16.dp, xl = 24.dp)
+}
+```
 
 ```kotlin
-// Source: JetBrains Navigation Compose docs
-package com.m2f.template.navigation
+// --- TerminalTheme.kt ---
+@Composable
+fun TerminalTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit,
+) {
+    val colors = if (darkTheme) TerminalDarkColors else TerminalLightColors
+    val typography = terminalTypography() // composable because Font() is @Composable
 
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+    CompositionLocalProvider(
+        LocalTerminalColors provides colors,
+        LocalTerminalTypography provides typography,
+        LocalTerminalSpacing provides TerminalSpacing(xs = 4.dp, sm = 8.dp, md = 12.dp, lg = 16.dp, xl = 20.dp),
+        LocalTerminalGap provides TerminalGap(xs = 4.dp, sm = 8.dp, md = 12.dp, lg = 16.dp, xl = 24.dp),
+        LocalTerminalShadows provides TerminalShadowValues,
+        LocalTerminalOpacity provides TerminalOpacityValues,
+        LocalTerminalRadius provides TerminalRadiusValues,
+        LocalTerminalBorders provides TerminalBorderValues,
+        content = content,
+    )
+}
 
+// Theme accessor object
+object TerminalTheme {
+    val colors: TerminalColors
+        @Composable get() = LocalTerminalColors.current
+    val typography: TerminalTypography
+        @Composable get() = LocalTerminalTypography.current
+    val spacing: TerminalSpacing
+        @Composable get() = LocalTerminalSpacing.current
+    val gap: TerminalGap
+        @Composable get() = LocalTerminalGap.current
+    val shadows: TerminalShadows
+        @Composable get() = LocalTerminalShadows.current
+    val opacity: TerminalOpacity
+        @Composable get() = LocalTerminalOpacity.current
+    val radius: TerminalRadius
+        @Composable get() = LocalTerminalRadius.current
+    val borders: TerminalBorders
+        @Composable get() = LocalTerminalBorders.current
+}
+```
+
+### Pattern 2: JetBrains Mono Font Loading
+
+**What:** Load JetBrains Mono TTF files from Compose Resources and create a `FontFamily` inside a `@Composable` function. The `Font()` API in Compose Multiplatform IS `@Composable`, so typography MUST be created inside a composable context.
+**When to use:** Inside `TerminalTheme` composable, called once.
+
+```kotlin
+// Source: https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html
+
+// --- TerminalTypography.kt ---
+@Immutable
+data class TerminalTypography(
+    val fontFamily: FontFamily,
+    val xs: TextStyle,    // 11.sp
+    val sm: TextStyle,    // 12.sp
+    val base: TextStyle,  // 13.sp
+    val md: TextStyle,    // 14.sp
+    val xxl: TextStyle,   // 32.sp
+)
+
+val LocalTerminalTypography = staticCompositionLocalOf {
+    TerminalTypography(
+        fontFamily = FontFamily.Monospace,
+        xs = TextStyle.Default,
+        sm = TextStyle.Default,
+        base = TextStyle.Default,
+        md = TextStyle.Default,
+        xxl = TextStyle.Default,
+    )
+}
+
+@Composable
+fun terminalTypography(): TerminalTypography {
+    val fontFamily = FontFamily(
+        Font(Res.font.JetBrainsMono_Regular, FontWeight.Normal),
+        Font(Res.font.JetBrainsMono_SemiBold, FontWeight.SemiBold),
+        Font(Res.font.JetBrainsMono_Bold, FontWeight.Bold),
+    )
+    return TerminalTypography(
+        fontFamily = fontFamily,
+        xs = TextStyle(fontFamily = fontFamily, fontSize = 11.sp, fontWeight = FontWeight.Normal),
+        sm = TextStyle(fontFamily = fontFamily, fontSize = 12.sp, fontWeight = FontWeight.Normal),
+        base = TextStyle(fontFamily = fontFamily, fontSize = 13.sp, fontWeight = FontWeight.Normal),
+        md = TextStyle(fontFamily = fontFamily, fontSize = 14.sp, fontWeight = FontWeight.Normal),
+        xxl = TextStyle(fontFamily = fontFamily, fontSize = 32.sp, fontWeight = FontWeight.Bold),
+    )
+}
+```
+
+**CRITICAL:** Font files must be placed in `composeApp/src/commonMain/composeResources/font/` as `.ttf` files. JetBrains Mono is available from Google Fonts / JetBrains as free OFL-licensed font files.
+
+### Pattern 3: Custom Component with Variant Enum
+
+**What:** Consolidated component with enum-based variant selection. All styling reads from `TerminalTheme` CompositionLocals.
+**When to use:** Every component that has variants (buttons, cards, alerts, badges).
+
+```kotlin
+// --- button/TerminalButton.kt ---
+enum class ButtonVariant { Default, Secondary, Ghost, Destructive }
+
+@Composable
+fun TerminalButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    variant: ButtonVariant = ButtonVariant.Default,
+    enabled: Boolean = true,
+    icon: (@Composable () -> Unit)? = null,
+) {
+    val colors = TerminalTheme.colors
+    val radius = TerminalTheme.radius
+    val typography = TerminalTheme.typography
+
+    val (backgroundColor, contentColor, borderColor) = when (variant) {
+        ButtonVariant.Default -> Triple(colors.accent, colors.surface, null)
+        ButtonVariant.Secondary -> Triple(colors.surface, colors.text, colors.border)
+        ButtonVariant.Ghost -> Triple(Color.Transparent, colors.textMuted, null)
+        ButtonVariant.Destructive -> Triple(colors.errorBg, colors.error, null)
+    }
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(radius.sm))
+            .then(
+                if (borderColor != null) Modifier.border(1.dp, borderColor, RoundedCornerShape(radius.sm))
+                else Modifier
+            )
+            .background(backgroundColor)
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(TerminalTheme.gap.sm),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            icon?.invoke()
+            BasicText(
+                text = text,
+                style = typography.sm.copy(
+                    color = contentColor,
+                    fontWeight = FontWeight.Medium,
+                ),
+            )
+        }
+    }
+}
+
+// Icon button variant (separate because it has no text)
+@Composable
+fun TerminalIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit,
+) {
+    val colors = TerminalTheme.colors
+    val radius = TerminalTheme.radius
+
+    Box(
+        modifier = modifier
+            .clip(RoundedCornerShape(radius.sm))
+            .border(1.dp, colors.border, RoundedCornerShape(radius.sm))
+            .background(colors.surface)
+            .clickable(enabled = enabled, onClick = onClick)
+            .padding(TerminalTheme.spacing.sm),
+        contentAlignment = Alignment.Center,
+    ) {
+        content()
+    }
+}
+```
+
+### Pattern 4: Custom Toggle Components (Checkbox, Switch, Radio)
+
+**What:** Custom checkbox, switch, and radio built on Foundation's `toggleable`/`selectable` modifiers with Canvas drawing. NOT Material3 components.
+**When to use:** All toggle/selection components.
+
+```kotlin
+// --- selection/TerminalCheckbox.kt ---
+@Composable
+fun TerminalCheckbox(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    enabled: Boolean = true,
+) {
+    val colors = TerminalTheme.colors
+    val radius = TerminalTheme.radius
+
+    Row(
+        modifier = modifier.toggleable(
+            value = checked,
+            enabled = enabled,
+            role = Role.Checkbox,
+            onValueChange = onCheckedChange,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(18.dp)
+                .clip(RoundedCornerShape(radius.sm))
+                .background(if (checked) colors.accent else colors.surface)
+                .then(
+                    if (!checked) Modifier.border(2.dp, colors.border, RoundedCornerShape(radius.sm))
+                    else Modifier
+                ),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (checked) {
+                BasicText(
+                    text = "\u2713", // checkmark
+                    style = TextStyle(
+                        color = colors.surface,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = TerminalTheme.typography.fontFamily,
+                    ),
+                )
+            }
+        }
+        if (label != null) {
+            BasicText(
+                text = label,
+                style = TerminalTheme.typography.sm.copy(color = colors.text),
+            )
+        }
+    }
+}
+```
+
+```kotlin
+// --- selection/TerminalSwitch.kt ---
+@Composable
+fun TerminalSwitch(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier,
+    label: String? = null,
+    enabled: Boolean = true,
+) {
+    val colors = TerminalTheme.colors
+
+    Row(
+        modifier = modifier.toggleable(
+            value = checked,
+            enabled = enabled,
+            role = Role.Switch,
+            onValueChange = onCheckedChange,
+        ),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        // Track (40x22 with 3px padding, 16x16 knob)
+        Box(
+            modifier = Modifier
+                .size(width = 40.dp, height = 22.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(if (checked) colors.accent else colors.inset)
+                .padding(3.dp),
+            contentAlignment = if (checked) Alignment.CenterEnd else Alignment.CenterStart,
+        ) {
+            // Knob
+            Box(
+                modifier = Modifier
+                    .size(16.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(if (checked) colors.surface else colors.textDim),
+            )
+        }
+        if (label != null) {
+            BasicText(
+                text = label,
+                style = TerminalTheme.typography.sm.copy(color = colors.text),
+            )
+        }
+    }
+}
+```
+
+### Pattern 5: Type-Safe Navigation with @Serializable Routes
+
+**What:** All routes defined as `@Serializable` data objects/classes. Feature modules expose screen composables with callback lambdas. `composeApp` owns the NavHost.
+**When to use:** All navigation.
+
+```kotlin
+// --- navigation/Routes.kt ---
+@Serializable data object LoginRoute
+@Serializable data object RegisterRoute
+@Serializable data object DashboardRoute
+
+// --- navigation/AppNavHost.kt ---
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
-
     NavHost(
         navController = navController,
-        startDestination = LoginRoute
+        startDestination = LoginRoute,
     ) {
         composable<LoginRoute> {
-            LoginScreen(
+            AuthScreen(
                 onLoginSuccess = {
                     navController.navigate(DashboardRoute) {
                         popUpTo<LoginRoute> { inclusive = true }
                     }
                 },
-                onNavigateToRegister = {
-                    navController.navigate(RegisterRoute)
-                }
-            )
-        }
-        composable<RegisterRoute> {
-            RegisterScreen(
-                onRegisterSuccess = {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
-                    }
-                },
-                onNavigateBack = { navController.popBackStack() }
             )
         }
         composable<DashboardRoute> {
             DashboardScreen()
         }
-        composable<ProfileRoute> { backStackEntry ->
-            val route: ProfileRoute = backStackEntry.toRoute()
-            ProfileScreen(userId = route.userId)
-        }
     }
 }
 ```
 
-### Pattern 3: Feature Module NavGraphBuilder Extensions
+### Pattern 6: Shadow System
 
-**What:** Each feature module defines a `NavGraphBuilder` extension that registers its own screens. This keeps the main NavHost clean and allows feature modules to own their navigation graph.
-**When to use:** When a feature has multiple screens that form a logical group.
-
-```kotlin
-// In app:auth module
-package com.m2f.template.app.auth
-
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.compose.composable
-import com.m2f.template.navigation.LoginRoute
-import com.m2f.template.navigation.RegisterRoute
-
-fun NavGraphBuilder.authGraph(navController: NavController) {
-    composable<LoginRoute> {
-        AuthScreen(
-            onLoginSuccess = {
-                navController.navigate(DashboardRoute) {
-                    popUpTo<LoginRoute> { inclusive = true }
-                }
-            },
-            onNavigateToRegister = {
-                navController.navigate(RegisterRoute)
-            }
-        )
-    }
-    composable<RegisterRoute> {
-        // Register screen
-    }
-}
-```
-
-### Pattern 4: Custom Theme Configuration
-
-**What:** A single `AppTheme` composable that wraps `MaterialTheme` with project-specific colors, typography, and shapes. A developer changes the theme by editing `Color.kt`, `Type.kt`, or `Shape.kt` -- the theme applies uniformly across all targets.
-**When to use:** Wrap the entire app content.
+**What:** Shadows defined as `@Immutable` data class with pre-configured `DropShadow` values. Applied via `Modifier.dropShadow()` (available in CMP 1.9+/1.10.1).
+**When to use:** Cards, elevated surfaces.
 
 ```kotlin
-// Source: Android Material3 theming guide + KMP adaptations
-// theme/Color.kt
-package com.m2f.template.theme
-
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.ui.graphics.Color
-
-// Brand colors -- developer changes these
-val Seed = Color(0xFF6750A4)
-val Primary = Color(0xFF6750A4)
-val OnPrimary = Color(0xFFFFFFFF)
-val PrimaryContainer = Color(0xFFEADDFF)
-val OnPrimaryContainer = Color(0xFF21005D)
-// ... (full palette)
-
-val LightColorScheme = lightColorScheme(
-    primary = Primary,
-    onPrimary = OnPrimary,
-    primaryContainer = PrimaryContainer,
-    onPrimaryContainer = OnPrimaryContainer,
-    // ... all 29 color roles
+// --- TerminalShadows.kt ---
+@Immutable
+data class TerminalShadows(
+    val none: DropShadow?,      // null = no shadow
+    val sm: DropShadow,         // 0 2px 4px rgba(0,0,0,0.12)
+    val md: DropShadow,         // 0 4px 8px rgba(0,0,0,0.18)
+    val lg: DropShadow,         // 0 8px 16px rgba(0,0,0,0.25)
 )
 
-val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFD0BCFF),
-    onPrimary = Color(0xFF381E72),
-    // ... all 29 color roles
+val LocalTerminalShadows = staticCompositionLocalOf {
+    TerminalShadowValues
+}
+
+// Values extracted from Pencil design system
+val TerminalShadowValues = TerminalShadows(
+    none = null,
+    sm = DropShadow(blur = 4.dp, color = Color(0x20000000), offsetY = 2.dp),
+    md = DropShadow(blur = 8.dp, color = Color(0x30000000), offsetY = 4.dp),
+    lg = DropShadow(blur = 16.dp, color = Color(0x40000000), offsetY = 8.dp),
 )
 
-// theme/Theme.kt
-@Composable
-fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AppTypography,  // from Type.kt
-        shapes = AppShapes,          // from Shape.kt
-        content = content
-    )
-}
+// Usage: Modifier.dropShadow(RoundedCornerShape(radius), TerminalTheme.shadows.sm)
 ```
 
-### Pattern 5: Reusable Component Wrappers
-
-**What:** Thin composable wrappers around Material3 components that enforce the project's design system defaults (consistent padding, corner radius, text styles) while remaining customizable.
-**When to use:** Every UI screen should use these instead of raw Material3 components.
-
-```kotlin
-// ui/components/AppButton.kt
-package com.m2f.template.ui.components
-
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-
-@Composable
-fun AppButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    loading: Boolean = false,
-) {
-    Button(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled && !loading,
-    ) {
-        if (loading) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(18.dp),
-                color = MaterialTheme.colorScheme.onPrimary,
-                strokeWidth = 2.dp
-            )
-            Spacer(Modifier.width(8.dp))
-        }
-        Text(text)
-    }
-}
-
-@Composable
-fun AppOutlinedButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-) {
-    OutlinedButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-    ) {
-        Text(text)
-    }
-}
-
-@Composable
-fun AppTextButton(
-    text: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-) {
-    TextButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-    ) {
-        Text(text)
-    }
-}
-```
-
-```kotlin
-// ui/components/AppTextField.kt
-@Composable
-fun AppTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    label: String,
-    modifier: Modifier = Modifier,
-    error: String? = null,
-    enabled: Boolean = true,
-    singleLine: Boolean = true,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
-) {
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        label = { Text(label) },
-        modifier = modifier.fillMaxWidth(),
-        enabled = enabled,
-        singleLine = singleLine,
-        isError = error != null,
-        supportingText = error?.let { { Text(it, color = MaterialTheme.colorScheme.error) } },
-        keyboardOptions = keyboardOptions,
-        visualTransformation = visualTransformation,
-    )
-}
-```
-
-### Pattern 6: ViewModel with Koin Navigation Integration
-
-**What:** ViewModels are defined in feature modules and injected via `koinViewModel()` inside navigation composables. Route parameters are passed to ViewModels via Koin's `parametersOf`.
-**When to use:** Every screen that has state management.
-
-```kotlin
-// In app:auth Koin module
-val authModule = module {
-    viewModel { AuthViewModel(authApi = get(), tokenStorage = get()) }
-}
-
-// In navigation composable
-composable<LoginRoute> {
-    val viewModel: AuthViewModel = koinViewModel()
-    LoginScreen(viewModel = viewModel)
-}
-```
-
-### Pattern 7: WasmJs Browser History Binding
-
-**What:** On WasmJs target, bind the NavController to browser history so back/forward buttons work and URL fragments update.
-**When to use:** WasmJs platform entry point only.
-
-```kotlin
-// wasmJsMain/kotlin/.../main.kt
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalBrowserHistoryApi::class)
-fun main() {
-    ComposeViewport(document.body!!) {
-        App(
-            onNavHostReady = { navController ->
-                navController.bindToBrowserNavigation()
-            }
-        )
-    }
-}
-```
+**Confidence: MEDIUM.** The `Modifier.dropShadow()` API was introduced in Compose Foundation 1.9 and is confirmed available in CMP 1.9+. However, exact API signature for `DropShadow` data class may differ from the examples above. The implementing agent should verify the exact API during implementation. Fallback: use `Modifier.shadow(elevation, shape)` which is the older elevation-based API, or use `Modifier.drawBehind { drawRect(...) }` with blur for manual shadow rendering.
 
 ### Anti-Patterns to Avoid
 
-- **String-based routes:** Never use `navController.navigate("login")` or string route names. Always use `@Serializable` types: `navController.navigate(LoginRoute)`.
-- **Passing complex objects as route arguments:** Pass IDs/keys only, load data from the data layer at the destination. Serializable route classes should have primitive fields.
-- **Theme colors as hardcoded hex values in components:** Always use `MaterialTheme.colorScheme.*` to reference colors. Components must never hardcode `Color(0xFF...)`.
-- **Creating a separate "design system" module for 5-10 components:** Overkill for a template. Put components in `composeApp/ui/components/`. Extract to a module only when the library grows large enough to warrant independent versioning.
-- **Using `@Preview` with Koin dependencies in preview composables:** Previews don't have Koin context. Design components to accept data via parameters (not ViewModels) so they are previewable.
-- **Forgetting `popUpTo` after login:** After successful authentication, always pop the auth graph off the back stack so the user cannot press back to return to the login screen.
+- **Using MaterialTheme or Material3 components:** The terminal design system is NOT Material Design. Do not use `MaterialTheme`, `Button`, `OutlinedTextField`, `Checkbox`, `Switch`, `RadioButton`, `AlertDialog`, or any `material3` composable. Use Foundation primitives.
+- **Hardcoding color hex values in components:** Every color must come from `TerminalTheme.colors.*`. The dark/light theme switch must "just work" by changing the provided `TerminalColors` instance.
+- **Using `sp` for font sizes directly:** Use `TerminalTheme.typography.xs/sm/base/md/xxl` TextStyle objects which already encode the correct size + font family.
+- **Creating separate composables per variant:** Use `TerminalButton(variant = ButtonVariant.Secondary)` not `TerminalButtonSecondary()`. The user explicitly decided on consolidated components with enum parameters.
+- **Passing NavController to feature modules:** Feature modules expose screen composables with callback lambdas (`onLoginSuccess: () -> Unit`). Only `composeApp` touches `NavController`.
+- **Forgetting `popUpTo` after login:** Always pop the auth back stack when navigating to the main graph.
+- **Keeping `compose.material3` in feature module dependencies after migration:** If feature modules no longer use Material3 composables, remove the dependency to enforce the custom design system. However, `composeApp` may still need `compose.material3` for `isSystemInDarkTheme()` which lives in `androidx.compose.foundation` (NOT material3) -- verify import location.
 
 ## Don't Hand-Roll
 
 | Problem | Don't Build | Use Instead | Why |
 |---------|-------------|-------------|-----|
-| Type-safe navigation | String route matching / manual deep link parsing | Navigation Compose 2.9.2 with `@Serializable` | Compile-time safety, argument type checking, back stack management |
-| Dark/light theme switching | Custom `CompositionLocal` for colors | `MaterialTheme` + `isSystemInDarkTheme()` | System integration on all platforms, automatic color role propagation |
-| Button loading states | Custom animated indicator + disable logic | Wrap `Button` + `CircularProgressIndicator` | Material3 handles elevation, ripple, disabled states correctly |
-| Text field validation display | Custom error label + border coloring | `OutlinedTextField` `isError` + `supportingText` | Material3 handles animation, color transitions, accessibility |
-| Dialog presentation | Custom overlay/backdrop management | `AlertDialog` from Material3 | Handles scrim, dismissal, focus management, accessibility |
-| Color palette generation | Manual hex value picking | Material Theme Builder tool (web) or MaterialKolor | Ensures accessible contrast ratios, complete M3 color role coverage |
+| Type-safe navigation | String route matching | Navigation Compose 2.9.2 `@Serializable` routes | Compile-time safety, argument type checking, back stack management |
+| Accessibility for toggles | Manual contentDescription / semantics | Foundation `toggleable` / `selectable` modifiers with `Role.Checkbox` / `Role.Switch` / `Role.RadioButton` | Built-in screen reader support, state announcements |
+| Font loading across platforms | Platform-specific font loading code | `Font(Res.font.*, weight)` from Compose Resources | Single API for Android, iOS, Desktop, WASM |
+| Dark mode detection | Platform-specific dark mode checks | `isSystemInDarkTheme()` from `compose.foundation` | Works on all CMP targets |
+| Navigation-scoped ViewModels | Manual ViewModel lifecycle management | `koinViewModel()` from `koin-compose-viewmodel` | Handles ViewModel scoping and lifecycle correctly |
 
-**Key insight:** Material3 components already implement the design system patterns -- accessible contrast, state layers, elevation, motion. The component library should wrap M3 components with project-specific defaults, not replace them.
+**Key insight:** Foundation provides the critical accessibility infrastructure (`toggleable`, `selectable`, `clickable` with `Role`) that custom components need. Material3 components are NOT needed for accessibility -- Foundation has it built in.
 
 ## Common Pitfalls
 
-### Pitfall 1: Missing Serialization Plugin on composeApp Module
-**What goes wrong:** Route classes like `@Serializable data object LoginRoute` compile fine but navigation crashes at runtime with "No serializer found" errors.
-**Why it happens:** The `composeApp` module uses its own plugin block and does NOT apply `kmp-library-convention`. The serialization plugin is not applied.
-**How to avoid:** Add `id("org.jetbrains.kotlin.plugin.serialization")` to `composeApp/build.gradle.kts` plugins block.
-**Warning signs:** Compilation succeeds but navigation crashes with serialization errors at runtime.
+### Pitfall 1: Font() is @Composable in CMP -- Cannot Create Typography Outside Composable
 
-### Pitfall 2: Back Stack Leak After Authentication
-**What goes wrong:** After login, the user presses the back button and returns to the login screen instead of exiting the app.
-**Why it happens:** `navController.navigate(DashboardRoute)` pushes onto the stack without clearing the auth screens.
-**How to avoid:** Use `popUpTo` with `inclusive = true` when navigating from login to dashboard:
+**What goes wrong:** Trying to define `val TerminalTypography = ...` with `Font(Res.font.*)` at the top level fails because `Font()` is a `@Composable` function in Compose Multiplatform.
+**Why it happens:** Unlike Android Jetpack Compose where `Font()` is a regular function, CMP's resource-based `Font()` is `@Composable`.
+**How to avoid:** Create typography inside a `@Composable` function (e.g., `terminalTypography()`) and call it inside `TerminalTheme`. Cache the result to avoid recreating on every recomposition.
+**Warning signs:** Compilation error: "@Composable invocations can only happen from the context of a @Composable function."
+**Confidence: HIGH** -- verified in official Compose Resources docs.
+
+### Pitfall 2: Using sp vs dp for Font Sizes
+
+**What goes wrong:** Font sizes defined as `dp` values (from the Pencil design system which uses `px`) need careful conversion. Compose uses `sp` (scaled pixels) for text, which respects user accessibility settings.
+**Why it happens:** The Pencil design system specifies sizes in pixels (11px, 12px, 13px, 14px, 32px). In Compose, `1.sp` roughly equals `1.px` on a standard density device, but `sp` can scale with user text size preferences.
+**How to avoid:** The user decision says "exact Pencil sizes, no mobile adaptation." Use `sp` values matching the pixel values (11.sp, 12.sp, etc.). For strict pixel-exact rendering, consider using `dp` for text sizes instead of `sp`, but this breaks accessibility text scaling. Recommendation: use `sp` and accept slight variation with accessibility settings.
+**Warning signs:** Text appears larger/smaller than expected on different accessibility settings.
+**Confidence: MEDIUM** -- trade-off between design fidelity and accessibility.
+
+### Pitfall 3: Missing Serialization Plugin on composeApp
+
+**What goes wrong:** `@Serializable` route classes compile but navigation crashes at runtime.
+**Why it happens:** `composeApp` does NOT currently apply the serialization plugin (verified: only `org.jetbrains.kotlin.multiplatform`, `com.android.application`, `composeMultiplatform`, and `composeCompiler` are in its plugins block).
+**How to avoid:** Add `id("org.jetbrains.kotlin.plugin.serialization")` to `composeApp/build.gradle.kts`.
+**Warning signs:** Runtime crash: "No serializer found for class LoginRoute."
+**Confidence: HIGH** -- verified by reading `composeApp/build.gradle.kts`.
+
+### Pitfall 4: isSystemInDarkTheme() Not Working on All Platforms
+
+**What goes wrong:** Dark mode detection returns incorrect values on iOS or Desktop.
+**Why it happens:** There were historical issues with `isSystemInDarkTheme()` on iOS (Issue #3575). This has been fixed in recent CMP versions, but may still require the app to be configured correctly on iOS (respecting UIKit appearance traits).
+**How to avoid:** Test dark mode on all four targets during UAT. On iOS, ensure the Info.plist doesn't force a specific appearance. On Desktop, `isSystemInDarkTheme()` reads the OS theme. On WASM, it reads the browser's `prefers-color-scheme` media query.
+**Warning signs:** Theme always shows light mode on a specific platform.
+**Confidence: MEDIUM** -- fixed in recent CMP but needs runtime verification.
+
+### Pitfall 5: Foundation BasicText Has No Default Color
+
+**What goes wrong:** Text rendered with `BasicText` is invisible or black on all backgrounds.
+**Why it happens:** Unlike Material3's `Text` which inherits `LocalContentColor`, Foundation's `BasicText` renders with `Color.Black` by default. Every `BasicText` call MUST explicitly set the color in its `TextStyle`.
+**How to avoid:** Always pass `style = TerminalTheme.typography.base.copy(color = TerminalTheme.colors.text)`. Consider creating a `TerminalText` helper composable that automatically applies theme colors:
+```kotlin
+@Composable
+fun TerminalText(
+    text: String,
+    modifier: Modifier = Modifier,
+    style: TextStyle = TerminalTheme.typography.base,
+    color: Color = TerminalTheme.colors.text,
+) {
+    BasicText(
+        text = text,
+        modifier = modifier,
+        style = style.copy(color = color),
+    )
+}
+```
+**Warning signs:** Text invisible on dark backgrounds; text always black.
+**Confidence: HIGH** -- verified behavior of BasicText.
+
+### Pitfall 6: compose.material3 Dependency Still Needed for isSystemInDarkTheme
+
+**What goes wrong:** Removing `compose.material3` from dependencies causes `isSystemInDarkTheme()` to become unavailable.
+**Why it happens:** `isSystemInDarkTheme()` is in `androidx.compose.foundation.isSystemInDarkTheme` (Foundation package), NOT Material3. However, it is re-exported by Material3. If only Foundation is on the classpath, the import should still work.
+**How to avoid:** Verify that `isSystemInDarkTheme()` is importable from `compose.foundation` alone. If not, keep `compose.material3` in `composeApp` dependencies but do NOT use any Material3 composables. Feature modules can remove `compose.material3` entirely.
+**Warning signs:** Import error for `isSystemInDarkTheme`.
+**Confidence: MEDIUM** -- needs build-time verification.
+
+### Pitfall 7: Back Stack Leak After Authentication
+
+**What goes wrong:** User presses back from dashboard and returns to login screen.
+**Why it happens:** `navController.navigate(DashboardRoute)` without `popUpTo`.
+**How to avoid:** Always use:
 ```kotlin
 navController.navigate(DashboardRoute) {
     popUpTo<LoginRoute> { inclusive = true }
 }
 ```
-**Warning signs:** Back button from dashboard shows login screen.
-
-### Pitfall 3: Theme Not Applied to Dialog Components
-**What goes wrong:** Dialogs appear with default Material3 colors instead of the custom theme.
-**Why it happens:** `AlertDialog` uses its own surface/content color defaults. If the theme is not wrapping the navigation host correctly, dialogs may inherit the wrong scope.
-**How to avoid:** Ensure `AppTheme` wraps everything including navigation. The `AlertDialog` composable automatically picks up `MaterialTheme.colorScheme` when it is within the theme scope.
-**Warning signs:** Dialogs have different colors than the rest of the app.
-
-### Pitfall 4: Custom Font as Non-Composable in Typography
-**What goes wrong:** Trying to use `Font(Res.font.MyFont)` in a `val typography = Typography(...)` outside a `@Composable` scope causes a compilation error because `Font()` is a composable function in Compose Multiplatform.
-**Why it happens:** Compose Multiplatform's resource-based `Font()` is `@Composable` (unlike Android's `Font()` which is not). This means `Typography` must be created inside a `@Composable` function.
-**How to avoid:** Create typography inside the `AppTheme` composable or use a `@Composable` factory function:
-```kotlin
-@Composable
-fun appTypography(): Typography {
-    val fontFamily = FontFamily(
-        Font(Res.font.Inter_Regular, FontWeight.Normal),
-        Font(Res.font.Inter_Bold, FontWeight.Bold),
-    )
-    return Typography(
-        bodyLarge = TextStyle(fontFamily = fontFamily, fontSize = 16.sp),
-        // ...
-    )
-}
-```
-**Warning signs:** Compilation error: "@Composable invocations can only happen from the context of a @Composable function."
-
-### Pitfall 5: Navigation State Lost on Configuration Change (Android)
-**What goes wrong:** Rotating the device or changing system dark mode causes the navigation stack to reset.
-**Why it happens:** If `rememberNavController()` is created inside a composable that gets fully recomposed (e.g., because the Activity recreates), the nav state is lost.
-**How to avoid:** `rememberNavController()` already uses `rememberSaveable` internally for state preservation. Ensure the `NavController` is created at the correct scope (inside the `App` composable that survives recomposition, not inside platform-specific code).
-**Warning signs:** Navigation resets to start destination after rotation.
-
-### Pitfall 6: Feature Module Cannot Access Routes Without Circular Dependency
-**What goes wrong:** `app:auth` needs to navigate to `DashboardRoute` (defined in `composeApp`) but `composeApp` depends on `app:auth`. Circular dependency.
-**Why it happens:** Routes are defined in `composeApp` which depends on feature modules.
-**How to avoid:** Define ALL route classes in a shared location accessible to both `composeApp` and feature modules. Options: (a) put routes in `composeApp` and have feature modules receive navigation callbacks (lambdas) instead of direct NavController access, or (b) put routes in a shared `navigation` module. For a template, option (a) is simpler -- feature modules expose screen composables with callback parameters (`onLoginSuccess: () -> Unit`), and `composeApp` handles the actual navigation.
-**Warning signs:** Circular dependency Gradle error.
+**Confidence: HIGH** -- well-known navigation pattern.
 
 ## Code Examples
 
-### Complete App.kt with Theme + Navigation
+### Complete TerminalColors with All Pencil Tokens (Verified from .pen file)
 
 ```kotlin
-// Source: JetBrains navigation docs + Material3 theming docs
-package com.m2f.template
+// Light theme -- extracted from terminal_design_system.pen variables (first value of each pair)
+val TerminalLightColors = TerminalColors(
+    bg = Color(0xFFE8E8E8),           // --terminal-bg light
+    surface = Color(0xFFF5F5F5),      // --terminal-surface light
+    accent = Color(0xFF4A9B6E),       // --terminal-accent light
+    accentMuted = Color(0xFFD8E8DE),  // --terminal-accent-muted light
+    text = Color(0xFF1F1F1F),         // --terminal-text light
+    textMuted = Color(0xFF5A5A5A),    // --terminal-text-muted light
+    textDim = Color(0xFF787878),      // --terminal-text-dim light
+    border = Color(0xFFD0D0D0),       // --terminal-border light
+    inset = Color(0xFFEFEFEF),        // --terminal-inset light
+    success = Color(0xFF4A9B6E),      // --terminal-success light
+    successBg = Color(0xFFD8E8DE),    // --terminal-success-bg light
+    warning = Color(0xFFA08840),      // --terminal-warning light
+    warningBg = Color(0xFFEDE8D8),    // --terminal-warning-bg light
+    error = Color(0xFFB05A5A),        // --terminal-error light
+    errorBg = Color(0xFFEDDCDC),      // --terminal-error-bg light
+    info = Color(0xFF4A7EB0),         // --terminal-info light
+    infoBg = Color(0xFFDCE6EF),       // --terminal-info-bg light
+)
 
-import androidx.compose.runtime.Composable
-import com.m2f.template.di.allAppModules
-import com.m2f.template.navigation.AppNavHost
-import com.m2f.template.theme.AppTheme
-import org.koin.compose.KoinApplication
+// Dark theme -- extracted from terminal_design_system.pen variables (second value of each pair)
+val TerminalDarkColors = TerminalColors(
+    bg = Color(0xFF101012),           // --terminal-bg dark
+    surface = Color(0xFF1A1A1C),      // --terminal-surface dark
+    accent = Color(0xFF6BAF8A),       // --terminal-accent dark
+    accentMuted = Color(0xFF1F3028),  // --terminal-accent-muted dark
+    text = Color(0xFFD4D4D4),         // --terminal-text dark
+    textMuted = Color(0xFF8A8A8A),    // --terminal-text-muted dark
+    textDim = Color(0xFF5A5A5A),      // --terminal-text-dim dark
+    border = Color(0xFF2A2A2E),       // --terminal-border dark
+    inset = Color(0xFF212124),        // --terminal-inset dark
+    success = Color(0xFF6BAF8A),      // --terminal-success dark
+    successBg = Color(0xFF1A2820),    // --terminal-success-bg dark
+    warning = Color(0xFFC4A860),      // --terminal-warning dark
+    warningBg = Color(0xFF28241A),    // --terminal-warning-bg dark
+    error = Color(0xFFCA7A7A),        // --terminal-error dark
+    errorBg = Color(0xFF2A1A1A),      // --terminal-error-bg dark
+    info = Color(0xFF7AA4CA),         // --terminal-info dark
+    infoBg = Color(0xFF1A2530),       // --terminal-info-bg dark
+)
+```
 
+### Complete Border System
+
+```kotlin
+// --- TerminalBorders.kt ---
+@Immutable
+data class TerminalBorders(
+    val thin: Dp,     // 1.dp
+    val default: Dp,  // 2.dp
+    val thick: Dp,    // 3.dp
+)
+
+val LocalTerminalBorders = staticCompositionLocalOf {
+    TerminalBorderValues
+}
+
+val TerminalBorderValues = TerminalBorders(
+    thin = 1.dp,
+    default = 2.dp,
+    thick = 3.dp,
+)
+
+// Usage: Modifier.border(TerminalTheme.borders.thin, TerminalTheme.colors.border, shape)
+```
+
+### Complete TerminalRadius System
+
+```kotlin
+// --- TerminalRadius.kt ---
+@Immutable
+data class TerminalRadius(
+    val none: Dp,   // 0.dp
+    val sm: Dp,     // 4.dp
+    val md: Dp,     // 6.dp
+    val lg: Dp,     // 12.dp
+    val pill: Dp,   // 24.dp (height/2 equivalent for standard sizes)
+    val full: Dp,   // 9999.dp (effectively circular)
+)
+
+val LocalTerminalRadius = staticCompositionLocalOf {
+    TerminalRadiusValues
+}
+
+val TerminalRadiusValues = TerminalRadius(
+    none = 0.dp,
+    sm = 4.dp,
+    md = 6.dp,
+    lg = 12.dp,
+    pill = 24.dp,
+    full = 9999.dp,
+)
+```
+
+### Complete Opacity System
+
+```kotlin
+// --- TerminalOpacity.kt ---
+@Immutable
+data class TerminalOpacity(
+    val full: Float,    // 1.0f
+    val high: Float,    // 0.75f
+    val medium: Float,  // 0.50f
+    val low: Float,     // 0.25f
+)
+
+val LocalTerminalOpacity = staticCompositionLocalOf {
+    TerminalOpacityValues
+}
+
+val TerminalOpacityValues = TerminalOpacity(
+    full = 1.0f,
+    high = 0.75f,
+    medium = 0.50f,
+    low = 0.25f,
+)
+```
+
+### Complete App.kt Integration
+
+```kotlin
 @Composable
 fun App() {
     KoinApplication(application = {
         modules(allAppModules)
     }) {
-        AppTheme {
+        TerminalTheme {
             AppNavHost()
         }
     }
 }
 ```
 
-### Complete Theme Configuration (Single-File Pattern)
+### Component Variant Mapping (All 41 Pencil Components -> Kotlin Files)
 
-```kotlin
-// theme/Color.kt
-val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF6750A4),
-    onPrimary = Color(0xFFFFFFFF),
-    primaryContainer = Color(0xFFEADDFF),
-    onPrimaryContainer = Color(0xFF21005D),
-    secondary = Color(0xFF625B71),
-    onSecondary = Color(0xFFFFFFFF),
-    secondaryContainer = Color(0xFFE8DEF8),
-    onSecondaryContainer = Color(0xFF1D192B),
-    tertiary = Color(0xFF7D5260),
-    onTertiary = Color(0xFFFFFFFF),
-    tertiaryContainer = Color(0xFFFFD8E4),
-    onTertiaryContainer = Color(0xFF31111D),
-    error = Color(0xFFB3261E),
-    onError = Color(0xFFFFFFFF),
-    errorContainer = Color(0xFFF9DEDC),
-    onErrorContainer = Color(0xFF410E0B),
-    background = Color(0xFFFFFBFE),
-    onBackground = Color(0xFF1C1B1F),
-    surface = Color(0xFFFFFBFE),
-    onSurface = Color(0xFF1C1B1F),
-    surfaceVariant = Color(0xFFE7E0EC),
-    onSurfaceVariant = Color(0xFF49454F),
-    outline = Color(0xFF79747E),
-    outlineVariant = Color(0xFFCAC4D0),
-)
+| Pencil Component | Kotlin File | API |
+|-----------------|-------------|-----|
+| Terminal Button/Default | `TerminalButton.kt` | `TerminalButton(variant = ButtonVariant.Default)` |
+| Terminal Button/Secondary | `TerminalButton.kt` | `TerminalButton(variant = ButtonVariant.Secondary)` |
+| Terminal Button/Ghost | `TerminalButton.kt` | `TerminalButton(variant = ButtonVariant.Ghost)` |
+| Terminal Button/Destructive | `TerminalButton.kt` | `TerminalButton(variant = ButtonVariant.Destructive)` |
+| Terminal Icon Button | `TerminalButton.kt` | `TerminalIconButton(onClick, content)` |
+| Terminal Input Group | `TerminalInput.kt` | `TerminalInput(state = InputState.Empty)` |
+| Terminal Input Group/Filled | `TerminalInput.kt` | `TerminalInput(state = InputState.Filled)` |
+| Terminal Textarea | `TerminalTextarea.kt` | `TerminalTextarea(value, onValueChange)` |
+| Terminal Card | `TerminalCard.kt` | `TerminalCard(variant = CardVariant.Default)` |
+| Terminal Card/Accent | `TerminalCard.kt` | `TerminalCard(variant = CardVariant.Accent)` |
+| Terminal Card/Info | `TerminalCard.kt` | `TerminalCard(variant = CardVariant.Info)` |
+| Terminal Card/Highlighted | `TerminalCard.kt` | `TerminalCard(variant = CardVariant.Highlighted)` |
+| Terminal Card/Compact | `TerminalCard.kt` | `TerminalCard(variant = CardVariant.Compact)` |
+| Terminal Alert/Info | `TerminalAlert.kt` | `TerminalAlert(variant = AlertVariant.Info)` |
+| Terminal Alert/Success | `TerminalAlert.kt` | `TerminalAlert(variant = AlertVariant.Success)` |
+| Terminal Alert/Warning | `TerminalAlert.kt` | `TerminalAlert(variant = AlertVariant.Warning)` |
+| Terminal Alert/Error | `TerminalAlert.kt` | `TerminalAlert(variant = AlertVariant.Error)` |
+| Terminal Badge/Default | `TerminalBadge.kt` | `TerminalBadge(variant = BadgeVariant.Default)` |
+| Terminal Badge/Accent | `TerminalBadge.kt` | `TerminalBadge(variant = BadgeVariant.Accent)` |
+| Terminal Badge/Success | `TerminalBadge.kt` | `TerminalBadge(variant = BadgeVariant.Success)` |
+| Terminal Badge/Warning | `TerminalBadge.kt` | `TerminalBadge(variant = BadgeVariant.Warning)` |
+| Terminal Badge/Error | `TerminalBadge.kt` | `TerminalBadge(variant = BadgeVariant.Error)` |
+| Terminal Checkbox/Default | `TerminalCheckbox.kt` | `TerminalCheckbox(checked = false)` |
+| Terminal Checkbox/Checked | `TerminalCheckbox.kt` | `TerminalCheckbox(checked = true)` |
+| Terminal Switch/Default | `TerminalSwitch.kt` | `TerminalSwitch(checked = false)` |
+| Terminal Switch/Checked | `TerminalSwitch.kt` | `TerminalSwitch(checked = true)` |
+| Terminal Radio/Default | `TerminalRadio.kt` | `TerminalRadio(selected = false)` |
+| Terminal Radio/Checked | `TerminalRadio.kt` | `TerminalRadio(selected = true)` |
+| Terminal Table | `TerminalTable.kt` | `TerminalTable(headers, content)` |
+| Terminal Table Row | `TerminalTable.kt` | `TerminalTableRow(content)` |
+| Terminal Progress | `TerminalProgress.kt` | `TerminalProgress(progress = 0.67f)` |
+| Terminal Progress/Indeterminate | `TerminalProgress.kt` | `TerminalProgress(indeterminate = true)` |
+| Terminal Tooltip | `TerminalTooltip.kt` | `TerminalTooltip(text, content)` |
+| Terminal Kbd | `TerminalKbd.kt` | `TerminalKbd(text = "Cmd+K")` |
+| Terminal Avatar | `TerminalAvatar.kt` | `TerminalAvatar(initials = "JD")` |
+| Terminal Divider | `TerminalDivider.kt` | `TerminalDivider()` |
+| Terminal List | `TerminalList.kt` | `TerminalList(title, count, content)` |
+| Terminal List Item/Default | `TerminalList.kt` | `TerminalListItem(state = ListItemState.Default)` |
+| Terminal List Item/Hover | `TerminalList.kt` | `TerminalListItem(state = ListItemState.Hover)` |
+| Terminal List Item/Selected | `TerminalList.kt` | `TerminalListItem(state = ListItemState.Selected)` |
+| Terminal List Item/Disabled | `TerminalList.kt` | `TerminalListItem(state = ListItemState.Disabled)` |
 
-val DarkColorScheme = darkColorScheme(
-    primary = Color(0xFFD0BCFF),
-    onPrimary = Color(0xFF381E72),
-    primaryContainer = Color(0xFF4F378B),
-    onPrimaryContainer = Color(0xFFEADDFF),
-    // ... matching dark variants
-)
-
-// theme/Theme.kt
-@Composable
-fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
-) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = AppTypography,
-        shapes = AppShapes,
-        content = content
-    )
-}
-```
-
-### NavHost with Feature Module Integration
-
-```kotlin
-// navigation/AppNavHost.kt
-@Composable
-fun AppNavHost(
-    onNavHostReady: suspend (NavController) -> Unit = {}
-) {
-    val navController = rememberNavController()
-
-    LaunchedEffect(navController) {
-        onNavHostReady(navController)
-    }
-
-    NavHost(
-        navController = navController,
-        startDestination = LoginRoute,
-    ) {
-        // Auth screens
-        composable<LoginRoute> {
-            LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
-                    }
-                },
-                onNavigateToRegister = {
-                    navController.navigate(RegisterRoute)
-                },
-            )
-        }
-        composable<RegisterRoute> {
-            RegisterScreen(
-                onRegisterSuccess = {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
-                    }
-                },
-                onNavigateBack = { navController.popBackStack() },
-            )
-        }
-        // Dashboard
-        composable<DashboardRoute> {
-            DashboardScreen()
-        }
-    }
-}
-```
-
-### Gradle Configuration for composeApp
-
-```kotlin
-// composeApp/build.gradle.kts additions
-plugins {
-    // ... existing plugins
-    id("org.jetbrains.kotlin.plugin.serialization")  // NEW: for @Serializable routes
-}
-
-kotlin {
-    sourceSets {
-        commonMain.dependencies {
-            // ... existing deps
-            implementation(libs.navigation.compose)
-            implementation(libs.koin.compose.viewmodel.navigation)
-        }
-    }
-}
-```
-
-### Version Catalog Additions
-
-```toml
-# gradle/libs.versions.toml additions
-[versions]
-navigation-compose = "2.9.2"
-
-[libraries]
-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
-koin-compose-viewmodel-navigation = { module = "io.insert-koin:koin-compose-viewmodel-navigation", version.ref = "koin" }
-```
+**Total:** 41 Pencil components -> 15 Kotlin files
 
 ## State of the Art
 
 | Old Approach | Current Approach | When Changed | Impact |
 |--------------|------------------|--------------|--------|
-| String-based routes (`navigate("profile/123")`) | Type-safe `@Serializable` routes (`navigate(ProfileRoute(123))`) | Navigation 2.8.0 (2024) | Compile-time safety, no runtime route parsing errors |
-| Navigation 2 (`NavHost` + `NavController`) | Navigation 3 (`NavDisplay` + user-owned backstack) on Android | Nav3 1.0 stable (Nov 2025) | More flexible, but multiplatform port is still alpha |
-| `rememberNavController()` only on Android | Multiplatform `rememberNavController()` | CMP 1.6+ (2024) | Navigation works identically on all targets |
-| Custom theme via `CompositionLocal` | `MaterialTheme` with `lightColorScheme`/`darkColorScheme` | Material3 stable (2023) | Standardized 29-color-role system with automatic contrast |
-| Platform-specific font loading | `Font(Res.font.*)` composable via Compose Resources | CMP 1.6+ (2024) | Single font loading API for all platforms |
-
-**Deprecated/outdated:**
-- **String route navigation in Compose Navigation:** Replaced by `@Serializable` type-safe routes as of Navigation 2.8.0. String routes still work but are not recommended.
-- **`NavType` for custom argument types:** With `@Serializable` routes, custom `NavType` implementations are no longer needed. Kotlinx serialization handles argument encoding/decoding automatically.
-- **Navigation 2 on Android-only projects:** Google recommends migrating to Navigation 3 for Android. However, for KMP projects targeting all platforms, Navigation 2.9.2 remains the stable choice until Nav 3 multiplatform reaches stable.
+| Material3 ColorScheme (29 roles) | Custom CompositionLocal color system | Always available in Compose | Maps 1:1 to design system tokens; no "on*" color confusion |
+| `Modifier.shadow(elevation, shape)` | `Modifier.dropShadow(shape, DropShadow(...))` | CMP 1.9.0 (Sept 2025) | CSS-like shadow control (blur, spread, offset, color) instead of elevation-based |
+| `Font()` as regular function (Android) | `Font()` as `@Composable` function (CMP) | CMP 1.6.0 (2024) | Typography must be created in composable context |
+| String-based navigation routes | `@Serializable` type-safe routes | Navigation 2.8.0 (2024) | Compile-time safety for all route arguments |
+| Platform-specific font loading | `Res.font.*` from Compose Resources | CMP 1.6.0 (2024) | Single font API for all platforms |
 
 ## Open Questions
 
-1. **Navigation 3 multiplatform timeline**
-   - What we know: Nav 3 is 1.0.0-alpha06 for multiplatform as of CMP 1.10.1 (Feb 2026). It is stable on Android since Nov 2025. JetBrains is actively working on multiplatform support.
-   - What's unclear: When Nav 3 will reach stable for multiplatform (beta? 6 months? 12 months?).
-   - Recommendation: Use Nav 2.9.2 now. The migration from Nav 2 to Nav 3 is well-documented. Plan migration in a future phase when Nav 3 multiplatform reaches at least beta. **Confidence: HIGH for this decision.**
+1. **Exact `Modifier.dropShadow()` API signature in CMP 1.10.1**
+   - What we know: `dropShadow(shape, DropShadow(...))` is available in CMP 1.9+. The `DropShadow` class takes blur, color, offset, spread parameters.
+   - What's unclear: The exact import path and parameter names in CMP 1.10.1. The API may have changed between 1.9 and 1.10.
+   - Recommendation: The implementing agent should verify the exact API at implementation time. Fallback: use `Modifier.shadow(elevation, shape)` for basic shadows, or manual `drawBehind` for precise control. **Confidence: MEDIUM.**
 
-2. **Custom fonts vs system fonts in template**
-   - What we know: Compose Resources supports custom font loading via `Res.font.*`. The `Font()` API is `@Composable` in CMP, which means Typography must be created in a composable context.
-   - What's unclear: Whether to include a custom font (e.g., Inter) in the template or use the default Material3 system font.
-   - Recommendation: Use default Material3 typography (system fonts) for the template, with the `Type.kt` file clearly structured so a developer can add custom fonts by following the commented pattern. This keeps the template lightweight and avoids bundling font files. **Confidence: HIGH.**
+2. **isSystemInDarkTheme() import from Foundation vs Material3**
+   - What we know: `isSystemInDarkTheme()` is in `androidx.compose.foundation.isSystemInDarkTheme` package. It should be available from `compose.foundation` without `compose.material3`.
+   - What's unclear: Whether removing `compose.material3` from `composeApp` dependencies breaks the import on all platforms.
+   - Recommendation: Keep `compose.material3` in `composeApp` dependencies for now. Only use `isSystemInDarkTheme()` from it; no Material3 composables. Verify at build time. **Confidence: MEDIUM.**
 
-3. **Component library location: composeApp vs dedicated module**
-   - What we know: The project has feature modules (`app:auth`, `app:dashboard`) that need shared components. Components could live in `composeApp` or in a new `app:design-system` module.
-   - What's unclear: Whether the dependency direction works if components are in `composeApp` (feature modules depend on `composeApp`? No -- `composeApp` depends on feature modules).
-   - Recommendation: Components should be accessible to feature modules. Two options: (a) put components in `composeApp` and feature modules use callback-based APIs (screens receive styled composables as parameters), or (b) create a thin `app:design-system` module. Option (b) is cleaner but adds a module. For a template with ~5 components, option (a) is sufficient -- feature modules expose screen composables that accept lambdas, `composeApp` composes them with the component library. If the component library grows, extract to a module. **Confidence: MEDIUM -- either approach works, (a) is simpler for now.**
+3. **JetBrains Mono font file names for Compose Resources**
+   - What we know: Files go in `composeResources/font/`. The generated `Res.font.*` accessor uses the filename (without extension, with underscores).
+   - What's unclear: Whether font file names with hyphens work or must use underscores. JetBrains Mono distribution files are named `JetBrainsMono-Regular.ttf` -- the hyphen may cause issues.
+   - Recommendation: Rename font files to use underscores: `JetBrainsMono_Regular.ttf`, `JetBrainsMono_SemiBold.ttf`, `JetBrainsMono_Bold.ttf`. **Confidence: HIGH** -- standard Compose Resources pattern.
 
-4. **`koin-compose-viewmodel-navigation` known issues**
-   - What we know: There are reported issues with `koinNavViewModel()` on Android (crashes) and ViewModel recreation with `parametersOf` in Koin + Navigation context.
-   - What's unclear: Whether these affect Koin 4.1.1 specifically (some issues were fixed in updates).
-   - Recommendation: Use `koinViewModel()` (from `koin-compose-viewmodel`) as the primary approach. Only use `koinNavViewModel()` if navigation-scoped ViewModels are needed. Test on all platforms early. **Confidence: MEDIUM.**
+4. **Component library location: composeApp vs shared module**
+   - What we know: Feature modules (`app:auth`, `app:dashboard`) need access to components. Currently they depend on `compose.material3` for UI. `composeApp` depends on feature modules (not the reverse).
+   - What's unclear: If components live in `composeApp`, feature modules cannot import them (dependency goes wrong way).
+   - Recommendation: **Create a new `app:designsystem` module** that contains the theme + all components. Feature modules and `composeApp` both depend on `app:designsystem`. This resolves the circular dependency cleanly. Alternatively, feature modules can expose "headless" screens (no component library dependency) and `composeApp` wraps them with components -- but this is awkward for 41 components. The new module is cleaner. **Confidence: HIGH** for the need; the exact module name is Claude's discretion.
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- [JetBrains Navigation Compose docs](https://kotlinlang.org/docs/multiplatform/compose-navigation.html) - Setup, type-safe routes, NavHost, NavController, platform considerations
-- [JetBrains Navigation Routing docs](https://kotlinlang.org/docs/multiplatform/compose-navigation-routing.html) - `@Serializable` route definitions, browser history binding, URL serialization
-- [JetBrains Navigation 3 docs](https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html) - Nav 3 alpha status, polymorphic serialization requirement, multiplatform artifacts
-- [CMP 1.10.1 release notes](https://github.com/JetBrains/compose-multiplatform/releases/tag/v1.10.1) - Bundled library versions (nav 2.9.2, nav3 1.0.0-alpha06, lifecycle 2.10.0-alpha06)
-- [Android Material3 Design docs](https://developer.android.com/develop/ui/compose/designsystems/material3) - Complete MaterialTheme setup: ColorScheme, Typography, Shapes
-- [Compose Multiplatform resources usage](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html) - Font loading via `Res.font.*` composable API
-- [Koin Compose docs](https://insert-koin.io/docs/reference/koin-compose/compose/) - koin-compose, koin-compose-viewmodel, koin-compose-viewmodel-navigation artifacts
+- [Android Custom Design Systems in Compose](https://developer.android.com/develop/ui/compose/designsystems/custom) - CompositionLocal pattern, @Immutable data classes, theme object pattern
+- [Android Theme Anatomy in Compose](https://developer.android.com/develop/ui/compose/designsystems/anatomy) - staticCompositionLocalOf vs compositionLocalOf, CompositionLocalProvider
+- [Compose Multiplatform Resources Usage](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-usage.html) - Font() as @Composable, font loading from composeResources
+- [CMP 1.10.0 What's New](https://kotlinlang.org/docs/multiplatform/whats-new-compose-110.html) - Navigation 2.9.2 version, Lifecycle 2.10.0-alpha06, Nav 3 alpha
+- [CMP 1.10.0 Release Blog](https://blog.jetbrains.com/kotlin/2026/01/compose-multiplatform-1-10-0/) - Unified @Preview, Navigation 3, Hot Reload
+- Pencil design system file (`terminal_design_system.pen`) - All 41 component specs, token values, light/dark theme variables (read via Pencil MCP tools)
 
 ### Secondary (MEDIUM confidence)
-- [JetBrains CMP 1.10.0 blog post](https://blog.jetbrains.com/kotlin/2026/01/compose-multiplatform-1-10-0/) - Nav 3 introduction, preview annotation unification
-- [Google Nav 3 stable announcement](https://android-developers.googleblog.com/2025/11/jetpack-navigation-3-is-stable.html) - Nav 3 1.0 stable for Android, migration guide from Nav 2
-- [CMP What's New 1.10.0 docs](https://kotlinlang.org/docs/multiplatform/whats-new-compose-110.html) - Nav 3 alpha status for multiplatform, browser history postponed
-- [Koin 4.1 blog post](https://blog.kotzilla.io/koin-4.1-is-here) - Koin 4.1 multiplatform Compose support, navigation integration
+- [Compose Shadow APIs (Android docs)](https://developer.android.com/develop/ui/compose/graphics/draw/shadows) - dropShadow/innerShadow modifiers
+- [CMP 1.9.0 What's New](https://kotlinlang.org/docs/multiplatform/whats-new-compose-190.html) - DropShadowPainter, InnerShadowPainter introduction
+- [Compose Unstyled docs](https://composables.com/docs/compose-unstyled/components) - Reference for renderless component patterns (not used as dependency)
+- [isSystemInDarkTheme iOS Issue #3575](https://github.com/JetBrains/compose-multiplatform/issues/3575) - Historical dark mode detection issue on iOS
 
 ### Tertiary (LOW confidence)
-- [Koin koinNavViewModel crash issue #1926](https://github.com/InsertKoinIO/koin/issues/1926) - Potential koinNavViewModel crash on Android in CMP; needs validation with Koin 4.1.1
-- [Koin Nav3 ViewModel recreation issue #2337](https://github.com/InsertKoinIO/koin/issues/2337) - ViewModel recreation instead of reuse with parametersOf in Nav3; may not affect Nav 2.x
+- [compose-shadow by LennartEgb](https://github.com/LennartEgb/compose-shadow) - Third-party shadow library for CMP (not needed if built-in API works)
+- [Koin koinNavViewModel crash issue #1926](https://github.com/InsertKoinIO/koin/issues/1926) - Potential crash; use `koinViewModel()` instead of `koinNavViewModel()`
 
 ## Metadata
 
 **Confidence breakdown:**
-- Standard stack: HIGH - Navigation Compose 2.9.2 is bundled with CMP 1.10.1, verified via release notes. Material3 already in use. Koin 4.1.1 confirmed to have navigation artifact.
-- Architecture: HIGH - Type-safe routes with `@Serializable` are the official documented pattern. Theme system follows Material3 official guide. Component library pattern is standard Compose composition.
-- Pitfalls: HIGH - Serialization plugin requirement verified by checking composeApp build.gradle.kts (missing). Back stack leak is a well-known navigation pitfall. Font composable constraint verified in Compose Resources docs.
-- Navigation 3 assessment: HIGH - Alpha status confirmed via release notes (1.0.0-alpha06). Browser history limitation confirmed via what's-new docs. Decision to use Nav 2.9.2 is well-supported.
+- Standard stack: HIGH - Navigation Compose 2.9.2 and Compose Foundation are bundled with CMP 1.10.1. Custom CompositionLocal theming is a documented official pattern.
+- Architecture: HIGH - CompositionLocal theme system follows official Android/Compose documentation. Component file organization is standard Compose practice. Navigation pattern from prior verified research.
+- Theme token mapping: HIGH - All color values extracted directly from `terminal_design_system.pen` via Pencil MCP tools. Both light and dark theme values verified.
+- Component implementation: MEDIUM - Custom Foundation-based components (especially Checkbox, Switch, Radio) require manual drawing and accessibility setup. Pattern is proven but implementation needs care.
+- Shadow API: MEDIUM - `Modifier.dropShadow()` confirmed available in CMP 1.9+ but exact API signature in 1.10.1 needs build-time verification.
+- Pitfalls: HIGH - Font composable constraint, serialization plugin requirement, and BasicText color defaults verified from official docs and codebase inspection.
 
-**Research date:** 2026-02-11
-**Valid until:** 2026-03-11 (stable libraries; Nav 3 multiplatform status may change)
+**Research date:** 2026-02-12
+**Valid until:** 2026-03-12 (stable libraries; shadow API may stabilize further)
