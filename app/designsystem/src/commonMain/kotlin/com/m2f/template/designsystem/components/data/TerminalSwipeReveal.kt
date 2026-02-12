@@ -1,0 +1,229 @@
+package com.m2f.template.designsystem.components.data
+
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.spring
+import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
+import com.m2f.template.designsystem.theme.TerminalPreview
+import com.m2f.template.designsystem.theme.TerminalTheme
+import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+
+/**
+ * A swipe-to-reveal wrapper that adds horizontal swipe gesture to any content.
+ *
+ * Swiping the foreground content to the left reveals action buttons behind it.
+ * Swiping past the [revealWidth] threshold snaps the actions fully open; swiping
+ * less snaps them closed. Tapping the foreground when actions are revealed closes them.
+ *
+ * Built entirely with Foundation primitives -- no Material3 dependencies.
+ *
+ * @param modifier Modifier applied to the outer container.
+ * @param revealWidth The width of the action area revealed on swipe.
+ * @param swipeActions Composable content for the action buttons, rendered in a [Row].
+ * @param content The foreground content that can be swiped.
+ */
+@Composable
+fun TerminalSwipeReveal(
+    modifier: Modifier = Modifier,
+    revealWidth: androidx.compose.ui.unit.Dp = 80.dp,
+    swipeActions: @Composable RowScope.() -> Unit,
+    content: @Composable () -> Unit,
+) {
+    val density = LocalDensity.current
+    val maxRevealPx = with(density) { revealWidth.toPx() }
+    val thresholdPx = maxRevealPx / 2f
+
+    val offsetX = remember { Animatable(0f) }
+    val coroutineScope = rememberCoroutineScope()
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .clipToBounds(),
+    ) {
+        // Actions row -- positioned at the end (right side)
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .width(revealWidth)
+                .fillMaxHeight()
+                .background(TerminalTheme.colors.errorBg),
+            content = swipeActions,
+        )
+
+        // Foreground content -- slides left to reveal actions
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .offset { IntOffset(-offsetX.value.roundToInt(), 0) }
+                .pointerInput(Unit) {
+                    detectTapGestures {
+                        if (offsetX.value > 0f) {
+                            coroutineScope.launch {
+                                offsetX.animateTo(0f, spring())
+                            }
+                        }
+                    }
+                }
+                .pointerInput(Unit) {
+                    detectHorizontalDragGestures(
+                        onDragEnd = {
+                            coroutineScope.launch {
+                                if (offsetX.value > thresholdPx) {
+                                    offsetX.animateTo(maxRevealPx, spring())
+                                } else {
+                                    offsetX.animateTo(0f, spring())
+                                }
+                            }
+                        },
+                        onDragCancel = {
+                            coroutineScope.launch {
+                                if (offsetX.value > thresholdPx) {
+                                    offsetX.animateTo(maxRevealPx, spring())
+                                } else {
+                                    offsetX.animateTo(0f, spring())
+                                }
+                            }
+                        },
+                        onHorizontalDrag = { _, dragAmount ->
+                            coroutineScope.launch {
+                                val newOffset = (offsetX.value - dragAmount)
+                                    .coerceIn(0f, maxRevealPx)
+                                offsetX.snapTo(newOffset)
+                            }
+                        },
+                    )
+                },
+        ) {
+            content()
+        }
+    }
+}
+
+/**
+ * A convenience composable for a delete swipe action.
+ *
+ * Renders a red delete button intended for use inside [TerminalSwipeReveal]'s
+ * `swipeActions` slot. Uses [TerminalTheme.colors.error] for the background
+ * and [TerminalTheme.colors.btnDestructiveText] for the label.
+ *
+ * @param onClick Callback invoked when the delete action is tapped.
+ * @param modifier Modifier applied to the action container.
+ * @param label Text label displayed on the action button.
+ */
+@Composable
+fun TerminalDeleteAction(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    label: String = "Delete",
+) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    Box(
+        modifier = modifier
+            .width(80.dp)
+            .fillMaxHeight()
+            .background(colors.error)
+            .pointerInput(Unit) {
+                detectTapGestures { onClick() }
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        BasicText(
+            text = label,
+            style = typography.xs.copy(
+                color = colors.btnDestructiveText,
+                fontWeight = FontWeight.Medium,
+            ),
+        )
+    }
+}
+
+@TerminalPreview
+@Composable
+private fun TerminalSwipeRevealPreview() {
+    TerminalTheme {
+        Column(
+            modifier = Modifier
+                .background(TerminalTheme.colors.bg)
+                .padding(16.dp),
+        ) {
+            TerminalList(title = "swipe_actions", count = 3) {
+                // Item 1: Default state with delete action
+                TerminalSwipeReveal(
+                    swipeActions = { TerminalDeleteAction(onClick = {}) },
+                ) {
+                    TerminalListItem(
+                        text = "node_process",
+                        subtitle = "PID: 1234",
+                        state = ListItemState.Default,
+                    )
+                }
+
+                // Item 2: Selected state with delete action
+                TerminalSwipeReveal(
+                    swipeActions = { TerminalDeleteAction(onClick = {}) },
+                ) {
+                    TerminalListItem(
+                        text = "python_script",
+                        subtitle = "PID: 5678",
+                        state = ListItemState.Selected,
+                    )
+                }
+
+                // Item 3: Default with custom two-action reveal (delete + archive)
+                TerminalSwipeReveal(
+                    revealWidth = 160.dp,
+                    swipeActions = {
+                        TerminalDeleteAction(onClick = {})
+                        Box(
+                            modifier = Modifier
+                                .width(80.dp)
+                                .fillMaxHeight()
+                                .background(TerminalTheme.colors.info),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            BasicText(
+                                text = "Archive",
+                                style = TerminalTheme.typography.xs.copy(
+                                    color = TerminalTheme.colors.surface,
+                                    fontWeight = FontWeight.Medium,
+                                ),
+                            )
+                        }
+                    },
+                ) {
+                    TerminalListItem(
+                        text = "docker_container",
+                        subtitle = "PID: 9012",
+                        state = ListItemState.Default,
+                    )
+                }
+            }
+        }
+    }
+}

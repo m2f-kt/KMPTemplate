@@ -272,17 +272,25 @@ private fun TerminalListPreview() {
                 .padding(16.dp),
         ) {
             TerminalList(title = "process_list", count = 5) {
-                TerminalListItem(
-                    text = "node_process",
-                    subtitle = "PID: 1234",
-                    state = ListItemState.Default,
-                    menuItems = {
-                        TerminalDropdownMenuItem(text = "View Details", onClick = {})
-                        TerminalDropdownMenuItem(text = "Terminate", onClick = {})
-                        TerminalDropdownMenuItem(text = "Copy PID", onClick = {})
-                    },
-                )
-                TerminalListItem(text = "python_script", subtitle = "PID: 5678", state = ListItemState.Hover)
+                TerminalSwipeReveal(
+                    swipeActions = { TerminalDeleteAction(onClick = {}) },
+                ) {
+                    TerminalListItem(
+                        text = "node_process",
+                        subtitle = "PID: 1234",
+                        state = ListItemState.Default,
+                        menuItems = {
+                            TerminalDropdownMenuItem(text = "View Details", onClick = {})
+                            TerminalDropdownMenuItem(text = "Terminate", onClick = {})
+                            TerminalDropdownMenuItem(text = "Copy PID", onClick = {})
+                        },
+                    )
+                }
+                TerminalSwipeReveal(
+                    swipeActions = { TerminalDeleteAction(onClick = {}) },
+                ) {
+                    TerminalListItem(text = "python_script", subtitle = "PID: 5678", state = ListItemState.Hover)
+                }
                 TerminalListItem(text = "docker_container", subtitle = "PID: 9012", state = ListItemState.Selected)
                 TerminalListItem(
                     text = "legacy_service",
