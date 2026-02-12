@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Phase 4 verification passed (11/11 must-haves, gap closure confirmed)
+Last activity: 2026-02-12 -- Completed quick task 1: Align TerminalCard with Pencil design
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -110,6 +110,12 @@ Recent decisions affecting current work:
 ### Pending Todos
 
 None yet.
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Align TerminalCard with Pencil design — structured header/content/footer, 5 variants | 2026-02-12 | 4516ed7 | [1-align-design-system-components-with-penc](./quick/1-align-design-system-components-with-penc/) |
 
 ### Blockers/Concerns
 
