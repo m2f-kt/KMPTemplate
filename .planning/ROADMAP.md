@@ -85,11 +85,14 @@ Plans:
   1. Navigation between screens uses type-safe route objects (serializable data classes) -- no string-based routing anywhere
   2. A shared component library provides at minimum: buttons (primary, secondary, outlined), text inputs (with validation states), cards, and dialogs -- all themed consistently
   3. The app renders with a custom theme (colors, typography) that a developer can change by editing a single theme configuration, and it applies uniformly across all targets
-**Plans**: 2 plans
+**Plans**: 5 plans
 
 Plans:
 - [ ] 04-01-PLAN.md -- Navigation deps, serialization plugin, @Serializable routes, NavHost, App.kt wiring
-- [ ] 04-02-PLAN.md -- Custom theme system (Color, Type, Shape, AppTheme) and shared component library (buttons, inputs, cards, dialogs)
+- [ ] 04-02-PLAN.md -- Design system module, JetBrains Mono fonts, TerminalTheme with 8 CompositionLocal subsystems
+- [ ] 04-03-PLAN.md -- Button, Input, Textarea, Card components (13 of 41 Pencil components)
+- [ ] 04-04-PLAN.md -- Alert, Badge, Progress, Tooltip, Checkbox, Switch, Radio components (18 of 41)
+- [ ] 04-05-PLAN.md -- Table, List, Kbd, Avatar, Divider components + TerminalTheme integration (10 of 41)
 
 ### Phase 5: Auth Screens, Dashboard & Setup CLI
 **Goal**: A developer who clones the template can run a setup script to customize it, then see a working app with login/signup screens, a sample dashboard behind auth, and form validation -- proving the entire architecture works end-to-end.
@@ -133,6 +136,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Foundation & Module Structure | 4/4 | Complete | 2026-02-10 |
 | 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
 | 3. Client SDK & Storage | 3/3 | Complete | 2026-02-11 |
-| 4. Navigation & UI Components | 0/2 | Not started | - |
+| 4. Navigation & UI Components | 0/5 | Not started | - |
 | 5. Auth Screens, Dashboard & Setup CLI | 0/3 | Not started | - |
 | 6. AI Agent Infrastructure | 0/2 | Not started | - |
