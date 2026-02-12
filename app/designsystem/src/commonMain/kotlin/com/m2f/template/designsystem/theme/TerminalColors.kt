@@ -42,6 +42,11 @@ data class TerminalColors(
     val btnDisabledBg: Color,
     val btnDisabledText: Color,
     val btnDisabledBorder: Color,
+    // Card accent tokens
+    val cardAccentBg: Color,
+    val cardAccentHeaderBg: Color,
+    val cardAccentHeaderText: Color,
+    val cardAccentBodyText: Color,
 )
 
 val LocalTerminalColors = staticCompositionLocalOf {
@@ -81,6 +86,10 @@ val LocalTerminalColors = staticCompositionLocalOf {
         btnDisabledBg = Color.Unspecified,
         btnDisabledText = Color.Unspecified,
         btnDisabledBorder = Color.Unspecified,
+        cardAccentBg = Color.Unspecified,
+        cardAccentHeaderBg = Color.Unspecified,
+        cardAccentHeaderText = Color.Unspecified,
+        cardAccentBodyText = Color.Unspecified,
     )
 }
 
@@ -88,8 +97,8 @@ val LocalTerminalColors = staticCompositionLocalOf {
 val TerminalLightColors = TerminalColors(
     bg = Color(0xFFE8E8E8),
     surface = Color(0xFFF5F5F5),
-    accent = Color(0xFF4A9B6E),
-    accentMuted = Color(0xFFD8E8DE),
+    accent = Color(0xFF525252),
+    accentMuted = Color(0xFFE5E5E5),
     text = Color(0xFF1F1F1F),
     textMuted = Color(0xFF5A5A5A),
     textDim = Color(0xFF787878),
@@ -121,14 +130,18 @@ val TerminalLightColors = TerminalColors(
     btnDisabledBg = Color(0xFFF5F5F5),
     btnDisabledText = Color(0xFFA3A3A3),
     btnDisabledBorder = Color(0xFFE5E5E5),
+    cardAccentBg = Color(0xFFE5E5E5),
+    cardAccentHeaderBg = Color(0xFF525252),
+    cardAccentHeaderText = Color(0xFFE8EBE4),
+    cardAccentBodyText = Color(0xFF525252),
 )
 
 // Dark theme -- extracted from terminal_design_system.pen variables
 val TerminalDarkColors = TerminalColors(
     bg = Color(0xFF101012),
     surface = Color(0xFF1A1A1C),
-    accent = Color(0xFF6BAF8A),
-    accentMuted = Color(0xFF1F3028),
+    accent = Color(0xFFA3A3A3),
+    accentMuted = Color(0xFF262626),
     text = Color(0xFFD4D4D4),
     textMuted = Color(0xFF8A8A8A),
     textDim = Color(0xFF5A5A5A),
@@ -160,4 +173,8 @@ val TerminalDarkColors = TerminalColors(
     btnDisabledBg = Color(0xFF1C1C1C),
     btnDisabledText = Color(0xFF525252),
     btnDisabledBorder = Color(0xFF2A2A2A),
+    cardAccentBg = Color(0xFF262626),
+    cardAccentHeaderBg = Color(0xFFD4D4D4),
+    cardAccentHeaderText = Color(0xFF171717),
+    cardAccentBodyText = Color(0xFFA3A3A3),
 )
