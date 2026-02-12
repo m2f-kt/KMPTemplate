@@ -22,4 +22,9 @@ import androidx.compose.ui.tooling.preview.Preview
     name = "Desktop",
     widthDp = 1024,
 )
+@Preview(
+    name = "Desktop",
+    uiMode = AndroidUiModes.UI_MODE_NIGHT_YES,
+    widthDp = 1024,
+)
 annotation class TerminalPreview
