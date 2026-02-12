@@ -90,7 +90,10 @@ Recent decisions affecting current work:
 - [04-02]: isSystemInDarkTheme() available from compose.foundation alone (no Material3 needed in designsystem)
 - [04-02]: Removed compose.material3 from app:auth and app:dashboard (terminal design system replaces it)
 - [04-02]: Font files use underscore naming for Compose Resources accessor generation
-- [04-03]: Used drawBehind modifier for Accent card left edge (4dp colored left border) instead of nested Box layout
+- [04-03]: [SUPERSEDED by quick-01] Accent card now uses dark header bg instead of left edge
+- [quick-01]: TerminalCompactCard is a separate composable (not a variant flag) due to fundamentally different horizontal Row layout
+- [quick-01]: Accent variant uses colors.textMuted for header bg (closest token to Pencil #525252 dark header)
+- [quick-01]: borders.default (2dp) for Highlighted variant border width; borders.thin (1dp) for all others
 - [04-03]: TerminalInput uses decorationBox parameter on BasicTextField for custom border/padding/placeholder/icons
 - [04-03]: Spacer with Modifier.padding used for icon gaps inside input fields
 - [04-04]: Canvas-based checkmark drawing for TerminalCheckbox (cross-platform consistency over unicode)
@@ -116,5 +119,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed 04-07-PLAN.md (Gap closure: remaining component previews) -- Phase 04 complete
+Stopped at: Completed quick-01 (Align TerminalCard with Pencil design) -- TerminalCard rewritten with header/content/footer structure
 Resume file: None
