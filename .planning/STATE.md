@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-12 -- Completed quick task 9: Align TerminalTable with Pencil design
+Last activity: 2026-02-12 -- Completed quick task 10: Align toggles with Pencil design and add selection table
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -127,6 +127,10 @@ Recent decisions affecting current work:
 - [quick-09]: Literal 10.sp for header fontSize (Pencil specifies 10, typography.xs is 11.sp)
 - [quick-09]: Literal dp values (16dp/10dp header, 16dp/12dp row) since Pencil tokens dont map to spacing tokens
 - [quick-09]: RowScope extension for TerminalTableCell to enable weight(1f) usage
+- [quick-10]: Literal 10.dp for switch track radius and label gap (Pencil 10dp between radius.md=6 and radius.lg=12)
+- [quick-10]: btnPrimaryBg for switch on-track (consistent with checkbox checked fill; both #525252 in light)
+- [quick-10]: 16dp inline table checkbox in 32dp touch target cell (proportionally smaller than standalone 18dp)
+- [quick-10]: triStateToggleable for tri-state checkbox accessibility (ToggleableState.On/Off/Indeterminate)
 
 ### Pending Todos
 
@@ -145,6 +149,7 @@ None yet.
 | 7 | Align TerminalBadge with Pencil design -- sm radius, btnPrimary Accent, icon param, font weights | 2026-02-12 | e8ae2bf | [7-align-terminalbadge-with-pencil-design](./quick/7-align-terminalbadge-with-pencil-design/) |
 | 8 | Align TerminalProgress with Pencil design -- label/percentage, 8dp track, accentMuted, gradient indicator | 2026-02-12 | fb28c8a | [8-align-terminalprogress-with-pencil-desig](./quick/8-align-terminalprogress-with-pencil-desig/) |
 | 9 | Align TerminalTable with Pencil design -- 4 table tokens, composable row content, TerminalTableCell | 2026-02-12 | 8f5ba33 | [9-align-table-components-with-pencil-desig](./quick/9-align-table-components-with-pencil-desig/) |
+| 10 | Align toggles with Pencil design -- tri-state checkbox, switch alignment, selectable table | 2026-02-12 | 811eb08 | [10-align-toggles-with-pencil-design-and-add](./quick/10-align-toggles-with-pencil-design-and-add/) |
 
 ### Blockers/Concerns
 
@@ -154,5 +159,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-12
-Stopped at: Completed quick-09 (Align TerminalTable with Pencil design) -- 4 table color tokens, composable TerminalTableRow with RowScope, TerminalTableCell primary/secondary helper
+Stopped at: Completed quick-10 (Align toggles with Pencil design) -- tri-state checkbox, Pencil-aligned switch, TerminalSelectableTable with checkbox column
 Resume file: None
