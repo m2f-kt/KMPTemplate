@@ -80,6 +80,17 @@ class UserRepository(private val db: R2dbcDatabase) {
             }
             rowsUpdated > 0
         }
+
+    /**
+     * Update a user's password hash. Used by the password reset flow.
+     */
+    suspend fun updatePasswordHash(id: Uuid, passwordHash: String): Boolean =
+        suspendTransaction(db = db) {
+            val rowsUpdated = UsersTable.update({ UsersTable.id eq id }) { stmt ->
+                stmt[UsersTable.passwordHash] = passwordHash
+            }
+            rowsUpdated > 0
+        }
 }
 
 private fun ResultRow.toUserRecord(): UserRecord = UserRecord(

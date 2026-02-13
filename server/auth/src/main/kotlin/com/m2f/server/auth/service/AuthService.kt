@@ -48,13 +48,14 @@ class AuthService(
     /**
      * Register a new user with accumulated validation.
      * Returns an [AuthResponse] with access and refresh tokens on success.
+     * Accepts firstName + lastName, concatenates to name for storage.
      *
      * @throws DomainError via Raise if validation fails or user already exists.
      */
     context(raise: Raise<DomainError>)
     suspend fun register(request: RegisterRequest): AuthResponse {
         // Step 1: Validate all fields with accumulated errors
-        val (validEmail, validPassword, validName) = raise.withError(
+        val (validEmail, validPassword, validFirstName, validLastName) = raise.withError(
             { errors: arrow.core.NonEmptyList<FieldError> ->
                 IncorrectInput(
                     errors.map { fieldError ->
@@ -69,33 +70,39 @@ class AuthService(
             zipOrAccumulate(
                 { validateEmail(request.email) },
                 { validatePassword(request.password) },
-                { validateName(request.name) },
-            ) { email, password, name -> Triple(email, password, name) }
+                { validateName(request.firstName) },
+                { validateName(request.lastName) },
+            ) { email, password, firstName, lastName ->
+                RegisterFields(email, password, firstName, lastName)
+            }
         }
 
-        // Step 2: Check for duplicate email
+        // Step 2: Concatenate first + last name
+        val fullName = "$validFirstName $validLastName"
+
+        // Step 3: Check for duplicate email
         ensureNotNull(userRepository.findByEmail(validEmail)) { UserAlreadyExists() }
 
-        // Step 3: Hash password
+        // Step 4: Hash password
         val hash = passwordHasher.hash(validPassword)
 
-        // Step 4: Insert user
-        val userId = userRepository.insert(validEmail, hash, validName, "USER")
+        // Step 5: Insert user
+        val userId = userRepository.insert(validEmail, hash, fullName, "USER")
 
-        // Step 5: Generate token pair
+        // Step 6: Generate token pair
         val (authResponse, rawRefreshToken) = tokenProvider.generateTokenPair(
             userId.toString(),
             "USER",
         )
 
-        // Step 6: Hash and store refresh token
+        // Step 7: Hash and store refresh token
         val hashedToken = tokenProvider.hashRefreshToken(rawRefreshToken)
         val expiresAt = Clock.System.now()
             .plus(tokenProvider.getRefreshTokenExpiry().milliseconds)
             .toLocalDateTime(TimeZone.UTC)
         refreshTokenRepository.store(userId, hashedToken, expiresAt)
 
-        // Step 7: Return the response
+        // Step 8: Return the response
         return authResponse
     }
 
@@ -178,3 +185,13 @@ class AuthService(
         return mapOf("message" to "Logged out successfully")
     }
 }
+
+/**
+ * Helper data class for accumulated validation of registration fields.
+ */
+private data class RegisterFields(
+    val email: String,
+    val password: String,
+    val firstName: String,
+    val lastName: String,
+)

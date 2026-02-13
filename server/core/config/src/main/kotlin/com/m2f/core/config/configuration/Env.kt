@@ -15,6 +15,7 @@ private const val REFRESH_TOKEN_EXPIRY: Long = 604800000L // 7 days in milliseco
 data class Env(
     val http: Http = Http(),
     val auth: Auth = Auth(),
+    val oauth: OAuth = OAuth(),
     val serverConfig: ServerConfig = ServerConfig(),
 ) {
     data class Http(
@@ -31,6 +32,19 @@ data class Env(
             ?: ACCESS_TOKEN_EXPIRY,
         val refreshTokenExpiry: Long = System.getenv("JWT_REFRESH_EXPIRY")?.toLongOrNull()
             ?: REFRESH_TOKEN_EXPIRY,
+    )
+
+    /**
+     * OAuth provider configuration.
+     * Empty defaults mean OAuth is non-functional until env vars are configured.
+     */
+    data class OAuth(
+        val googleClientId: String = System.getenv("GOOGLE_CLIENT_ID") ?: "",
+        val googleClientSecret: String = System.getenv("GOOGLE_CLIENT_SECRET") ?: "",
+        val appleClientId: String = System.getenv("APPLE_CLIENT_ID") ?: "",
+        val appleClientSecret: String = System.getenv("APPLE_CLIENT_SECRET") ?: "",
+        val appleTeamId: String = System.getenv("APPLE_TEAM_ID") ?: "",
+        val appleKeyId: String = System.getenv("APPLE_KEY_ID") ?: "",
     )
 
     data class ServerConfig(

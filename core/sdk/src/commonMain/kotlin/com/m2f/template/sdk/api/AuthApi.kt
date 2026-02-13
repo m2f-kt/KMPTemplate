@@ -3,10 +3,11 @@ package com.m2f.template.sdk.api
 import arrow.core.Either
 import com.m2f.template.models.AppError
 import com.m2f.template.models.dto.AuthResponse
-import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.models.dto.ForgotPasswordRequest
+import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.models.dto.RefreshTokenRequest
 import com.m2f.template.models.dto.RegisterRequest
+import com.m2f.template.models.dto.ResetPasswordRequest
 import com.m2f.template.sdk.apiCall
 import com.m2f.template.storage.TokenStorage
 import io.ktor.client.HttpClient
@@ -59,6 +60,14 @@ class AuthApi(
     suspend fun forgotPassword(request: ForgotPasswordRequest): Either<AppError, Unit> =
         apiCall<Unit> {
             client.post("/api/auth/forgot-password") {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+        }
+
+    suspend fun resetPassword(request: ResetPasswordRequest): Either<AppError, Unit> =
+        apiCall<Unit> {
+            client.post("/api/auth/reset-password") {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
