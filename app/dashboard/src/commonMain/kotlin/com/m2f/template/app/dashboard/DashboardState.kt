@@ -8,5 +8,4 @@ data class DashboardState(
     val isLoading: Boolean = false,
     val userName: String = "user@terminal.dev",
     val selectedNavItem: String = "dashboard",
-    val showProfile: Boolean = false,
 )

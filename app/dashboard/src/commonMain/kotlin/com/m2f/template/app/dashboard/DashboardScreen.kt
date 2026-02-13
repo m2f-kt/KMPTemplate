@@ -50,20 +50,16 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  *
  * @param state The current dashboard state with mock data.
  * @param onNavItemSelected Callback when a sidebar/bottom nav item is selected.
- * @param onShowProfile Callback to show profile content inside the dashboard shell.
- * @param onHideProfile Callback to hide profile content and return to dashboard.
+ * @param onProfileClick Callback to navigate to the standalone ProfileRoute.
  * @param onLogout Callback when the user logs out.
- * @param profileContent Composable slot for profile screen content, injected from AppNavHost.
  * @param modifier Modifier for the screen root.
  */
 @Composable
 fun DashboardScreen(
     state: DashboardState,
     onNavItemSelected: (String) -> Unit,
-    onShowProfile: () -> Unit,
-    onHideProfile: () -> Unit,
+    onProfileClick: () -> Unit,
     onLogout: () -> Unit,
-    profileContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -76,19 +72,15 @@ fun DashboardScreen(
             DesktopDashboard(
                 state = state,
                 onNavItemSelected = onNavItemSelected,
-                onShowProfile = onShowProfile,
-                onHideProfile = onHideProfile,
+                onProfileClick = onProfileClick,
                 onLogout = onLogout,
-                profileContent = profileContent,
             )
         } else {
             // Mobile layout
             MobileDashboard(
                 state = state,
                 onTabSelected = onNavItemSelected,
-                onShowProfile = onShowProfile,
-                onHideProfile = onHideProfile,
-                profileContent = profileContent,
+                onProfileClick = onProfileClick,
             )
         }
     }
@@ -100,117 +92,85 @@ fun DashboardScreen(
 private fun DesktopDashboard(
     state: DashboardState,
     onNavItemSelected: (String) -> Unit,
-    onShowProfile: () -> Unit,
-    onHideProfile: () -> Unit,
+    onProfileClick: () -> Unit,
     onLogout: () -> Unit,
-    profileContent: @Composable () -> Unit,
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         DashboardSidebar(
             selectedItem = state.selectedNavItem,
             userName = state.userName,
             onNavItemSelected = onNavItemSelected,
-            onProfileClick = onShowProfile,
+            onProfileClick = onProfileClick,
             onLogout = onLogout,
         )
 
-        if (state.showProfile) {
-            // Profile content with back button
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight(),
-            ) {
-                // Back button row
-                val colors = TerminalTheme.colors
-                val typography = TerminalTheme.typography
-
-                Row(
+        // State-based content switching
+        when (state.selectedNavItem) {
+            "dashboard" -> {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 32.dp, vertical = 16.dp),
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(32.dp),
+                    verticalArrangement = Arrangement.spacedBy(28.dp),
                 ) {
-                    TerminalText(
-                        text = "< back",
-                        style = typography.sm,
-                        color = colors.textMuted,
-                        modifier = Modifier.clickable(onClick = onHideProfile),
-                    )
-                }
+                    // Header row
+                    DesktopHeader(userName = state.userName, onProfileClick = onProfileClick)
 
-                Box(modifier = Modifier.weight(1f)) {
-                    profileContent()
-                }
-            }
-        } else {
-            // State-based content switching
-            when (state.selectedNavItem) {
-                "dashboard" -> {
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .fillMaxHeight()
-                            .verticalScroll(rememberScrollState())
-                            .padding(32.dp),
-                        verticalArrangement = Arrangement.spacedBy(28.dp),
+                    // Metrics row
+                    MetricsRow(metrics = state.metrics)
+
+                    // Columns row: process table + deployment/activity
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
                     ) {
-                        // Header row
-                        DesktopHeader(userName = state.userName, onProfileClick = onShowProfile)
+                        // Left: process table
+                        Column(modifier = Modifier.weight(1f)) {
+                            ProcessTable(processes = state.processes)
+                        }
 
-                        // Metrics row
-                        MetricsRow(metrics = state.metrics)
-
-                        // Columns row: process table + deployment/activity
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        // Right: deployment + activity
+                        Column(
+                            modifier = Modifier.width(340.dp),
+                            verticalArrangement = Arrangement.spacedBy(24.dp),
                         ) {
-                            // Left: process table
-                            Column(modifier = Modifier.weight(1f)) {
-                                ProcessTable(processes = state.processes)
-                            }
-
-                            // Right: deployment + activity
-                            Column(
-                                modifier = Modifier.width(340.dp),
-                                verticalArrangement = Arrangement.spacedBy(24.dp),
-                            ) {
-                                DeploymentCard(deployment = state.deployment)
-                                ActivityList(activities = state.activities)
-                            }
+                            DeploymentCard(deployment = state.deployment)
+                            ActivityList(activities = state.activities)
                         }
                     }
                 }
-                "processes" -> {
-                    PlaceholderContent(
-                        title = "> processes",
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-                "logs" -> {
-                    PlaceholderContent(
-                        title = "> logs",
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-                "deployments" -> {
-                    PlaceholderContent(
-                        title = "> deployments",
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-                "settings" -> {
-                    PlaceholderContent(
-                        title = "> settings",
-                        modifier = Modifier.weight(1f),
-                    )
-                }
-                else -> {
-                    PlaceholderContent(
-                        title = "> ${state.selectedNavItem}",
-                        modifier = Modifier.weight(1f),
-                    )
-                }
+            }
+            "processes" -> {
+                PlaceholderContent(
+                    title = "> processes",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            "logs" -> {
+                PlaceholderContent(
+                    title = "> logs",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            "deployments" -> {
+                PlaceholderContent(
+                    title = "> deployments",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            "settings" -> {
+                PlaceholderContent(
+                    title = "> settings",
+                    modifier = Modifier.weight(1f),
+                )
+            }
+            else -> {
+                PlaceholderContent(
+                    title = "> ${state.selectedNavItem}",
+                    modifier = Modifier.weight(1f),
+                )
             }
         }
     }
@@ -270,137 +230,108 @@ private fun DesktopHeader(
 private fun MobileDashboard(
     state: DashboardState,
     onTabSelected: (String) -> Unit,
-    onShowProfile: () -> Unit,
-    onHideProfile: () -> Unit,
-    profileContent: @Composable () -> Unit,
+    onProfileClick: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
     Column(modifier = Modifier.fillMaxSize()) {
-        if (state.showProfile) {
-            // Profile header with back button (replaces bottom nav)
+        // Scrollable content area
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 20.dp, vertical = 24.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+        ) {
+            // Header: brand + avatar
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(colors.surface)
-                    .padding(horizontal = 20.dp, vertical = 12.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TerminalText(
-                    text = "< back",
-                    style = typography.sm,
-                    color = colors.textMuted,
-                    modifier = Modifier.clickable(onClick = onHideProfile),
-                )
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(colors.border),
-            )
-            Box(modifier = Modifier.weight(1f)) {
-                profileContent()
-            }
-        } else {
-            // Scrollable content area
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp, vertical = 24.dp),
-                verticalArrangement = Arrangement.spacedBy(20.dp),
-            ) {
-                // Header: brand + avatar
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
+                    TerminalText(
+                        text = ">_",
+                        style = typography.md.copy(fontWeight = FontWeight.Bold),
+                        color = colors.accent,
+                    )
+                    TerminalText(
+                        text = "terminal",
+                        style = typography.md.copy(fontWeight = FontWeight.SemiBold),
+                        color = colors.text,
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clip(CircleShape)
+                        .background(colors.accentMuted)
+                        .clickable(onClick = onProfileClick),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    TerminalText(
+                        text = state.userName.take(1).uppercase(),
+                        style = typography.sm.copy(fontWeight = FontWeight.Medium),
+                        color = colors.accent,
+                    )
+                }
+            }
+
+            // State-based content switching
+            when (state.selectedNavItem) {
+                "dashboard" -> {
+                    // Title block
+                    Column {
                         TerminalText(
-                            text = ">_",
-                            style = typography.md.copy(fontWeight = FontWeight.Bold),
-                            color = colors.accent,
-                        )
-                        TerminalText(
-                            text = "terminal",
-                            style = typography.md.copy(fontWeight = FontWeight.SemiBold),
+                            text = "$ system_overview",
+                            style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                             color = colors.text,
                         )
-                    }
-
-                    Box(
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clip(CircleShape)
-                            .background(colors.accentMuted)
-                            .clickable(onClick = onShowProfile),
-                        contentAlignment = Alignment.Center,
-                    ) {
+                        Spacer(modifier = Modifier.height(4.dp))
                         TerminalText(
-                            text = state.userName.take(1).uppercase(),
-                            style = typography.sm.copy(fontWeight = FontWeight.Medium),
-                            color = colors.accent,
+                            text = "[4 nodes active]",
+                            style = typography.xs,
+                            color = colors.textDim,
                         )
                     }
+
+                    // Metrics: 2x2 grid
+                    MobileMetricsGrid(metrics = state.metrics)
+
+                    // Process list (simplified)
+                    MobileProcessList(processes = state.processes)
+
+                    // Deployment card
+                    DeploymentCard(deployment = state.deployment)
+
+                    // Activity list
+                    ActivityList(activities = state.activities)
                 }
-
-                // State-based content switching
-                when (state.selectedNavItem) {
-                    "dashboard" -> {
-                        // Title block
-                        Column {
-                            TerminalText(
-                                text = "$ system_overview",
-                                style = typography.xxl.copy(fontWeight = FontWeight.Bold),
-                                color = colors.text,
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-                            TerminalText(
-                                text = "[4 nodes active]",
-                                style = typography.xs,
-                                color = colors.textDim,
-                            )
-                        }
-
-                        // Metrics: 2x2 grid
-                        MobileMetricsGrid(metrics = state.metrics)
-
-                        // Process list (simplified)
-                        MobileProcessList(processes = state.processes)
-
-                        // Deployment card
-                        DeploymentCard(deployment = state.deployment)
-
-                        // Activity list
-                        ActivityList(activities = state.activities)
-                    }
-                    "processes" -> {
-                        MobilePlaceholderContent(title = "> processes")
-                    }
-                    "logs" -> {
-                        MobilePlaceholderContent(title = "> logs")
-                    }
-                    "settings" -> {
-                        MobilePlaceholderContent(title = "> settings")
-                    }
-                    else -> {
-                        MobilePlaceholderContent(title = "> ${state.selectedNavItem}")
-                    }
+                "processes" -> {
+                    MobilePlaceholderContent(title = "> processes")
+                }
+                "logs" -> {
+                    MobilePlaceholderContent(title = "> logs")
+                }
+                "settings" -> {
+                    MobilePlaceholderContent(title = "> settings")
+                }
+                else -> {
+                    MobilePlaceholderContent(title = "> ${state.selectedNavItem}")
                 }
             }
-
-            // Bottom nav bar (hidden when profile is showing)
-            DashboardBottomNav(
-                selectedTab = state.selectedNavItem,
-                onTabSelected = onTabSelected,
-            )
         }
+
+        // Bottom nav bar (always visible)
+        DashboardBottomNav(
+            selectedTab = state.selectedNavItem,
+            onTabSelected = onTabSelected,
+        )
     }
 }
 
