@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 5 in progress - Auth Screens, Dashboard, Setup CLI
+**Current focus:** Phase 5 complete - Auth Screens, Dashboard, Setup CLI
 
 ## Current Position
 
-Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI)
-Plan: 7 of 7 in current phase (05-01, 05-02, 05-03, 05-04, 05-05, 05-06 complete)
-Status: Executing Phase 05
-Last activity: 2026-02-13 -- Completed 05-05 (Profile Screen with tier-aware content)
+Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI) -- COMPLETE
+Plan: 7 of 7 in current phase (all complete)
+Status: Phase 05 Complete
+Last activity: 2026-02-13 -- Completed 05-07 (OAuth Client Flow end-to-end)
 
-Progress: [███████████████░] 96% (23/24 plans)
+Progress: [████████████████] 100% (24/24 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 22
+- Total plans completed: 24
 - Average duration: ~8 min
-- Total execution time: ~178 min
+- Total execution time: ~202 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [███████████████░] 96% (23/24 plans)
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
-| 5 | 6/7 | ~32 min | ~5 min |
+| 5 | 7/7 | ~44 min | ~6 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-05 (~9 min), 05-06 (~2 min), 05-02 (~4 min), 05-01 (~7 min), 05-04 (~5 min)
+- Last 5 plans: 05-07 (~12 min), 05-05 (~9 min), 05-06 (~2 min), 05-02 (~4 min), 05-01 (~7 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -182,6 +182,11 @@ Recent decisions affecting current work:
 - [05-03]: Canvas-based status dot in brand panel footer (consistent with Canvas icon patterns in design system)
 - [05-03]: Unicode box-drawing chars for ASCII art in brand panel (cross-platform consistency)
 - [Phase 05]: successBg color token used instead of successMuted (plan token name mismatch corrected to match TerminalColors)
+- [05-07]: Server OAuth callback uses respondRedirect with JWT in query params instead of JSON response
+- [05-07]: Redirect URI validated against server-side allowlist (WASM URL, mobile scheme, desktop localhost) to prevent open-redirect
+- [05-07]: JVM Desktop uses temporary localhost:9876 ServerSocket + MutableStateFlow for OAuth callback reception
+- [05-07]: either{} wrapping Raise-based OAuthService calls for redirect error handling in callback routes
+- [05-07]: expect/actual class OAuthHandler with serverBaseUrl constructor param for platform-specific OAuth browser opening
 
 ### Pending Todos
 
@@ -221,5 +226,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-05-PLAN.md (Profile Screen with tier-aware content)
+Stopped at: Completed 05-07-PLAN.md (OAuth Client Flow end-to-end) -- Phase 5 COMPLETE
 Resume file: None
