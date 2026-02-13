@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-13 -- Completed quick task 18: Implement TerminalRadarChart composable with hexagonal grid
+Last activity: 2026-02-13 -- Completed quick task 19: Add entry animations to chart components
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -149,6 +149,9 @@ Recent decisions affecting current work:
 - [quick-18]: Modifier.offset with Dp * cos/sin for radial axis label positioning around hexagon
 - [quick-18]: 0.35 radius factor for hexagon, 0.44 for label radius to position labels outside
 - [quick-18]: Back-to-front series rendering (reversed iteration) so first series draws on top with data point dots
+- [quick-19]: clipRect for line chart animation (reveals entire chart left-to-right, simpler than path progress)
+- [quick-19]: barHeight multiplier for bar chart (bars grow from baseline, no position recalculation needed)
+- [quick-19]: clampedValue multiplier for radar chart (polygons expand from center, dots scale naturally)
 
 ### Pending Todos
 
@@ -176,6 +179,7 @@ None yet.
 | 16 | Fix TerminalSwipeReveal -- IntrinsicSize.Min height, opaque foreground bg, single awaitEachGesture | 2026-02-12 | a0f1688 | [16-fix-terminalswipereveal-actions-visible-](./quick/16-fix-terminalswipereveal-actions-visible-/) |
 | 17 | Implement TerminalLineChart and TerminalBarChart from Pencil design -- 11 chart tokens, area gradient, tier bars | 2026-02-13 | 08075a2 | [17-implement-chart-components-from-pencil-d](./quick/17-implement-chart-components-from-pencil-d/) |
 | 18 | Implement TerminalRadarChart composable -- hexagonal grid, multi-series polygons, axis labels | 2026-02-13 | eedb8b5 | [18-implement-terminalradarchart-composable-](./quick/18-implement-terminalradarchart-composable-/) |
+| 19 | Add entry animations to chart components -- 800ms EaseOutCubic on line, bar, radar charts | 2026-02-13 | 2c36aec | [19-add-entry-animations-to-chart-components](./quick/19-add-entry-animations-to-chart-components/) |
 
 ### Blockers/Concerns
 
@@ -185,5 +189,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed quick-18 (Implement TerminalRadarChart) -- hexagonal grid, RadarDataPoint/RadarSeries models, multi-series polygons
+Stopped at: Completed quick-19 (Add entry animations to chart components) -- 800ms EaseOutCubic on line (clipRect), bar (height multiplier), radar (clampedValue multiplier)
 Resume file: None
