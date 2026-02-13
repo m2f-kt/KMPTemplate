@@ -3,6 +3,7 @@ package com.m2f.template.designsystem.components.selection
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.selection.triStateToggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -26,6 +28,7 @@ import androidx.compose.ui.state.ToggleableState
 import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * A terminal-styled tri-state checkbox component with accessibility support.
@@ -58,11 +61,14 @@ fun TerminalCheckbox(
     val boxSize = 18.dp
     val shape = RoundedCornerShape(radius.sm)
     val contentAlpha = if (enabled) opacity.full else opacity.medium
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(
         modifier = modifier
             .triStateToggleable(
                 state = state,
+                interactionSource = interactionSource,
+                indication = rememberTerminalRipple(bounded = false),
                 enabled = enabled,
                 role = Role.Checkbox,
                 onClick = onClick,

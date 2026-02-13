@@ -3,6 +3,7 @@ package com.m2f.template.designsystem.components.card
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,6 +26,7 @@ import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.components.button.ButtonVariant
 import com.m2f.template.designsystem.components.button.TerminalButton
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * Card variants matching the Pencil terminal design system.
@@ -324,8 +327,13 @@ fun TerminalCompactCard(
 
     val shape = RoundedCornerShape(radius.sm)
 
+    val interactionSource = remember { MutableInteractionSource() }
     val clickModifier = if (onClick != null) {
-        Modifier.clickable(onClick = onClick)
+        Modifier.clickable(
+            interactionSource = interactionSource,
+            indication = rememberTerminalRipple(),
+            onClick = onClick,
+        )
     } else {
         Modifier
     }

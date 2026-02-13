@@ -3,6 +3,7 @@ package com.m2f.template.designsystem.components.data
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.m2f.template.designsystem.theme.TerminalPreview
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * A themed table component that renders a header row followed by content rows.
@@ -221,6 +224,7 @@ private fun TerminalTableCheckbox(
 
     val boxSize = 16.dp
     val shape = RoundedCornerShape(radius.sm)
+    val interactionSource = remember { MutableInteractionSource() }
 
     Box(
         modifier = modifier.size(32.dp),
@@ -232,6 +236,8 @@ private fun TerminalTableCheckbox(
                 .clip(shape)
                 .triStateToggleable(
                     state = state,
+                    interactionSource = interactionSource,
+                    indication = rememberTerminalRipple(bounded = false),
                     role = Role.Checkbox,
                     onClick = onClick,
                 )

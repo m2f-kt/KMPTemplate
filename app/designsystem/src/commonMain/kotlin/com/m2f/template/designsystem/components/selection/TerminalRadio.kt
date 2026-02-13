@@ -2,6 +2,7 @@ package com.m2f.template.designsystem.components.selection
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -20,6 +22,7 @@ import androidx.compose.ui.semantics.Role
 import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * A terminal-styled radio button component with accessibility support.
@@ -52,11 +55,14 @@ fun TerminalRadio(
     val outerSize = 18.dp
     val innerDotSize = 10.dp
     val contentAlpha = if (enabled) opacity.full else opacity.medium
+    val interactionSource = remember { MutableInteractionSource() }
 
     Row(
         modifier = modifier
             .selectable(
                 selected = selected,
+                interactionSource = interactionSource,
+                indication = rememberTerminalRipple(bounded = false),
                 enabled = enabled,
                 role = Role.RadioButton,
                 onClick = onClick,

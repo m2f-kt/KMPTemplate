@@ -3,7 +3,6 @@ package com.m2f.template.designsystem.components.button
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +24,7 @@ import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * Button variants matching the Pencil terminal design system.
@@ -149,8 +149,12 @@ fun TerminalButton(
                 },
             )
             .background(resolvedBg)
-            .hoverable(interactionSource)
-            .clickable(enabled = enabled, onClick = onClick)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rememberTerminalRipple(),
+                enabled = enabled,
+                onClick = onClick,
+            )
             .padding(horizontal = horizontalPadding, vertical = 8.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -221,8 +225,12 @@ fun TerminalIconButton(
             .clip(shape)
             .border(borders.thin, borderColor, shape)
             .background(resolvedBg)
-            .hoverable(interactionSource)
-            .clickable(enabled = enabled, onClick = onClick)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rememberTerminalRipple(),
+                enabled = enabled,
+                onClick = onClick,
+            )
             .padding(spacing.sm),
         contentAlignment = Alignment.Center,
     ) {

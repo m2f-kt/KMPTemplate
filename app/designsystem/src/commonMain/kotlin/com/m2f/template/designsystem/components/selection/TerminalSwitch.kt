@@ -3,6 +3,7 @@ package com.m2f.template.designsystem.components.selection
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -27,6 +29,7 @@ import androidx.compose.ui.semantics.Role
 import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * A terminal-styled toggle switch component with accessibility support.
@@ -68,10 +71,14 @@ fun TerminalSwitch(
         animationSpec = tween(durationMillis = 150),
     )
 
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         modifier = modifier
             .toggleable(
                 value = checked,
+                interactionSource = interactionSource,
+                indication = rememberTerminalRipple(bounded = false),
                 enabled = enabled,
                 role = Role.Switch,
                 onValueChange = onCheckedChange,

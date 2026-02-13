@@ -3,6 +3,7 @@ package com.m2f.template.designsystem.components.data
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import com.m2f.template.designsystem.theme.TerminalPreview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * State for a [TerminalListItem].
@@ -176,6 +178,8 @@ fun TerminalListItem(
 
     val itemAlpha = if (state == ListItemState.Disabled) opacity.medium else opacity.full
 
+    val interactionSource = remember { MutableInteractionSource() }
+    val menuInteractionSource = remember { MutableInteractionSource() }
     var menuExpanded by remember { mutableStateOf(false) }
 
     Column(
@@ -198,7 +202,11 @@ fun TerminalListItem(
             )
             .then(
                 if (onClick != null && state != ListItemState.Disabled) {
-                    Modifier.clickable(onClick = onClick)
+                    Modifier.clickable(
+                        interactionSource = interactionSource,
+                        indication = rememberTerminalRipple(),
+                        onClick = onClick,
+                    )
                 } else {
                     Modifier
                 },
@@ -238,7 +246,11 @@ fun TerminalListItem(
                     BasicText(
                         text = "\u22EF",
                         modifier = Modifier
-                            .clickable(enabled = state != ListItemState.Disabled) {
+                            .clickable(
+                                interactionSource = menuInteractionSource,
+                                indication = rememberTerminalRipple(bounded = false),
+                                enabled = state != ListItemState.Disabled,
+                            ) {
                                 menuExpanded = true
                             }
                             .padding(horizontal = 4.dp, vertical = 2.dp),

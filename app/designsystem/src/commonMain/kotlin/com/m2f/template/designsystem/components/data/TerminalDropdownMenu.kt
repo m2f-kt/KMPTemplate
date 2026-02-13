@@ -3,7 +3,6 @@ package com.m2f.template.designsystem.components.data
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
@@ -26,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import com.m2f.template.designsystem.theme.TerminalPreview
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.rememberTerminalRipple
 
 /**
  * A terminal-styled floating dropdown menu that renders as a popup overlay.
@@ -99,8 +99,11 @@ fun TerminalDropdownMenuItem(
         modifier = modifier
             .fillMaxWidth()
             .background(backgroundColor)
-            .hoverable(interactionSource)
-            .clickable(onClick = onClick)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = rememberTerminalRipple(),
+                onClick = onClick,
+            )
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
