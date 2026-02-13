@@ -30,7 +30,22 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AppNavHost() {
     val navController = rememberNavController()
+    val tokenStorage = koinInject<TokenStorage>()
     val oauthHandler = remember { OAuthHandler(serverBaseUrl = defaultBaseUrl()) }
+
+    // Check for existing auth tokens on startup
+    LaunchedEffect(Unit) {
+        // Clear tokens from sessions where rememberMe was false
+        tokenStorage.clearSessionTokens()
+
+        // If tokens survived (rememberMe was true), skip login
+        val accessToken = tokenStorage.getAccessToken()
+        if (accessToken != null) {
+            navController.navigate(DashboardRoute) {
+                popUpTo(LoginRoute) { inclusive = true }
+            }
+        }
+    }
 
     // Check for OAuth callback on startup (WASM: browser URL params)
     LaunchedEffect(Unit) {
