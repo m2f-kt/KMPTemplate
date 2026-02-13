@@ -229,6 +229,7 @@ None yet.
 | 19 | Add entry animations to chart components -- 800ms EaseOutCubic on line, bar, radar charts | 2026-02-13 | 2c36aec | [19-add-entry-animations-to-chart-components](./quick/19-add-entry-animations-to-chart-components/) |
 | 20 | Add ripple click effect to all clickable components -- IndicationNodeFactory, 300ms expand, 200ms fade | 2026-02-13 | 16c8989 | [20-add-ripple-click-effect-to-all-clickable](./quick/20-add-ripple-click-effect-to-all-clickable/) |
 | 21 | Fix TerminalInput cursor and selection handle colors to use theme tokens | 2026-02-13 | e988534 | [21-fix-terminalinput-cursor-and-selection-h](./quick/21-fix-terminalinput-cursor-and-selection-h/) |
+| 22 | Fix checkbox/switch/radio ripple effects drawing beyond component bounds -- bounded=true | 2026-02-13 | dcd5e4f | [22-fix-checkbox-ripple-effect-drawing-beyon](./quick/22-fix-checkbox-ripple-effect-drawing-beyon/) |
 
 ### Blockers/Concerns
 
@@ -238,5 +239,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-11-PLAN.md (Remember-me end-to-end wiring) -- Phase 5 COMPLETE
+Stopped at: Completed quick-22 (Fix checkbox ripple effect drawing beyond bounds)
 Resume file: None
