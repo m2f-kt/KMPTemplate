@@ -1,25 +1,9 @@
 package com.m2f.template.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -38,12 +22,6 @@ import com.m2f.template.app.dashboard.DashboardScreen
 import com.m2f.template.app.dashboard.DashboardViewModel
 import com.m2f.template.app.profile.ProfileScreen
 import com.m2f.template.app.profile.ProfileViewModel
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.sdk.defaultBaseUrl
 import com.m2f.template.storage.TokenStorage
 import org.koin.compose.koinInject
@@ -142,22 +120,43 @@ fun AppNavHost() {
         }
 
         composable<DashboardRoute> {
-            val viewModel = koinViewModel<DashboardViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
+            val dashboardViewModel = koinViewModel<DashboardViewModel>()
+            val dashboardState by dashboardViewModel.state.collectAsStateWithLifecycle()
+            val profileViewModel = koinViewModel<ProfileViewModel>()
+            val profileState by profileViewModel.state.collectAsStateWithLifecycle()
+
             DashboardScreen(
-                state = state,
-                onNavItemSelected = viewModel::selectNavItem,
-                onProfileClick = { navController.navigate(ProfileRoute) },
+                state = dashboardState,
+                onNavItemSelected = dashboardViewModel::selectNavItem,
+                onShowProfile = { dashboardViewModel.showProfile() },
+                onHideProfile = { dashboardViewModel.hideProfile() },
                 onLogout = {
                     navController.navigate(LoginRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
-                onNavigateToProcesses = { navController.navigate(ProcessesRoute) },
-                onNavigateToLogs = { navController.navigate(LogsRoute) },
-                onNavigateToDeployments = { navController.navigate(DeploymentsRoute) },
-                onNavigateToSettings = { navController.navigate(SettingsRoute) },
+                profileContent = {
+                    ProfileScreen(
+                        state = profileState,
+                        onStartEditing = profileViewModel::startEditing,
+                        onCancelEditing = profileViewModel::cancelEditing,
+                        onEditNameChange = profileViewModel::onEditNameChange,
+                        onEditEmailChange = profileViewModel::onEditEmailChange,
+                        onSaveProfile = profileViewModel::saveProfile,
+                        onLogout = profileViewModel::logout,
+                        onBack = { dashboardViewModel.hideProfile() },
+                    )
+                },
             )
+
+            // Handle profile logout
+            LaunchedEffect(profileState.logoutTriggered) {
+                if (profileState.logoutTriggered) {
+                    navController.navigate(LoginRoute) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            }
         }
 
         composable<ProfileRoute> {
@@ -192,98 +191,6 @@ fun AppNavHost() {
                 onSubmit = viewModel::submit,
                 onBackToLogin = { navController.popBackStack() },
             )
-        }
-
-        composable<ProcessesRoute> {
-            PlaceholderScreen(
-                title = "> processes",
-                buttons = listOf(
-                    "Back" to { navController.popBackStack() },
-                ),
-            )
-        }
-
-        composable<LogsRoute> {
-            PlaceholderScreen(
-                title = "> logs",
-                buttons = listOf(
-                    "Back" to { navController.popBackStack() },
-                ),
-            )
-        }
-
-        composable<DeploymentsRoute> {
-            PlaceholderScreen(
-                title = "> deployments",
-                buttons = listOf(
-                    "Back" to { navController.popBackStack() },
-                ),
-            )
-        }
-
-        composable<SettingsRoute> {
-            PlaceholderScreen(
-                title = "> settings",
-                buttons = listOf(
-                    "Back" to { navController.popBackStack() },
-                ),
-            )
-        }
-    }
-}
-
-@Composable
-private fun PlaceholderScreen(
-    title: String,
-    buttons: List<Pair<String, () -> Unit>>,
-) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val radius = TerminalTheme.radius
-    val spacing = TerminalTheme.spacing
-
-    Box(
-        modifier = Modifier.fillMaxSize().background(colors.bg),
-        contentAlignment = Alignment.Center,
-    ) {
-        TerminalCard(
-            title = title,
-            description = "// under construction",
-            variant = CardVariant.Default,
-            modifier = Modifier
-                .fillMaxWidth(0.6f)
-                .padding(spacing.xl),
-        ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(spacing.lg),
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                TerminalBadge(
-                    text = "status: pending",
-                    variant = BadgeVariant.Warning,
-                    icon = "\u25D0",
-                )
-
-                Spacer(modifier = Modifier.height(spacing.sm))
-
-                buttons.forEach { (label, onClick) ->
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(radius.sm))
-                            .background(colors.accent)
-                            .clickable(onClick = onClick)
-                            .padding(horizontal = spacing.lg, vertical = spacing.sm),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        TerminalText(
-                            text = label,
-                            style = typography.base.copy(fontWeight = FontWeight.SemiBold),
-                            color = colors.bg,
-                        )
-                    }
-                }
-            }
         }
     }
 }

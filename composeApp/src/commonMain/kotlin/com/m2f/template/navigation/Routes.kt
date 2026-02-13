@@ -17,18 +17,6 @@ data object ProfileRoute
 @Serializable
 data object ForgotPasswordRoute
 
-@Serializable
-data object ProcessesRoute
-
-@Serializable
-data object LogsRoute
-
-@Serializable
-data object DeploymentsRoute
-
-@Serializable
-data object SettingsRoute
-
 /**
  * Route for handling OAuth callback redirects.
  * Navigation arguments carry the JWT tokens from the server redirect.
