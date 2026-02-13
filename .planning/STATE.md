@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI)
-Plan: 4 of 7 in current phase (05-01, 05-02, 05-06 complete)
+Plan: 5 of 7 in current phase (05-01, 05-02, 05-04, 05-06 complete)
 Status: Executing Phase 05
-Last activity: 2026-02-13 -- Completed 05-01 (Server OAuth, Password Reset, UserTier)
+Last activity: 2026-02-13 -- Completed 05-04 (Dashboard Screen with Sidebar/BottomNav)
 
-Progress: [██████████████░_] 91% (20/22 plans)
+Progress: [███████████████░] 95% (21/22 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 20
+- Total plans completed: 21
 - Average duration: ~8 min
-- Total execution time: ~168 min
+- Total execution time: ~173 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [██████████████░_] 91% (20/22 plans)
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
-| 5 | 3/7 | ~13 min | ~4 min |
+| 5 | 4/7 | ~18 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-07 (~7 min), 05-06 (~2 min), 05-02 (~4 min), 05-01 (~7 min)
+- Last 5 plans: 05-06 (~2 min), 05-02 (~4 min), 05-01 (~7 min), 05-04 (~5 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -174,6 +174,9 @@ Recent decisions affecting current work:
 - [05-01]: Server-side OAuth via Ktor oauth provider (Google + Apple) with empty default env vars
 - [05-01]: forgotPassword always returns success to prevent user enumeration
 - [05-01]: HttpClient(CIO) provided via Koin for server-side OAuth userinfo calls
+- [05-04]: BoxWithConstraints with 840dp breakpoint for desktop/mobile responsive dashboard layout
+- [05-04]: Terminal-themed symbols (>, ~, #, $, %) for sidebar/bottom nav icons (no icon library, Foundation-only)
+- [05-04]: PlaceholderScreen uses TerminalCard + TerminalBadge for consistent terminal aesthetic
 
 ### Pending Todos
 
@@ -213,5 +216,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-01-PLAN.md (Server OAuth, Password Reset, UserTier sealed type)
+Stopped at: Completed 05-04-PLAN.md (Dashboard Screen with Sidebar/BottomNav)
 Resume file: None
