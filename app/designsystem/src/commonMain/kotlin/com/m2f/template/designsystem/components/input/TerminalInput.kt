@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.selection.LocalTextSelectionColors
+import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +31,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -88,6 +92,11 @@ fun TerminalInput(
     // Prefix ">" color: success (green) when filled, textMuted when empty
     val prefixColor = if (value.isNotEmpty()) colors.success else colors.textMuted
 
+    val selectionColors = TextSelectionColors(
+        handleColor = colors.accent,
+        backgroundColor = colors.accent.copy(alpha = 0.3f),
+    )
+
     Column(modifier = modifier.alpha(alphaValue)) {
         // Label
         if (label != null) {
@@ -102,11 +111,13 @@ fun TerminalInput(
         }
 
         // Input field
+        CompositionLocalProvider(LocalTextSelectionColors provides selectionColors) {
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
             enabled = enabled,
             textStyle = typography.base.copy(color = colors.text),
+            cursorBrush = SolidColor(colors.text),
             singleLine = true,
             visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
@@ -156,6 +167,7 @@ fun TerminalInput(
                 }
             },
         )
+        }
 
         // Error message
         if (isError && errorMessage != null) {
