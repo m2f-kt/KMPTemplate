@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence (completed 2026-02-11)
 - [x] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming (completed 2026-02-12)
 - [x] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding (completed 2026-02-13)
-- [ ] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management
+- [x] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management (completed 2026-02-13)
 
 ## Phase Details
 
@@ -133,9 +133,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 06-01-PLAN.md -- Koog dependencies, AI configuration, and AI-specific error types
-- [ ] 06-02-PLAN.md -- UserTools ToolSet and database-backed conversation persistence
-- [ ] 06-03-PLAN.md -- Agent services, routes, DI wiring, and Application.kt integration
+- [x] 06-01-PLAN.md -- Koog dependencies, AI configuration, and AI-specific error types
+- [x] 06-02-PLAN.md -- UserTools ToolSet and database-backed conversation persistence
+- [x] 06-03-PLAN.md -- Agent services, routes, DI wiring, and Application.kt integration
 
 ## Progress
 
@@ -149,4 +149,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Client SDK & Storage | 3/3 | Complete | 2026-02-11 |
 | 4. Navigation & UI Components | 7/7 | Complete | 2026-02-12 |
 | 5. Auth Screens, Dashboard & Setup CLI | 11/11 | Complete | 2026-02-13 |
-| 6. AI Agent Infrastructure | 0/3 | Not started | - |
+| 6. AI Agent Infrastructure | 3/3 | Complete | 2026-02-13 |
