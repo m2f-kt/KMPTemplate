@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 5 gap closure in progress - Auth Screens, Dashboard, Setup CLI
+**Current focus:** Phase 5 complete - Auth Screens, Dashboard, Setup CLI
 
 ## Current Position
 
-Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI) -- gap closure in progress
-Plan: 10 of 11 in current phase (10 complete, 1 remaining gap closure plan)
-Status: Executing gap closure plans
-Last activity: 2026-02-13 -- Completed 05-10 (Profile route restoration)
+Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI) -- COMPLETE
+Plan: 11 of 11 in current phase (11 complete, 0 remaining)
+Status: Phase 5 complete
+Last activity: 2026-02-13 -- Completed 05-11 (Remember-me end-to-end wiring)
 
-Progress: [███████████████ ] 96% (27/28 plans)
+Progress: [████████████████] 100% (28/28 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 27
-- Average duration: ~8 min
-- Total execution time: ~206 min
+- Total plans completed: 28
+- Average duration: ~7 min
+- Total execution time: ~208 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [███████████████ ] 96% (27/28 plans)
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
-| 5 | 10/11 | ~48 min | ~5 min |
+| 5 | 11/11 | ~50 min | ~5 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-10 (~3 min), 05-09 (~1 min), 05-07 (~12 min), 05-05 (~9 min), 05-06 (~2 min)
+- Last 5 plans: 05-11 (~2 min), 05-10 (~3 min), 05-09 (~1 min), 05-07 (~12 min), 05-05 (~9 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -195,6 +195,10 @@ Recent decisions affecting current work:
 - [05-09]: Process substitution < <(find ...) avoids subshell variable loss for bash array population
 - [05-10]: Profile navigates via navController.navigate(ProfileRoute) instead of embedded composable slot
 - [05-10]: DashboardScreen exposes single onProfileClick callback, removing onShowProfile/onHideProfile/profileContent
+- [05-11]: rememberMe=true default on saveTokens() preserves backward compatibility for register/refresh/OAuth flows
+- [05-11]: Session-only flag stored in Settings (not in-memory) so clearSessionTokens() works across app restarts
+- [05-11]: LaunchedEffect(Unit) for startup token check placed before OAuth callback LaunchedEffect for correct ordering
+- [05-11]: LoginRoute remains startDestination; LaunchedEffect redirects to DashboardRoute to avoid recomposition issues
 
 ### Pending Todos
 
@@ -234,5 +238,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-10-PLAN.md (Profile route restoration)
+Stopped at: Completed 05-11-PLAN.md (Remember-me end-to-end wiring) -- Phase 5 COMPLETE
 Resume file: None
