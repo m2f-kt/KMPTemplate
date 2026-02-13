@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Server Auth & Users** - Complete server-side authentication and user management (completed 2026-02-11)
 - [x] **Phase 3: Client SDK & Storage** - Build the Either-based client networking layer and local persistence (completed 2026-02-11)
 - [x] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming (completed 2026-02-12)
-- [ ] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding
+- [x] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding (completed 2026-02-13)
 - [ ] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management
 
 ## Phase Details
@@ -108,13 +108,13 @@ Plans:
 **Plans**: 7 plans
 
 Plans:
-- [ ] 05-01-PLAN.md -- Server-side: UserTier sealed type, OAuth endpoints (Google + Apple), password reset flow, RegisterRequest DTO update
-- [ ] 05-02-PLAN.md -- Auth ViewModels (Login, Register, ForgotPassword) with Arrow validation and Koin DI wiring
-- [ ] 05-03-PLAN.md -- Auth screen composables (Login + Register + ForgotPassword) with responsive desktop/mobile layouts
-- [ ] 05-04-PLAN.md -- Dashboard screen with sidebar (desktop), bottom nav (mobile), mock data, placeholder routes
-- [ ] 05-05-PLAN.md -- Profile module with 5 tier-specific screens, edit profile (functional), tier content (demonstration/mock), logout
-- [ ] 05-06-PLAN.md -- Setup CLI bash script for project renaming after clone
-- [ ] 05-07-PLAN.md -- OAuth client flow: open browser, handle callback, store tokens, navigate to dashboard (all platforms)
+- [x] 05-01-PLAN.md -- Server-side: UserTier sealed type, OAuth endpoints (Google + Apple), password reset flow, RegisterRequest DTO update
+- [x] 05-02-PLAN.md -- Auth ViewModels (Login, Register, ForgotPassword) with Arrow validation and Koin DI wiring
+- [x] 05-03-PLAN.md -- Auth screen composables (Login + Register + ForgotPassword) with responsive desktop/mobile layouts
+- [x] 05-04-PLAN.md -- Dashboard screen with sidebar (desktop), bottom nav (mobile), mock data, placeholder routes
+- [x] 05-05-PLAN.md -- Profile module with 5 tier-specific screens, edit profile (functional), tier content (demonstration/mock), logout
+- [x] 05-06-PLAN.md -- Setup CLI bash script for project renaming after clone
+- [x] 05-07-PLAN.md -- OAuth client flow: open browser, handle callback, store tokens, navigate to dashboard (all platforms)
 
 ### Phase 6: AI Agent Infrastructure
 **Goal**: The template ships with working Koog AI agent infrastructure -- an agent registry, tool system, conversation persistence, and example agents that a developer can extend to build their own AI features.
@@ -143,5 +143,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
 | 3. Client SDK & Storage | 3/3 | Complete | 2026-02-11 |
 | 4. Navigation & UI Components | 7/7 | Complete | 2026-02-12 |
-| 5. Auth Screens, Dashboard & Setup CLI | 0/7 | Not started | - |
+| 5. Auth Screens, Dashboard & Setup CLI | 7/7 | Complete | 2026-02-13 |
 | 6. AI Agent Infrastructure | 0/2 | Not started | - |
