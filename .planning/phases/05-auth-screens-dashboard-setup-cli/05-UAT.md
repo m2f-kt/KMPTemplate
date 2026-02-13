@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 05-auth-screens-dashboard-setup-cli
 source: [05-01-SUMMARY.md, 05-02-SUMMARY.md, 05-03-SUMMARY.md, 05-04-SUMMARY.md, 05-05-SUMMARY.md, 05-06-SUMMARY.md, 05-07-SUMMARY.md, 05-08-SUMMARY.md, 05-09-SUMMARY.md]
 started: 2026-02-13T16:30:00Z
@@ -179,22 +179,44 @@ retests-skipped: 1
     - "Consider dynamic module discovery (find app/*/build.gradle.kts) instead of hardcoded lists"
   debug_session: ".planning/debug/setup-sh-missing-pkg-refs.md"
 
-- truth: "Dashboard sidebar nav swaps content while sidebar stays persistent; profile does not create nested sidebar"
-  status: failed
-  reason: "User reported: profile loads in content window with its own sidebar nested inside dashboard content area, creating double sidebar. Login session not persisted across app restart even with remember me checked."
-  severity: major
-  test: R2
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
-
 - truth: "Profile opens as top-level screen, not nested inside dashboard content"
   status: failed
   reason: "User reported: Profile should be top-level route. Currently embedded inside dashboard content area creating double sidebar with profile's own sub-nav."
   severity: major
-  test: R3
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  test: R2, R3
+  root_cause: "05-08 gap closure embedded ProfileScreen as composable slot inside DashboardScreen. On desktop, DashboardSidebar (260dp) stays visible while ProfileScreen renders its own ProfileSidebar (260dp) inside the content area — double sidebar. The standalone composable<ProfileRoute> in AppNavHost (lines 162-183) already exists but nothing navigates to it."
+  artifacts:
+    - path: "composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt"
+      issue: "Profile slot injection in DashboardRoute (lines 125-149) needs removal; profile click needs rewiring to navController.navigate(ProfileRoute)"
+    - path: "app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardScreen.kt"
+      issue: "profileContent slot, onShowProfile, onHideProfile params and all profile embedding branches need removal"
+    - path: "app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardViewModel.kt"
+      issue: "showProfile()/hideProfile() functions need removal"
+    - path: "app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardState.kt"
+      issue: "showProfile: Boolean field needs removal"
+  missing:
+    - "Remove all profile embedding from DashboardScreen/ViewModel/State"
+    - "Rewire profile click in AppNavHost DashboardRoute to navController.navigate(ProfileRoute)"
+    - "Rely on existing standalone composable<ProfileRoute> block"
+  debug_session: ".planning/debug/profile-should-be-top-level.md"
+
+- truth: "Login session persisted across app restart when remember me is checked"
+  status: failed
+  reason: "User reported: Login session not persisted across app reinitialization even when remember me checkbox is checked"
+  severity: major
+  test: R2
+  root_cause: "Three gaps in auth persistence chain: (1) AppNavHost hardcodes startDestination=LoginRoute with no token check on startup — even persisted tokens are ignored. (2) LoginViewModel.login() never reads rememberMe state — discards checkbox value. (3) TokenStorage always persists to disk unconditionally — no session-only mode when rememberMe is unchecked."
+  artifacts:
+    - path: "composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt"
+      issue: "startDestination=LoginRoute hardcoded; no TokenStorage check on launch"
+    - path: "app/auth/src/commonMain/kotlin/com/m2f/template/app/auth/LoginViewModel.kt"
+      issue: "rememberMe state captured but never forwarded to AuthApi.login()"
+    - path: "core/sdk/src/commonMain/kotlin/com/m2f/template/sdk/api/AuthApi.kt"
+      issue: "login() has no rememberMe parameter; always persists unconditionally"
+    - path: "core/storage/src/commonMain/kotlin/com/m2f/template/storage/TokenStorage.kt"
+      issue: "No concept of session-only vs persistent storage"
+  missing:
+    - "Check TokenStorage for existing tokens on app launch; navigate to DashboardRoute if found"
+    - "Wire rememberMe from LoginViewModel through AuthApi to TokenStorage"
+    - "Add session-only mode to TokenStorage when rememberMe is unchecked"
+  debug_session: ".planning/debug/session-not-persisted.md"
