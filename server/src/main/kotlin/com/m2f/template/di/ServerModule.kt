@@ -1,5 +1,6 @@
 package com.m2f.template.di
 
+import com.m2f.server.ai.di.aiModule
 import com.m2f.server.auth.di.authModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
@@ -20,4 +21,5 @@ val serverModule = module {
         }
     }
     includes(authModule)
+    includes(aiModule)
 }

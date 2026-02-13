@@ -5,6 +5,10 @@ import arrow.fx.coroutines.resourceScope
 import com.m2f.core.config.configuration.Configuration
 import com.m2f.core.database.startDatabase
 import com.m2f.core.security.configureSecurity
+import com.m2f.server.ai.registerAiMigrations
+import com.m2f.server.ai.agents.AssistantAgentService
+import com.m2f.server.ai.agents.ChatAgentService
+import com.m2f.server.ai.routes.aiRoutes
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.routes.authRoutes
 import com.m2f.server.auth.routes.oauthRoutes
@@ -40,6 +44,7 @@ fun main() = SuspendApp {
     resourceScope {
         config {
             registerAuthMigrations()
+            registerAiMigrations()
             val database = startDatabase()
             startServer(Netty) {
                 context(database) {
@@ -73,6 +78,9 @@ fun Application.module() {
         authRoutes(authService, passwordResetService)
         oauthRoutes(oauthService, config.env.oauth)
         userRoutes(userService)
+        val assistantAgentService: AssistantAgentService by inject()
+        val chatAgentService: ChatAgentService by inject()
+        aiRoutes(assistantAgentService, chatAgentService, config.env.ai.enabled)
     }
 }
 
