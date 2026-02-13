@@ -16,6 +16,7 @@ data class Env(
     val http: Http = Http(),
     val auth: Auth = Auth(),
     val oauth: OAuth = OAuth(),
+    val ai: Ai = Ai(),
     val serverConfig: ServerConfig = ServerConfig(),
 ) {
     data class Http(
@@ -53,6 +54,16 @@ data class Env(
         /** Localhost port for desktop (JVM) OAuth callback. */
         val desktopLocalhostPort: Int = System.getenv("OAUTH_DESKTOP_LOCALHOST_PORT")?.toIntOrNull()
             ?: 9876,
+    )
+
+    /**
+     * AI provider configuration.
+     * Defaults to disabled so the server starts without any AI env vars set.
+     * Set AI_ENABLED=true and OPENAI_API_KEY to activate AI endpoints.
+     */
+    data class Ai(
+        val enabled: Boolean = System.getenv("AI_ENABLED")?.toBooleanStrictOrNull() ?: false,
+        val openaiApiKey: String = System.getenv("OPENAI_API_KEY") ?: "",
     )
 
     data class ServerConfig(

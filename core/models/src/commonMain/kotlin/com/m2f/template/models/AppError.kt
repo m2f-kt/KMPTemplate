@@ -132,6 +132,34 @@ sealed class AppError {
             override val message: String
         ) : Client()
     }
+
+    @Serializable
+    sealed class AI : AppError() {
+        @Serializable
+        data class AgentFailed(
+            val detail: String? = null,
+            override val code: String = "AI_AGENT_FAILED",
+            override val message: String = detail ?: "Agent execution failed"
+        ) : AI()
+
+        @Serializable
+        data class AgentNotFound(
+            override val code: String = "AI_AGENT_NOT_FOUND",
+            override val message: String = "The requested agent was not found"
+        ) : AI()
+
+        @Serializable
+        data class ConversationNotFound(
+            override val code: String = "AI_CONVERSATION_NOT_FOUND",
+            override val message: String = "Conversation not found or does not belong to this user"
+        ) : AI()
+
+        @Serializable
+        data class ProviderUnavailable(
+            override val code: String = "AI_PROVIDER_UNAVAILABLE",
+            override val message: String = "AI provider is not available or not configured"
+        ) : AI()
+    }
 }
 
 /**
