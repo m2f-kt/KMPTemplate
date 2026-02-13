@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI) -- COMPLETE (incl. gap closure)
 Plan: 9 of 9 in current phase (all complete, includes 2 gap closure plans)
 Status: Phase 05 Complete
-Last activity: 2026-02-13 -- Completed 05-09 (Setup CLI dynamic module discovery)
+Last activity: 2026-02-13 -- Re-executed 05-08 (Dashboard nav state-based content switching)
 
 Progress: [████████████████] 100% (26/26 plans)
 
@@ -187,6 +187,10 @@ Recent decisions affecting current work:
 - [05-07]: JVM Desktop uses temporary localhost:9876 ServerSocket + MutableStateFlow for OAuth callback reception
 - [05-07]: either{} wrapping Raise-based OAuthService calls for redirect error handling in callback routes
 - [05-07]: expect/actual class OAuthHandler with serverBaseUrl constructor param for platform-specific OAuth browser opening
+- [05-08]: State-based content switching: selectedNavItem drives when() block in content area, sidebar/bottom nav persistent
+- [05-08]: Profile content injected as composable lambda slot from AppNavHost into DashboardScreen (no module dependency from dashboard to profile)
+- [05-08]: Desktop profile shows back button in DashboardScreen wrapper; mobile profile hides bottom nav and shows back header
+- [05-08]: ProfileRoute kept as standalone fallback/deep-link route in AppNavHost
 - [05-09]: Single find command replaces 9 hardcoded SOURCE_SETS loops (dynamic module discovery)
 - [05-09]: Process substitution < <(find ...) avoids subshell variable loss for bash array population
 
@@ -228,5 +232,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-09-PLAN.md (Setup CLI dynamic module discovery) -- Phase 5 gap closure COMPLETE
+Stopped at: Re-executed 05-08-PLAN.md (Dashboard nav state-based content switching)
 Resume file: None
