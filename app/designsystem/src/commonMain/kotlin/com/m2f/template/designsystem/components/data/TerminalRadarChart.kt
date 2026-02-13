@@ -1,5 +1,9 @@
 package com.m2f.template.designsystem.components.data
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -16,6 +20,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -86,9 +92,20 @@ fun TerminalRadarChart(
     modifier: Modifier = Modifier,
     description: String? = null,
     chartSize: Dp = 300.dp,
+    animated: Boolean = true,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
+
+    val progress = remember { Animatable(if (animated) 0f else 1f) }
+    LaunchedEffect(Unit) {
+        if (animated) {
+            progress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 800, easing = EaseOutCubic),
+            )
+        }
+    }
 
     val shape = RoundedCornerShape(4.dp)
 
@@ -239,7 +256,7 @@ fun TerminalRadarChart(
                             val axisLabel = axisLabels[axisIndex]
                             val dataValue = s.points
                                 .firstOrNull { it.label == axisLabel }?.value ?: 0f
-                            val clampedValue = dataValue.coerceIn(0f, 1f)
+                            val clampedValue = dataValue.coerceIn(0f, 1f) * progress.value
                             Offset(
                                 x = center.x + radius * clampedValue * cos(angles[axisIndex]).toFloat(),
                                 y = center.y + radius * clampedValue * sin(angles[axisIndex]).toFloat(),
