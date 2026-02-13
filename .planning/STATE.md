@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-13 -- Completed quick task 17: Implement TerminalLineChart and TerminalBarChart from Pencil design
+Last activity: 2026-02-13 -- Completed quick task 18: Implement TerminalRadarChart composable with hexagonal grid
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -146,6 +146,9 @@ Recent decisions affecting current work:
 - [quick-17]: Canvas-based Path.arcTo for bar top-corner radius (rounded top-left/top-right, flat bottom)
 - [quick-17]: Non-highlight bars cycle through chartBar1/2/3 by index; highlight bars use dedicated chartBarHighlight token
 - [quick-17]: Series1 area fill uses chartSeries1Muted token directly; series2+ uses seriesColor.copy(alpha=0.15f)
+- [quick-18]: Modifier.offset with Dp * cos/sin for radial axis label positioning around hexagon
+- [quick-18]: 0.35 radius factor for hexagon, 0.44 for label radius to position labels outside
+- [quick-18]: Back-to-front series rendering (reversed iteration) so first series draws on top with data point dots
 
 ### Pending Todos
 
@@ -172,6 +175,7 @@ None yet.
 | 15 | Add swipe-to-reveal actions and drag-to-reorder gestures | 2026-02-12 | 32de96a | [15-add-swipe-to-reveal-actions-and-drag-to-](./quick/15-add-swipe-to-reveal-actions-and-drag-to-/) |
 | 16 | Fix TerminalSwipeReveal -- IntrinsicSize.Min height, opaque foreground bg, single awaitEachGesture | 2026-02-12 | a0f1688 | [16-fix-terminalswipereveal-actions-visible-](./quick/16-fix-terminalswipereveal-actions-visible-/) |
 | 17 | Implement TerminalLineChart and TerminalBarChart from Pencil design -- 11 chart tokens, area gradient, tier bars | 2026-02-13 | 08075a2 | [17-implement-chart-components-from-pencil-d](./quick/17-implement-chart-components-from-pencil-d/) |
+| 18 | Implement TerminalRadarChart composable -- hexagonal grid, multi-series polygons, axis labels | 2026-02-13 | eedb8b5 | [18-implement-terminalradarchart-composable-](./quick/18-implement-terminalradarchart-composable-/) |
 
 ### Blockers/Concerns
 
@@ -181,5 +185,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed quick-17 (Implement TerminalLineChart and TerminalBarChart) -- 11 chart tokens, ChartDataPoint/ChartSeries/BarData models, Canvas rendering
+Stopped at: Completed quick-18 (Implement TerminalRadarChart) -- hexagonal grid, RadarDataPoint/RadarSeries models, multi-series polygons
 Resume file: None
