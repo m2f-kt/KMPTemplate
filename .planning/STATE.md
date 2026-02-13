@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
 Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
 Status: Phase 04 Verified Complete
-Last activity: 2026-02-13 -- Completed quick task 20: Add ripple click effect to all clickable components
+Last activity: 2026-02-13 -- Completed quick task 21: Fix TerminalInput cursor and selection handle colors
 
 Progress: [█████████████░__] 77% (17/22 plans)
 
@@ -156,6 +156,8 @@ Recent decisions affecting current work:
 - [quick-20]: bounded=true for buttons/cards/lists; bounded=false for checkbox/switch/radio (small touch targets)
 - [quick-20]: .clickable(interactionSource, indication) replaces .hoverable().clickable() (handles hover internally)
 - [quick-20]: Theme text color at 0.12f alpha as default ripple color (subtle terminal aesthetic)
+- [quick-21]: cursorBrush = SolidColor(colors.text) for themed cursor color (was platform-default black)
+- [quick-21]: CompositionLocalProvider(LocalTextSelectionColors) for themed selection handles (was platform-default blue)
 
 ### Pending Todos
 
@@ -185,6 +187,7 @@ None yet.
 | 18 | Implement TerminalRadarChart composable -- hexagonal grid, multi-series polygons, axis labels | 2026-02-13 | eedb8b5 | [18-implement-terminalradarchart-composable-](./quick/18-implement-terminalradarchart-composable-/) |
 | 19 | Add entry animations to chart components -- 800ms EaseOutCubic on line, bar, radar charts | 2026-02-13 | 2c36aec | [19-add-entry-animations-to-chart-components](./quick/19-add-entry-animations-to-chart-components/) |
 | 20 | Add ripple click effect to all clickable components -- IndicationNodeFactory, 300ms expand, 200ms fade | 2026-02-13 | 16c8989 | [20-add-ripple-click-effect-to-all-clickable](./quick/20-add-ripple-click-effect-to-all-clickable/) |
+| 21 | Fix TerminalInput cursor and selection handle colors to use theme tokens | 2026-02-13 | e988534 | [21-fix-terminalinput-cursor-and-selection-h](./quick/21-fix-terminalinput-cursor-and-selection-h/) |
 
 ### Blockers/Concerns
 
@@ -194,5 +197,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed quick-20 (Add ripple click effect to all clickable components) -- IndicationNodeFactory ripple on 9 components, bounded/unbounded, 300ms expand + 200ms fade
+Stopped at: Completed quick-21 (Fix TerminalInput cursor and selection handle colors) -- cursorBrush SolidColor(text), LocalTextSelectionColors with accent
 Resume file: None
