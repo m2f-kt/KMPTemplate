@@ -81,7 +81,7 @@ class AuthService(
         val fullName = "$validFirstName $validLastName"
 
         // Step 3: Check for duplicate email
-        ensureNotNull(userRepository.findByEmail(validEmail)) { UserAlreadyExists() }
+        ensure(userRepository.findByEmail(validEmail) == null) { UserAlreadyExists() }
 
         // Step 4: Hash password
         val hash = passwordHasher.hash(validPassword)
