@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 05-auth-screens-dashboard-setup-cli
 source: [05-01-SUMMARY.md, 05-02-SUMMARY.md, 05-03-SUMMARY.md, 05-04-SUMMARY.md, 05-05-SUMMARY.md, 05-06-SUMMARY.md, 05-07-SUMMARY.md]
 started: 2026-02-13T16:30:00Z
@@ -102,27 +102,44 @@ skipped: 0
   reason: "User reported: Main content not scrollable. Sidebar nav navigates to separate screens instead of updating main content. Profile has own sidebar but no back nav. Profile also not scrollable."
   severity: major
   test: 7
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Flat navigation graph — all dashboard sub-screens (Processes, Logs, Deployments, Settings) are top-level NavHost destinations. DashboardSidebar callbacks trigger root navController.navigate() which replaces the entire DashboardScreen including sidebar. Profile is also a top-level route with no back button on desktop."
+  artifacts:
+    - path: "composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt"
+      issue: "Sidebar callbacks wired to root navController; sub-routes as top-level destinations"
+    - path: "app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardScreen.kt"
+      issue: "onNavItemSelected immediately triggers top-level navigation instead of content swap"
+    - path: "app/profile/src/commonMain/kotlin/com/m2f/template/app/profile/ProfileScreen.kt"
+      issue: "DesktopProfile missing onBack callback — no back button in desktop layout"
+  missing:
+    - "Use nested NavHost inside DashboardScreen content area OR state-based content switching"
+    - "Move Processes/Logs/Deployments/Settings out of top-level nav into dashboard-scoped content"
+    - "Add back navigation to DesktopProfile or embed profile within dashboard shell"
+    - "Ensure content areas have verticalScroll on all sub-screens"
+  debug_session: ".planning/debug/dashboard-sidebar-nav.md"
 
 - truth: "Sidebar section navigation updates main content while keeping sidebar visible"
   status: failed
   reason: "User reported: Sidebar nav navigates to a totally new screen instead of replacing just the main content section while keeping the sidebar"
   severity: major
   test: 10
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "Same root cause as test 7 — flat navigation graph with top-level routes for dashboard sub-sections"
+  artifacts:
+    - path: "composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt"
+      issue: "ProcessesRoute, LogsRoute, DeploymentsRoute, SettingsRoute are sibling top-level destinations"
+  missing:
+    - "See test 7 fix — same architectural change needed"
+  debug_session: ".planning/debug/dashboard-sidebar-nav.md"
 
 - truth: "Setup CLI renames all package references, source directories, and configs after cloning"
   status: failed
   reason: "User reported: Some references and packages weren't changed. For example TerminalTypography and other references remained with old package names."
   severity: major
   test: 14
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "app/profile module missing from hardcoded module list at setup.sh line 204. Script has 'for mod in auth dashboard designsystem' but project has 4 app modules (profile missing). Text replacement via recursive find works, but directory moves skip app/profile entirely."
+  artifacts:
+    - path: "setup.sh"
+      issue: "Line 204 hardcodes 3 app modules, missing app/profile. Brittle architecture requires manual update for every new module."
+  missing:
+    - "Add 'profile' to app module list at line 204"
+    - "Consider dynamic module discovery (find app/*/build.gradle.kts) instead of hardcoded lists"
+  debug_session: ".planning/debug/setup-sh-missing-pkg-refs.md"
