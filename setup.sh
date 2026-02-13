@@ -177,68 +177,21 @@ move_package_dir() {
     fi
 }
 
-# Collect all source set directories
+# Build list of source set directories to move
+# Auto-discovers all modules dynamically -- no manual updates needed when modules are added.
+# This finds every src/*/kotlin directory in the project, covering:
+#   - composeApp/src/{commonMain,androidMain,iosMain,jvmMain,wasmJsMain,commonTest}/kotlin
+#   - app/*/src/{commonMain,...}/kotlin  (auth, dashboard, designsystem, profile, any future modules)
+#   - core/*/src/{commonMain,...}/kotlin (models, sdk, storage, any future modules)
+#   - server/src/{main,test}/kotlin
+#   - server/*/src/{main,test}/kotlin   (auth, ai, any future modules)
+#   - server/core/*/src/{main,test}/kotlin (config, database, security, any future modules)
+#   - shared/src/{commonMain,...}/kotlin
+#   - androidApp/src/main/kotlin
 SOURCE_SETS=()
-
-# composeApp source sets
-for variant in commonMain androidMain iosMain jvmMain wasmJsMain commonTest; do
-    dir="composeApp/src/${variant}/kotlin"
-    [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-done
-
-# shared source sets
-for variant in commonMain androidMain iosMain jvmMain wasmJsMain commonTest; do
-    dir="shared/src/${variant}/kotlin"
-    [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-done
-
-# core modules
-for mod in models sdk storage; do
-    for variant in commonMain androidMain iosMain jvmMain wasmJsMain commonTest; do
-        dir="core/${mod}/src/${variant}/kotlin"
-        [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-    done
-done
-
-# app modules
-for mod in auth dashboard designsystem; do
-    for variant in commonMain androidMain iosMain jvmMain wasmJsMain commonTest; do
-        dir="app/${mod}/src/${variant}/kotlin"
-        [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-    done
-done
-
-# server main module
-for variant in main test; do
-    dir="server/src/${variant}/kotlin"
-    [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-done
-
-# server feature modules (use com.m2f.server package)
-for mod in auth ai; do
-    for variant in main test; do
-        dir="server/${mod}/src/${variant}/kotlin"
-        [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-    done
-done
-
-# server core modules (use com.m2f.core package)
-for mod in config database security; do
-    for variant in main test; do
-        dir="server/core/${mod}/src/${variant}/kotlin"
-        [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-    done
-done
-
-# server/core itself
-for variant in main test; do
-    dir="server/core/src/${variant}/kotlin"
-    [[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
-done
-
-# androidApp (legacy, may be empty)
-dir="androidApp/src/main/kotlin"
-[[ -d "$dir" ]] && SOURCE_SETS+=("$dir")
+while IFS= read -r dir; do
+    SOURCE_SETS+=("$dir")
+done < <(find . -path "*/src/*/kotlin" -not -path "./.gradle/*" -not -path "*/build/*" -not -path "./.git/*" -type d | sed 's|^\./||' | sort)
 
 # Move com.m2f.template -> new package
 for src in "${SOURCE_SETS[@]}"; do
