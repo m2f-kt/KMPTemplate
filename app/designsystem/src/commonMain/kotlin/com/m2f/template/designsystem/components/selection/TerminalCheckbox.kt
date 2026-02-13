@@ -68,7 +68,7 @@ fun TerminalCheckbox(
             .triStateToggleable(
                 state = state,
                 interactionSource = interactionSource,
-                indication = rememberTerminalRipple(bounded = false),
+                indication = rememberTerminalRipple(bounded = true),
                 enabled = enabled,
                 role = Role.Checkbox,
                 onClick = onClick,

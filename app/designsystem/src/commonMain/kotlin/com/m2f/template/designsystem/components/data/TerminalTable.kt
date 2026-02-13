@@ -237,7 +237,7 @@ private fun TerminalTableCheckbox(
                 .triStateToggleable(
                     state = state,
                     interactionSource = interactionSource,
-                    indication = rememberTerminalRipple(bounded = false),
+                    indication = rememberTerminalRipple(bounded = true),
                     role = Role.Checkbox,
                     onClick = onClick,
                 )

@@ -62,7 +62,7 @@ fun TerminalRadio(
             .selectable(
                 selected = selected,
                 interactionSource = interactionSource,
-                indication = rememberTerminalRipple(bounded = false),
+                indication = rememberTerminalRipple(bounded = true),
                 enabled = enabled,
                 role = Role.RadioButton,
                 onClick = onClick,

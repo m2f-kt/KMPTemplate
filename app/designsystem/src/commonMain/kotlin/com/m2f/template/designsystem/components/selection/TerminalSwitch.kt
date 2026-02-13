@@ -78,7 +78,7 @@ fun TerminalSwitch(
             .toggleable(
                 value = checked,
                 interactionSource = interactionSource,
-                indication = rememberTerminalRipple(bounded = false),
+                indication = rememberTerminalRipple(bounded = true),
                 enabled = enabled,
                 role = Role.Switch,
                 onValueChange = onCheckedChange,
