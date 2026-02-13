@@ -78,6 +78,7 @@ kotlin {
             implementation(projects.core.models)
             implementation(projects.core.sdk)
             implementation(projects.app.designsystem)
+            implementation(projects.app.auth)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

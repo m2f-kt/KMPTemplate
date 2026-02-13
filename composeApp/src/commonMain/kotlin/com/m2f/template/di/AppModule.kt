@@ -1,5 +1,9 @@
 package com.m2f.template.di
 
+import com.m2f.template.app.auth.ForgotPasswordViewModel
+import com.m2f.template.app.auth.LoginViewModel
+import com.m2f.template.app.auth.RegisterViewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /**
@@ -7,8 +11,9 @@ import org.koin.dsl.module
  * Combines shared module with client-specific dependencies.
  */
 val appModule = module {
-    // Client-specific dependencies (ViewModels, repositories, etc.) go here
-    // Populated in subsequent phases as features are built
+    viewModelOf(::LoginViewModel)
+    viewModelOf(::RegisterViewModel)
+    viewModelOf(::ForgotPasswordViewModel)
 }
 
 /**
