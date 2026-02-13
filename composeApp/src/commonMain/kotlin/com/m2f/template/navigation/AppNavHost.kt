@@ -122,41 +122,17 @@ fun AppNavHost() {
         composable<DashboardRoute> {
             val dashboardViewModel = koinViewModel<DashboardViewModel>()
             val dashboardState by dashboardViewModel.state.collectAsStateWithLifecycle()
-            val profileViewModel = koinViewModel<ProfileViewModel>()
-            val profileState by profileViewModel.state.collectAsStateWithLifecycle()
 
             DashboardScreen(
                 state = dashboardState,
                 onNavItemSelected = dashboardViewModel::selectNavItem,
-                onShowProfile = { dashboardViewModel.showProfile() },
-                onHideProfile = { dashboardViewModel.hideProfile() },
+                onProfileClick = { navController.navigate(ProfileRoute) },
                 onLogout = {
                     navController.navigate(LoginRoute) {
                         popUpTo(0) { inclusive = true }
                     }
                 },
-                profileContent = {
-                    ProfileScreen(
-                        state = profileState,
-                        onStartEditing = profileViewModel::startEditing,
-                        onCancelEditing = profileViewModel::cancelEditing,
-                        onEditNameChange = profileViewModel::onEditNameChange,
-                        onEditEmailChange = profileViewModel::onEditEmailChange,
-                        onSaveProfile = profileViewModel::saveProfile,
-                        onLogout = profileViewModel::logout,
-                        onBack = { dashboardViewModel.hideProfile() },
-                    )
-                },
             )
-
-            // Handle profile logout
-            LaunchedEffect(profileState.logoutTriggered) {
-                if (profileState.logoutTriggered) {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                }
-            }
         }
 
         composable<ProfileRoute> {
