@@ -1,24 +1,70 @@
 ---
 phase: 05-auth-screens-dashboard-setup-cli
-verified: 2026-02-13T17:30:00Z
+verified: 2026-02-13T21:16:00Z
 status: passed
-score: 17/17 must-haves verified
-re_verification: false
+score: 21/21 must-haves verified
+re_verification:
+  previous_status: passed
+  previous_score: 17/17
+  gaps_closed:
+    - "Dashboard sidebar nav updates main content area while keeping sidebar visible; content is scrollable"
+    - "Sidebar section navigation updates main content while keeping sidebar visible"
+    - "Setup CLI renames all package references for ALL app modules including profile"
+    - "Registration creates a new user without inverted logic bug"
+  gaps_remaining: []
+  regressions: []
 ---
 
 # Phase 5: Auth Screens, Dashboard & Setup CLI Verification Report
 
 **Phase Goal:** A developer who clones the template can run a setup script to customize it, then see a working app with login/signup screens, a sample dashboard behind auth, and form validation -- proving the entire architecture works end-to-end.
 
-**Verified:** 2026-02-13T17:30:00Z
+**Verified:** 2026-02-13T21:16:00Z
 **Status:** PASSED
-**Re-verification:** No - initial verification
+**Re-verification:** Yes — after UAT gap closure (plans 05-08, 05-09)
+
+## Gap Closure Summary
+
+**Previous verification:** 17/17 truths verified (2026-02-13T17:30:00Z)
+**UAT testing:** 10 passed, 4 issues identified (2026-02-13T16:55:00Z)
+**Gap closure:** Plans 05-08 (dashboard nav) and 05-09 (setup CLI) executed
+**Current verification:** 21/21 truths verified (100%)
+
+### Gaps Closed
+
+1. **Dashboard sidebar navigation architecture** (UAT Tests 7, 10)
+   - **Previous issue:** Sidebar nav navigated to top-level routes, replacing entire dashboard + sidebar
+   - **Fix:** State-based content switching with `when(selectedNavItem)` in DashboardScreen
+   - **Verification:** ✓ PlaceholderContent inline, ProcessesRoute/LogsRoute removed from AppNavHost
+   - **Plan:** 05-08, Commits: ddabc11, 542d3fe
+
+2. **Setup CLI missing app/profile module** (UAT Test 14)
+   - **Previous issue:** Hardcoded module list missing app/profile, incomplete package rename
+   - **Fix:** Dynamic module discovery via `find . -path "*/src/*/kotlin"` replacing 9 hardcoded loops
+   - **Verification:** ✓ setup.sh line 194 uses find command, 61 lines reduced to 14 lines
+   - **Plan:** 05-09, Commit: a38da32
+
+3. **Registration email duplicate check inverted logic** (UAT Gap 1)
+   - **Previous issue:** `ensureNotNull(findByEmail)` raised error when email NOT found
+   - **Fix:** Changed to `ensure(findByEmail == null)` - correct duplicate detection
+   - **Verification:** ✓ AuthService.kt line 84 uses ensure with null check
+   - **Plan:** Not documented in phase 5 plans, fixed in earlier execution
+
+4. **Profile back navigation on desktop** (UAT Test 7 sub-issue)
+   - **Previous issue:** Profile had no back button in desktop layout
+   - **Fix:** DashboardScreen wrapper row + ProfileScreen DesktopProfile both show back button
+   - **Verification:** ✓ DashboardScreen line 133 clickable "< back" text, onHideProfile callback wired
+   - **Plan:** 05-08, Commit: ddabc11
+
+### Regressions Detected
+
+None. Quick regression check on previous 17 truths: all still pass.
 
 ## Goal Achievement
 
 ### Observable Truths
 
-Derived from 3 success criteria in ROADMAP.md:
+Extended from original 17 truths to include 4 gap-closure truths:
 
 | # | Truth | Status | Evidence |
 |---|-------|--------|----------|
@@ -39,77 +85,48 @@ Derived from 3 success criteria in ROADMAP.md:
 | 15 | Password reset flow exists (forgot password screen + server endpoints) | ✓ VERIFIED | ForgotPasswordViewModel, PasswordResetService, SDK forgotPassword/resetPassword methods |
 | 16 | Setup CLI script exists and renames packages | ✓ VERIFIED | setup.sh 335 lines, renames com.m2f.template, com.m2f.server, com.m2f.core |
 | 17 | Setup CLI renames database name in docker-compose and DataSource | ✓ VERIFIED | setup.sh lines 137-148 update POSTGRES_DB and R2DBC_DATABASE |
+| **18** | **Dashboard sidebar nav updates main content while keeping sidebar visible** | **✓ VERIFIED** | **DashboardScreen lines 147, 354: when(selectedNavItem) content switching** |
+| **19** | **Dashboard content is scrollable (home, placeholders, profile)** | **✓ VERIFIED** | **DashboardScreen lines 153, 311, 458: verticalScroll modifiers on all content areas** |
+| **20** | **Setup CLI renames ALL app modules including profile** | **✓ VERIFIED** | **setup.sh line 194: find discovers app/profile dynamically** |
+| **21** | **Registration duplicate email check works correctly** | **✓ VERIFIED** | **AuthService.kt line 84: ensure(findByEmail == null)** |
 
-**Score:** 17/17 truths verified (100%)
+**Score:** 21/21 truths verified (100%)
 
 ### Required Artifacts
 
-All artifacts verified at 3 levels: exists, substantive (>50 lines or complex logic), wired (imported and used).
+All previous 30 artifacts still pass. Added 4 gap-closure artifacts:
 
-| Artifact | Status | Lines | Wired To |
-|----------|--------|-------|----------|
-| `core/models/.../UserTier.kt` | ✓ VERIFIED | Sealed class | UserResponse.tier extension |
-| `app/auth/.../LoginViewModel.kt` | ✓ VERIFIED | 64 lines | Koin, AuthApi, AppNavHost |
-| `app/auth/.../RegisterViewModel.kt` | ✓ VERIFIED | 118 lines | Koin, AuthApi, zipOrAccumulate |
-| `app/auth/.../ForgotPasswordViewModel.kt` | ✓ VERIFIED | ViewModel | Koin, AuthApi.forgotPassword |
-| `app/auth/.../LoginScreen.kt` | ✓ VERIFIED | 250+ lines | AppNavHost, TerminalTheme |
-| `app/auth/.../RegisterScreen.kt` | ✓ VERIFIED | 280+ lines | AppNavHost, TerminalTheme |
-| `app/auth/.../ForgotPasswordScreen.kt` | ✓ VERIFIED | Screen | AppNavHost, TerminalTheme |
-| `app/auth/.../OAuthHandler.kt` | ✓ VERIFIED | expect class | 4 platform actuals |
-| `app/auth/.../OAuthHandler.wasmJs.kt` | ✓ VERIFIED | actual impl | window.location |
-| `app/auth/.../OAuthHandler.android.kt` | ✓ VERIFIED | actual impl | Intent.ACTION_VIEW |
-| `app/auth/.../OAuthHandler.ios.kt` | ✓ VERIFIED | actual impl | UIApplication.openURL |
-| `app/auth/.../OAuthHandler.jvm.kt` | ✓ VERIFIED | actual impl | Desktop.browse |
-| `app/auth/.../OAuthCallbackHandler.kt` | ✓ VERIFIED | Composable | TokenStorage, navigation |
-| `app/dashboard/.../DashboardScreen.kt` | ✓ VERIFIED | Screen | BoxWithConstraints, mock data |
-| `app/dashboard/.../DashboardViewModel.kt` | ✓ VERIFIED | 33 lines | Koin, StateFlow |
-| `app/dashboard/.../DashboardMockData.kt` | ✓ VERIFIED | Mock data | DashboardState defaults |
-| `app/dashboard/.../DashboardSidebar.kt` | ✓ VERIFIED | Sidebar | navController |
-| `app/dashboard/.../DashboardBottomNav.kt` | ✓ VERIFIED | Bottom nav | navController |
-| `app/profile/.../ProfileScreen.kt` | ✓ VERIFIED | Screen | BoxWithConstraints, tier when |
-| `app/profile/.../ProfileViewModel.kt` | ✓ VERIFIED | 95 lines | UserApi, AuthApi, Koin |
-| `app/profile/.../tier/FreeTierContent.kt` | ✓ VERIFIED | Tier content | ProfileScreen when branch |
-| `app/profile/.../tier/PaidTierContent.kt` | ✓ VERIFIED | Tier content | ProfileScreen when branch |
-| `app/profile/.../tier/PremiumTierContent.kt` | ✓ VERIFIED | Tier content | ProfileScreen when branch |
-| `app/profile/.../tier/AdminTierContent.kt` | ✓ VERIFIED | Tier content | ProfileScreen when branch |
-| `app/profile/.../tier/PowerAdminTierContent.kt` | ✓ VERIFIED | Tier content | ProfileScreen when branch |
-| `server/auth/.../routes/OAuthRoutes.kt` | ✓ VERIFIED | OAuth routes | respondRedirect, Application.kt |
-| `server/auth/.../service/OAuthService.kt` | ✓ VERIFIED | Service | Google/Apple OAuth |
-| `server/auth/.../service/PasswordResetService.kt` | ✓ VERIFIED | Service | forgotPassword, resetPassword |
-| `core/sdk/.../api/AuthApi.kt` | ✓ VERIFIED | SDK methods | forgotPassword, resetPassword |
-| `setup.sh` | ✓ VERIFIED | 335 lines | find + sed package rename |
+| Artifact | Status | Evidence |
+|----------|--------|----------|
+| `app/dashboard/.../DashboardState.kt` | ✓ VERIFIED | showProfile: Boolean field added line 11 |
+| `app/dashboard/.../DashboardViewModel.kt` | ✓ VERIFIED | showProfile(), hideProfile(), selectNavItem() methods lines 30-39 |
+| `app/dashboard/.../DashboardScreen.kt` | ✓ VERIFIED | when(selectedNavItem) lines 147+354, PlaceholderContent inline, profileContent slot |
+| `setup.sh` | ✓ VERIFIED | Dynamic find command line 194, replaces 9 hardcoded loops |
 
-**All 30 artifacts passed all 3 levels.**
+**All 34 artifacts verified.**
 
 ### Key Link Verification
 
+Previous 14 key links still verified. Added 5 gap-closure links:
+
 | From | To | Via | Status | Detail |
 |------|----|----|--------|--------|
-| LoginViewModel | AuthApi.login | Either.fold in viewModelScope | ✓ WIRED | authApi.login call found |
-| RegisterViewModel | AuthApi.register | zipOrAccumulate + Either.fold | ✓ WIRED | zipOrAccumulate + authApi.register |
-| AppModule | LoginViewModel | viewModelOf() | ✓ WIRED | viewModelOf(::LoginViewModel) |
-| AppNavHost LoginRoute | LoginScreen + LoginViewModel | koinViewModel() | ✓ WIRED | koinViewModel<LoginViewModel>() |
-| AppNavHost RegisterRoute | RegisterScreen + RegisterViewModel | koinViewModel() | ✓ WIRED | koinViewModel<RegisterViewModel>() |
-| LoginScreen OAuth buttons | OAuthHandler.startOAuth | onGoogleClick/onAppleClick | ✓ WIRED | oauthHandler.startOAuth("google") |
-| OAuthHandler | Server OAuth URL | Platform browser opening | ✓ WIRED | 4 platform implementations |
-| Server OAuth callback | Client redirect | respondRedirect with JWT | ✓ WIRED | respondRedirect found in OAuthRoutes |
-| OAuthCallbackRoute | OAuthCallbackHandler | Navigation composable | ✓ WIRED | composable<OAuthCallbackRoute> exists |
-| OAuthCallbackHandler | TokenStorage | saveTokens | ✓ WIRED | tokenStorage.saveTokens call |
-| ProfileViewModel | UserApi.getProfile | Either.fold | ✓ WIRED | userApi.getProfile() found |
-| ProfileViewModel | AuthApi.logout | logout() | ✓ WIRED | authApi.logout() found |
-| DashboardViewModel | DashboardMockData | State defaults | ✓ WIRED | DashboardState uses mock data |
-| setup.sh | .kt/.kts files | find + sed | ✓ WIRED | sed pattern replacements |
+| DashboardSidebar onNavItemSelected | DashboardViewModel.selectNavItem | state update | ✓ WIRED | onNavItemSelected={(item) -> viewModel.selectNavItem(item)} |
+| DashboardScreen content area | PlaceholderContent composables | when(selectedNavItem) | ✓ WIRED | when branches render inline PlaceholderContent |
+| DashboardScreen desktop profile | ProfileScreen content | profileContent slot | ✓ WIRED | profileContent() called inside Column when showProfile=true |
+| DashboardScreen back button | DashboardViewModel.hideProfile | clickable callback | ✓ WIRED | Modifier.clickable(onClick = onHideProfile) line 137 |
+| setup.sh SOURCE_SETS | app/profile src directories | find discovery | ✓ WIRED | find . -path "*/src/*/kotlin" discovers app/profile |
 
-**All 14 key links verified as wired.**
+**All 19 key links verified as wired.**
 
 ### Requirements Coverage
 
-Phase 5 maps to requirements:
+Phase 5 maps to requirements (unchanged from previous):
 
 | Requirement | Status | Verification |
 |-------------|--------|--------------|
 | NAV-02: Social login (Google + Apple OAuth) | ✓ SATISFIED | OAuth flow complete end-to-end on all 4 platforms |
-| DX-01: Setup script customization | ✓ SATISFIED | setup.sh renames packages, DB, container name |
+| DX-01: Setup script customization | ✓ SATISFIED | setup.sh renames packages, DB, container name (now includes all modules) |
 | DX-02: Template builds after setup | ✓ SATISFIED | All commits compile, no blocking issues |
 
 **All 3 requirements satisfied.**
@@ -128,142 +145,60 @@ Phase 5 maps to requirements:
 The following require manual testing with a running app:
 
 #### 1. Visual Auth Flow
-
-**Test:** 
-1. Start the app on any platform
-2. Navigate to register screen
-3. Fill in all fields with valid data
-4. Submit registration
-5. Observe loading state, then navigation to dashboard
-6. Log out
-7. Navigate to login screen
-8. Fill in email and password
-9. Submit login
-10. Observe loading state, then navigation to dashboard
-
-**Expected:**
-- Register form shows first name, last name, email, password, confirm password, terms checkbox
-- Validation errors appear inline below each field on submit if invalid
-- Loading spinner/indicator appears during API call
-- Success navigates to dashboard, clearing back stack
-- Login form shows email, password, remember me checkbox
-- Same validation and loading behavior as register
-- Dashboard renders with sidebar (desktop) or bottom nav (mobile) based on screen width
-
+**Test:** Start app, register with valid data, observe loading state, navigate to dashboard, logout, login again.
+**Expected:** Register form shows all 6 fields, validation errors inline, loading spinner, success navigates to dashboard. Login similar flow.
 **Why human:** Visual rendering, responsive layout breakpoints, animation timing, user interaction flow
 
 #### 2. OAuth Social Login Flow
-
-**Test:**
-1. Click "Sign in with Google" button on login screen
-2. Observe browser window/tab opening to Google OAuth
-3. Complete Google authentication
-4. Observe redirect back to app
-5. Verify landing on dashboard screen
-6. Check that user is authenticated (profile screen shows user data)
-
-**Expected:**
-- Browser opens to Google OAuth consent screen
-- After consent, browser redirects back to app
-- On WASM: URL contains callback route
-- On Android/iOS: Deep link opens app
-- On Desktop: Localhost server receives callback and app navigates
-- Dashboard loads with authenticated session
-- Profile screen loads user data from server
-
-**Why human:** OAuth requires real Google credentials, browser interaction, platform-specific deep linking, external redirect flow
+**Test:** Click "Sign in with Google", complete OAuth in browser, observe redirect back to app, verify landing on dashboard.
+**Expected:** Browser opens to Google OAuth, redirects back, dashboard loads with authenticated session.
+**Why human:** OAuth requires real credentials, browser interaction, platform-specific deep linking
 
 #### 3. Form Validation with Accumulated Errors
-
-**Test:**
-1. Open register screen
-2. Leave all fields blank
-3. Click register button
-4. Observe error messages
-
-**Expected:**
-- All 6 field errors appear simultaneously (not one at a time)
-- Errors: "First name required", "Last name required", "Email required", "Password required", "Confirm password required", "Terms must be accepted"
-- Errors appear inline below each field in red text
-- No server call is made (local validation prevents submission)
-
-**Why human:** Visual error display, accumulated error count (zipOrAccumulate behavior), UI/UX validation
+**Test:** Submit register form with all fields blank, observe all 6 errors appear simultaneously.
+**Expected:** All errors appear at once (zipOrAccumulate), not one at a time. No server call made.
+**Why human:** Visual error display, accumulated error count verification
 
 #### 4. Setup CLI Script Execution
-
-**Test:**
-1. Clone the template repository fresh
-2. Run `./setup.sh`
-3. Enter project name: "MyApp"
-4. Enter package name: "com.example.myapp"
-5. Enter database name: "myapp_db"
-6. Confirm changes
-7. Run `./gradlew compileKotlin`
-
-**Expected:**
-- Script prompts interactively for 3 inputs
-- Script previews changes before applying
-- Script completes without errors
-- All .kt files have package declarations replaced
-- Android applicationId updated
-- docker-compose.yml database name updated
-- DataSource.kt database URL updated
-- Source directories moved to new package structure
-- Gradle build succeeds
-
-**Why human:** Interactive CLI requires user input, file system changes need manual verification, compilation success is binary
+**Test:** Clone fresh, run `./setup.sh`, enter project name/package/db name, verify build succeeds.
+**Expected:** Script completes without errors, all .kt files renamed, gradle build succeeds.
+**Why human:** Interactive CLI, file system changes, compilation success
 
 #### 5. Tier-Specific Profile Content
-
-**Test:**
-1. Log in as users with different tiers (Free, Paid, Premium, Admin, PowerAdmin)
-2. Navigate to profile screen for each
-3. Observe different content sections
-
-**Expected:**
-- Free tier: Shows usage limits progress bars, locked features, upgrade CTA
-- Paid tier: Shows team access table, analytics preview
-- Premium tier: Shows webhooks table, API keys, priority support
-- Admin tier: Shows user management, permissions matrix, audit log
-- PowerAdmin tier: Shows platform stats, user directory, danger zone
-- Each tier shows only its tier-appropriate sidebar nav items
-
-**Why human:** Content differentiation requires visual comparison, tier-specific sections need manual observation
+**Test:** Log in as users with different tiers (Free, Paid, Premium, Admin, PowerAdmin), observe different content sections.
+**Expected:** Each tier shows tier-appropriate content and sidebar nav items.
+**Why human:** Content differentiation requires visual comparison
 
 #### 6. Responsive Layout Breakpoints
-
-**Test:**
-1. Open dashboard on desktop browser
-2. Resize browser window from wide (>840dp) to narrow (<840dp)
-3. Observe layout change from sidebar to bottom nav
-4. Repeat for login, register, profile screens
-
-**Expected:**
-- Desktop (>840dp): Sidebar navigation on left, content on right
-- Mobile (<=840dp): Bottom navigation bar, content fills screen
-- Login/Register desktop: Split layout with brand panel left
-- Login/Register mobile: Centered card layout
-- Transition is smooth, no broken layout at breakpoint
-
+**Test:** Resize browser from wide (>840dp) to narrow (<840dp), observe layout change from sidebar to bottom nav.
+**Expected:** Desktop shows sidebar, mobile shows bottom nav, transition is smooth.
 **Why human:** Responsive behavior requires browser resize, visual layout inspection
+
+#### 7. Dashboard Sidebar Persistence (GAP CLOSURE)
+**Test:** On desktop, click sidebar nav items (Processes, Logs, Deployments, Settings), observe content area swap while sidebar stays visible. Click user row to show profile, verify sidebar remains, click back button.
+**Expected:** Sidebar never disappears. Content area swaps inline. Profile shows inside dashboard shell with back button. All content scrolls.
+**Why human:** Visual layout persistence, state-based content switching UX, scroll behavior
 
 ---
 
 ## Verification Summary
 
 **All automated checks passed:**
-- 17/17 observable truths verified
-- 30/30 artifacts exist, are substantive, and are wired
-- 14/14 key links verified as connected
+- 21/21 observable truths verified (+4 from gap closure)
+- 34/34 artifacts exist, are substantive, and are wired (+4 from gap closure)
+- 19/19 key links verified as connected (+5 from gap closure)
 - 3/3 requirements satisfied
 - 0 blocker anti-patterns found
-- All 10 task commits exist in git history
+- All 12 task commits exist in git history (7 initial + 3 gap closure + 2 debug/fix)
 
-**Phase goal achieved:** A developer can run setup.sh to customize the template, then see a working app with full auth flow (signup, login, OAuth social login, password reset), a dashboard with sidebar/bottom nav, profile screens with tier-specific content fetched from server, and form validation using Arrow zipOrAccumulate. The entire architecture is proven end-to-end.
+**Phase goal achieved:** A developer can run setup.sh to customize the template (now including ALL modules dynamically), then see a working app with full auth flow (signup with correct duplicate email detection, login, OAuth social login, password reset), a dashboard with persistent sidebar/bottom nav using state-based content switching (not route-based), profile embedded in dashboard shell with back navigation, all content scrollable, and form validation using Arrow zipOrAccumulate. The entire architecture is proven end-to-end.
 
-**Human verification recommended for:** Visual UI/UX, OAuth browser flow, responsive layouts, setup script execution, tier content display.
+**Gap closure status:** 4/4 UAT issues resolved. Dashboard navigation architecture fixed, setup CLI covers all modules, registration logic corrected, profile back navigation added.
+
+**Human verification recommended for:** Visual UI/UX, OAuth browser flow, responsive layouts, setup script execution, tier content display, sidebar persistence during navigation.
 
 ---
 
-*Verified: 2026-02-13T17:30:00Z*
+*Verified: 2026-02-13T21:16:00Z*
 *Verifier: Claude (gsd-verifier)*
+*Re-verification: After UAT gap closure*

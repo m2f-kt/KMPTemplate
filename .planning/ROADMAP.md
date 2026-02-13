@@ -115,8 +115,8 @@ Plans:
 - [x] 05-05-PLAN.md -- Profile module with 5 tier-specific screens, edit profile (functional), tier content (demonstration/mock), logout
 - [x] 05-06-PLAN.md -- Setup CLI bash script for project renaming after clone
 - [x] 05-07-PLAN.md -- OAuth client flow: open browser, handle callback, store tokens, navigate to dashboard (all platforms)
-- [ ] 05-08-PLAN.md -- Fix dashboard sidebar navigation to use state-based content switching (gap closure)
-- [ ] 05-09-PLAN.md -- Fix setup.sh dynamic module discovery for source directory moves (gap closure)
+- [x] 05-08-PLAN.md -- Fix dashboard sidebar navigation to use state-based content switching (gap closure)
+- [x] 05-09-PLAN.md -- Fix setup.sh dynamic module discovery for source directory moves (gap closure)
 
 ### Phase 6: AI Agent Infrastructure
 **Goal**: The template ships with working Koog AI agent infrastructure -- an agent registry, tool system, conversation persistence, and example agents that a developer can extend to build their own AI features.
@@ -145,5 +145,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Server Auth & Users | 3/3 | Complete | 2026-02-11 |
 | 3. Client SDK & Storage | 3/3 | Complete | 2026-02-11 |
 | 4. Navigation & UI Components | 7/7 | Complete | 2026-02-12 |
-| 5. Auth Screens, Dashboard & Setup CLI | 7/9 | Gap closure | 2026-02-13 |
+| 5. Auth Screens, Dashboard & Setup CLI | 9/9 | Complete | 2026-02-13 |
 | 6. AI Agent Infrastructure | 0/2 | Not started | - |
