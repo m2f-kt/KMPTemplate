@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI)
-Plan: 3 of 7 in current phase (05-02, 05-06 complete; 05-01 partial)
+Plan: 4 of 7 in current phase (05-01, 05-02, 05-06 complete)
 Status: Executing Phase 05
-Last activity: 2026-02-13 -- Completed 05-02 (Auth ViewModels with Arrow validation and Koin DI)
+Last activity: 2026-02-13 -- Completed 05-01 (Server OAuth, Password Reset, UserTier)
 
-Progress: [██████████████░_] 86% (19/22 plans)
+Progress: [██████████████░_] 91% (20/22 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 20
 - Average duration: ~8 min
-- Total execution time: ~161 min
+- Total execution time: ~168 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [██████████████░_] 86% (19/22 plans)
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
-| 5 | 2/7 | ~6 min | ~3 min |
+| 5 | 3/7 | ~13 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-06 (~9 min), 04-07 (~7 min), 05-06 (~2 min), 05-02 (~4 min)
+- Last 5 plans: 04-07 (~7 min), 05-06 (~2 min), 05-02 (~4 min), 05-01 (~7 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -167,6 +167,13 @@ Recent decisions affecting current work:
 - [05-06]: Database default is 'application' (matching actual DataSource.kt), not 'template' as plan assumed
 - [05-06]: cp -R + rm -rf instead of mv for cross-platform directory move reliability
 - [05-06]: Delete .iml files rather than updating (IDE regenerates them)
+- [05-01]: UserTier is a sealed class (not enum) with fromString() -- exhaustive when expressions enforce tier handling
+- [05-01]: RegisterRequest uses firstName/lastName; server concatenates to name for storage
+- [05-01]: UserResponse.tier extension property bridges wire format (String role) to sealed type
+- [05-01]: Password reset tokens hashed with SHA-256, expire after 1 hour
+- [05-01]: Server-side OAuth via Ktor oauth provider (Google + Apple) with empty default env vars
+- [05-01]: forgotPassword always returns success to prevent user enumeration
+- [05-01]: HttpClient(CIO) provided via Koin for server-side OAuth userinfo calls
 
 ### Pending Todos
 
@@ -206,5 +213,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-02-PLAN.md (Auth ViewModels with Arrow validation and Koin DI)
+Stopped at: Completed 05-01-PLAN.md (Server OAuth, Password Reset, UserTier sealed type)
 Resume file: None
