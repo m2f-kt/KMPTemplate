@@ -26,6 +26,9 @@ kotlin {
             implementation(projects.app.designsystem)
             implementation(compose.runtime)
             implementation(compose.foundation)
+            implementation(libs.arrow.core)
+            implementation(libs.androidx.lifecycle.viewmodelCompose)
+            implementation(libs.koin.compose.viewmodel)
         }
     }
 }
