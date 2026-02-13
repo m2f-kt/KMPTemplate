@@ -1,5 +1,9 @@
 package com.m2f.template.designsystem.components.data
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -19,6 +23,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -88,9 +94,20 @@ fun TerminalLineChart(
     yLabelCount: Int = 5,
     scrollThreshold: Int = 8,
     pointSpacing: Dp = 80.dp,
+    animated: Boolean = true,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
+
+    val progress = remember { Animatable(if (animated) 0f else 1f) }
+    LaunchedEffect(Unit) {
+        if (animated) {
+            progress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 800, easing = EaseOutCubic),
+            )
+        }
+    }
 
     val shape = RoundedCornerShape(4.dp)
     val isScrollable = xLabels.size > scrollThreshold
@@ -228,98 +245,100 @@ fun TerminalLineChart(
                             val canvasWidth = size.width
                             val canvasHeight = size.height
 
-                            // Horizontal grid lines
-                            for (i in 0 until yLabelCount) {
-                                val y = canvasHeight * i / (yLabelCount - 1)
-                                drawLine(
-                                    color = chartGridColor,
-                                    start = Offset(0f, y),
-                                    end = Offset(canvasWidth, y),
-                                    strokeWidth = 1.dp.toPx(),
-                                )
-                            }
+                            clipRect(right = size.width * progress.value) {
+                                // Horizontal grid lines
+                                for (i in 0 until yLabelCount) {
+                                    val y = canvasHeight * i / (yLabelCount - 1)
+                                    drawLine(
+                                        color = chartGridColor,
+                                        start = Offset(0f, y),
+                                        end = Offset(canvasWidth, y),
+                                        strokeWidth = 1.dp.toPx(),
+                                    )
+                                }
 
-                            // Draw each series
-                            series.forEachIndexed { index, s ->
-                                val seriesColor = s.color
-                                    ?: if (index == 0) {
-                                        chartSeries1Color
+                                // Draw each series
+                                series.forEachIndexed { index, s ->
+                                    val seriesColor = s.color
+                                        ?: if (index == 0) {
+                                            chartSeries1Color
+                                        } else {
+                                            chartSeries2Color
+                                        }
+
+                                    if (s.points.isEmpty()) return@forEachIndexed
+
+                                    // Build points
+                                    val xMin = s.points.minOf { it.x }
+                                    val xMax = s.points.maxOf { it.x }
+                                    val xRange = if (xMax - xMin == 0f) 1f else xMax - xMin
+
+                                    val offsets = s.points.map { point ->
+                                        Offset(
+                                            x = (point.x - xMin) / xRange * canvasWidth,
+                                            y = canvasHeight - (point.y / yMax) * canvasHeight,
+                                        )
+                                    }
+
+                                    // Area fill path
+                                    val areaPath = Path().apply {
+                                        moveTo(offsets.first().x, offsets.first().y)
+                                        for (i in 1 until offsets.size) {
+                                            lineTo(offsets[i].x, offsets[i].y)
+                                        }
+                                        lineTo(offsets.last().x, canvasHeight)
+                                        lineTo(offsets.first().x, canvasHeight)
+                                        close()
+                                    }
+
+                                    val gradientTopColor = if (index == 0) {
+                                        chartSeries1MutedColor
                                     } else {
-                                        chartSeries2Color
+                                        seriesColor.copy(alpha = 0.15f)
                                     }
 
-                                if (s.points.isEmpty()) return@forEachIndexed
-
-                                // Build points
-                                val xMin = s.points.minOf { it.x }
-                                val xMax = s.points.maxOf { it.x }
-                                val xRange = if (xMax - xMin == 0f) 1f else xMax - xMin
-
-                                val offsets = s.points.map { point ->
-                                    Offset(
-                                        x = (point.x - xMin) / xRange * canvasWidth,
-                                        y = canvasHeight - (point.y / yMax) * canvasHeight,
-                                    )
-                                }
-
-                                // Area fill path
-                                val areaPath = Path().apply {
-                                    moveTo(offsets.first().x, offsets.first().y)
-                                    for (i in 1 until offsets.size) {
-                                        lineTo(offsets[i].x, offsets[i].y)
-                                    }
-                                    lineTo(offsets.last().x, canvasHeight)
-                                    lineTo(offsets.first().x, canvasHeight)
-                                    close()
-                                }
-
-                                val gradientTopColor = if (index == 0) {
-                                    chartSeries1MutedColor
-                                } else {
-                                    seriesColor.copy(alpha = 0.15f)
-                                }
-
-                                drawPath(
-                                    path = areaPath,
-                                    brush = Brush.verticalGradient(
-                                        colors = listOf(
-                                            gradientTopColor,
-                                            Color.Transparent,
+                                    drawPath(
+                                        path = areaPath,
+                                        brush = Brush.verticalGradient(
+                                            colors = listOf(
+                                                gradientTopColor,
+                                                Color.Transparent,
+                                            ),
                                         ),
-                                    ),
-                                )
+                                    )
 
-                                // Line stroke path
-                                val linePath = Path().apply {
-                                    moveTo(offsets.first().x, offsets.first().y)
-                                    for (i in 1 until offsets.size) {
-                                        lineTo(offsets[i].x, offsets[i].y)
+                                    // Line stroke path
+                                    val linePath = Path().apply {
+                                        moveTo(offsets.first().x, offsets.first().y)
+                                        for (i in 1 until offsets.size) {
+                                            lineTo(offsets[i].x, offsets[i].y)
+                                        }
                                     }
-                                }
 
-                                drawPath(
-                                    path = linePath,
-                                    color = seriesColor,
-                                    style = Stroke(
-                                        width = 2.dp.toPx(),
-                                        cap = StrokeCap.Round,
-                                        join = StrokeJoin.Round,
-                                    ),
-                                )
-
-                                // Data points
-                                offsets.forEach { offset ->
-                                    drawCircle(
-                                        color = chartBgColor,
-                                        radius = 3.dp.toPx(),
-                                        center = offset,
-                                    )
-                                    drawCircle(
+                                    drawPath(
+                                        path = linePath,
                                         color = seriesColor,
-                                        radius = 3.dp.toPx(),
-                                        center = offset,
-                                        style = Stroke(width = 2.dp.toPx()),
+                                        style = Stroke(
+                                            width = 2.dp.toPx(),
+                                            cap = StrokeCap.Round,
+                                            join = StrokeJoin.Round,
+                                        ),
                                     )
+
+                                    // Data points
+                                    offsets.forEach { offset ->
+                                        drawCircle(
+                                            color = chartBgColor,
+                                            radius = 3.dp.toPx(),
+                                            center = offset,
+                                        )
+                                        drawCircle(
+                                            color = seriesColor,
+                                            radius = 3.dp.toPx(),
+                                            center = offset,
+                                            style = Stroke(width = 2.dp.toPx()),
+                                        )
+                                    }
                                 }
                             }
                         }
