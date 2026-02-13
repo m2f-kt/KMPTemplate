@@ -1,5 +1,5 @@
 ---
-status: diagnosed
+status: complete
 phase: 05-auth-screens-dashboard-setup-cli
 source: [05-01-SUMMARY.md, 05-02-SUMMARY.md, 05-03-SUMMARY.md, 05-04-SUMMARY.md, 05-05-SUMMARY.md, 05-06-SUMMARY.md, 05-07-SUMMARY.md, 05-08-SUMMARY.md, 05-09-SUMMARY.md]
 started: 2026-02-13T16:30:00Z
@@ -106,14 +106,32 @@ reason: Still broken. Deferred to future phase per user decision.
 original-test: 14
 fix: 05-09 — Dynamic find-based module discovery replacing hardcoded loops
 
+### R5. Profile as Top-Level Route (was double-sidebar)
+expected: Clicking the user row in the desktop sidebar navigates to a full-screen ProfileScreen with its own sidebar — the DashboardSidebar is no longer visible (no double sidebar). On mobile, profile opens full-screen without bottom nav. Back button returns to dashboard.
+result: pass
+original-test: R2, R3
+fix: 05-10 — Profile embedding removed, navController.navigate(ProfileRoute) wired
+
+### R6. Remember-Me Persists Session
+expected: Log in with "Remember me" checked. Close and reopen the app — you land directly on the Dashboard without seeing the login screen. Tokens survived the restart.
+result: pass
+original-test: R2
+fix: 05-11 — Session-only TokenStorage mode, startup token check in AppNavHost
+
+### R7. Remember-Me Unchecked Clears Session
+expected: Log in with "Remember me" unchecked. Close and reopen the app — you see the login screen (tokens were cleared on restart). Session was not persisted.
+result: pass
+original-test: R2
+fix: 05-11 — clearSessionTokens() on startup when session-only flag is set
+
 ## Summary
 
-total: 14 (+4 retests)
+total: 14 (+7 retests)
 passed: 10
 issues: 4
 pending: 0
 skipped: 0
-retests-passed: 1
+retests-passed: 4
 retests-issues: 2
 retests-skipped: 1
 
