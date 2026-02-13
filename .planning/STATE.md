@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 5 complete - Auth Screens, Dashboard, Setup CLI
+**Current focus:** Phase 6 - AI Agent Infrastructure
 
 ## Current Position
 
-Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI) -- COMPLETE
-Plan: 11 of 11 in current phase (11 complete, 0 remaining)
-Status: Phase 5 complete
-Last activity: 2026-02-13 -- Completed quick task 22: Fix checkbox ripple effect drawing beyond bounds
+Phase: 6 of 6 (AI Agent Infrastructure)
+Plan: 1 of 3 in current phase (1 complete, 2 remaining)
+Status: Executing phase 6
+Last activity: 2026-02-13 -- Completed 06-01: AI Foundation Dependencies and Error Types
 
-Progress: [████████████████] 100% (28/28 plans)
+Progress: [████████████████░░] 94% (29/31 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 28
+- Total plans completed: 29
 - Average duration: ~7 min
-- Total execution time: ~208 min
+- Total execution time: ~212 min
 
 **By Phase:**
 
@@ -32,9 +32,10 @@ Progress: [████████████████] 100% (28/28 plans)
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
 | 5 | 11/11 | ~50 min | ~5 min |
+| 6 | 1/3 | ~4 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 05-11 (~2 min), 05-10 (~3 min), 05-09 (~1 min), 05-07 (~12 min), 05-05 (~9 min)
+- Last 5 plans: 06-01 (~4 min), 05-11 (~2 min), 05-10 (~3 min), 05-09 (~1 min), 05-07 (~12 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -199,6 +200,9 @@ Recent decisions affecting current work:
 - [05-11]: Session-only flag stored in Settings (not in-memory) so clearSessionTokens() works across app restarts
 - [05-11]: LaunchedEffect(Unit) for startup token check placed before OAuth callback LaunchedEffect for correct ordering
 - [05-11]: LoginRoute remains startDestination; LaunchedEffect redirects to DashboardRoute to avoid recomposition issues
+- [06-01]: AI_ENABLED env var defaults to false for safe server startup without AI configuration
+- [06-01]: 4 AI error types: AgentFailed, AgentNotFound, ConversationNotFound, ProviderUnavailable
+- [06-01]: AiErrors follow AuthErrors.kt pattern: data class implementing DomainError with context(RoutingContext) respond()
 
 ### Pending Todos
 
@@ -239,5 +243,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed quick-22 (Fix checkbox ripple effect drawing beyond bounds)
+Stopped at: Completed 06-01-PLAN.md (AI Foundation Dependencies and Error Types)
 Resume file: None
