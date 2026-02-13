@@ -28,3 +28,13 @@ data object DeploymentsRoute
 
 @Serializable
 data object SettingsRoute
+
+/**
+ * Route for handling OAuth callback redirects.
+ * Navigation arguments carry the JWT tokens from the server redirect.
+ */
+@Serializable
+data class OAuthCallbackRoute(
+    val accessToken: String,
+    val refreshToken: String,
+)

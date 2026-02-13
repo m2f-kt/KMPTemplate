@@ -80,6 +80,7 @@ kotlin {
             implementation(projects.app.designsystem)
             implementation(projects.app.auth)
             implementation(projects.app.dashboard)
+            implementation(projects.app.profile)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
