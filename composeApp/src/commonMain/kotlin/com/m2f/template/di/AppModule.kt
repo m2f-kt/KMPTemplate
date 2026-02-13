@@ -3,6 +3,7 @@ package com.m2f.template.di
 import com.m2f.template.app.auth.ForgotPasswordViewModel
 import com.m2f.template.app.auth.LoginViewModel
 import com.m2f.template.app.auth.RegisterViewModel
+import com.m2f.template.app.dashboard.DashboardViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -14,6 +15,7 @@ val appModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::ForgotPasswordViewModel)
+    viewModelOf(::DashboardViewModel)
 }
 
 /**
