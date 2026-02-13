@@ -44,26 +44,26 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  * Desktop shows a 260dp sidebar + main content area.
  * Mobile shows vertical content with a bottom navigation bar.
  *
+ * Content switching is state-based: sidebar/bottom nav items update [DashboardState.selectedNavItem]
+ * and the content area renders the appropriate section inline. The sidebar/bottom nav remain
+ * visible at all times.
+ *
  * @param state The current dashboard state with mock data.
  * @param onNavItemSelected Callback when a sidebar/bottom nav item is selected.
- * @param onProfileClick Callback when the user profile is clicked.
+ * @param onShowProfile Callback to show profile content inside the dashboard shell.
+ * @param onHideProfile Callback to hide profile content and return to dashboard.
  * @param onLogout Callback when the user logs out.
- * @param onNavigateToProcesses Callback to navigate to the processes screen.
- * @param onNavigateToLogs Callback to navigate to the logs screen.
- * @param onNavigateToDeployments Callback to navigate to the deployments screen.
- * @param onNavigateToSettings Callback to navigate to the settings screen.
+ * @param profileContent Composable slot for profile screen content, injected from AppNavHost.
  * @param modifier Modifier for the screen root.
  */
 @Composable
 fun DashboardScreen(
     state: DashboardState,
     onNavItemSelected: (String) -> Unit,
-    onProfileClick: () -> Unit,
+    onShowProfile: () -> Unit,
+    onHideProfile: () -> Unit,
     onLogout: () -> Unit,
-    onNavigateToProcesses: () -> Unit,
-    onNavigateToLogs: () -> Unit,
-    onNavigateToDeployments: () -> Unit,
-    onNavigateToSettings: () -> Unit,
+    profileContent: @Composable () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -75,31 +75,20 @@ fun DashboardScreen(
             // Desktop layout
             DesktopDashboard(
                 state = state,
-                onNavItemSelected = { item ->
-                    onNavItemSelected(item)
-                    when (item) {
-                        "processes" -> onNavigateToProcesses()
-                        "logs" -> onNavigateToLogs()
-                        "deployments" -> onNavigateToDeployments()
-                        "settings" -> onNavigateToSettings()
-                    }
-                },
-                onProfileClick = onProfileClick,
+                onNavItemSelected = onNavItemSelected,
+                onShowProfile = onShowProfile,
+                onHideProfile = onHideProfile,
                 onLogout = onLogout,
+                profileContent = profileContent,
             )
         } else {
             // Mobile layout
             MobileDashboard(
                 state = state,
-                onTabSelected = { tab ->
-                    onNavItemSelected(tab)
-                    when (tab) {
-                        "processes" -> onNavigateToProcesses()
-                        "logs" -> onNavigateToLogs()
-                        "settings" -> onNavigateToSettings()
-                    }
-                },
-                onProfileClick = onProfileClick,
+                onTabSelected = onNavItemSelected,
+                onShowProfile = onShowProfile,
+                onHideProfile = onHideProfile,
+                profileContent = profileContent,
             )
         }
     }
@@ -111,49 +100,116 @@ fun DashboardScreen(
 private fun DesktopDashboard(
     state: DashboardState,
     onNavItemSelected: (String) -> Unit,
-    onProfileClick: () -> Unit,
+    onShowProfile: () -> Unit,
+    onHideProfile: () -> Unit,
     onLogout: () -> Unit,
+    profileContent: @Composable () -> Unit,
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         DashboardSidebar(
             selectedItem = state.selectedNavItem,
             userName = state.userName,
             onNavItemSelected = onNavItemSelected,
-            onProfileClick = onProfileClick,
+            onProfileClick = onShowProfile,
             onLogout = onLogout,
         )
 
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
-                .padding(32.dp),
-            verticalArrangement = Arrangement.spacedBy(28.dp),
-        ) {
-            // Header row
-            DesktopHeader(userName = state.userName, onProfileClick = onProfileClick)
-
-            // Metrics row
-            MetricsRow(metrics = state.metrics)
-
-            // Columns row: process table + deployment/activity
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
+        if (state.showProfile) {
+            // Profile content with back button
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
             ) {
-                // Left: process table
-                Column(modifier = Modifier.weight(1f)) {
-                    ProcessTable(processes = state.processes)
+                // Back button row
+                val colors = TerminalTheme.colors
+                val typography = TerminalTheme.typography
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 32.dp, vertical = 16.dp),
+                ) {
+                    TerminalText(
+                        text = "< back",
+                        style = typography.sm,
+                        color = colors.textMuted,
+                        modifier = Modifier.clickable(onClick = onHideProfile),
+                    )
                 }
 
-                // Right: deployment + activity
-                Column(
-                    modifier = Modifier.width(340.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                ) {
-                    DeploymentCard(deployment = state.deployment)
-                    ActivityList(activities = state.activities)
+                Box(modifier = Modifier.weight(1f)) {
+                    profileContent()
+                }
+            }
+        } else {
+            // State-based content switching
+            when (state.selectedNavItem) {
+                "dashboard" -> {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .verticalScroll(rememberScrollState())
+                            .padding(32.dp),
+                        verticalArrangement = Arrangement.spacedBy(28.dp),
+                    ) {
+                        // Header row
+                        DesktopHeader(userName = state.userName, onProfileClick = onShowProfile)
+
+                        // Metrics row
+                        MetricsRow(metrics = state.metrics)
+
+                        // Columns row: process table + deployment/activity
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        ) {
+                            // Left: process table
+                            Column(modifier = Modifier.weight(1f)) {
+                                ProcessTable(processes = state.processes)
+                            }
+
+                            // Right: deployment + activity
+                            Column(
+                                modifier = Modifier.width(340.dp),
+                                verticalArrangement = Arrangement.spacedBy(24.dp),
+                            ) {
+                                DeploymentCard(deployment = state.deployment)
+                                ActivityList(activities = state.activities)
+                            }
+                        }
+                    }
+                }
+                "processes" -> {
+                    PlaceholderContent(
+                        title = "> processes",
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                "logs" -> {
+                    PlaceholderContent(
+                        title = "> logs",
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                "deployments" -> {
+                    PlaceholderContent(
+                        title = "> deployments",
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                "settings" -> {
+                    PlaceholderContent(
+                        title = "> settings",
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                else -> {
+                    PlaceholderContent(
+                        title = "> ${state.selectedNavItem}",
+                        modifier = Modifier.weight(1f),
+                    )
                 }
             }
         }
@@ -214,91 +270,137 @@ private fun DesktopHeader(
 private fun MobileDashboard(
     state: DashboardState,
     onTabSelected: (String) -> Unit,
-    onProfileClick: () -> Unit,
+    onShowProfile: () -> Unit,
+    onHideProfile: () -> Unit,
+    profileContent: @Composable () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
     Column(modifier = Modifier.fillMaxSize()) {
-        // Scrollable content
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
-        ) {
-            // Header: brand + avatar
+        if (state.showProfile) {
+            // Profile header with back button (replaces bottom nav)
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(colors.surface)
+                    .padding(horizontal = 20.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                TerminalText(
+                    text = "< back",
+                    style = typography.sm,
+                    color = colors.textMuted,
+                    modifier = Modifier.clickable(onClick = onHideProfile),
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(colors.border),
+            )
+            Box(modifier = Modifier.weight(1f)) {
+                profileContent()
+            }
+        } else {
+            // Scrollable content area
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 20.dp, vertical = 24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
+            ) {
+                // Header: brand + avatar
                 Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    TerminalText(
-                        text = ">_",
-                        style = typography.md.copy(fontWeight = FontWeight.Bold),
-                        color = colors.accent,
-                    )
-                    TerminalText(
-                        text = "terminal",
-                        style = typography.md.copy(fontWeight = FontWeight.SemiBold),
-                        color = colors.text,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        TerminalText(
+                            text = ">_",
+                            style = typography.md.copy(fontWeight = FontWeight.Bold),
+                            color = colors.accent,
+                        )
+                        TerminalText(
+                            text = "terminal",
+                            style = typography.md.copy(fontWeight = FontWeight.SemiBold),
+                            color = colors.text,
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(colors.accentMuted)
+                            .clickable(onClick = onShowProfile),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        TerminalText(
+                            text = state.userName.take(1).uppercase(),
+                            style = typography.sm.copy(fontWeight = FontWeight.Medium),
+                            color = colors.accent,
+                        )
+                    }
                 }
 
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(colors.accentMuted)
-                        .clickable(onClick = onProfileClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TerminalText(
-                        text = state.userName.take(1).uppercase(),
-                        style = typography.sm.copy(fontWeight = FontWeight.Medium),
-                        color = colors.accent,
-                    )
+                // State-based content switching
+                when (state.selectedNavItem) {
+                    "dashboard" -> {
+                        // Title block
+                        Column {
+                            TerminalText(
+                                text = "$ system_overview",
+                                style = typography.xxl.copy(fontWeight = FontWeight.Bold),
+                                color = colors.text,
+                            )
+                            Spacer(modifier = Modifier.height(4.dp))
+                            TerminalText(
+                                text = "[4 nodes active]",
+                                style = typography.xs,
+                                color = colors.textDim,
+                            )
+                        }
+
+                        // Metrics: 2x2 grid
+                        MobileMetricsGrid(metrics = state.metrics)
+
+                        // Process list (simplified)
+                        MobileProcessList(processes = state.processes)
+
+                        // Deployment card
+                        DeploymentCard(deployment = state.deployment)
+
+                        // Activity list
+                        ActivityList(activities = state.activities)
+                    }
+                    "processes" -> {
+                        MobilePlaceholderContent(title = "> processes")
+                    }
+                    "logs" -> {
+                        MobilePlaceholderContent(title = "> logs")
+                    }
+                    "settings" -> {
+                        MobilePlaceholderContent(title = "> settings")
+                    }
+                    else -> {
+                        MobilePlaceholderContent(title = "> ${state.selectedNavItem}")
+                    }
                 }
             }
 
-            // Title block
-            Column {
-                TerminalText(
-                    text = "$ system_overview",
-                    style = typography.xxl.copy(fontWeight = FontWeight.Bold),
-                    color = colors.text,
-                )
-                Spacer(modifier = Modifier.height(4.dp))
-                TerminalText(
-                    text = "[4 nodes active]",
-                    style = typography.xs,
-                    color = colors.textDim,
-                )
-            }
-
-            // Metrics: 2x2 grid
-            MobileMetricsGrid(metrics = state.metrics)
-
-            // Process list (simplified)
-            MobileProcessList(processes = state.processes)
-
-            // Deployment card
-            DeploymentCard(deployment = state.deployment)
-
-            // Activity list
-            ActivityList(activities = state.activities)
+            // Bottom nav bar (hidden when profile is showing)
+            DashboardBottomNav(
+                selectedTab = state.selectedNavItem,
+                onTabSelected = onTabSelected,
+            )
         }
-
-        // Bottom nav bar
-        DashboardBottomNav(
-            selectedTab = state.selectedNavItem,
-            onTabSelected = onTabSelected,
-        )
     }
 }
 
@@ -335,6 +437,75 @@ private fun MobileProcessList(processes: List<DashboardMockData.ProcessItem>) {
                         variant = BadgeVariant.Success,
                     )
                 },
+            )
+        }
+    }
+}
+
+// -- Placeholder Content --
+
+@Composable
+private fun PlaceholderContent(
+    title: String,
+    modifier: Modifier = Modifier,
+) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(32.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+    ) {
+        TerminalText(
+            text = title,
+            style = typography.xxl.copy(fontWeight = FontWeight.Bold),
+            color = colors.text,
+        )
+        TerminalCard(
+            title = title.removePrefix("> "),
+            description = "// under construction",
+            variant = CardVariant.Default,
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                TerminalBadge(
+                    text = "status: pending",
+                    variant = BadgeVariant.Warning,
+                    icon = "\u25D0",
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MobilePlaceholderContent(title: String) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    TerminalText(
+        text = title,
+        style = typography.xxl.copy(fontWeight = FontWeight.Bold),
+        color = colors.text,
+    )
+    TerminalCard(
+        title = title.removePrefix("> "),
+        description = "// under construction",
+        variant = CardVariant.Default,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            TerminalBadge(
+                text = "status: pending",
+                variant = BadgeVariant.Warning,
+                icon = "\u25D0",
             )
         }
     }

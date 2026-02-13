@@ -28,6 +28,14 @@ class DashboardViewModel : ViewModel() {
     }
 
     fun selectNavItem(item: String) {
-        _state.update { it.copy(selectedNavItem = item) }
+        _state.update { it.copy(selectedNavItem = item, showProfile = false) }
+    }
+
+    fun showProfile() {
+        _state.update { it.copy(showProfile = true, selectedNavItem = "profile") }
+    }
+
+    fun hideProfile() {
+        _state.update { it.copy(showProfile = false, selectedNavItem = "dashboard") }
     }
 }

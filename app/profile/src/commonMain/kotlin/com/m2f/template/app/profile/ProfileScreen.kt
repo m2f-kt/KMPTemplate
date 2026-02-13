@@ -97,6 +97,7 @@ fun ProfileScreen(
                     onEditEmailChange = onEditEmailChange,
                     onSaveProfile = onSaveProfile,
                     onLogout = onLogout,
+                    onBack = onBack,
                 )
             }
             else -> {
@@ -126,7 +127,11 @@ private fun DesktopProfile(
     onEditEmailChange: (String) -> Unit,
     onSaveProfile: () -> Unit,
     onLogout: () -> Unit,
+    onBack: () -> Unit,
 ) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
     var selectedNavItem by remember { mutableStateOf("profile") }
 
     Row(modifier = Modifier.fillMaxSize()) {
@@ -146,6 +151,13 @@ private fun DesktopProfile(
                 .padding(32.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
+            TerminalText(
+                text = "< back",
+                style = typography.sm,
+                color = colors.textMuted,
+                modifier = Modifier.clickable(onClick = onBack),
+            )
+
             ProfileHeader(state = state)
 
             if (state.isEditing) {
