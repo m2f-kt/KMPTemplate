@@ -1,9 +1,10 @@
 ---
-status: diagnosed
+status: complete
 phase: 05-auth-screens-dashboard-setup-cli
-source: [05-01-SUMMARY.md, 05-02-SUMMARY.md, 05-03-SUMMARY.md, 05-04-SUMMARY.md, 05-05-SUMMARY.md, 05-06-SUMMARY.md, 05-07-SUMMARY.md]
+source: [05-01-SUMMARY.md, 05-02-SUMMARY.md, 05-03-SUMMARY.md, 05-04-SUMMARY.md, 05-05-SUMMARY.md, 05-06-SUMMARY.md, 05-07-SUMMARY.md, 05-08-SUMMARY.md, 05-09-SUMMARY.md]
 started: 2026-02-13T16:30:00Z
-updated: 2026-02-13T16:55:00Z
+updated: 2026-02-13T22:00:00Z
+retest-started: 2026-02-13T21:00:00Z
 ---
 
 ## Current Test
@@ -74,13 +75,47 @@ result: issue
 reported: "Some references and packages weren't changed. For example TerminalTypography and other references remained with old package names."
 severity: major
 
+## Re-tests (Gap Closure Verification)
+
+### R1. Registration Flow (was blocker)
+expected: Register with a new email succeeds — auth tokens returned, land on dashboard. No "user already exists" error for fresh emails.
+result: pass
+original-test: 7 (partial — registration bug)
+fix: AuthService.kt line 84 — ensure(findByEmail == null) replacing ensureNotNull
+
+### R2. Dashboard Sidebar Navigation (was major)
+expected: Clicking sidebar nav items (Dashboard, Processes, Logs, Deployments, Settings) swaps the main content area while the sidebar stays visible and persistent. Content does not scroll away the sidebar.
+result: issue
+reported: "the profile loads in the content window instead of in a new page which is creating a very weird effect (profile has its own sidebar nested inside dashboard content area, double sidebar visible). Login session is not persisted across app reinitialization even when the checkbox for remember me is checked."
+severity: major
+original-test: 7, 10
+fix: 05-08 — State-based content switching via selectedNavItem when() block
+
+### R3. Profile in Dashboard Shell (was major)
+expected: Clicking user row in sidebar opens profile embedded inside the dashboard shell (sidebar still visible on desktop). A back button returns to the previous dashboard section. On mobile, profile hides bottom nav and shows a back header.
+result: issue
+reported: "Profile screen should be a top-level screen, not embedded inside the dashboard content area. Currently displays nested inside dashboard creating double sidebar."
+severity: major
+original-test: 7
+fix: 05-08 — Profile injected as composable slot, back button added
+
+### R4. Setup CLI Module Discovery (was major)
+expected: Running `bash setup.sh` renames ALL modules including app/profile. After running, no old package references remain (including in previously missed modules). The script discovers modules dynamically without hardcoded lists.
+result: skipped
+reason: Still broken. Deferred to future phase per user decision.
+original-test: 14
+fix: 05-09 — Dynamic find-based module discovery replacing hardcoded loops
+
 ## Summary
 
-total: 14
+total: 14 (+4 retests)
 passed: 10
 issues: 4
 pending: 0
 skipped: 0
+retests-passed: 1
+retests-issues: 2
+retests-skipped: 1
 
 ## Gaps
 
@@ -143,3 +178,23 @@ skipped: 0
     - "Add 'profile' to app module list at line 204"
     - "Consider dynamic module discovery (find app/*/build.gradle.kts) instead of hardcoded lists"
   debug_session: ".planning/debug/setup-sh-missing-pkg-refs.md"
+
+- truth: "Dashboard sidebar nav swaps content while sidebar stays persistent; profile does not create nested sidebar"
+  status: failed
+  reason: "User reported: profile loads in content window with its own sidebar nested inside dashboard content area, creating double sidebar. Login session not persisted across app restart even with remember me checked."
+  severity: major
+  test: R2
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Profile opens as top-level screen, not nested inside dashboard content"
+  status: failed
+  reason: "User reported: Profile should be top-level route. Currently embedded inside dashboard content area creating double sidebar with profile's own sub-nav."
+  severity: major
+  test: R3
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
