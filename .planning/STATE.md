@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 4 Complete (verified) - Ready for Phase 5
+**Current focus:** Phase 5 in progress - Auth Screens, Dashboard, Setup CLI
 
 ## Current Position
 
-Phase: 4 of 6 (Navigation & UI Components) -- VERIFIED COMPLETE
-Plan: 7 of 7 in current phase (04-01 through 04-07 complete)
-Status: Phase 04 Verified Complete
-Last activity: 2026-02-13 -- Completed quick task 21: Fix TerminalInput cursor and selection handle colors
+Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI)
+Plan: 6 of 7 in current phase (05-06 complete)
+Status: Executing Phase 05
+Last activity: 2026-02-13 -- Completed 05-06 (Setup CLI script)
 
-Progress: [█████████████░__] 77% (17/22 plans)
+Progress: [██████████████░_] 82% (18/22 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 17
+- Total plans completed: 18
 - Average duration: ~9 min
-- Total execution time: ~155 min
+- Total execution time: ~157 min
 
 **By Phase:**
 
@@ -31,9 +31,10 @@ Progress: [█████████████░__] 77% (17/22 plans)
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
+| 5 | 1/7 | ~2 min | ~2 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-03 (~2 min), 04-04 (~3 min), 04-05 (~3 min), 04-06 (~9 min), 04-07 (~7 min)
+- Last 5 plans: 04-05 (~3 min), 04-06 (~9 min), 04-07 (~7 min), 05-06 (~2 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -158,6 +159,11 @@ Recent decisions affecting current work:
 - [quick-20]: Theme text color at 0.12f alpha as default ripple color (subtle terminal aesthetic)
 - [quick-21]: cursorBrush = SolidColor(colors.text) for themed cursor color (was platform-default black)
 - [quick-21]: CompositionLocalProvider(LocalTextSelectionColors) for themed selection handles (was platform-default blue)
+- [05-06]: sed_inplace function wrapper instead of variable expansion for reliable macOS/Linux quoting
+- [05-06]: Three distinct package mappings: com.m2f.template->new, com.m2f.server->first_two.server, com.m2f.core->first_two.core
+- [05-06]: Database default is 'application' (matching actual DataSource.kt), not 'template' as plan assumed
+- [05-06]: cp -R + rm -rf instead of mv for cross-platform directory move reliability
+- [05-06]: Delete .iml files rather than updating (IDE regenerates them)
 
 ### Pending Todos
 
@@ -197,5 +203,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed quick-21 (Fix TerminalInput cursor and selection handle colors) -- cursorBrush SolidColor(text), LocalTextSelectionColors with accent
+Stopped at: Completed 05-06-PLAN.md (Setup CLI script)
 Resume file: None
