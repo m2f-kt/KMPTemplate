@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI)
-Plan: 6 of 7 in current phase (05-06 complete)
+Plan: 3 of 7 in current phase (05-02, 05-06 complete; 05-01 partial)
 Status: Executing Phase 05
-Last activity: 2026-02-13 -- Completed 05-06 (Setup CLI script)
+Last activity: 2026-02-13 -- Completed 05-02 (Auth ViewModels with Arrow validation and Koin DI)
 
-Progress: [██████████████░_] 82% (18/22 plans)
+Progress: [██████████████░_] 86% (19/22 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 18
-- Average duration: ~9 min
-- Total execution time: ~157 min
+- Total plans completed: 19
+- Average duration: ~8 min
+- Total execution time: ~161 min
 
 **By Phase:**
 
@@ -31,10 +31,10 @@ Progress: [██████████████░_] 82% (18/22 plans)
 | 2 | 3/3 | ~58 min | ~19 min |
 | 3 | 3/3 | ~15 min | ~5 min |
 | 4 | 7/7 | ~36 min | ~5 min |
-| 5 | 1/7 | ~2 min | ~2 min |
+| 5 | 2/7 | ~6 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 04-05 (~3 min), 04-06 (~9 min), 04-07 (~7 min), 05-06 (~2 min)
+- Last 5 plans: 04-06 (~9 min), 04-07 (~7 min), 05-06 (~2 min), 05-02 (~4 min)
 - Trend: Fast execution when building on established patterns
 
 *Updated after each plan completion*
@@ -159,6 +159,9 @@ Recent decisions affecting current work:
 - [quick-20]: Theme text color at 0.12f alpha as default ripple color (subtle terminal aesthetic)
 - [quick-21]: cursorBrush = SolidColor(colors.text) for themed cursor color (was platform-default black)
 - [quick-21]: CompositionLocalProvider(LocalTextSelectionColors) for themed selection handles (was platform-default blue)
+- [05-02]: withError field name remapping for validateName in zipOrAccumulate (firstName/lastName use same shared validator)
+- [05-02]: Local validation on submit (not on each keystroke), clear individual field errors on change
+- [05-02]: RegisterViewModel validates all 6 fields with zipOrAccumulate (accumulated errors, not fail-fast)
 - [05-06]: sed_inplace function wrapper instead of variable expansion for reliable macOS/Linux quoting
 - [05-06]: Three distinct package mappings: com.m2f.template->new, com.m2f.server->first_two.server, com.m2f.core->first_two.core
 - [05-06]: Database default is 'application' (matching actual DataSource.kt), not 'template' as plan assumed
@@ -203,5 +206,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-13
-Stopped at: Completed 05-06-PLAN.md (Setup CLI script)
+Stopped at: Completed 05-02-PLAN.md (Auth ViewModels with Arrow validation and Koin DI)
 Resume file: None
