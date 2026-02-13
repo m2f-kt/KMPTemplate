@@ -71,7 +71,7 @@ fun Application.module() {
         val userService: UserService by inject()
         val oauthService: OAuthService by inject()
         authRoutes(authService, passwordResetService)
-        oauthRoutes(oauthService)
+        oauthRoutes(oauthService, config.env.oauth)
         userRoutes(userService)
     }
 }

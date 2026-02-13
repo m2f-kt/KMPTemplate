@@ -45,6 +45,14 @@ data class Env(
         val appleClientSecret: String = System.getenv("APPLE_CLIENT_SECRET") ?: "",
         val appleTeamId: String = System.getenv("APPLE_TEAM_ID") ?: "",
         val appleKeyId: String = System.getenv("APPLE_KEY_ID") ?: "",
+        /** WASM app URL for OAuth callback redirect. */
+        val wasmRedirectUrl: String = System.getenv("OAUTH_WASM_REDIRECT_URL")
+            ?: "http://localhost:8080/auth/callback",
+        /** Custom URL scheme for Android/iOS deep link callbacks. */
+        val mobileScheme: String = System.getenv("OAUTH_MOBILE_SCHEME") ?: "template",
+        /** Localhost port for desktop (JVM) OAuth callback. */
+        val desktopLocalhostPort: Int = System.getenv("OAUTH_DESKTOP_LOCALHOST_PORT")?.toIntOrNull()
+            ?: 9876,
     )
 
     data class ServerConfig(
