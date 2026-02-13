@@ -50,7 +50,7 @@ class LoginViewModel(
         _state.update { it.copy(isLoading = true, serverError = null) }
 
         viewModelScope.launch {
-            authApi.login(LoginRequest(current.email.trim(), current.password))
+            authApi.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
                 .fold(
                     ifLeft = { error ->
                         _state.update { it.copy(serverError = error.message, isLoading = false) }

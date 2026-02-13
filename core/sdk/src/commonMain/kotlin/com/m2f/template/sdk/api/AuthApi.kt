@@ -37,14 +37,14 @@ class AuthApi(
             tokenStorage.saveTokens(response.accessToken, response.refreshToken)
         }
 
-    suspend fun login(request: LoginRequest): Either<AppError, AuthResponse> =
+    suspend fun login(request: LoginRequest, rememberMe: Boolean = true): Either<AppError, AuthResponse> =
         apiCall<AuthResponse> {
             client.post("/api/auth/login") {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
         }.onRight { response ->
-            tokenStorage.saveTokens(response.accessToken, response.refreshToken)
+            tokenStorage.saveTokens(response.accessToken, response.refreshToken, rememberMe)
         }
 
     suspend fun refresh(request: RefreshTokenRequest): Either<AppError, AuthResponse> =
