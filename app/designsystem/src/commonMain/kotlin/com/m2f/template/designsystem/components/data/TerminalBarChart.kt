@@ -1,5 +1,9 @@
 package com.m2f.template.designsystem.components.data
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.EaseOutCubic
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,6 +22,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -74,9 +80,20 @@ fun TerminalBarChart(
     yLabelCount: Int = 5,
     scrollThreshold: Int = 8,
     slotWidth: Dp = 80.dp,
+    animated: Boolean = true,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
+
+    val progress = remember { Animatable(if (animated) 0f else 1f) }
+    LaunchedEffect(Unit) {
+        if (animated) {
+            progress.animateTo(
+                targetValue = 1f,
+                animationSpec = tween(durationMillis = 800, easing = EaseOutCubic),
+            )
+        }
+    }
 
     val shape = RoundedCornerShape(4.dp)
     val isScrollable = bars.size > scrollThreshold
@@ -230,7 +247,7 @@ fun TerminalBarChart(
                                     color
                                 }
 
-                                val barHeight = (bar.value / yMax) * canvasHeight
+                                val barHeight = ((bar.value / yMax) * canvasHeight) * progress.value
                                 val slotCenter = barSlotWidth * index + barSlotWidth / 2f
                                 val barLeft = slotCenter - barWidth / 2f
                                 val barRight = slotCenter + barWidth / 2f
