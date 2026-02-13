@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 5 of 6 (Auth Screens, Dashboard, Setup CLI) -- COMPLETE
 Plan: 11 of 11 in current phase (11 complete, 0 remaining)
 Status: Phase 5 complete
-Last activity: 2026-02-13 -- Completed 05-11 (Remember-me end-to-end wiring)
+Last activity: 2026-02-13 -- Completed quick task 22: Fix checkbox ripple effect drawing beyond bounds
 
 Progress: [████████████████] 100% (28/28 plans)
 
