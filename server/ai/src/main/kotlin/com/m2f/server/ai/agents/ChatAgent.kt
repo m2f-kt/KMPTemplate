@@ -1,31 +1,34 @@
 package com.m2f.server.ai.agents
 
-import ai.koog.agents.core.agent.AIAgentService
+import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
 import ai.koog.agents.core.agent.context.RollbackStrategy
-import ai.koog.agents.core.tools.ToolRegistry
-import ai.koog.agents.ext.agent.chatAgentStrategy
 import ai.koog.agents.snapshot.feature.Persistence
 import ai.koog.prompt.dsl.prompt
-import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
-import ai.koog.prompt.executor.clients.openai.OpenAIModels
+import ai.koog.prompt.executor.clients.google.GoogleLLMClient
+import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import com.m2f.core.config.server.DomainError
 import com.m2f.server.ai.errors.AgentExecutionFailed
 import com.m2f.server.ai.persistence.ExposedPersistenceStorage
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.runBlocking
 
 /**
  * Service for the conversational agent with persistence.
- * Uses chatAgentStrategy with Persistence feature backed by ExposedPersistenceStorage
- * so conversations can be resumed across HTTP requests.
+ * Uses a custom streaming strategy with per-request AIAgent instances
+ * backed by ExposedPersistenceStorage so conversations can be resumed across HTTP requests.
  *
  * Composite agentId format: "user:{userId}:conv:{conversationId}" for multi-tenancy.
  */
 class ChatAgentService(
     private val persistenceStorage: ExposedPersistenceStorage,
-    private val openaiApiKey: String,
+    private val googleApiKey: String,
 ) {
     private val systemPrompt = """
         |You are a friendly conversational assistant.
@@ -33,41 +36,72 @@ class ChatAgentService(
     """.trimMargin()
 
     private val executor by lazy {
-        SingleLLMPromptExecutor(OpenAILLMClient(openaiApiKey))
+        SingleLLMPromptExecutor(GoogleLLMClient(googleApiKey))
     }
 
     private val agentConfig = AIAgentConfig(
         prompt = prompt("chat-agent") {
             system(systemPrompt)
         },
-        model = OpenAIModels.Chat.GPT4o,
+        model = GoogleModels.Gemini2_5Pro,
         maxAgentIterations = 10,
     )
 
-    private val agentService by lazy {
-        AIAgentService(
-            promptExecutor = executor,
-            agentConfig = agentConfig,
-            strategy = chatAgentStrategy(),
-            toolRegistry = ToolRegistry.EMPTY,
-        ) {
-            install(Persistence.Feature) {
-                storage = persistenceStorage
-                enableAutomaticPersistence = true
-                rollbackStrategy = RollbackStrategy.MessageHistoryOnly
+    /**
+     * Stream chat responses as text chunks via a Flow.
+     * Creates a per-request AIAgent with the custom streaming strategy
+     * and emits text frames as they arrive from the LLM.
+     */
+    fun streamChat(userId: String, conversationId: String, input: String): Flow<String> =
+        callbackFlow {
+            val agentId = "user:$userId:conv:$conversationId"
+            var agent: AIAgent<String, Any>? = null
+
+            val strategy = chatStreamingStrategy { frame ->
+                trySend(frame.text)
+            }
+
+            try {
+                agent = AIAgent(
+                    id = agentId,
+                    promptExecutor = executor,
+                    agentConfig = agentConfig,
+                    strategy = strategy,
+                ) {
+                    install(Persistence) {
+                        storage = persistenceStorage
+                        enableAutomaticPersistence = true
+                        rollbackStrategy = RollbackStrategy.MessageHistoryOnly
+                    }
+                }
+
+                agent.run(input)
+                close()
+            } catch (e: Exception) {
+                trySend("[ERROR] Agent failed: ${e.message}")
+                close()
+            }
+
+            awaitClose {
+                runBlocking {
+                    try { agent?.close() } catch (_: Exception) {}
+                }
             }
         }
-    }
 
+    /**
+     * Run the chat agent and return the complete response.
+     * Backward-compatible with the existing POST endpoint.
+     * Collects the streaming flow into a single string.
+     */
     context(raise: Raise<DomainError>)
-    suspend fun run(userId: String, conversationId: String, input: String): String {
-        val agentId = "user:$userId:conv:$conversationId"
-        return with(raise) {
-            catch({
-                agentService.createAgentAndRun(input, agentId)
-            }) { e ->
-                raise(AgentExecutionFailed(detail = "Chat agent failed: ${e.message}"))
-            }
+    suspend fun run(userId: String, conversationId: String, input: String): String = with(raise) {
+        catch({
+            streamChat(userId, conversationId, input)
+                .toList()
+                .joinToString("")
+        }) { e ->
+            raise(AgentExecutionFailed(detail = "Chat agent failed: ${e.message}"))
         }
     }
 }
