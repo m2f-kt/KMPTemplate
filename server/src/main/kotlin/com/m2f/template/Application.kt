@@ -31,6 +31,7 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.oauth
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.sse.SSE
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -65,6 +66,7 @@ fun Application.module() {
     getKoin().declare(database)
 
     install(ContentNegotiation) { json() }
+    install(SSE)
     configureSecurity()
     configureOAuth()
     routing {
@@ -80,7 +82,14 @@ fun Application.module() {
         userRoutes(userService)
         val assistantAgentService: AssistantAgentService by inject()
         val chatAgentService: ChatAgentService by inject()
-        aiRoutes(assistantAgentService, chatAgentService, config.env.ai.enabled)
+        aiRoutes(
+            assistantAgentService,
+            chatAgentService,
+            config.env.ai.enabled,
+            jwtSecret = config.env.auth.secret,
+            jwtAudience = config.env.auth.audience,
+            jwtIssuer = config.env.auth.issuer,
+        )
     }
 }
 
