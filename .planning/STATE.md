@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 06.1 (Chat Agent Streaming Refactor)
-Plan: 1 of 2 in current phase (1 complete, 1 remaining)
-Status: In progress
-Last activity: 2026-02-14 -- Completed 06.1-01: Streaming Strategy and ChatAgent Refactor
+Plan: 2 of 2 in current phase (2 complete, 0 remaining)
+Status: Complete
+Last activity: 2026-02-14 -- Completed 06.1-02: SSE Streaming Endpoint and Plugin Wiring
 
-Progress: [█████████████████░] 97% (32/33 plans)
+Progress: [██████████████████] 100% (33/33 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 32
+- Total plans completed: 33
 - Average duration: ~7 min
-- Total execution time: ~235 min
+- Total execution time: ~237 min
 
 **By Phase:**
 
@@ -33,11 +33,11 @@ Progress: [█████████████████░] 97% (32/33 pl
 | 4 | 7/7 | ~36 min | ~5 min |
 | 5 | 11/11 | ~50 min | ~5 min |
 | 6 | 3/3 | ~24 min | ~8 min |
-| 6.1 | 1/2 | ~3 min | ~3 min |
+| 6.1 | 2/2 | ~5 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 06.1-01 (~3 min), 06-03 (~9 min), 06-02 (~11 min), 06-01 (~4 min), 05-11 (~2 min)
-- Trend: Fast execution on streaming refactor plan
+- Last 5 plans: 06.1-02 (~2 min), 06.1-01 (~3 min), 06-03 (~9 min), 06-02 (~11 min), 06-01 (~4 min)
+- Trend: Fast execution on streaming refactor plans
 
 *Updated after each plan completion*
 
@@ -218,6 +218,9 @@ Recent decisions affecting current work:
 - [06.1-01]: Per-request AIAgent instead of singleton AIAgentService for streaming callback injection
 - [06.1-01]: Removed SayToUser/AskUser/ExitTool tools -- plain text IS the response with streaming
 - [06.1-01]: AIAgentGraphStrategy<String, Any> output type to match reference implementation pattern
+- [06.1-02]: SSE route outside authenticate{} block with manual JWT query param validation for browser EventSource compatibility
+- [06.1-02]: ktor-server-sse added to server module (not transitively available from server:ai implementation dependency)
+- [06.1-02]: Typed SSE events: conversation (metadata), message (content chunks), done (completion), error (failures)
 
 ### Pending Todos
 
@@ -258,5 +261,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-14
-Stopped at: Completed 06.1-01-PLAN.md (Streaming Strategy and ChatAgent Refactor)
-Resume file: .planning/phases/06.1-add-the-current-chat-agent-exploration-refactor/06.1-02-PLAN.md
+Stopped at: Completed 06.1-02-PLAN.md (SSE Streaming Endpoint and Plugin Wiring) -- Phase 06.1 COMPLETE
+Resume file: All plans complete
