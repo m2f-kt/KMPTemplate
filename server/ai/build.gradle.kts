@@ -13,5 +13,6 @@ dependencies {
     implementation(libs.bundles.fp)
     implementation(libs.bundles.di)
     implementation(libs.bundles.ktor.core)
+    implementation(libs.ktor.server.sse)
     testImplementation(libs.bundles.testing.server)
 }
