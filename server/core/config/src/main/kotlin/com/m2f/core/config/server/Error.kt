@@ -14,6 +14,8 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingContext
+import io.ktor.server.sse.ServerSSESession
+import io.ktor.sse.ServerSentEvent
 
 context(context: RoutingContext)
 suspend inline fun <reified A : Any> conduit(
@@ -32,6 +34,38 @@ suspend inline fun <reified A : Any> conduitAuth(
     ensureNotNull(userId) { Unauthorized() }
     block(this, userId)
 }.fold({ with(context) { it.respond() } }, { context.call.respond<A>(status, it) })
+
+context(session: ServerSSESession)
+suspend inline fun getAuth(
+    jwtSecret: String,
+    jwtAudience: String,
+    jwtIssuer: String,
+    crossinline block: suspend context(Raise<DomainError>) (userId: String) -> Unit,
+) {
+    val token = session.call.request.queryParameters["token"]
+    if (token == null) {
+        session.send(ServerSentEvent(data = "Error: Missing token", event = "error"))
+        return
+    }
+
+    val userId = try {
+        val verifier = com.auth0.jwt.JWT.require(
+            com.auth0.jwt.algorithms.Algorithm.HMAC256(jwtSecret)
+        )
+            .withAudience(jwtAudience)
+            .withIssuer(jwtIssuer)
+            .build()
+        verifier.verify(token).subject
+            ?: throw IllegalArgumentException("Missing subject")
+    } catch (_: Exception) {
+        session.send(ServerSentEvent(data = "Error: Invalid token", event = "error"))
+        return
+    }
+
+    either { block(this, userId) }.onLeft { error ->
+        session.send(ServerSentEvent(data = "Error: ${error.toAppError().message}", event = "error"))
+    }
+}
 
 context(context: RoutingContext, raise: Raise<DomainError>)
 fun getIntParam(name: String): Int = with(raise) {
