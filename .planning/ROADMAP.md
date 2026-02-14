@@ -18,6 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Navigation & UI Components** - Set up multiplatform navigation, component library, and theming (completed 2026-02-12)
 - [x] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding (completed 2026-02-13)
 - [x] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management (completed 2026-02-13)
+- [x] **Phase 6.1: Chat Agent Streaming Refactor** - Custom streaming strategy, SSE endpoint, infinite loop fix (completed 2026-02-14)
 
 ## Phase Details
 
@@ -150,13 +151,14 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 4. Navigation & UI Components | 7/7 | Complete | 2026-02-12 |
 | 5. Auth Screens, Dashboard & Setup CLI | 11/11 | Complete | 2026-02-13 |
 | 6. AI Agent Infrastructure | 3/3 | Complete | 2026-02-13 |
+| 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
 
 **Goal:** Refactor ChatAgentService to use a custom streaming graph-based strategy, add SSE streaming endpoint, fix the chatAgentStrategy() infinite loop bug -- inspired by kpavlov/koog-spring-boot-assistant patterns.
 **Depends on:** Phase 6
-**Plans:** 2 plans
+**Plans:** 2 plans (completed 2026-02-14)
 
 Plans:
-- [ ] 06.1-01-PLAN.md -- Dependencies, custom streaming strategy graph, ChatAgentService refactor to per-request AIAgent
-- [ ] 06.1-02-PLAN.md -- SSE streaming endpoint, install(SSE) plugin, DI wiring verification
+- [x] 06.1-01-PLAN.md -- Dependencies, custom streaming strategy graph, ChatAgentService refactor to per-request AIAgent
+- [x] 06.1-02-PLAN.md -- SSE streaming endpoint, install(SSE) plugin, DI wiring verification
