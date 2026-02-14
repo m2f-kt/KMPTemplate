@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 6 - AI Agent Infrastructure
+**Current focus:** Phase 06.1 - Chat Agent Streaming Refactor
 
 ## Current Position
 
-Phase: 6 of 6 (AI Agent Infrastructure)
-Plan: 3 of 3 in current phase (3 complete, 0 remaining)
-Status: All phases complete
-Last activity: 2026-02-13 -- Completed 06-03: Agent Services, Routes, DI Wiring, and Application Integration
+Phase: 06.1 (Chat Agent Streaming Refactor)
+Plan: 1 of 2 in current phase (1 complete, 1 remaining)
+Status: In progress
+Last activity: 2026-02-14 -- Completed 06.1-01: Streaming Strategy and ChatAgent Refactor
 
-Progress: [██████████████████] 100% (31/31 plans)
+Progress: [█████████████████░] 97% (32/33 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 31
+- Total plans completed: 32
 - Average duration: ~7 min
-- Total execution time: ~232 min
+- Total execution time: ~235 min
 
 **By Phase:**
 
@@ -33,14 +33,19 @@ Progress: [██████████████████] 100% (31/31 p
 | 4 | 7/7 | ~36 min | ~5 min |
 | 5 | 11/11 | ~50 min | ~5 min |
 | 6 | 3/3 | ~24 min | ~8 min |
+| 6.1 | 1/2 | ~3 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 06-03 (~9 min), 06-02 (~11 min), 06-01 (~4 min), 05-11 (~2 min), 05-10 (~3 min)
-- Trend: Consistent execution pace across AI agent infrastructure phase
+- Last 5 plans: 06.1-01 (~3 min), 06-03 (~9 min), 06-02 (~11 min), 06-01 (~4 min), 05-11 (~2 min)
+- Trend: Fast execution on streaming refactor plan
 
 *Updated after each plan completion*
 
 ## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 06.1 inserted after Phase 6: add the current chat agent exploration refactor (URGENT)
 
 ### Decisions
 
@@ -210,6 +215,9 @@ Recent decisions affecting current work:
 - [06-03]: AIAgentService.Companion.invoke() factory pattern for agent service creation (manages lifecycle, createAgentAndRun)
 - [06-03]: ensureAiEnabled() helper for Raise context parameter compatibility (extension functions on Raise don't resolve in context parameter lambdas)
 - [06-03]: GPT4o as default model for both agents (tool-calling support, good speed/quality balance)
+- [06.1-01]: Per-request AIAgent instead of singleton AIAgentService for streaming callback injection
+- [06.1-01]: Removed SayToUser/AskUser/ExitTool tools -- plain text IS the response with streaming
+- [06.1-01]: AIAgentGraphStrategy<String, Any> output type to match reference implementation pattern
 
 ### Pending Todos
 
@@ -249,6 +257,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-13
-Stopped at: Completed 06-03-PLAN.md (Agent Services, Routes, DI Wiring, and Application Integration) -- ALL PHASES COMPLETE
-Resume file: None
+Last session: 2026-02-14
+Stopped at: Completed 06.1-01-PLAN.md (Streaming Strategy and ChatAgent Refactor)
+Resume file: .planning/phases/06.1-add-the-current-chat-agent-exploration-refactor/06.1-02-PLAN.md
