@@ -3,6 +3,7 @@ package com.m2f.server.ai.routes
 import arrow.core.raise.Raise
 import com.m2f.core.config.server.DomainError
 import com.m2f.core.config.server.conduitAuth
+import com.m2f.core.config.server.getAuth
 import com.m2f.core.config.server.getModel
 import com.m2f.server.ai.agents.AssistantAgentService
 import com.m2f.server.ai.agents.ChatAgentService
@@ -77,56 +78,32 @@ fun Route.aiRoutes(
         }
 
         sse("/chat/stream") {
-            // Manual JWT validation from query parameter
-            // (browser EventSource cannot send Authorization headers)
-            val token = call.request.queryParameters["token"]
-            if (token == null) {
-                send(ServerSentEvent(data = "Error: Missing token", event = "error"))
-                return@sse
-            }
+            getAuth(jwtSecret, jwtAudience, jwtIssuer) { userId ->
+                ensureAiEnabled(aiEnabled)
 
-            val userId = try {
-                val verifier = com.auth0.jwt.JWT.require(
-                    com.auth0.jwt.algorithms.Algorithm.HMAC256(jwtSecret)
-                )
-                    .withAudience(jwtAudience)
-                    .withIssuer(jwtIssuer)
-                    .build()
-                verifier.verify(token).subject
-                    ?: throw IllegalArgumentException("Missing subject")
-            } catch (e: Exception) {
-                send(ServerSentEvent(data = "Error: Invalid token", event = "error"))
-                return@sse
-            }
-
-            if (!aiEnabled) {
-                send(ServerSentEvent(data = "Error: AI provider unavailable", event = "error"))
-                return@sse
-            }
-
-            val message = call.request.queryParameters["message"]
-            if (message == null) {
-                send(ServerSentEvent(data = "Error: Missing message", event = "error"))
-                return@sse
-            }
-
-            val conversationId = call.request.queryParameters["conversationId"]
-                ?: Uuid.random().toString()
-
-            // Send conversationId first so the client knows it
-            send(ServerSentEvent(data = conversationId, event = "conversation"))
-
-            try {
-                chatAgentService.streamChat(
-                    userId = userId,
-                    conversationId = conversationId,
-                    input = message,
-                ).collect { chunk ->
-                    send(ServerSentEvent(data = chunk, event = "message"))
+                val message = call.request.queryParameters["message"]
+                if (message == null) {
+                    this@sse.send(ServerSentEvent(data = "Error: Missing message", event = "error"))
+                    return@getAuth
                 }
-                send(ServerSentEvent(data = "[DONE]", event = "done"))
-            } catch (e: Exception) {
-                send(ServerSentEvent(data = "Error: ${e.message}", event = "error"))
+
+                val conversationId = call.request.queryParameters["conversationId"]
+                    ?: Uuid.random().toString()
+
+                this@sse.send(ServerSentEvent(data = conversationId, event = "conversation"))
+
+                try {
+                    chatAgentService.streamChat(
+                        userId = userId,
+                        conversationId = conversationId,
+                        input = message,
+                    ).collect { chunk ->
+                        this@sse.send(ServerSentEvent(data = chunk, event = "message"))
+                    }
+                    this@sse.send(ServerSentEvent(data = "[DONE]", event = "done"))
+                } catch (e: Exception) {
+                    this@sse.send(ServerSentEvent(data = "Error: ${e.message}", event = "error"))
+                }
             }
         }
     }
