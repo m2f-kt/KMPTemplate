@@ -115,5 +115,5 @@ private fun UserRecord.toUserResponse(): UserResponse = UserResponse(
     id = id.toString(),
     email = email,
     name = name,
-    role = UserRole.fromString(role),
+    role = role,
 )

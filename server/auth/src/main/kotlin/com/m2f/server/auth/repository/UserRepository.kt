@@ -3,6 +3,7 @@
 package com.m2f.server.auth.repository
 
 import com.m2f.server.auth.tables.UsersTable
+import com.m2f.template.models.UserRole
 import kotlinx.coroutines.flow.singleOrNull
 import org.jetbrains.exposed.v1.core.ResultRow
 import org.jetbrains.exposed.v1.core.eq
@@ -22,7 +23,7 @@ data class UserRecord(
     val email: String,
     val passwordHash: String,
     val name: String,
-    val role: String,
+    val role: UserRole,
 )
 
 /**
@@ -59,13 +60,13 @@ class UserRepository(private val db: R2dbcDatabase) {
         email: String,
         passwordHash: String,
         name: String,
-        role: String,
+        role: UserRole,
     ): Uuid = suspendTransaction(db = db) {
         UsersTable.insert {
             it[UsersTable.email] = email
             it[UsersTable.passwordHash] = passwordHash
             it[UsersTable.name] = name
-            it[UsersTable.role] = role
+            it[UsersTable.roleId] = roleIdForRole(role)
         }[UsersTable.id]
     }
 
@@ -100,10 +101,23 @@ class UserRepository(private val db: R2dbcDatabase) {
     }
 }
 
+/**
+ * Maps a [UserRole] to the seeded role_id in the roles table.
+ */
+private fun roleIdForRole(role: UserRole): Int = when (role) {
+    UserRole.User -> 1
+    UserRole.Admin -> 2
+    UserRole.PowerAdmin -> 3
+}
+
 private fun ResultRow.toUserRecord(): UserRecord = UserRecord(
     id = this[UsersTable.id],
     email = this[UsersTable.email],
     passwordHash = this[UsersTable.passwordHash],
     name = this[UsersTable.name],
-    role = this[UsersTable.role],
+    role = when (this[UsersTable.roleId]) {
+        2 -> UserRole.Admin
+        3 -> UserRole.PowerAdmin
+        else -> UserRole.User
+    },
 )

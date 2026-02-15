@@ -3,6 +3,7 @@ package com.m2f.server.auth.security
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.m2f.core.config.configuration.Configuration
+import com.m2f.template.models.UserRole
 import com.m2f.template.models.dto.AuthResponse
 import java.security.MessageDigest
 import java.util.Date
@@ -22,11 +23,12 @@ class JwtTokenProvider(config: Configuration) {
 
     /**
      * Generate a JWT access token for the given user.
+     * The role claim is encoded as the string value (e.g. "ADMIN") for backward compatibility.
      */
-    fun generateAccessToken(userId: String, role: String): String =
+    fun generateAccessToken(userId: String, role: UserRole): String =
         JWT.create()
             .withSubject(userId)
-            .withClaim("role", role)
+            .withClaim("role", role.value)
             .withAudience(audience)
             .withIssuer(issuer)
             .withExpiresAt(Date(System.currentTimeMillis() + accessTokenExpiry))
@@ -41,7 +43,7 @@ class JwtTokenProvider(config: Configuration) {
      * Generate both an access token and a refresh token.
      * Returns a pair of (AuthResponse for the client, raw refresh token for DB hashing).
      */
-    fun generateTokenPair(userId: String, role: String): Pair<AuthResponse, String> {
+    fun generateTokenPair(userId: String, role: UserRole): Pair<AuthResponse, String> {
         val accessToken = generateAccessToken(userId, role)
         val rawRefreshToken = generateRefreshToken()
         val response = AuthResponse(

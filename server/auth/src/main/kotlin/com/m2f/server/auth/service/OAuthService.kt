@@ -7,6 +7,7 @@ import com.m2f.core.config.server.DomainError
 import com.m2f.core.config.server.UnexpectedError
 import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.security.JwtTokenProvider
+import com.m2f.template.models.UserRole
 import com.m2f.server.auth.security.PasswordHasher
 import com.m2f.template.models.dto.AuthResponse
 import io.ktor.client.HttpClient
@@ -105,7 +106,7 @@ class OAuthService(
     ): AuthResponse {
         val existingUser = userRepository.findByEmail(email)
         val userId: Uuid
-        val role: String
+        val role: UserRole
 
         if (existingUser != null) {
             // User exists -- log them in
@@ -114,8 +115,8 @@ class OAuthService(
         } else {
             // Create new user with a random password hash (OAuth users don't use passwords)
             val randomHash = passwordHasher.hash(Uuid.random().toString())
-            userId = userRepository.insert(email, randomHash, name, "USER")
-            role = "USER"
+            userId = userRepository.insert(email, randomHash, name, UserRole.User)
+            role = UserRole.User
         }
 
         // Generate token pair

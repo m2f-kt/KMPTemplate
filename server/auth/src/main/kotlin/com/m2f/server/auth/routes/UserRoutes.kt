@@ -5,6 +5,7 @@ import com.m2f.core.config.server.getModel
 import com.m2f.core.config.server.getStringParam
 import com.m2f.server.auth.authorization.withRole
 import com.m2f.server.auth.service.UserService
+import com.m2f.template.models.UserRole
 import com.m2f.template.models.dto.UpdateProfileRequest
 import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.Route
@@ -36,7 +37,7 @@ fun Route.userRoutes(userService: UserService) {
             }
 
             // Admin: get any user by ID
-            withRole("ADMIN") {
+            withRole(UserRole.Admin) {
                 get("/{id}") {
                     conduitAuth { _ ->
                         val targetId = getStringParam("id")

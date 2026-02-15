@@ -19,6 +19,7 @@ import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.security.JwtTokenProvider
 import com.m2f.server.auth.security.PasswordHasher
 import com.m2f.template.models.FieldError
+import com.m2f.template.models.UserRole
 import com.m2f.template.models.dto.AuthResponse
 import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.models.dto.RefreshTokenRequest
@@ -87,12 +88,12 @@ class AuthService(
         val hash = passwordHasher.hash(validPassword)
 
         // Step 5: Insert user
-        val userId = userRepository.insert(validEmail, hash, fullName, "USER")
+        val userId = userRepository.insert(validEmail, hash, fullName, UserRole.User)
 
         // Step 6: Generate token pair
         val (authResponse, rawRefreshToken) = tokenProvider.generateTokenPair(
             userId.toString(),
-            "USER",
+            UserRole.User,
         )
 
         // Step 7: Hash and store refresh token
