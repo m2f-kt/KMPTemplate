@@ -25,6 +25,7 @@ kotlin {
         commonMain.dependencies {
             api(libs.arrow.core)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktor.resources)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

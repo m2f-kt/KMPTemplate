@@ -14,5 +14,6 @@ dependencies {
     implementation(libs.bundles.di)
     implementation(libs.bundles.ktor.core)
     implementation(libs.ktor.server.websockets)
+    implementation(libs.ktor.server.resources)
     testImplementation(libs.bundles.testing.server)
 }
