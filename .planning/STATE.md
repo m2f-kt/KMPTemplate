@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 
 ## Current Position
 
-Phase: 7 (Role System Refactor & Tech Debt)
-Plan: 1 of 2 in current phase (1 complete)
-Status: In Progress — Plan 01 complete, Plan 02 remaining
-Last activity: 2026-02-15 - Completed 07-01 (Core Role Type & Tech Debt)
+Phase: 7 (Role System Refactor & Tech Debt) -- COMPLETE
+Plan: 2 of 2 in current phase (2 complete)
+Status: Complete -- Phase 7 finished
+Last activity: 2026-02-15 - Completed 07-02 (Server Role System Refactor)
 
-Progress: [██████████████████] 97% (34/35 plans) + gap closure phases in progress
+Progress: [███████████████████] 100% (35/35 plans) + gap closure phases complete
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 34
+- Total plans completed: 35
 - Average duration: ~7 min
-- Total execution time: ~245 min
+- Total execution time: ~251 min
 
 **By Phase:**
 
@@ -34,11 +34,11 @@ Progress: [██████████████████] 97% (34/35 pl
 | 5 | 11/11 | ~50 min | ~5 min |
 | 6 | 3/3 | ~24 min | ~8 min |
 | 6.1 | 2/2 | ~5 min | ~3 min |
-| 7 | 1/2 | ~8 min | ~8 min |
+| 7 | 2/2 | ~14 min | ~7 min |
 
 **Recent Trend:**
-- Last 5 plans: 07-01 (~8 min), 06.1-02 (~2 min), 06.1-01 (~3 min), 06-03 (~9 min), 06-02 (~11 min)
-- Trend: Role system refactor with compilation verification
+- Last 5 plans: 07-02 (~6 min), 07-01 (~8 min), 06.1-02 (~2 min), 06.1-01 (~3 min), 06-03 (~9 min)
+- Trend: Role system refactor complete -- typed UserRole across server
 
 *Updated after each plan completion*
 
@@ -229,6 +229,9 @@ Recent decisions affecting current work:
 - [07-01]: Custom KSerializer (UserRoleSerializer) for flat-string wire format instead of @SerialName polymorphic approach
 - [07-01]: UserRole.fromString() defaults to User for unrecognized roles (safe fallback)
 - [07-01]: Exposed select().count() for UserRepository.count() (no selectAll in R2DBC API)
+- [07-02]: Hardcoded roleId-to-UserRole when() mapping instead of join with RolesTable (simpler for template)
+- [07-02]: Old role varchar left in DB to avoid risky ALTER TABLE DROP COLUMN over R2DBC
+- [07-02]: Suppressed createMissingTablesAndColumns deprecation (template project, not production)
 
 ### Pending Todos
 
@@ -271,5 +274,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 07-01-PLAN.md (Core Role Type & Tech Debt)
-Resume file: .planning/phases/07-role-system-refactor-tech-debt/07-02-PLAN.md
+Stopped at: Completed 07-02-PLAN.md (Server Role System Refactor) -- Phase 7 complete
+Resume file: Phase 7 complete. Next: Phase 8 or new gap closure phase if needed.
