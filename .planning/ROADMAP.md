@@ -144,7 +144,7 @@ Plans:
 **Goal**: User roles are a proper sealed type (`UserRole`) shared across server and clients, backed by a database `roles` table with referential integrity -- replacing all string-based role handling. Tech debt items (stale comments, stub tool method) are resolved.
 **Depends on**: Phase 2 (auth tables), Phase 6 (AI tools)
 **Requirements**: Gap closure (audit tech debt + structural improvement)
-**Research flag**: NEEDS research-phase -- Exposed FK migration patterns for existing data, sealed class serialization with DB enums
+**Research flag**: DONE -- Exposed FK migration patterns for existing data, sealed class serialization with DB enums researched
 **Success Criteria** (what must be TRUE):
   1. `UserRole` is a sealed class in `core:models` used by both server and clients -- no string-based role handling remains anywhere in the codebase
   2. A `roles` table exists in the database with seeded role rows, and `users.role_id` is a foreign key referencing it
@@ -153,6 +153,11 @@ Plans:
   5. `UserResponse.role` on the wire uses the `UserRole` serialized form (not a raw string)
   6. `UserTools.getUserCount()` returns an actual count from the database
   7. No stale SSE references remain in ChatStreamingStrategy.kt
+**Plans**: 2 plans
+
+Plans:
+- [ ] 07-01-PLAN.md -- UserRole sealed class, typed UserResponse.role, UserTools.getUserCount() fix, stale SSE comment fix
+- [ ] 07-02-PLAN.md -- RolesTable + FK migration, server-wide refactor to typed UserRole (repository, services, JWT, RBAC, routes)
 **Gap Closure:** Closes gaps from audit
 
 ### Phase 8: Type-Safe Shared Routes
@@ -182,7 +187,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 5. Auth Screens, Dashboard & Setup CLI | 11/11 | Complete | 2026-02-13 |
 | 6. AI Agent Infrastructure | 3/3 | Complete | 2026-02-13 |
 | 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
-| 7. Role System Refactor & Tech Debt | 0/? | Pending | - |
+| 7. Role System Refactor & Tech Debt | 0/2 | Pending | - |
 | 8. Type-Safe Shared Routes | 0/? | Pending | - |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
