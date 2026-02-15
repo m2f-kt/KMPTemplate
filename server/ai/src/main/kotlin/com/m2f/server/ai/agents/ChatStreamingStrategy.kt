@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.toList
 /**
  * Custom streaming strategy that replaces chatAgentStrategy().
  * Fixes the infinite loop bug by accepting assistant messages as valid responses.
- * Streams text frames via the processFrame callback for SSE delivery.
+ * Streams text frames via the processFrame callback for WebSocket delivery.
  */
 fun chatStreamingStrategy(
     processFrame: (StreamFrame.Append) -> Unit

@@ -29,6 +29,7 @@ class UserTools(
     @Tool
     @LLMDescription("Count the total number of registered users in the system")
     suspend fun getUserCount(): String {
-        return "User count functionality available via database queries"
+        val count = userRepository.count()
+        return "Total registered users: $count"
     }
 }

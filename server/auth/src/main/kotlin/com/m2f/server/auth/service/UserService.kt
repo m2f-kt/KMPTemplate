@@ -15,6 +15,7 @@ import com.m2f.server.auth.errors.UserNotFound
 import com.m2f.server.auth.repository.UserRecord
 import com.m2f.server.auth.repository.UserRepository
 import com.m2f.template.models.FieldError
+import com.m2f.template.models.UserRole
 import com.m2f.template.models.dto.UpdateProfileRequest
 import com.m2f.template.models.dto.UserResponse
 import com.m2f.template.models.validation.validateEmail
@@ -114,5 +115,5 @@ private fun UserRecord.toUserResponse(): UserResponse = UserResponse(
     id = id.toString(),
     email = email,
     name = name,
-    role = role,
+    role = UserRole.fromString(role),
 )

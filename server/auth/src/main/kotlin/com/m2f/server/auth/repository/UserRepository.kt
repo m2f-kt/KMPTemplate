@@ -91,6 +91,13 @@ class UserRepository(private val db: R2dbcDatabase) {
             }
             rowsUpdated > 0
         }
+
+    /**
+     * Count the total number of registered users.
+     */
+    suspend fun count(): Long = suspendTransaction(db = db) {
+        UsersTable.select(UsersTable.columns).count()
+    }
 }
 
 private fun ResultRow.toUserRecord(): UserRecord = UserRecord(
