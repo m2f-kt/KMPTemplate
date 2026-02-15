@@ -24,3 +24,10 @@ data class ChatResponse(
     val message: String,
     val conversationId: String,
 )
+
+@Serializable
+data class ChatStreamFrame(
+    val message: String,
+    val conversationId: String,
+    val completed: Boolean,
+)

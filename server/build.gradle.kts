@@ -24,7 +24,7 @@ dependencies {
     implementation(libs.bundles.logging.server)
     implementation(libs.bundles.ktor.security)
     implementation(libs.bundles.ktor.core)
-    implementation(libs.ktor.server.sse)
+    implementation(libs.ktor.server.websockets)
     implementation(libs.bundles.ktor.monitoring)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)

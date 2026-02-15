@@ -34,7 +34,7 @@ import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
-import io.ktor.server.sse.SSE
+import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.awaitCancellation
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.koin.ktor.ext.getKoin
@@ -66,7 +66,7 @@ fun Application.module() {
     getKoin().declare(database)
 
     install(ContentNegotiation) { json() }
-    install(SSE)
+    install(WebSockets)
     configureSecurity()
     configureOAuth()
     routing {

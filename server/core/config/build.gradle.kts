@@ -12,7 +12,7 @@ dependencies {
     implementation(libs.ktor.server.auth)
     implementation(libs.ktor.server.auth.jwt)
     implementation(libs.bundles.ktor.monitoring)
-    implementation(libs.ktor.server.sse)
+    implementation(libs.ktor.server.websockets)
     api(libs.kotlinx.coroutines)
 
     // Testing

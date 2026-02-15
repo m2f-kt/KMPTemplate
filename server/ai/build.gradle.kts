@@ -13,6 +13,6 @@ dependencies {
     implementation(libs.bundles.fp)
     implementation(libs.bundles.di)
     implementation(libs.bundles.ktor.core)
-    implementation(libs.ktor.server.sse)
+    implementation(libs.ktor.server.websockets)
     testImplementation(libs.bundles.testing.server)
 }

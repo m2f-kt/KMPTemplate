@@ -100,6 +100,7 @@ ktor-server-call-id = { group = "io.ktor", name = "ktor-server-call-id", version
 ktor-server-metrics = { group = "io.ktor", name = "ktor-server-metrics", version.ref = "ktor" }
 ktor-server-metrics-micrometer = { group = "io.ktor", name = "ktor-server-metrics-micrometer", version.ref = "ktor" }
 ktor-server-sse = { group = "io.ktor", name = "ktor-server-sse", version.ref = "ktor" }
+ktor-server-websockets = { group = "io.ktor", name = "ktor-server-websockets", version.ref = "ktor" }
 swagger-codegen = { module = "io.swagger.codegen.v3:swagger-codegen", version.ref = "swagger-codegen" }
 
 # Database Backend
