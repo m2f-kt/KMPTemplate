@@ -171,6 +171,12 @@ Plans:
   3. SDK API classes use `client.get(Resource())`, `client.post(Resource())` -- no hardcoded URL strings remain
   4. Path parameters (e.g., user ID) are type-safe properties on resource classes, not string-interpolated
   5. `AuthInterceptor` refresh endpoint detection uses the typed resource, not string matching
+**Plans**: 3 plans
+
+Plans:
+- [ ] 08-01-PLAN.md -- Gradle deps, @Resource route class definitions, Resources plugin install (server + client)
+- [ ] 08-02-PLAN.md -- Server route migration: AuthRoutes, UserRoutes, AiRoutes to type-safe handlers
+- [ ] 08-03-PLAN.md -- Client SDK migration: AuthApi, UserApi, AuthInterceptor, ErrorMapper to type-safe requests
 **Gap Closure:** Closes gaps from audit
 
 ## Progress
@@ -188,7 +194,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 6. AI Agent Infrastructure | 3/3 | Complete | 2026-02-13 |
 | 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
 | 7. Role System Refactor & Tech Debt | 2/2 | Complete | 2026-02-15 |
-| 8. Type-Safe Shared Routes | 0/? | Pending | - |
+| 8. Type-Safe Shared Routes | 0/3 | Pending | - |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
 
