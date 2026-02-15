@@ -1,5 +1,6 @@
 package com.m2f.template.models.dto
 
+import com.m2f.template.models.UserRole
 import com.m2f.template.models.UserTier
 import kotlinx.serialization.Serializable
 
@@ -8,14 +9,14 @@ data class UserResponse(
     val id: String,
     val email: String,
     val name: String,
-    val role: String,
+    val role: UserRole,
 )
 
 /**
- * Extension property that maps the wire-format [UserResponse.role] string
- * to a type-safe [UserTier] sealed class instance.
+ * Extension property that maps the [UserResponse.role] sealed type
+ * to a type-safe [UserTier] sealed class instance via the role's string value.
  */
-val UserResponse.tier: UserTier get() = UserTier.fromString(role)
+val UserResponse.tier: UserTier get() = UserTier.fromString(role.value)
 
 @Serializable
 data class UpdateProfileRequest(
