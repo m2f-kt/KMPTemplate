@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 8 (Type-Safe Shared Routes)
-Plan: 1 of 3 in current phase (1 complete)
+Plan: 2 of 3 in current phase (2 complete)
 Status: In Progress — executing phase 8 plans
-Last activity: 2026-02-15 - Completed 08-01 (Ktor Resources Foundation)
+Last activity: 2026-02-15 - Completed 08-02 (Server Route Migration)
 
-Progress: [██████████████████░] 97% (36/38 plans)
+Progress: [███████████████████░] 97% (37/38 plans)
 
 ## Performance Metrics
 
@@ -36,11 +36,11 @@ Progress: [██████████████████░] 97% (36/38
 | 6.1 | 2/2 | ~5 min | ~3 min |
 | 7 | 2/2 | ~14 min | ~7 min |
 
-| 8 | 1/3 | ~4 min | ~4 min |
+| 8 | 2/3 | ~6 min | ~3 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-01 (~4 min), 07-02 (~6 min), 07-01 (~8 min), 06.1-02 (~2 min), 06.1-01 (~3 min)
-- Trend: Type-safe routing foundation established
+- Last 5 plans: 08-02 (~2 min), 08-01 (~4 min), 07-02 (~6 min), 07-01 (~8 min), 06.1-02 (~2 min)
+- Trend: Server routes migrated to type-safe handlers
 
 *Updated after each plan completion*
 
@@ -236,6 +236,9 @@ Recent decisions affecting current work:
 - [07-02]: Suppressed createMissingTablesAndColumns deprecation (template project, not production)
 - [08-01]: Regular classes (not data classes) for @Resource without properties -- no-arg constructor requirement
 - [08-01]: WebSocket path as companion const in Ai.Chat (KTOR-4369: type-safe routing unsupported for WebSockets)
+- [08-02]: conduit/conduitAuth helpers unchanged inside type-safe resource handlers (same RoutingContext receiver)
+- [08-02]: withRole(UserRole.Admin) wraps get<Users.ById> correctly (transparent route selector)
+- [08-02]: WebSocket uses full-path Ai.Chat.WS_PATH constant since route() wrapper removed
 
 ### Pending Todos
 
@@ -278,5 +281,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 08-01-PLAN.md (Ktor Resources Foundation)
-Resume file: Continue with 08-02-PLAN.md (Server Route Migration)
+Stopped at: Completed 08-02-PLAN.md (Server Route Migration)
+Resume file: Continue with 08-03-PLAN.md (Client SDK Migration)
