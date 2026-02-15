@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 06.1 (Chat Agent Streaming Refactor)
 Plan: 2 of 2 in current phase (2 complete, 0 remaining)
 Status: Complete
-Last activity: 2026-02-14 - Completed quick task 23: Implement SSE getAuth function in Error.kt and refactor AiRoutes.kt chat/stream to use it
+Last activity: 2026-02-15 - Completed quick task 24: Switch chat streaming from SSE to WebSocket
 
 Progress: [██████████████████] 100% (33/33 plans)
 
@@ -222,6 +222,9 @@ Recent decisions affecting current work:
 - [06.1-02]: ktor-server-sse added to server module (not transitively available from server:ai implementation dependency)
 - [06.1-02]: Typed SSE events: conversation (metadata), message (content chunks), done (completion), error (failures)
 - [quick-23]: this@sse for ServerSSESession access inside getAuth crossinline lambda (context receiver name not directly accessible)
+- [quick-24]: JWT read from Authorization header first, query param 'token' as fallback for browser WebSocket clients
+- [quick-24]: ChatStreamFrame with completed boolean flag for stream termination signaling
+- [quick-24]: WebSocket errors sent as JSON ErrorResponse frames before close with appropriate close codes
 
 ### Pending Todos
 
@@ -254,6 +257,7 @@ None yet.
 | 21 | Fix TerminalInput cursor and selection handle colors to use theme tokens | 2026-02-13 | e988534 | [21-fix-terminalinput-cursor-and-selection-h](./quick/21-fix-terminalinput-cursor-and-selection-h/) |
 | 22 | Fix checkbox/switch/radio ripple effects drawing beyond component bounds -- bounded=true | 2026-02-13 | dcd5e4f | [22-fix-checkbox-ripple-effect-drawing-beyon](./quick/22-fix-checkbox-ripple-effect-drawing-beyon/) |
 | 23 | Implement getAuth SSE authentication helper and refactor chat/stream route | 2026-02-14 | 3901b99 | [23-implement-sse-getauth-function-in-error-](./quick/23-implement-sse-getauth-function-in-error-/) |
+| 24 | Switch chat streaming from SSE to WebSocket with header-based JWT auth | 2026-02-15 | a5e6896 | [24-switch-chat-streaming-from-sse-to-websoc](./quick/24-switch-chat-streaming-from-sse-to-websoc/) |
 
 ### Blockers/Concerns
 
@@ -262,6 +266,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-14
-Stopped at: Completed quick-23 (Implement getAuth SSE Authentication Helper)
+Last session: 2026-02-15
+Stopped at: Completed quick-24 (Switch Chat Streaming from SSE to WebSocket)
 Resume file: All plans complete
