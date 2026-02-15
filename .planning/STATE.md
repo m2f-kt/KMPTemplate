@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 7 - Role System Refactor & Tech Debt (gap closure)
+**Current focus:** Phase 8 - Type-Safe Shared Routes (gap closure)
 
 ## Current Position
 
-Phase: 7 (Role System Refactor & Tech Debt) -- COMPLETE
-Plan: 2 of 2 in current phase (2 complete)
-Status: Complete -- Phase 7 finished
-Last activity: 2026-02-15 - Completed 07-02 (Server Role System Refactor)
+Phase: 8 (Type-Safe Shared Routes)
+Plan: 0 of ? in current phase (0 complete, planning needed)
+Status: Pending — needs /gsd:plan-phase 8
+Last activity: 2026-02-15 - Completed Phase 7 (Role System Refactor & Tech Debt)
 
-Progress: [███████████████████] 100% (35/35 plans) + gap closure phases complete
+Progress: [██████████████████░] 95% (35/35 plans) + 1 gap closure phase pending
 
 ## Performance Metrics
 
