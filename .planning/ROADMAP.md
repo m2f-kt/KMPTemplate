@@ -20,7 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management (completed 2026-02-13)
 - [x] **Phase 6.1: Chat Agent Streaming Refactor** - Custom streaming strategy, SSE endpoint, infinite loop fix (completed 2026-02-14)
 - [x] **Phase 7: Role System Refactor & Tech Debt** - Replace string roles with UserRole sealed type, DB relation, fix tech debt (completed 2026-02-15)
-- [ ] **Phase 8: Type-Safe Shared Routes** - Ktor Resources for compile-time route safety across server and SDK (gap closure)
+- [x] **Phase 8: Type-Safe Shared Routes** - Ktor Resources for compile-time route safety across server and SDK (completed 2026-02-15)
 
 ## Phase Details
 
@@ -174,9 +174,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 08-01-PLAN.md -- Gradle deps, @Resource route class definitions, Resources plugin install (server + client)
-- [ ] 08-02-PLAN.md -- Server route migration: AuthRoutes, UserRoutes, AiRoutes to type-safe handlers
-- [ ] 08-03-PLAN.md -- Client SDK migration: AuthApi, UserApi, AuthInterceptor, ErrorMapper to type-safe requests
+- [x] 08-01-PLAN.md -- Gradle deps, @Resource route class definitions, Resources plugin install (server + client)
+- [x] 08-02-PLAN.md -- Server route migration: AuthRoutes, UserRoutes, AiRoutes to type-safe handlers
+- [x] 08-03-PLAN.md -- Client SDK migration: AuthApi, UserApi, AuthInterceptor, ErrorMapper to type-safe requests
 **Gap Closure:** Closes gaps from audit
 
 ## Progress
@@ -194,7 +194,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 | 6. AI Agent Infrastructure | 3/3 | Complete | 2026-02-13 |
 | 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
 | 7. Role System Refactor & Tech Debt | 2/2 | Complete | 2026-02-15 |
-| 8. Type-Safe Shared Routes | 0/3 | Pending | - |
+| 8. Type-Safe Shared Routes | 3/3 | Complete | 2026-02-15 |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
 
