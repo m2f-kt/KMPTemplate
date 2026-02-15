@@ -17,8 +17,14 @@ import io.ktor.server.auth.authenticate
 import io.ktor.server.routing.Route
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
-import io.ktor.server.sse.sse
-import io.ktor.sse.ServerSentEvent
+import io.ktor.server.websocket.webSocket
+import io.ktor.websocket.Frame
+import io.ktor.websocket.readText
+import io.ktor.websocket.send
+import com.m2f.template.models.dto.ChatStreamFrame
+import com.m2f.template.models.dto.ErrorResponse
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -75,32 +81,46 @@ fun Route.aiRoutes(
             }
         }
 
-        sse("/chat/stream") {
+        webSocket("/chat/ws") {
             getAuth { userId ->
                 ensureAiEnabled(config.env.ai.enabled)
 
-                val message = call.request.queryParameters["message"]
-                if (message == null) {
-                    this@sse.send(ServerSentEvent(data = "Error: Missing message", event = "error"))
-                    return@getAuth
-                }
+                for (frame in incoming) {
+                    if (frame !is Frame.Text) continue
+                    val request = Json.decodeFromString<ChatRequest>(frame.readText())
 
-                val conversationId = call.request.queryParameters["conversationId"]
-                    ?: Uuid.random().toString()
+                    val conversationId = request.conversationId
+                        ?: Uuid.random().toString()
 
-                this@sse.send(ServerSentEvent(data = conversationId, event = "conversation"))
-
-                try {
-                    chatAgentService.streamChat(
-                        userId = userId,
-                        conversationId = conversationId,
-                        input = message,
-                    ).collect { chunk ->
-                        this@sse.send(ServerSentEvent(data = chunk, event = "message"))
+                    try {
+                        chatAgentService.streamChat(
+                            userId = userId,
+                            conversationId = conversationId,
+                            input = request.message,
+                        ).collect { chunk ->
+                            send(Frame.Text(Json.encodeToString(
+                                ChatStreamFrame(
+                                    message = chunk,
+                                    conversationId = conversationId,
+                                    completed = false,
+                                )
+                            )))
+                        }
+                        send(Frame.Text(Json.encodeToString(
+                            ChatStreamFrame(
+                                message = "",
+                                conversationId = conversationId,
+                                completed = true,
+                            )
+                        )))
+                    } catch (e: Exception) {
+                        send(Frame.Text(Json.encodeToString(
+                            ErrorResponse(
+                                code = "AGENT_ERROR",
+                                message = "Error: ${e.message}",
+                            )
+                        )))
                     }
-                    this@sse.send(ServerSentEvent(data = "[DONE]", event = "done"))
-                } catch (e: Exception) {
-                    this@sse.send(ServerSentEvent(data = "Error: ${e.message}", event = "error"))
                 }
             }
         }

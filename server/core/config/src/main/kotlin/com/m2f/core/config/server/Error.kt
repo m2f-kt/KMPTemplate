@@ -17,8 +17,13 @@ import io.ktor.server.auth.principal
 import io.ktor.server.request.receive
 import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingContext
-import io.ktor.server.sse.ServerSSESession
-import io.ktor.sse.ServerSentEvent
+import io.ktor.server.websocket.WebSocketServerSession
+import io.ktor.websocket.CloseReason
+import io.ktor.websocket.Frame
+import io.ktor.websocket.close
+import io.ktor.websocket.send
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 context(context: RoutingContext)
 suspend inline fun <reified A : Any> conduit(
@@ -38,13 +43,15 @@ suspend inline fun <reified A : Any> conduitAuth(
     block(this, userId)
 }.fold({ with(context) { it.respond() } }, { context.call.respond<A>(status, it) })
 
-context(session: ServerSSESession, config: Configuration)
+context(session: WebSocketServerSession, config: Configuration)
 suspend inline fun getAuth(
     crossinline block: suspend context(Raise<DomainError>) (userId: String) -> Unit,
 ) {
-    val token = session.call.request.queryParameters["token"]
+    val token = session.call.request.headers["Authorization"]?.removePrefix("Bearer ")
+        ?: session.call.request.queryParameters["token"]
     if (token == null) {
-        session.send(ServerSentEvent(data = "Error: Missing token", event = "error"))
+        session.send(Frame.Text(Json.encodeToString(ErrorResponse(code = "UNAUTHORIZED", message = "Missing token"))))
+        session.close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "Missing token"))
         return
     }
 
@@ -56,12 +63,14 @@ suspend inline fun getAuth(
         verifier.verify(token).subject
             ?: throw IllegalArgumentException("Missing subject")
     } catch (_: Exception) {
-        session.send(ServerSentEvent(data = "Error: Invalid token", event = "error"))
+        session.send(Frame.Text(Json.encodeToString(ErrorResponse(code = "UNAUTHORIZED", message = "Invalid token"))))
+        session.close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "Invalid token"))
         return
     }
 
     either { block(this, userId) }.onLeft { error ->
-        session.send(ServerSentEvent(data = "Error: ${error.toAppError().message}", event = "error"))
+        session.send(Frame.Text(Json.encodeToString(ErrorResponse(code = "AI_ERROR", message = error.toAppError().message))))
+        session.close(CloseReason(CloseReason.Codes.INTERNAL_ERROR, "Server error"))
     }
 }
 
