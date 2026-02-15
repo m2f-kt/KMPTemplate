@@ -31,6 +31,7 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.oauth
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.resources.Resources
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
@@ -65,6 +66,7 @@ fun Application.module() {
     // Register the R2dbcDatabase instance in Koin for repository injection
     getKoin().declare(database)
 
+    install(Resources)
     install(ContentNegotiation) { json() }
     install(WebSockets)
     configureSecurity()

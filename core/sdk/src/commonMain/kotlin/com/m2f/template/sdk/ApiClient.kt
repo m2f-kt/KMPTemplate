@@ -3,6 +3,7 @@ package com.m2f.template.sdk
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
@@ -36,6 +37,8 @@ fun createApiClient(
                 isLenient = true
             })
         }
+
+        install(Resources)
 
         install(Logging) {
             level = LogLevel.HEADERS
