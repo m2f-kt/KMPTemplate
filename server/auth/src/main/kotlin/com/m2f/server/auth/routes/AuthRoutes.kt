@@ -10,52 +10,51 @@ import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.models.dto.RefreshTokenRequest
 import com.m2f.template.models.dto.RegisterRequest
 import com.m2f.template.models.dto.ResetPasswordRequest
+import com.m2f.template.models.routes.Auth
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
+import io.ktor.server.resources.post
 import io.ktor.server.routing.Route
-import io.ktor.server.routing.post
-import io.ktor.server.routing.route
 
 /**
  * Auth routes for registration, login, token refresh, logout, and password reset.
+ * Uses type-safe @Resource handlers via Ktor Resources.
  */
 fun Route.authRoutes(authService: AuthService, passwordResetService: PasswordResetService) {
-    route("/api/auth") {
-        post("/register") {
-            conduit(HttpStatusCode.Created) {
-                val request = getModel<RegisterRequest>()
-                authService.register(request)
-            }
+    post<Auth.Register> {
+        conduit(HttpStatusCode.Created) {
+            val request = getModel<RegisterRequest>()
+            authService.register(request)
         }
-        post("/login") {
-            conduit {
-                val request = getModel<LoginRequest>()
-                authService.login(request)
-            }
+    }
+    post<Auth.Login> {
+        conduit {
+            val request = getModel<LoginRequest>()
+            authService.login(request)
         }
-        post("/refresh") {
-            conduit {
-                val request = getModel<RefreshTokenRequest>()
-                authService.refresh(request)
-            }
+    }
+    post<Auth.Refresh> {
+        conduit {
+            val request = getModel<RefreshTokenRequest>()
+            authService.refresh(request)
         }
-        post("/forgot-password") {
-            conduit {
-                val request = getModel<ForgotPasswordRequest>()
-                passwordResetService.forgotPassword(request)
-            }
+    }
+    post<Auth.ForgotPassword> {
+        conduit {
+            val request = getModel<ForgotPasswordRequest>()
+            passwordResetService.forgotPassword(request)
         }
-        post("/reset-password") {
-            conduit {
-                val request = getModel<ResetPasswordRequest>()
-                passwordResetService.resetPassword(request)
-            }
+    }
+    post<Auth.ResetPassword> {
+        conduit {
+            val request = getModel<ResetPasswordRequest>()
+            passwordResetService.resetPassword(request)
         }
-        authenticate {
-            post("/logout") {
-                conduitAuth { userId ->
-                    authService.logout(userId)
-                }
+    }
+    authenticate {
+        post<Auth.Logout> {
+            conduitAuth { userId ->
+                authService.logout(userId)
             }
         }
     }
