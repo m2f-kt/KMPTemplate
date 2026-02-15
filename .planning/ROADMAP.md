@@ -19,6 +19,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Auth Screens, Dashboard & Setup CLI** - Deliver end-to-end user-facing screens and template onboarding (completed 2026-02-13)
 - [x] **Phase 6: AI Agent Infrastructure** - Integrate Koog agents with tool system and conversation management (completed 2026-02-13)
 - [x] **Phase 6.1: Chat Agent Streaming Refactor** - Custom streaming strategy, SSE endpoint, infinite loop fix (completed 2026-02-14)
+- [ ] **Phase 7: Role System Refactor & Tech Debt** - Replace string roles with UserRole sealed type, DB relation, fix tech debt (gap closure)
+- [ ] **Phase 8: Type-Safe Shared Routes** - Ktor Resources for compile-time route safety across server and SDK (gap closure)
 
 ## Phase Details
 
@@ -138,10 +140,38 @@ Plans:
 - [x] 06-02-PLAN.md -- UserTools ToolSet and database-backed conversation persistence
 - [x] 06-03-PLAN.md -- Agent services, routes, DI wiring, and Application.kt integration
 
+### Phase 7: Role System Refactor & Tech Debt
+**Goal**: User roles are a proper sealed type (`UserRole`) shared across server and clients, backed by a database `roles` table with referential integrity -- replacing all string-based role handling. Tech debt items (stale comments, stub tool method) are resolved.
+**Depends on**: Phase 2 (auth tables), Phase 6 (AI tools)
+**Requirements**: Gap closure (audit tech debt + structural improvement)
+**Research flag**: NEEDS research-phase -- Exposed FK migration patterns for existing data, sealed class serialization with DB enums
+**Success Criteria** (what must be TRUE):
+  1. `UserRole` is a sealed class in `core:models` used by both server and clients -- no string-based role handling remains anywhere in the codebase
+  2. A `roles` table exists in the database with seeded role rows, and `users.role_id` is a foreign key referencing it
+  3. RBAC plugin (`withRole`) accepts `UserRole` variants, not strings -- compile-time safety for role checks
+  4. JWT claims encode roles as typed values that map back to `UserRole` on deserialization
+  5. `UserResponse.role` on the wire uses the `UserRole` serialized form (not a raw string)
+  6. `UserTools.getUserCount()` returns an actual count from the database
+  7. No stale SSE references remain in ChatStreamingStrategy.kt
+**Gap Closure:** Closes gaps from audit
+
+### Phase 8: Type-Safe Shared Routes
+**Goal**: All API routes are defined once as `@Resource` classes in `core:models` and used by both server routing and SDK client calls -- eliminating duplicated route strings and providing compile-time route safety across the full stack.
+**Depends on**: Phase 7 (role system must be stable before route refactor), Phase 3 (SDK module)
+**Requirements**: Gap closure (structural improvement)
+**Research flag**: SKIP -- Ktor Resources plugin well-documented for both server and client
+**Success Criteria** (what must be TRUE):
+  1. All API routes (auth, users, AI) are defined as `@Resource`-annotated classes in `core:models` -- single source of truth
+  2. Server routes use `get<Resource>`, `post<Resource>` type-safe handlers -- no string-based `route("/path")` or `get("/path")` remain for API endpoints
+  3. SDK API classes use `client.get(Resource())`, `client.post(Resource())` -- no hardcoded URL strings remain
+  4. Path parameters (e.g., user ID) are type-safe properties on resource classes, not string-interpolated
+  5. `AuthInterceptor` refresh endpoint detection uses the typed resource, not string matching
+**Gap Closure:** Closes gaps from audit
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -152,6 +182,8 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 5. Auth Screens, Dashboard & Setup CLI | 11/11 | Complete | 2026-02-13 |
 | 6. AI Agent Infrastructure | 3/3 | Complete | 2026-02-13 |
 | 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
+| 7. Role System Refactor & Tech Debt | 0/? | Pending | - |
+| 8. Type-Safe Shared Routes | 0/? | Pending | - |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
 
