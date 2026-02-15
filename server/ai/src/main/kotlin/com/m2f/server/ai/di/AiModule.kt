@@ -11,7 +11,7 @@ import org.koin.dsl.module
 
 /**
  * Koin module wiring all AI dependencies.
- * Uses standalone executor approach -- agents create their own OpenAI executor
+ * Uses standalone executor approach -- agents create their own Google executor
  * with the API key from Configuration, no Koog Ktor plugin needed.
  */
 val aiModule = module {
@@ -20,13 +20,13 @@ val aiModule = module {
     single {
         AssistantAgentService(
             userTools = get(),
-            openaiApiKey = get<Configuration>().env.ai.openaiApiKey,
+            googleApiKey = get<Configuration>().env.ai.googleApiKey,
         )
     }
     single {
         ChatAgentService(
             persistenceStorage = get(),
-            openaiApiKey = get<Configuration>().env.ai.openaiApiKey,
+            googleApiKey = get<Configuration>().env.ai.googleApiKey,
         )
     }
 }

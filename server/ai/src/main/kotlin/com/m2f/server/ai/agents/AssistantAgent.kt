@@ -6,8 +6,8 @@ import ai.koog.agents.core.tools.ToolRegistry
 import ai.koog.agents.core.tools.reflect.tools
 import ai.koog.agents.ext.agent.reActStrategy
 import ai.koog.prompt.dsl.prompt
-import ai.koog.prompt.executor.clients.openai.OpenAILLMClient
-import ai.koog.prompt.executor.clients.openai.OpenAIModels
+import ai.koog.prompt.executor.clients.google.GoogleLLMClient
+import ai.koog.prompt.executor.clients.google.GoogleModels
 import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
@@ -19,12 +19,12 @@ import com.m2f.server.ai.tools.UserTools
  * Service for the ReAct tool-using agent. Uses reActStrategy with UserTools
  * to allow the LLM to look up user data from the database.
  *
- * Creates a standalone PromptExecutor with the provided OpenAI API key
+ * Creates a standalone PromptExecutor with the provided Google API key
  * (no Koog Ktor plugin dependency).
  */
 class AssistantAgentService(
     private val userTools: UserTools,
-    private val openaiApiKey: String,
+    private val googleApiKey: String,
 ) {
     private val systemPrompt = """
         |You are a helpful assistant for a web application.
@@ -33,7 +33,7 @@ class AssistantAgentService(
     """.trimMargin()
 
     private val executor by lazy {
-        SingleLLMPromptExecutor(OpenAILLMClient(openaiApiKey))
+        SingleLLMPromptExecutor(GoogleLLMClient(googleApiKey))
     }
 
     private val toolRegistry = ToolRegistry {
@@ -44,7 +44,7 @@ class AssistantAgentService(
         prompt = prompt("assistant-agent") {
             system(systemPrompt)
         },
-        model = OpenAIModels.Chat.GPT4o,
+        model = GoogleModels.Gemini2_5Flash,
         maxAgentIterations = 10,
     )
 

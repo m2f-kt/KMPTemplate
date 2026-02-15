@@ -7,6 +7,9 @@ import arrow.core.raise.catch
 import arrow.core.raise.either
 import arrow.core.raise.ensureNotNull
 import arrow.core.raise.recover
+import com.auth0.jwt.JWT
+import com.auth0.jwt.algorithms.Algorithm
+import com.m2f.core.config.configuration.Configuration
 import com.m2f.template.models.dto.ErrorResponse
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -35,11 +38,8 @@ suspend inline fun <reified A : Any> conduitAuth(
     block(this, userId)
 }.fold({ with(context) { it.respond() } }, { context.call.respond<A>(status, it) })
 
-context(session: ServerSSESession)
+context(session: ServerSSESession, config: Configuration)
 suspend inline fun getAuth(
-    jwtSecret: String,
-    jwtAudience: String,
-    jwtIssuer: String,
     crossinline block: suspend context(Raise<DomainError>) (userId: String) -> Unit,
 ) {
     val token = session.call.request.queryParameters["token"]
@@ -49,11 +49,9 @@ suspend inline fun getAuth(
     }
 
     val userId = try {
-        val verifier = com.auth0.jwt.JWT.require(
-            com.auth0.jwt.algorithms.Algorithm.HMAC256(jwtSecret)
-        )
-            .withAudience(jwtAudience)
-            .withIssuer(jwtIssuer)
+        val verifier = JWT.require(Algorithm.HMAC256(config.env.auth.secret))
+            .withAudience(config.env.auth.audience)
+            .withIssuer(config.env.auth.issuer)
             .build()
         verifier.verify(token).subject
             ?: throw IllegalArgumentException("Missing subject")

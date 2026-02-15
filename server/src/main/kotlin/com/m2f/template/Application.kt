@@ -3,11 +3,12 @@ package com.m2f.template
 import arrow.continuations.SuspendApp
 import arrow.fx.coroutines.resourceScope
 import com.m2f.core.config.configuration.Configuration
+import com.m2f.core.config.configuration.configurationModule
 import com.m2f.core.database.startDatabase
 import com.m2f.core.security.configureSecurity
-import com.m2f.server.ai.registerAiMigrations
 import com.m2f.server.ai.agents.AssistantAgentService
 import com.m2f.server.ai.agents.ChatAgentService
+import com.m2f.server.ai.registerAiMigrations
 import com.m2f.server.ai.routes.aiRoutes
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.routes.authRoutes
@@ -17,10 +18,9 @@ import com.m2f.server.auth.service.AuthService
 import com.m2f.server.auth.service.OAuthService
 import com.m2f.server.auth.service.PasswordResetService
 import com.m2f.server.auth.service.UserService
+import com.m2f.template.di.serverModule
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
-import com.m2f.core.config.configuration.configurationModule
-import com.m2f.template.di.serverModule
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
@@ -31,10 +31,10 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.oauth
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.server.sse.SSE
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
+import io.ktor.server.sse.SSE
 import kotlinx.coroutines.awaitCancellation
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.koin.ktor.ext.getKoin
@@ -85,10 +85,6 @@ fun Application.module() {
         aiRoutes(
             assistantAgentService,
             chatAgentService,
-            config.env.ai.enabled,
-            jwtSecret = config.env.auth.secret,
-            jwtAudience = config.env.auth.audience,
-            jwtIssuer = config.env.auth.issuer,
         )
     }
 }

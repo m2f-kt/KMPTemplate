@@ -59,11 +59,11 @@ data class Env(
     /**
      * AI provider configuration.
      * Defaults to disabled so the server starts without any AI env vars set.
-     * Set AI_ENABLED=true and OPENAI_API_KEY to activate AI endpoints.
+     * Set AI_ENABLED=true and GOOGLE_API_KEY to activate AI endpoints.
      */
     data class Ai(
         val enabled: Boolean = System.getenv("AI_ENABLED")?.toBooleanStrictOrNull() ?: false,
-        val openaiApiKey: String = System.getenv("OPENAI_API_KEY") ?: "",
+        val googleApiKey: String = System.getenv("GOOGLE_API_KEY") ?: "",
     )
 
     data class ServerConfig(

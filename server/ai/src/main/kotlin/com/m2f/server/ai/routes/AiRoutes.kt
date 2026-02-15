@@ -1,6 +1,7 @@
 package com.m2f.server.ai.routes
 
 import arrow.core.raise.Raise
+import com.m2f.core.config.configuration.Configuration
 import com.m2f.core.config.server.DomainError
 import com.m2f.core.config.server.conduitAuth
 import com.m2f.core.config.server.getAuth
@@ -37,19 +38,16 @@ private fun ensureAiEnabled(aiEnabled: Boolean) {
  * Both routes are gated by [aiEnabled] flag -- when false, returns ProviderUnavailable error.
  */
 @OptIn(ExperimentalUuidApi::class)
+context(config: Configuration)
 fun Route.aiRoutes(
     assistantAgentService: AssistantAgentService,
     chatAgentService: ChatAgentService,
-    aiEnabled: Boolean,
-    jwtSecret: String,
-    jwtAudience: String,
-    jwtIssuer: String,
 ) {
     route("/api/ai") {
         authenticate {
             post("/assistant") {
-                conduitAuth { userId ->
-                    ensureAiEnabled(aiEnabled)
+                conduitAuth { _ ->
+                    ensureAiEnabled(config.env.ai.enabled)
                     val request = getModel<AgentRequest>()
                     val result = assistantAgentService.run(request.message)
                     AgentResponse(
@@ -60,7 +58,7 @@ fun Route.aiRoutes(
             }
             post("/chat") {
                 conduitAuth { userId ->
-                    ensureAiEnabled(aiEnabled)
+                    ensureAiEnabled(config.env.ai.enabled)
                     val request = getModel<ChatRequest>()
                     val conversationId = request.conversationId
                         ?: Uuid.random().toString()
@@ -78,8 +76,8 @@ fun Route.aiRoutes(
         }
 
         sse("/chat/stream") {
-            getAuth(jwtSecret, jwtAudience, jwtIssuer) { userId ->
-                ensureAiEnabled(aiEnabled)
+            getAuth { userId ->
+                ensureAiEnabled(config.env.ai.enabled)
 
                 val message = call.request.queryParameters["message"]
                 if (message == null) {
