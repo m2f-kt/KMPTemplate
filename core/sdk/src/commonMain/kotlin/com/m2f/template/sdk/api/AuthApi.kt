@@ -8,10 +8,11 @@ import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.models.dto.RefreshTokenRequest
 import com.m2f.template.models.dto.RegisterRequest
 import com.m2f.template.models.dto.ResetPasswordRequest
+import com.m2f.template.models.routes.Auth
 import com.m2f.template.sdk.apiCall
 import com.m2f.template.storage.TokenStorage
 import io.ktor.client.HttpClient
-import io.ktor.client.request.post
+import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -29,7 +30,7 @@ class AuthApi(
 ) {
     suspend fun register(request: RegisterRequest): Either<AppError, AuthResponse> =
         apiCall<AuthResponse> {
-            client.post("/api/auth/register") {
+            client.post(Auth.Register()) {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -39,7 +40,7 @@ class AuthApi(
 
     suspend fun login(request: LoginRequest, rememberMe: Boolean = true): Either<AppError, AuthResponse> =
         apiCall<AuthResponse> {
-            client.post("/api/auth/login") {
+            client.post(Auth.Login()) {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -49,7 +50,7 @@ class AuthApi(
 
     suspend fun refresh(request: RefreshTokenRequest): Either<AppError, AuthResponse> =
         apiCall<AuthResponse> {
-            client.post("/api/auth/refresh") {
+            client.post(Auth.Refresh()) {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -59,7 +60,7 @@ class AuthApi(
 
     suspend fun forgotPassword(request: ForgotPasswordRequest): Either<AppError, Unit> =
         apiCall<Unit> {
-            client.post("/api/auth/forgot-password") {
+            client.post(Auth.ForgotPassword()) {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -67,7 +68,7 @@ class AuthApi(
 
     suspend fun resetPassword(request: ResetPasswordRequest): Either<AppError, Unit> =
         apiCall<Unit> {
-            client.post("/api/auth/reset-password") {
+            client.post(Auth.ResetPassword()) {
                 contentType(ContentType.Application.Json)
                 setBody(request)
             }
@@ -75,7 +76,7 @@ class AuthApi(
 
     suspend fun logout(): Either<AppError, Unit> {
         val result = apiCall<Unit> {
-            client.post("/api/auth/logout")
+            client.post(Auth.Logout())
         }
         // Always clear local tokens on logout, regardless of server response
         tokenStorage.clearTokens()
