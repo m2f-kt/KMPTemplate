@@ -2,18 +2,21 @@ package com.m2f.template.sdk
 
 import com.m2f.template.models.dto.AuthResponse
 import com.m2f.template.models.dto.RefreshTokenRequest
+import com.m2f.template.models.routes.Auth
 import com.m2f.template.storage.TokenStorage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.HttpSend
 import io.ktor.client.plugins.plugin
+import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.bearerAuth
-import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
+import io.ktor.resources.href
+import io.ktor.resources.serialization.ResourcesFormat
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -31,10 +34,13 @@ class AuthInterceptor(
 ) {
     private val refreshMutex = Mutex()
 
+    /** Path derived from Auth.Refresh resource -- stays in sync with ApiRoutes.kt */
+    private val refreshPath = href(ResourcesFormat(), Auth.Refresh())
+
     fun install(client: HttpClient) {
         client.plugin(HttpSend).intercept { request ->
             // Skip token attachment for refresh endpoint (avoid recursion)
-            val isRefreshRequest = request.url.buildString().contains("/auth/refresh")
+            val isRefreshRequest = request.url.buildString().contains(refreshPath)
 
             if (!isRefreshRequest) {
                 val accessToken = tokenStorage.getAccessToken()
@@ -61,7 +67,7 @@ class AuthInterceptor(
                     } else {
                         // Actually refresh
                         try {
-                            val response = client.post("/api/auth/refresh") {
+                            val response = client.post(Auth.Refresh()) {
                                 contentType(ContentType.Application.Json)
                                 setBody(RefreshTokenRequest(refreshToken))
                             }

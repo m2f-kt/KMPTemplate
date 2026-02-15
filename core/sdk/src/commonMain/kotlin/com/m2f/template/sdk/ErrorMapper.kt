@@ -21,7 +21,7 @@ import io.ktor.http.isSuccess
  * Usage:
  * ```
  * suspend fun login(request: LoginRequest): Either<AppError, AuthResponse> =
- *     apiCall { client.post("/api/auth/login") { setBody(request) } }
+ *     apiCall { client.post(Auth.Login()) { setBody(request) } }
  * ```
  *
  * @param T The expected response body type (must be [kotlinx.serialization.Serializable]).
