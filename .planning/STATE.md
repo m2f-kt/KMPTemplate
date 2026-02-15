@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 ## Current Position
 
 Phase: 8 (Type-Safe Shared Routes)
-Plan: 2 of 3 in current phase (2 complete)
-Status: In Progress — executing phase 8 plans
-Last activity: 2026-02-15 - Completed 08-02 (Server Route Migration)
+Plan: 3 of 3 in current phase (3 complete)
+Status: Phase 8 Complete
+Last activity: 2026-02-15 - Completed 08-03 (SDK Client Migration)
 
-Progress: [███████████████████░] 97% (37/38 plans)
+Progress: [████████████████████] 100% (38/38 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 35
+- Total plans completed: 38
 - Average duration: ~7 min
-- Total execution time: ~251 min
+- Total execution time: ~262 min
 
 **By Phase:**
 
@@ -36,11 +36,11 @@ Progress: [███████████████████░] 97% (37
 | 6.1 | 2/2 | ~5 min | ~3 min |
 | 7 | 2/2 | ~14 min | ~7 min |
 
-| 8 | 2/3 | ~6 min | ~3 min |
+| 8 | 3/3 | ~11 min | ~4 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-02 (~2 min), 08-01 (~4 min), 07-02 (~6 min), 07-01 (~8 min), 06.1-02 (~2 min)
-- Trend: Server routes migrated to type-safe handlers
+- Last 5 plans: 08-03 (~5 min), 08-02 (~2 min), 08-01 (~4 min), 07-02 (~6 min), 07-01 (~8 min)
+- Trend: Phase 8 complete -- full stack type-safe routing achieved
 
 *Updated after each plan completion*
 
@@ -236,6 +236,8 @@ Recent decisions affecting current work:
 - [07-02]: Suppressed createMissingTablesAndColumns deprecation (template project, not production)
 - [08-01]: Regular classes (not data classes) for @Resource without properties -- no-arg constructor requirement
 - [08-01]: WebSocket path as companion const in Ai.Chat (KTOR-4369: type-safe routing unsupported for WebSockets)
+- [08-03]: href(ResourcesFormat(), Auth.Refresh()) for type-safe refresh path detection instead of hardcoded string
+- [08-03]: URLBuilder.buildString().contains() for path matching (encodedPath unavailable on URLBuilder in Ktor 3.4.0)
 - [08-02]: conduit/conduitAuth helpers unchanged inside type-safe resource handlers (same RoutingContext receiver)
 - [08-02]: withRole(UserRole.Admin) wraps get<Users.ById> correctly (transparent route selector)
 - [08-02]: WebSocket uses full-path Ai.Chat.WS_PATH constant since route() wrapper removed
@@ -281,5 +283,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-02-15
-Stopped at: Completed 08-02-PLAN.md (Server Route Migration)
-Resume file: Continue with 08-03-PLAN.md (Client SDK Migration)
+Stopped at: Completed 08-03-PLAN.md (SDK Client Migration) -- Phase 8 complete
+Resume file: All 38 plans complete across 8 phases
