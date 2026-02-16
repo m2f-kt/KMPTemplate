@@ -22,6 +22,7 @@ import com.m2f.template.app.dashboard.DashboardScreen
 import com.m2f.template.app.dashboard.DashboardViewModel
 import com.m2f.template.app.profile.ProfileScreen
 import com.m2f.template.app.profile.ProfileViewModel
+import com.m2f.template.sdk.AuthInterceptor
 import com.m2f.template.sdk.defaultBaseUrl
 import com.m2f.template.storage.TokenStorage
 import org.koin.compose.koinInject
@@ -31,6 +32,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun AppNavHost() {
     val navController = rememberNavController()
     val tokenStorage = koinInject<TokenStorage>()
+    val authInterceptor = koinInject<AuthInterceptor>()
     val oauthHandler = remember { OAuthHandler(serverBaseUrl = defaultBaseUrl()) }
 
     // Check for existing auth tokens on startup
@@ -57,6 +59,15 @@ fun AppNavHost() {
                     refreshToken = callback.second,
                 ),
             ) {
+                popUpTo(0) { inclusive = true }
+            }
+        }
+    }
+
+    // Navigate to login when session expires (refresh token failed)
+    LaunchedEffect(Unit) {
+        authInterceptor.sessionExpired.collect {
+            navController.navigate(LoginRoute) {
                 popUpTo(0) { inclusive = true }
             }
         }
