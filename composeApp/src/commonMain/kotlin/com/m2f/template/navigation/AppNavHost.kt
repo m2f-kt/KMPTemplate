@@ -1,9 +1,13 @@
 package com.m2f.template.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -73,126 +77,128 @@ fun AppNavHost() {
         }
     }
 
-    NavHost(
-        navController = navController,
-        startDestination = LoginRoute,
-    ) {
-        composable<LoginRoute> {
-            val viewModel = koinViewModel<LoginViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            LoginScreen(
-                state = state,
-                onEmailChange = viewModel::onEmailChange,
-                onPasswordChange = viewModel::onPasswordChange,
-                onRememberMeChange = viewModel::onRememberMeChange,
-                onLoginClick = viewModel::login,
-                onGoogleClick = { oauthHandler.startOAuth("google") },
-                onAppleClick = { oauthHandler.startOAuth("apple") },
-                onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
-                onRegister = { navController.navigate(RegisterRoute) },
-            )
-            LaunchedEffect(state.loginSuccess) {
-                if (state.loginSuccess) {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
+    Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
+        NavHost(
+            navController = navController,
+            startDestination = LoginRoute,
+        ) {
+            composable<LoginRoute> {
+                val viewModel = koinViewModel<LoginViewModel>()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                LoginScreen(
+                    state = state,
+                    onEmailChange = viewModel::onEmailChange,
+                    onPasswordChange = viewModel::onPasswordChange,
+                    onRememberMeChange = viewModel::onRememberMeChange,
+                    onLoginClick = viewModel::login,
+                    onGoogleClick = { oauthHandler.startOAuth("google") },
+                    onAppleClick = { oauthHandler.startOAuth("apple") },
+                    onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
+                    onRegister = { navController.navigate(RegisterRoute) },
+                )
+                LaunchedEffect(state.loginSuccess) {
+                    if (state.loginSuccess) {
+                        navController.navigate(DashboardRoute) {
+                            popUpTo<LoginRoute> { inclusive = true }
+                        }
                     }
                 }
             }
-        }
 
-        composable<RegisterRoute> {
-            val viewModel = koinViewModel<RegisterViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            RegisterScreen(
-                state = state,
-                onFirstNameChange = viewModel::onFirstNameChange,
-                onLastNameChange = viewModel::onLastNameChange,
-                onEmailChange = viewModel::onEmailChange,
-                onPasswordChange = viewModel::onPasswordChange,
-                onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
-                onTermsAcceptedChange = viewModel::onTermsAcceptedChange,
-                onRegisterClick = viewModel::register,
-                onGoogleClick = { oauthHandler.startOAuth("google") },
-                onAppleClick = { oauthHandler.startOAuth("apple") },
-                onLogin = { navController.popBackStack() },
-            )
-            LaunchedEffect(state.registerSuccess) {
-                if (state.registerSuccess) {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
+            composable<RegisterRoute> {
+                val viewModel = koinViewModel<RegisterViewModel>()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                RegisterScreen(
+                    state = state,
+                    onFirstNameChange = viewModel::onFirstNameChange,
+                    onLastNameChange = viewModel::onLastNameChange,
+                    onEmailChange = viewModel::onEmailChange,
+                    onPasswordChange = viewModel::onPasswordChange,
+                    onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
+                    onTermsAcceptedChange = viewModel::onTermsAcceptedChange,
+                    onRegisterClick = viewModel::register,
+                    onGoogleClick = { oauthHandler.startOAuth("google") },
+                    onAppleClick = { oauthHandler.startOAuth("apple") },
+                    onLogin = { navController.popBackStack() },
+                )
+                LaunchedEffect(state.registerSuccess) {
+                    if (state.registerSuccess) {
+                        navController.navigate(DashboardRoute) {
+                            popUpTo<LoginRoute> { inclusive = true }
+                        }
                     }
                 }
             }
-        }
 
-        composable<OAuthCallbackRoute> { backStackEntry ->
-            val route = backStackEntry.toRoute<OAuthCallbackRoute>()
-            val tokenStorage = koinInject<TokenStorage>()
-            OAuthCallbackHandler(
-                accessToken = route.accessToken,
-                refreshToken = route.refreshToken,
-                tokenStorage = tokenStorage,
-                onSuccess = {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-                onError = {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-            )
-        }
+            composable<OAuthCallbackRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<OAuthCallbackRoute>()
+                val tokenStorage = koinInject<TokenStorage>()
+                OAuthCallbackHandler(
+                    accessToken = route.accessToken,
+                    refreshToken = route.refreshToken,
+                    tokenStorage = tokenStorage,
+                    onSuccess = {
+                        navController.navigate(DashboardRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onError = {
+                        navController.navigate(LoginRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                )
+            }
 
-        composable<DashboardRoute> {
-            val dashboardViewModel = koinViewModel<DashboardViewModel>()
-            val dashboardState by dashboardViewModel.state.collectAsStateWithLifecycle()
+            composable<DashboardRoute> {
+                val dashboardViewModel = koinViewModel<DashboardViewModel>()
+                val dashboardState by dashboardViewModel.state.collectAsStateWithLifecycle()
 
-            DashboardScreen(
-                state = dashboardState,
-                onNavItemSelected = dashboardViewModel::selectNavItem,
-                onProfileClick = { navController.navigate(ProfileRoute) },
-                onLogout = {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(0) { inclusive = true }
-                    }
-                },
-            )
-        }
+                DashboardScreen(
+                    state = dashboardState,
+                    onNavItemSelected = dashboardViewModel::selectNavItem,
+                    onProfileClick = { navController.navigate(ProfileRoute) },
+                    onLogout = {
+                        navController.navigate(LoginRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                )
+            }
 
-        composable<ProfileRoute> {
-            val viewModel = koinViewModel<ProfileViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            ProfileScreen(
-                state = state,
-                onStartEditing = viewModel::startEditing,
-                onCancelEditing = viewModel::cancelEditing,
-                onEditNameChange = viewModel::onEditNameChange,
-                onEditEmailChange = viewModel::onEditEmailChange,
-                onSaveProfile = viewModel::saveProfile,
-                onLogout = viewModel::logout,
-                onBack = { navController.popBackStack() },
-            )
-            // Handle logout navigation
-            LaunchedEffect(state.logoutTriggered) {
-                if (state.logoutTriggered) {
-                    navController.navigate(LoginRoute) {
-                        popUpTo(0) { inclusive = true }
+            composable<ProfileRoute> {
+                val viewModel = koinViewModel<ProfileViewModel>()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                ProfileScreen(
+                    state = state,
+                    onStartEditing = viewModel::startEditing,
+                    onCancelEditing = viewModel::cancelEditing,
+                    onEditNameChange = viewModel::onEditNameChange,
+                    onEditEmailChange = viewModel::onEditEmailChange,
+                    onSaveProfile = viewModel::saveProfile,
+                    onLogout = viewModel::logout,
+                    onBack = { navController.popBackStack() },
+                )
+                // Handle logout navigation
+                LaunchedEffect(state.logoutTriggered) {
+                    if (state.logoutTriggered) {
+                        navController.navigate(LoginRoute) {
+                            popUpTo(0) { inclusive = true }
+                        }
                     }
                 }
             }
-        }
 
-        composable<ForgotPasswordRoute> {
-            val viewModel = koinViewModel<ForgotPasswordViewModel>()
-            val state by viewModel.state.collectAsStateWithLifecycle()
-            ForgotPasswordScreen(
-                state = state,
-                onEmailChange = viewModel::onEmailChange,
-                onSubmit = viewModel::submit,
-                onBackToLogin = { navController.popBackStack() },
-            )
+            composable<ForgotPasswordRoute> {
+                val viewModel = koinViewModel<ForgotPasswordViewModel>()
+                val state by viewModel.state.collectAsStateWithLifecycle()
+                ForgotPasswordScreen(
+                    state = state,
+                    onEmailChange = viewModel::onEmailChange,
+                    onSubmit = viewModel::submit,
+                    onBackToLogin = { navController.popBackStack() },
+                )
+            }
         }
     }
 }
