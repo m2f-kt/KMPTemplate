@@ -303,7 +303,7 @@ private fun LoginMobileLayout(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(top = 48.dp, start = 24.dp, end = 24.dp, bottom = 24.dp),
+            .padding(horizontal = 24.dp, vertical = 24.dp),
     ) {
         // Header: brand + subtitle
         Row(
