@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-10)
 Phase: 9 (WASM HTTP Engine Fix) — COMPLETE
 Plan: 1 of 1 in current phase
 Status: Phase 9 executed — all plans complete
-Last activity: 2026-02-16 - Phase 9 executed (WASM Js engine + CORS)
+Last activity: 2026-02-17 - Completed quick task 26: Fix safe area insets on iOS and Android for Compose Multiplatform
 
 Progress: [████████████████████] 100% (39/39 plans)
 
