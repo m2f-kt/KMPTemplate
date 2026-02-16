@@ -196,7 +196,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
 | 7. Role System Refactor & Tech Debt | 2/2 | Complete | 2026-02-15 |
 | 8. Type-Safe Shared Routes | 3/3 | Complete | 2026-02-15 |
-| 9. WASM HTTP Engine Fix | 0/? | Not Started | - |
+| 9. WASM HTTP Engine Fix | 0/1 | Planned | - |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
 
@@ -213,11 +213,12 @@ Plans:
 **Goal:** Swap the CIO HTTP engine for the Js engine on the wasmJs target so that browser-based WASM builds can make network requests. CIO requires Node.js `net` module which is unavailable in browser environments.
 **Depends on:** Phase 3 (SDK/client engine setup), Phase 8 (current codebase state)
 **Requirements:** Gap closure (UAT Phase 8 -- WASM login broken)
-**Research flag**: NEEDS research-phase -- verify Ktor 3.4.0 Js engine API for wasmJs, check if expect/actual engine factory is needed
+**Research flag**: DONE -- Ktor 3.4.0 Js engine API verified, expect/actual engine factory confirmed one-line change, CORS hidden blocker identified
 **Success Criteria** (what must be TRUE):
   1. WASM browser build can successfully make HTTP requests to the server (login, register, profile)
   2. Non-WASM targets (JVM, Android, iOS) continue using their current engines unchanged
   3. Auth interceptor and token refresh work correctly on WASM browser target
+**Plans:** 1 plan
 
 Plans:
-- [ ] TBD (run /gsd:plan-phase 9 to break down)
+- [ ] 09-01-PLAN.md -- Swap CIO to Js engine for wasmJs target + install CORS on server for browser fetch
