@@ -230,6 +230,9 @@ Recent decisions affecting current work:
 - [quick-24]: JWT read from Authorization header first, query param 'token' as fallback for browser WebSocket clients
 - [quick-24]: ChatStreamFrame with completed boolean flag for stream termination signaling
 - [quick-24]: WebSocket errors sent as JSON ErrorResponse frames before close with appropriate close codes
+- [quick-25]: SharedFlow with extraBufferCapacity=1 for session expiry event (one-shot event, not state)
+- [quick-25]: tryEmit after both clearTokens() paths (else branch + catch block) for complete coverage
+- [quick-25]: No snackbar/toast for session expiry -- navigation to login is sufficient UX signal
 - [07-01]: Custom KSerializer (UserRoleSerializer) for flat-string wire format instead of @SerialName polymorphic approach
 - [07-01]: UserRole.fromString() defaults to User for unrecognized roles (safe fallback)
 - [07-01]: Exposed select().count() for UserRepository.count() (no selectAll in R2DBC API)
@@ -249,8 +252,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-- **Force logout on expired refresh token** — when both tokens expire, redirect to login instead of showing error state (area: auth)
-- **Extend auth token lifetime to 1 month** — current JWT expiry too short, users logged out too frequently (area: auth)
+None
 
 ### Quick Tasks Completed
 
@@ -280,6 +282,7 @@ Recent decisions affecting current work:
 | 22 | Fix checkbox/switch/radio ripple effects drawing beyond component bounds -- bounded=true | 2026-02-13 | dcd5e4f | [22-fix-checkbox-ripple-effect-drawing-beyon](./quick/22-fix-checkbox-ripple-effect-drawing-beyon/) |
 | 23 | Implement getAuth SSE authentication helper and refactor chat/stream route | 2026-02-14 | 3901b99 | [23-implement-sse-getauth-function-in-error-](./quick/23-implement-sse-getauth-function-in-error-/) |
 | 24 | Switch chat streaming from SSE to WebSocket with header-based JWT auth | 2026-02-15 | a5e6896 | [24-switch-chat-streaming-from-sse-to-websoc](./quick/24-switch-chat-streaming-from-sse-to-websoc/) |
+| 25 | Extend auth token lifetime (1 day access, 30 days refresh) with auto-logout on session expiry | 2026-02-17 | 549565d | [25-extend-auth-token-lifetime-to-1-month-an](./quick/25-extend-auth-token-lifetime-to-1-month-an/) |
 
 ### Blockers/Concerns
 
@@ -288,6 +291,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-02-16
-Stopped at: Phase 9 executed -- all milestone phases complete
-Resume file: None -- milestone v1.0 complete. Two auth UX todos in .planning/todos/pending/
+Last session: 2026-02-17
+Stopped at: Completed quick-25 (extend auth token lifetime + session expiry)
+Resume file: None -- milestone v1.0 complete. Pending auth todos resolved.
