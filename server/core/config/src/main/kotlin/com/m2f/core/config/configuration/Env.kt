@@ -9,8 +9,8 @@ private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKe
 private const val AUTH_AUDIENCE: String = "jwt-audience"
 private const val AUTH_ISSUER: String = "IssuerName"
 private const val REALM: String = "Access to Your Application"
-private const val ACCESS_TOKEN_EXPIRY: Long = 900000L // 15 minutes in milliseconds
-private const val REFRESH_TOKEN_EXPIRY: Long = 604800000L // 7 days in milliseconds
+private const val ACCESS_TOKEN_EXPIRY: Long = 86400000L // 1 day in milliseconds (24 * 60 * 60 * 1000)
+private const val REFRESH_TOKEN_EXPIRY: Long = 2592000000L // 30 days in milliseconds (30 * 24 * 60 * 60 * 1000)
 
 data class Env(
     val http: Http = Http(),

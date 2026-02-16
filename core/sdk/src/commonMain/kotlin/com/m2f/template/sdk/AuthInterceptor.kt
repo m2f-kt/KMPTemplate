@@ -17,6 +17,9 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.resources.href
 import io.ktor.resources.serialization.ResourcesFormat
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -33,6 +36,10 @@ class AuthInterceptor(
     private val tokenStorage: TokenStorage,
 ) {
     private val refreshMutex = Mutex()
+    private val _sessionExpired = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+
+    /** Emits when the refresh token fails and local tokens are cleared (session is dead). */
+    val sessionExpired: SharedFlow<Unit> = _sessionExpired.asSharedFlow()
 
     /** Path derived from Auth.Refresh resource -- stays in sync with ApiRoutes.kt */
     private val refreshPath = href(ResourcesFormat(), Auth.Refresh())
@@ -81,10 +88,12 @@ class AuthInterceptor(
                             } else {
                                 // Refresh failed -- clear tokens (session expired)
                                 tokenStorage.clearTokens()
+                                _sessionExpired.tryEmit(Unit)
                                 null
                             }
                         } catch (_: Exception) {
                             tokenStorage.clearTokens()
+                            _sessionExpired.tryEmit(Unit)
                             null
                         }
                     }
