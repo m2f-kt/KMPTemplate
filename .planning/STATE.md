@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 9 (WASM HTTP Engine Fix) — swap CIO for Js engine on wasmJs browser target
+**Current focus:** Phase 9 (WASM HTTP Engine Fix) — COMPLETE
 
 ## Current Position
 
-Phase: 9 (WASM HTTP Engine Fix) — NOT STARTED
-Plan: 0 of ? in current phase
-Status: Phase 9 added — needs planning
-Last activity: 2026-02-16 - Phase 8 UAT complete, Phase 9 added
+Phase: 9 (WASM HTTP Engine Fix) — COMPLETE
+Plan: 1 of 1 in current phase
+Status: Phase 9 executed — all plans complete
+Last activity: 2026-02-16 - Phase 9 executed (WASM Js engine + CORS)
 
-Progress: [████████████████████] 100% (38/38 plans) + Phase 9 pending
+Progress: [████████████████████] 100% (39/39 plans)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 38
-- Average duration: ~7 min
-- Total execution time: ~262 min
+- Total plans completed: 39
+- Average duration: ~8 min
+- Total execution time: ~315 min
 
 **By Phase:**
 
@@ -37,10 +37,11 @@ Progress: [████████████████████] 100% (3
 | 7 | 2/2 | ~14 min | ~7 min |
 
 | 8 | 3/3 | ~11 min | ~4 min |
+| 9 | 1/1 | ~53 min | ~53 min |
 
 **Recent Trend:**
-- Last 5 plans: 08-03 (~5 min), 08-02 (~2 min), 08-01 (~4 min), 07-02 (~6 min), 07-01 (~8 min)
-- Trend: Phase 8 complete -- full stack type-safe routing achieved
+- Last 5 plans: 09-01 (~53 min), 08-03 (~5 min), 08-02 (~2 min), 08-01 (~4 min), 07-02 (~6 min)
+- Trend: Phase 9 complete -- WASM browser HTTP networking enabled
 
 *Updated after each plan completion*
 
@@ -242,6 +243,9 @@ Recent decisions affecting current work:
 - [08-02]: conduit/conduitAuth helpers unchanged inside type-safe resource handlers (same RoutingContext receiver)
 - [08-02]: withRole(UserRole.Admin) wraps get<Users.ById> correctly (transparent route selector)
 - [08-02]: WebSocket uses full-path Ai.Chat.WS_PATH constant since route() wrapper removed
+- [09-01]: Js engine uses browser native fetch API (CIO requires Node.js net module unavailable in browsers)
+- [09-01]: CORS allows localhost:8080/8081/3000 for development flexibility, no anyHost() for security
+- [09-01]: allowCredentials=true required for Authorization header bearer token auth flows
 
 ### Pending Todos
 
@@ -285,5 +289,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-16
-Stopped at: Phase 8 UAT complete, Phase 9 added, 2 auth todos captured
-Resume file: Phase 9 needs /gsd:plan-phase 9. Two auth UX todos in .planning/todos/pending/
+Stopped at: Phase 9 executed -- all milestone phases complete
+Resume file: None -- milestone v1.0 complete. Two auth UX todos in .planning/todos/pending/
