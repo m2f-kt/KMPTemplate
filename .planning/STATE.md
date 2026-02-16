@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-10)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** All phases complete — milestone ready for completion
+**Current focus:** Phase 9 (WASM HTTP Engine Fix) — swap CIO for Js engine on wasmJs browser target
 
 ## Current Position
 
-Phase: 8 (Type-Safe Shared Routes) — COMPLETE
-Plan: 3 of 3 in current phase (3 complete)
-Status: All phases complete — milestone ready
-Last activity: 2026-02-15 - Phase 8 verified and complete
+Phase: 9 (WASM HTTP Engine Fix) — NOT STARTED
+Plan: 0 of ? in current phase
+Status: Phase 9 added — needs planning
+Last activity: 2026-02-16 - Phase 8 UAT complete, Phase 9 added
 
-Progress: [████████████████████] 100% (38/38 plans)
+Progress: [████████████████████] 100% (38/38 plans) + Phase 9 pending
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Progress: [████████████████████] 100% (3
 ### Roadmap Evolution
 
 - Phase 06.1 inserted after Phase 6: add the current chat agent exploration refactor (URGENT)
+- Phase 9 added after Phase 8: WASM HTTP Engine Fix — CIO engine incompatible with browser WASM (discovered in Phase 8 UAT)
 
 ### Decisions
 
@@ -244,7 +245,8 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+- **Force logout on expired refresh token** — when both tokens expire, redirect to login instead of showing error state (area: auth)
+- **Extend auth token lifetime to 1 month** — current JWT expiry too short, users logged out too frequently (area: auth)
 
 ### Quick Tasks Completed
 
@@ -282,6 +284,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-02-15
-Stopped at: Phase 8 verified and marked complete
-Resume file: All 38 plans complete across 8 phases. Milestone ready for /gsd:complete-milestone
+Last session: 2026-02-16
+Stopped at: Phase 8 UAT complete, Phase 9 added, 2 auth todos captured
+Resume file: Phase 9 needs /gsd:plan-phase 9. Two auth UX todos in .planning/todos/pending/
