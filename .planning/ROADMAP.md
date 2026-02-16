@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 6.1: Chat Agent Streaming Refactor** - Custom streaming strategy, SSE endpoint, infinite loop fix (completed 2026-02-14)
 - [x] **Phase 7: Role System Refactor & Tech Debt** - Replace string roles with UserRole sealed type, DB relation, fix tech debt (completed 2026-02-15)
 - [x] **Phase 8: Type-Safe Shared Routes** - Ktor Resources for compile-time route safety across server and SDK (completed 2026-02-15)
-- [ ] **Phase 9: WASM HTTP Engine Fix** - Swap CIO for Js engine on wasmJs target for browser network requests
+- [x] **Phase 9: WASM HTTP Engine Fix** - Swap CIO for Js engine on wasmJs target for browser network requests (completed 2026-02-16)
 
 ## Phase Details
 
@@ -196,7 +196,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9
 | 6.1. Chat Agent Streaming Refactor | 2/2 | Complete | 2026-02-14 |
 | 7. Role System Refactor & Tech Debt | 2/2 | Complete | 2026-02-15 |
 | 8. Type-Safe Shared Routes | 3/3 | Complete | 2026-02-15 |
-| 9. WASM HTTP Engine Fix | 0/1 | Planned | - |
+| 9. WASM HTTP Engine Fix | 1/1 | Complete | 2026-02-16 |
 
 ### Phase 06.1: add the current chat agent exploration refactor (INSERTED)
 
@@ -221,4 +221,4 @@ Plans:
 **Plans:** 1 plan
 
 Plans:
-- [ ] 09-01-PLAN.md -- Swap CIO to Js engine for wasmJs target + install CORS on server for browser fetch
+- [x] 09-01-PLAN.md -- Swap CIO to Js engine for wasmJs target + install CORS on server for browser fetch
