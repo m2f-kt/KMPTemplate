@@ -252,7 +252,7 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None
+(none — both auth todos resolved in quick-25)
 
 ### Quick Tasks Completed
 
