@@ -22,6 +22,7 @@ import com.m2f.template.di.serverModule
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
 import io.ktor.client.HttpClient
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -31,6 +32,7 @@ import io.ktor.server.auth.authentication
 import io.ktor.server.auth.oauth
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.resources.Resources
 import io.ktor.server.response.respondText
 import io.ktor.server.routing.get
@@ -69,6 +71,23 @@ fun Application.module() {
     install(Resources)
     install(ContentNegotiation) { json() }
     install(WebSockets)
+    install(CORS) {
+        // Development origins (WASM dev server + backend)
+        allowHost("localhost:8080", schemes = listOf("http"))
+        allowHost("localhost:8081", schemes = listOf("http"))
+        allowHost("localhost:3000", schemes = listOf("http"))
+        // HTTP methods used by API endpoints
+        allowMethod(HttpMethod.Get)
+        allowMethod(HttpMethod.Post)
+        allowMethod(HttpMethod.Put)
+        allowMethod(HttpMethod.Delete)
+        allowMethod(HttpMethod.Options)
+        // Headers used by API (Content-Type for JSON, Authorization for Bearer tokens)
+        allowHeader(HttpHeaders.ContentType)
+        allowHeader(HttpHeaders.Authorization)
+        // Allow credentials (needed for auth flows)
+        allowCredentials = true
+    }
     configureSecurity()
     configureOAuth()
     routing {
