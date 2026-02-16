@@ -233,6 +233,8 @@ Recent decisions affecting current work:
 - [quick-25]: SharedFlow with extraBufferCapacity=1 for session expiry event (one-shot event, not state)
 - [quick-25]: tryEmit after both clearTokens() paths (else branch + catch block) for complete coverage
 - [quick-25]: No snackbar/toast for session expiry -- navigation to login is sufficient UX signal
+- [quick-26]: systemBarsPadding (not safeDrawingPadding) to avoid IME insets affecting scrolling forms
+- [quick-26]: Global padding at NavHost wrapper level so all screens inherit insets automatically
 - [07-01]: Custom KSerializer (UserRoleSerializer) for flat-string wire format instead of @SerialName polymorphic approach
 - [07-01]: UserRole.fromString() defaults to User for unrecognized roles (safe fallback)
 - [07-01]: Exposed select().count() for UserRepository.count() (no selectAll in R2DBC API)
@@ -283,6 +285,7 @@ Recent decisions affecting current work:
 | 23 | Implement getAuth SSE authentication helper and refactor chat/stream route | 2026-02-14 | 3901b99 | [23-implement-sse-getauth-function-in-error-](./quick/23-implement-sse-getauth-function-in-error-/) |
 | 24 | Switch chat streaming from SSE to WebSocket with header-based JWT auth | 2026-02-15 | a5e6896 | [24-switch-chat-streaming-from-sse-to-websoc](./quick/24-switch-chat-streaming-from-sse-to-websoc/) |
 | 25 | Extend auth token lifetime (1 day access, 30 days refresh) with auto-logout on session expiry | 2026-02-17 | 549565d | [25-extend-auth-token-lifetime-to-1-month-an](./quick/25-extend-auth-token-lifetime-to-1-month-an/) |
+| 26 | Fix safe area insets on iOS and Android -- systemBarsPadding on AppNavHost, remove LoginScreen double-padding | 2026-02-17 | 3156a12 | [26-fix-safe-area-insets-on-ios-and-android-](./quick/26-fix-safe-area-insets-on-ios-and-android-/) |
 
 ### Blockers/Concerns
 
@@ -292,5 +295,5 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Completed quick-25 (extend auth token lifetime + session expiry)
+Stopped at: Completed quick-26 (fix safe area insets on iOS and Android)
 Resume file: None -- milestone v1.0 complete. Pending auth todos resolved.
