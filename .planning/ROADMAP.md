@@ -29,7 +29,7 @@ Full details: milestones/v1.0-ROADMAP.md
 
 **Milestone Goal:** Add architectural patterns and domain capabilities: MVI ViewModel layer, group-based user management with admin panel, full testing infrastructure, and localization system.
 
-- [ ] **Phase 10: MVI ViewModel Foundation** - Base class with Intent/Model/Mutation/Event, StateFlow state, Channel effects, Koin injection
+- [ ] **Phase 10: MVI ViewModel Foundation** - Base class with Intent/Model/Mutation/Event, StateFlow state, SharedFlow effects, Koin injection
 - [ ] **Phase 11: Testing Infrastructure** - core:testing module with Turbine DSL, SDK interface extraction, fake implementations, shared fixtures
 - [ ] **Phase 12: ViewModel Migration** - Migrate all 5 existing ViewModels to MVI pattern with tests
 - [ ] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests
@@ -45,9 +45,10 @@ Full details: milestones/v1.0-ROADMAP.md
 **Success Criteria** (what must be TRUE):
   1. Developer can create a new ViewModel by extending MviViewModel with custom Intent, Model, and Event sealed types
   2. ViewModel state is exposed as StateFlow and UI recomposes reactively when state changes
-  3. One-shot events (navigation, toasts) arrive exactly once via Channel -- never double-fire on recomposition
+  3. One-shot events (navigation, toasts) arrive via SharedFlow<Event> with replay=0 -- never double-fire on recomposition
   4. ViewModels are injectable via Koin using koinViewModel() on all KMP targets (Android, iOS, Desktop, WASM)
-**Plans**: TBD
+**Plans**: 1 plan
+- [ ] 10-01-PLAN.md -- Create core:mvi module with MviViewModel base class
 
 ### Phase 11: Testing Infrastructure
 **Goal**: Developers have a reusable testing toolkit -- SDK interfaces with fake implementations and a Turbine-based ViewModel test DSL -- so all subsequent feature work ships with tests
@@ -123,7 +124,7 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13 -> 14 -> 15
 | 7. Role System Refactor & Tech Debt | v1.0 | 2/2 | Complete | 2026-02-15 |
 | 8. Type-Safe Shared Routes | v1.0 | 3/3 | Complete | 2026-02-15 |
 | 9. WASM HTTP Engine Fix | v1.0 | 1/1 | Complete | 2026-02-16 |
-| 10. MVI ViewModel Foundation | v1.1 | 0/0 | Not started | - |
+| 10. MVI ViewModel Foundation | v1.1 | 0/1 | Planned | - |
 | 11. Testing Infrastructure | v1.1 | 0/0 | Not started | - |
 | 12. ViewModel Migration | v1.1 | 0/0 | Not started | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
