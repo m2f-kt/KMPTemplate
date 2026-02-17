@@ -34,7 +34,15 @@ A developer can clone this template, run the setup CLI, and immediately have a w
 
 ### Active
 
-(None -- planning next milestone)
+## Current Milestone: v1.1 Architecture
+
+**Goal:** Add architectural patterns and domain capabilities: MVI ViewModel layer, group-based user management with admin panel, full testing infrastructure, and localization system.
+
+**Target features:**
+- MVI ViewModel base class (Intent/Model/Mutation/Event) with Koin injection and test DSL
+- Group entity with user membership, admin management, and admin-only dashboard content
+- Full testing infrastructure: ViewModel tests, server integration tests, SDK tests, fixtures
+- Localization system: resource files per platform, shared key enum, server + client i18n
 
 ### Out of Scope
 
@@ -84,4 +92,4 @@ Known tech debt: Koin DI runtime verification on all targets (human-needed), WAS
 | Per-request AIAgent | Streaming callback injection, no singleton state conflicts | ✓ Good -- clean concurrent request handling |
 
 ---
-*Last updated: 2026-02-17 after v1.0 milestone*
+*Last updated: 2026-02-17 after v1.1 milestone started*

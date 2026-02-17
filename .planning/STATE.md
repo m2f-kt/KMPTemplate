@@ -5,14 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Planning next milestone
+**Current focus:** Milestone v1.1 Architecture — defining requirements
 
 ## Current Position
 
-Phase: v1.0 complete
-Plan: N/A
-Status: Milestone v1.0 shipped
-Last activity: 2026-02-17 - Milestone v1.0 archived
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-17 — Milestone v1.1 started
+
+## v1.0 Performance (archived)
 
 Progress: [████████████████████] 100% (39/39 plans)
 
@@ -51,5 +53,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Milestone v1.0 archived
-Resume file: None -- start next milestone with /gsd:new-milestone
+Stopped at: Milestone v1.1 started — defining requirements
+Resume file: None
