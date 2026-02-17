@@ -9,59 +9,59 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUND-01**: Upgrade Compose Multiplatform to stable 1.9.3
-- [ ] **FOUND-02**: Upgrade Exposed to stable 1.0.0
-- [ ] **FOUND-03**: Upgrade Arrow to 2.2.0 with context parameter support
-- [ ] **FOUND-04**: Restructure into separate modules (sdk, storage, ai, shared-models)
-- [ ] **FOUND-05**: Wire Koin DI across all KMP targets (Android, iOS, Desktop, WASM)
-- [ ] **FOUND-06**: Replace println with Kermit structured logging across all modules
-- [ ] **FOUND-07**: Create shared models module with serializable types used by both server and clients
+- [x] **FOUND-01**: Upgrade Compose Multiplatform to stable 1.9.3
+- [x] **FOUND-02**: Upgrade Exposed to stable 1.0.0
+- [x] **FOUND-03**: Upgrade Arrow to 2.2.0 with context parameter support
+- [x] **FOUND-04**: Restructure into separate modules (sdk, storage, ai, shared-models)
+- [x] **FOUND-05**: Wire Koin DI across all KMP targets (Android, iOS, Desktop, WASM)
+- [x] **FOUND-06**: Replace println with Kermit structured logging across all modules
+- [x] **FOUND-07**: Create shared models module with serializable types used by both server and clients
 
 ### Authentication & Users
 
-- [ ] **AUTH-01**: User can sign up with email and password (bcrypt hashed)
-- [ ] **AUTH-02**: User can log in and receive JWT access + refresh tokens
-- [ ] **AUTH-03**: User can refresh expired access tokens using refresh token
-- [ ] **AUTH-04**: User can log out (token invalidation)
-- [ ] **AUTH-05**: User can view and update their own profile
-- [ ] **AUTH-06**: User can be assigned roles with permission checks on protected endpoints
-- [ ] **AUTH-07**: All auth/user endpoints use Arrow Raise (no try/catch), with error accumulation for validation
+- [x] **AUTH-01**: User can sign up with email and password (bcrypt hashed)
+- [x] **AUTH-02**: User can log in and receive JWT access + refresh tokens
+- [x] **AUTH-03**: User can refresh expired access tokens using refresh token
+- [x] **AUTH-04**: User can log out (token invalidation)
+- [x] **AUTH-05**: User can view and update their own profile
+- [x] **AUTH-06**: User can be assigned roles with permission checks on protected endpoints
+- [x] **AUTH-07**: All auth/user endpoints use Arrow Raise (no try/catch), with error accumulation for validation
 
 ### Client SDK
 
-- [ ] **SDK-01**: SDK module provides typed API functions returning `Either<ClientError, T>` for all server endpoints
-- [ ] **SDK-02**: SDK automatically refreshes tokens on 401 and retries the original request
-- [ ] **SDK-03**: ClientError sealed class hierarchy maps server DomainError to client-side typed errors
-- [ ] **SDK-04**: SDK uses platform-specific Ktor Client engines (OkHttp/Darwin/CIO/JS)
+- [x] **SDK-01**: SDK module provides typed API functions returning `Either<ClientError, T>` for all server endpoints
+- [x] **SDK-02**: SDK automatically refreshes tokens on 401 and retries the original request
+- [x] **SDK-03**: ClientError sealed class hierarchy maps server DomainError to client-side typed errors
+- [x] **SDK-04**: SDK uses platform-specific Ktor Client engines (OkHttp/Darwin/CIO/JS)
 
 ### Navigation & UI
 
-- [ ] **NAV-01**: Multiplatform navigation with type-safe routes (Navigation Compose 2.9.1)
-- [ ] **NAV-02**: Auth screens (login, signup, forgot password) with form validation
-- [ ] **NAV-03**: Shared UI component library (buttons, inputs, cards, dialogs)
-- [ ] **NAV-04**: Custom theme system sourced from developer-specified design system
+- [x] **NAV-01**: Multiplatform navigation with type-safe routes (Navigation Compose 2.9.1)
+- [x] **NAV-02**: Auth screens (login, signup, forgot password) with form validation
+- [x] **NAV-03**: Shared UI component library (buttons, inputs, cards, dialogs)
+- [x] **NAV-04**: Custom theme system sourced from developer-specified design system
 
 ### Local Storage
 
-- [ ] **STOR-01**: Auth tokens persisted securely across app restarts
-- [ ] **STOR-02**: User preferences storage (theme, language, settings)
+- [x] **STOR-01**: Auth tokens persisted securely across app restarts
+- [x] **STOR-02**: User preferences storage (theme, language, settings)
 
 ### AI Agents (Koog)
 
-- [ ] **AI-01**: Koog Ktor plugin integrated with agent registry and tool system
-- [ ] **AI-02**: Conversation management with persistence and resume capability
-- [ ] **AI-03**: 2-3 example agents demonstrating patterns (tools, strategies, conversation)
-- [ ] **AI-04**: All agent error handling uses Arrow Raise (no try/catch)
+- [x] **AI-01**: Koog Ktor plugin integrated with agent registry and tool system
+- [x] **AI-02**: Conversation management with persistence and resume capability
+- [x] **AI-03**: 2-3 example agents demonstrating patterns (tools, strategies, conversation)
+- [x] **AI-04**: All agent error handling uses Arrow Raise (no try/catch)
 
 ### Developer Experience
 
-- [ ] **DX-01**: Setup CLI bash script configures project name, package, DB credentials on clone
-- [ ] **DX-02**: Sample dashboard screen demonstrating auth, navigation, AI, and component library
+- [x] **DX-01**: Setup CLI bash script configures project name, package, DB credentials on clone
+- [x] **DX-02**: Sample dashboard screen demonstrating auth, navigation, AI, and component library
 
 ### Cross-Cutting
 
-- [ ] **CC-01**: Arrow Raise API used for all error handling across server and client (zero try/catch for domain errors)
-- [ ] **CC-02**: Error accumulation (Raise.accumulate) used for validation scenarios (signup forms, config validation)
+- [x] **CC-01**: Arrow Raise API used for all error handling across server and client (zero try/catch for domain errors)
+- [x] **CC-02**: Error accumulation (Raise.accumulate) used for validation scenarios (signup forms, config validation)
 
 ## v2 Requirements
 
@@ -108,38 +108,38 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
-| FOUND-04 | Phase 1 | Pending |
-| FOUND-05 | Phase 1 | Pending |
-| FOUND-06 | Phase 1 | Pending |
-| FOUND-07 | Phase 1 | Pending |
-| AUTH-01 | Phase 2 | Pending |
-| AUTH-02 | Phase 2 | Pending |
-| AUTH-03 | Phase 2 | Pending |
-| AUTH-04 | Phase 2 | Pending |
-| AUTH-05 | Phase 2 | Pending |
-| AUTH-06 | Phase 2 | Pending |
-| AUTH-07 | Phase 2 | Pending |
-| SDK-01 | Phase 3 | Pending |
-| SDK-02 | Phase 3 | Pending |
-| SDK-03 | Phase 3 | Pending |
-| SDK-04 | Phase 3 | Pending |
-| STOR-01 | Phase 3 | Pending |
-| STOR-02 | Phase 3 | Pending |
-| NAV-01 | Phase 4 | Pending |
-| NAV-02 | Phase 5 | Pending |
-| NAV-03 | Phase 4 | Pending |
-| NAV-04 | Phase 4 | Pending |
-| AI-01 | Phase 6 | Pending |
-| AI-02 | Phase 6 | Pending |
-| AI-03 | Phase 6 | Pending |
-| AI-04 | Phase 6 | Pending |
-| DX-01 | Phase 5 | Pending |
-| DX-02 | Phase 5 | Pending |
-| CC-01 | Phase 1 | Pending |
-| CC-02 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Satisfied |
+| FOUND-02 | Phase 1 | Satisfied |
+| FOUND-03 | Phase 1 | Satisfied |
+| FOUND-04 | Phase 1 | Satisfied |
+| FOUND-05 | Phase 1 | Satisfied |
+| FOUND-06 | Phase 1 | Satisfied |
+| FOUND-07 | Phase 1 | Satisfied |
+| AUTH-01 | Phase 2 | Satisfied |
+| AUTH-02 | Phase 2 | Satisfied |
+| AUTH-03 | Phase 2 | Satisfied |
+| AUTH-04 | Phase 2 | Satisfied |
+| AUTH-05 | Phase 2 | Satisfied |
+| AUTH-06 | Phase 2 | Satisfied |
+| AUTH-07 | Phase 2 | Satisfied |
+| SDK-01 | Phase 3 | Satisfied |
+| SDK-02 | Phase 3 | Satisfied |
+| SDK-03 | Phase 3 | Satisfied |
+| SDK-04 | Phase 3 | Satisfied |
+| STOR-01 | Phase 3 | Satisfied |
+| STOR-02 | Phase 3 | Satisfied (infrastructure-ready, no runtime consumer) |
+| NAV-01 | Phase 4 | Satisfied |
+| NAV-02 | Phase 5 | Satisfied |
+| NAV-03 | Phase 4 | Satisfied |
+| NAV-04 | Phase 4 | Satisfied |
+| AI-01 | Phase 6 | Satisfied |
+| AI-02 | Phase 6 | Satisfied |
+| AI-03 | Phase 6 | Satisfied |
+| AI-04 | Phase 6 | Satisfied |
+| DX-01 | Phase 5 | Satisfied |
+| DX-02 | Phase 5 | Satisfied |
+| CC-01 | Phase 1 | Satisfied |
+| CC-02 | Phase 1 | Satisfied |
 
 **Coverage:**
 - v1 requirements: 32 total
@@ -148,4 +148,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-02-10*
-*Last updated: 2026-02-10 after roadmap creation*
+*Last updated: 2026-02-17 -- all 32 v1 requirements marked Satisfied*

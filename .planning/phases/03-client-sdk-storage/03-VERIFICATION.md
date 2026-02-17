@@ -71,7 +71,14 @@ re_verification: false
 
 ### Requirements Coverage
 
-Phase 03 does not have explicit REQUIREMENTS.md mappings. Goal-level verification substitutes.
+| Requirement | Truth(s) | Status |
+|-------------|----------|--------|
+| SDK-01 | #2 (apiCall returns Either), #7 (every endpoint has SDK function) | Satisfied |
+| SDK-02 | #6 (bearer token + 401 refresh+retry) | Satisfied |
+| SDK-03 | #3 (HTTP status mapped to AppError subtypes), #4 (network exceptions mapped) | Satisfied |
+| SDK-04 | #1 (platform-specific engines via expect/actual) | Satisfied |
+| STOR-01 | #5 (auth tokens persisted, read, cleared) | Satisfied |
+| STOR-02 | Artifact: PreferencesStorage.kt verified (theme/language with Flow observation) | Satisfied (infrastructure-ready) |
 
 ### Anti-Patterns Found
 
