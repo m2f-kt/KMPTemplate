@@ -5,14 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Milestone v1.1 Architecture — defining requirements
+**Current focus:** Phase 10 -- MVI ViewModel Foundation
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-02-17 — Milestone v1.1 started
+Phase: 10 of 15 (MVI ViewModel Foundation)
+Plan: 0 of 0 in current phase
+Status: Ready to plan
+Last activity: 2026-02-17 -- Roadmap created for v1.1 Architecture milestone
+
+Progress: [░░░░░░░░░░░░░░░░░░░░] 0%
 
 ## v1.0 Performance (archived)
 
@@ -20,25 +22,16 @@ Progress: [████████████████████] 100% (3
 
 ## Performance Metrics
 
-**Velocity:**
+**Velocity (v1.0):**
 - Total plans completed: 39
 - Average duration: ~8 min
 - Total execution time: ~315 min
 
-**By Phase:**
+**By Phase (v1.1):**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 | 4/4 | ~46 min | ~12 min |
-| 2 | 3/3 | ~58 min | ~19 min |
-| 3 | 3/3 | ~15 min | ~5 min |
-| 4 | 7/7 | ~36 min | ~5 min |
-| 5 | 11/11 | ~50 min | ~5 min |
-| 6 | 3/3 | ~24 min | ~8 min |
-| 6.1 | 2/2 | ~5 min | ~3 min |
-| 7 | 2/2 | ~14 min | ~7 min |
-| 8 | 3/3 | ~11 min | ~4 min |
-| 9 | 1/1 | ~53 min | ~53 min |
+| - | - | - | - |
 
 ## Accumulated Context
 
@@ -48,10 +41,12 @@ Decisions are logged in PROJECT.md Key Decisions table.
 
 ### Blockers/Concerns
 
-(none)
+- Research flags: Turbine 1.2.1 + Kotlin 2.3.10 compatibility unverified (validate in Phase 11)
+- Research flags: Ktor testApplication dispatcher issue (KTOR-7121) needs spike in Phase 11
+- Research flags: WASM async resource loading timing needs smoke test in Phase 15
 
 ## Session Continuity
 
 Last session: 2026-02-17
-Stopped at: Milestone v1.1 started — defining requirements
+Stopped at: Roadmap created for v1.1 Architecture -- ready to plan Phase 10
 Resume file: None

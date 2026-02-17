@@ -79,38 +79,38 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| MVI-01 | — | Pending |
-| MVI-02 | — | Pending |
-| MVI-03 | — | Pending |
-| MVI-04 | — | Pending |
-| MVI-05 | — | Pending |
-| MVI-06 | — | Pending |
-| GRP-01 | — | Pending |
-| GRP-02 | — | Pending |
-| GRP-03 | — | Pending |
-| GRP-04 | — | Pending |
-| GRP-05 | — | Pending |
-| GRP-06 | — | Pending |
-| GRP-07 | — | Pending |
-| GRP-08 | — | Pending |
-| TEST-01 | — | Pending |
-| TEST-02 | — | Pending |
-| TEST-03 | — | Pending |
-| TEST-04 | — | Pending |
-| TEST-05 | — | Pending |
-| TEST-06 | — | Pending |
-| L10N-01 | — | Pending |
-| L10N-02 | — | Pending |
-| L10N-03 | — | Pending |
-| L10N-04 | — | Pending |
-| L10N-05 | — | Pending |
-| L10N-06 | — | Pending |
+| MVI-01 | Phase 10 | Pending |
+| MVI-02 | Phase 10 | Pending |
+| MVI-03 | Phase 10 | Pending |
+| MVI-04 | Phase 10 | Pending |
+| MVI-05 | Phase 12 | Pending |
+| MVI-06 | Phase 11 | Pending |
+| GRP-01 | Phase 13 | Pending |
+| GRP-02 | Phase 13 | Pending |
+| GRP-03 | Phase 14 | Pending |
+| GRP-04 | Phase 14 | Pending |
+| GRP-05 | Phase 14 | Pending |
+| GRP-06 | Phase 14 | Pending |
+| GRP-07 | Phase 13 | Pending |
+| GRP-08 | Phase 13 | Pending |
+| TEST-01 | Phase 11 | Pending |
+| TEST-02 | Phase 13 | Pending |
+| TEST-03 | Phase 11 | Pending |
+| TEST-04 | Phase 11 | Pending |
+| TEST-05 | Phase 11 | Pending |
+| TEST-06 | Phase 11 | Pending |
+| L10N-01 | Phase 15 | Pending |
+| L10N-02 | Phase 15 | Pending |
+| L10N-03 | Phase 15 | Pending |
+| L10N-04 | Phase 15 | Pending |
+| L10N-05 | Phase 15 | Pending |
+| L10N-06 | Phase 15 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 26 total
-- Mapped to phases: 0
-- Unmapped: 26 ⚠️
+- Mapped to phases: 26
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-17*
-*Last updated: 2026-02-17 after initial definition*
+*Last updated: 2026-02-17 after roadmap creation*
