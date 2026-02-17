@@ -1,221 +1,455 @@
 # Feature Research
 
-**Domain:** KMP Full-Stack Project Template (Ktor server + Compose Multiplatform client)
-**Researched:** 2026-02-10
-**Confidence:** MEDIUM-HIGH
+**Domain:** KMP Full-Stack Template -- Milestone 2 (MVI ViewModel, Groups/Admin, Testing, Localization)
+**Researched:** 2026-02-17
+**Confidence:** HIGH (codebase-verified patterns, official docs corroborated)
+
+## Context: What Already Exists
+
+Before defining new features, here is what Milestone 1 delivered that we build upon:
+
+- **ViewModels:** 5 existing ViewModels (`LoginViewModel`, `RegisterViewModel`, `ForgotPasswordViewModel`, `ProfileViewModel`, `DashboardViewModel`) all using `androidx.lifecycle.ViewModel` + `MutableStateFlow` + `viewModelScope.launch`. No formal MVI contract -- each ViewModel has ad-hoc methods (`onXChange`, `login`, `register`, etc.).
+- **SDK:** `AuthApi` and `UserApi` returning `Either<AppError, T>` via `apiCall` wrapper. Arrow `Raise` DSL on server.
+- **RBAC:** `UserRole` sealed class (User/Admin/PowerAdmin) with `RoleAuthorizationPlugin` for server-side route protection. `withRole()` extension on `Route`. Roles stored in separate `RolesTable` with FK from `UsersTable`.
+- **State classes:** Data classes (`LoginState`, `RegisterState`, etc.) with flat fields. No sealed Intent/Mutation/Event hierarchy.
+- **Tests:** Only placeholder tests (`assertEquals(3, 1+2)`) in `commonTest`. Zero real test coverage. `testing-server` bundle declared in version catalog but unused.
+- **Localization:** Zero. Only fonts in `composeResources`. No `values/strings.xml`.
+- **Groups:** Zero. No group concept anywhere. Users are flat -- no organizational grouping.
+
+---
 
 ## Feature Landscape
 
 ### Table Stakes (Users Expect These)
 
-Features users assume exist. Missing these = template feels like a starter-kit toy, not a production foundation.
+Features that make this milestone feel complete. Without them, the new capability areas feel half-baked.
+
+#### 1. MVI ViewModel Foundation
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Type-safe navigation** | Every CMP template ships navigation. Users refuse to wire it themselves. Without it the app is a single screen. | MEDIUM | Navigation 3 is the forward-looking choice (Alpha on non-Android in CMP 1.10.0, stable on Android). Voyager and Decompose are mature alternatives but represent legacy direction. Use Navigation 3 -- it aligns with JetBrains roadmap and already has Koin integration. |
-| **Dependency injection (client-side)** | Server already has Koin. Users expect the client to mirror it. ViewModels without DI is a non-starter. | LOW | Koin Compose Multiplatform (`koin-compose` + `koin-compose-viewmodel`) is the only serious KMP DI with CMP ViewModel support. Already using Koin server-side so this is a natural extension. |
-| **Ktor client HTTP layer** | Template has a Ktor server -- users expect a matching client that talks to it. Shared serialization models in `:shared` is the entire point of KMP full-stack. | MEDIUM | Already have `ktor-client` bundle in version catalog. Need: configured HttpClient with auth interceptor, content negotiation, logging. Platform engine selection (CIO for JVM, Darwin for iOS, Js for WASM). |
-| **Complete auth flow (login/register/token refresh)** | JWT skeleton exists but no user-facing flow. Auth is the first thing every user tests. If `clone -> run` hits an unfinished auth screen, they leave. | HIGH | Server: user table, registration endpoint, login endpoint, refresh token rotation. Client: login/register screens, token storage, automatic 401 retry with refresh. Mutex-guarded refresh to prevent races. |
-| **User management (basic)** | Inseparable from auth. Users expect profile view, password change, logout at minimum. | MEDIUM | Depends on auth flow completion. Server: user CRUD, password update. Client: profile screen, settings. |
-| **Shared data models** | The `:shared` module exists but is empty (just `Greeting.kt`). Users expect request/response DTOs shared between client and server. | LOW | kotlinx.serialization `@Serializable` data classes in `:shared`. Already have serialization plugin configured. |
-| **Error handling pattern** | Arrow is already in the stack. Users expect a consistent Either/Raise pattern, not ad-hoc try/catch. | MEDIUM | Server already uses `DomainError` with Arrow. Client SDK needs matching `Either<ApiError, T>` responses. Shared error types in `:shared`. Arrow `Raise` DSL for composable error handling. |
-| **Material 3 theming** | CMP ships Material3 by default. Users expect dark/light theme toggle, custom color scheme, and typography that looks professional. | LOW | Already using `compose.material3`. Need: custom `Theme.kt` with dynamic color support, dark/light toggle, typography scale. |
-| **Local key-value storage** | Every app needs to persist auth tokens, user preferences, onboarding state. Without it the template can't even stay logged in across app restarts. | LOW | DataStore Preferences for KMP (stable since 1.1.0). Platform-specific path providers via expect/actual. Simpler than SQLDelight for key-value needs. |
-| **Docker Compose dev environment** | `docker-compose.yml` exists. Users expect `docker compose up` to start PostgreSQL + server and be ready. | LOW | Already partially in place. Ensure postgres service, server service, health checks, and seed data work out of the box. |
-| **OpenAPI documentation** | Already configured with Ktor OpenAPI plugin. Users expect working Swagger UI at `/docs`. | LOW | Already in place. Ensure generated spec stays in sync with routes. |
-| **Testing infrastructure** | Kotest, Testcontainers, Ktor test host already in version catalog. Users expect example tests that actually run. | MEDIUM | Server: integration test with Testcontainers PostgreSQL. Client: ViewModel unit tests with fake repositories. Shared: model serialization tests. |
+| **Base MVI ViewModel abstract class** | The 5 existing ViewModels all duplicate flow/state boilerplate. A template must provide the reusable foundation, not leave users to reinvent it per screen. | MEDIUM | Based on the AiraloViewModel reference: `MutableSharedFlow<Intent>` for intake, `StateFlow<Model>` for state, `SharedFlow<Event>` for one-shots. `take(intent)` public entry point, `reduce(model, mutation): Model` pure function, `sendMutation()`/`sendEvent()` internal routing. Arrow `Either<Event, Mutation>` flow for unifying mutation vs event dispatching through one `MutableSharedFlow`. |
+| **Intent sealed interface per ViewModel** | Users expect a single entry point for all actions. Scattered `onXChange()` / `doY()` methods are the anti-pattern MVI eliminates. | LOW | Each feature ViewModel defines `sealed interface FooIntent`. The `take(intent: FooIntent)` method replaces all individual public methods. Composable sends `viewModel.take(FooIntent.EmailChanged("..."))`. |
+| **Model (state) data class** | Already exists as `LoginState`, etc. Needs to be renamed/retyped to `Model` within the MVI contract for consistency. | LOW | Keep existing data class shape. Rename convention from `XState` to `XModel` (or alias). Must remain immutable `data class`. |
+| **Mutation sealed interface** | Mutations represent state transitions the reducer applies. Without explicit mutations, `_state.update { ... }` calls are scattered everywhere with no testable contract. | LOW | `sealed interface FooMutation`. The `reduce(model, mutation): Model` function is a `when` over mutations. Pure function -- zero side effects, trivially testable. |
+| **Event sealed interface (one-shots)** | Navigation triggers, toast messages, analytics events. Currently handled via boolean flags in state (`loginSuccess`, `logoutTriggered`) which is a well-known anti-pattern (must be manually reset, races on recomposition). | LOW | `sealed interface FooEvent`. Collected via `SharedFlow` in the UI layer. Consumed exactly once. Replaces `loginSuccess: Boolean` pattern. |
+| **Migrate existing ViewModels to MVI** | 5 ViewModels exist. If the base class ships but existing VMs are not migrated, the template contradicts its own pattern. | HIGH | `LoginViewModel`, `RegisterViewModel`, `ForgotPasswordViewModel`, `ProfileViewModel`, `DashboardViewModel` all need conversion. Each gets Intent/Model/Mutation/Event sealed types and a `reduce` function. Dependencies on `AuthApi`/`UserApi` remain the same. |
+| **MVI test DSL (Turbine-based)** | The entire point of MVI is testability. If the pattern ships without a test utility, it is incomplete. Turbine is the standard for Flow assertion in Kotlin. | MEDIUM | Test DSL: `viewModel.test { take(SomeIntent); awaitModel { shouldBe expectedModel }; awaitEvent { shouldBe expectedEvent } }`. Wraps Turbine's `Flow.test {}` with `awaitItem()`. Uses kotest assertions (`shouldBe`, `assertSoftly`). Needs `kotlinx-coroutines-test` `runTest` for virtual time. Must add `app.cash.turbine:turbine` to version catalog. |
+
+**Expected MVI ViewModel skeleton (based on AiraloViewModel reference):**
+
+```kotlin
+abstract class MVIViewModel<Intent, Model, Mutation, Event>(
+    initialModel: Model
+) : ViewModel() {
+
+    private val intents = MutableSharedFlow<Intent>(extraBufferCapacity = 64)
+    private val _model = MutableStateFlow(initialModel)
+    val model: StateFlow<Model> = _model.asStateFlow()
+
+    private val _events = MutableSharedFlow<Event>(extraBufferCapacity = 64)
+    val events: SharedFlow<Event> = _events.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            intents.collect { intent ->
+                handleIntent(intent)
+                    .collect { result ->
+                        result.fold(
+                            ifLeft = { event -> _events.emit(event) },
+                            ifRight = { mutation -> _model.update { reduce(it, mutation) } }
+                        )
+                    }
+            }
+        }
+    }
+
+    fun take(intent: Intent) {
+        intents.tryEmit(intent)
+    }
+
+    abstract fun handleIntent(intent: Intent): Flow<Either<Event, Mutation>>
+    abstract fun reduce(model: Model, mutation: Mutation): Model
+}
+```
+
+#### 2. Testing Infrastructure
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **ViewModel unit tests with Turbine** | MVI exists for testability. Shipping MVI without tests defeats the purpose. | MEDIUM | Each migrated ViewModel gets tests: `runTest { viewModel.model.test { take(intent); awaitItem() shouldBe ... } }`. Need `Dispatchers.setMain(testDispatcher)` in `@BeforeTest`. |
+| **Server integration tests (Ktor testApplication)** | The `testing-server` bundle exists in version catalog but is unused. Auth routes, user routes, and RBAC must have tests. | HIGH | Use `testApplication { application { module() } }`. Test: register -> login -> refresh -> logout flow. Test: RBAC enforcement (user cannot access admin routes). Test: validation errors return proper error codes. Uses H2 in-memory DB for speed (already in catalog), or Testcontainers PostgreSQL for fidelity. |
+| **SDK tests with mock HttpClient** | The SDK (`AuthApi`, `UserApi`) is the contract between client and server. Must be tested independently. | MEDIUM | Ktor `MockEngine` to simulate server responses. Test: `apiCall` maps 401 to `AppError.Auth.Unauthorized`. Test: `AuthInterceptor` refreshes on 401. Test: successful deserialization of `UserResponse`. |
+| **Test fixtures and fakes module** | Repeating fake data across test files is maintenance hell. | LOW | Shared `test-fixtures` module (or `commonTest` source set in `:core:models`): `FakeAuthApi`, `FakeUserApi`, `FakeTokenStorage`, factory functions like `aUserResponse()`, `aLoginRequest()`. |
+| **Kotest assertion conventions** | Codebase already declares `kotest-assertionsCore`, `kotest-arrow`, `kotest-arrow-fx`. Using them consistently is table stakes. | LOW | All tests use `shouldBe`, `shouldBeRight()`, `shouldBeLeft()`, `assertSoftly {}`. No mixing with JUnit `assertEquals`. Kotest Arrow assertions for `Either` results. |
+
+#### 3. Groups/Admin Management
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **Group entity (server-side)** | Multi-user applications need organizational grouping. A flat user list does not scale past a toy app. The existing RBAC (User/Admin/PowerAdmin) has no scope -- Admin of what? Groups answer that question. | HIGH | New `GroupsTable`: id (UUID), name, createdBy (FK to users), createdAt, updatedAt. New `GroupMembershipsTable`: id, groupId (FK), userId (FK), role (group-scoped role: owner/admin/member), joinedAt. Migration creates tables. |
+| **Admin creates group** | An Admin or PowerAdmin creates a group and becomes its owner. | MEDIUM | `POST /api/groups` (Admin+ only). Returns `GroupResponse` with id, name, memberCount. Server-side: `GroupService.createGroup()`, `GroupRepository`. SDK: `GroupApi.createGroup()`. |
+| **Admin manages group members** | Add/remove users, change roles within a group. | HIGH | `POST /api/groups/{id}/members` (add), `DELETE /api/groups/{id}/members/{userId}` (remove), `PUT /api/groups/{id}/members/{userId}` (change role). Validation: cannot remove last owner, cannot change own role below owner if sole owner. |
+| **Admin registers users into group** | Admin can create user accounts pre-assigned to their group. The new user gets an email with credentials or activation link. | MEDIUM | `POST /api/groups/{id}/register` -- similar to normal registration but: (a) requires Admin+ caller, (b) auto-assigns group membership, (c) optionally sets initial group role. Reuses `AuthService.register()` logic with group context. |
+| **Admin dashboard view** | Admin sees different content: group list, member count, management actions. Standard user sees only their groups (read-only). | MEDIUM | Client: `AdminDashboardScreen` conditionally shown when `user.role >= Admin`. Lists groups with member counts. Links to group detail/management. Leverages existing `UserRole` sealed class for conditional rendering. |
+| **Group-scoped content visibility** | Content (dashboard data, AI conversations, etc.) can be scoped to a group. Members see group content. | HIGH | This is the deeper value: groups are not just user containers, they scope data access. `groupId` column on relevant tables. Server middleware: `withGroup(groupId)` that verifies caller membership. |
+| **Shared route definitions for groups** | Type-safe `@Resource` routes in `:core:models`, matching existing `Auth`/`Users`/`Ai` pattern. | LOW | `Groups` resource class with nested `ById`, `Members`, `Register` sub-resources. SDK: `GroupApi` class following `AuthApi`/`UserApi` pattern. |
+
+#### 4. Localization System
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **Client-side string resources** | All hardcoded strings in UI composables and ViewModels must come from resource files. The template currently has zero `strings.xml` files. | MEDIUM | Use Compose Multiplatform's built-in `composeResources/values/strings.xml` system. Generated `Res.strings` accessor. `stringResource(Res.strings.login_button)` in composables. Existing hardcoded strings in auth screens ("Email must not be blank", "Password must not be blank", etc.) must migrate. |
+| **Locale-qualified resource directories** | Support at least English + one other language to prove the pattern works. | LOW | `composeResources/values/strings.xml` (English default), `composeResources/values-es/strings.xml` (Spanish example). Pattern documented so users add more languages. |
+| **Shared string key enum** | ViewModels produce validation error messages using hardcoded strings. These must reference the same keys the UI uses, from shared code. | MEDIUM | `StringKey` enum in `:core:models` (or new `:core:localization` module). ViewModels emit `StringKey.EMAIL_REQUIRED` instead of `"Email must not be blank"`. Composable maps `StringKey` to `stringResource(...)`. Non-composable contexts (ViewModel, SDK) work with keys, not resolved strings. |
+| **Server-side localized error messages** | Server currently returns hardcoded English error messages. Should return error codes and let the client localize. | MEDIUM | Server error responses already use `ErrorResponse(code, message)`. Strategy: server sends `code` (e.g., `"EMAIL_REQUIRED"`), client maps code to localized string. Server `message` becomes a fallback only. Existing `AppError` hierarchy already has `code` fields. |
+| **Locale detection and switching** | App detects system locale. Power users can override. | LOW | Compose Multiplatform handles locale detection automatically from system settings. Optional: locale override in app settings stored in `multiplatform-settings`. |
+
+---
 
 ### Differentiators (Competitive Advantage)
 
-Features that set this template apart from KMPShip, Multiplatform Kickstarter, AppKickstarter, and JetBrains Wizard. Not required, but this is where you win.
+Features that elevate this template above competitors. These are not required but significantly increase perceived value.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **Koog AI agent infrastructure** | No other KMP template ships with AI agent infrastructure. Koog is JetBrains' official framework, has a native Ktor plugin (`ai.koog:koog-ktor`), and supports tool calling, MCP, sub-agents, persistence, and history compression. This is the single biggest differentiator. | HIGH | Install Koog Ktor plugin on server. Provide: sample agent route with ReAct strategy, tool registration example, MCP integration example, streaming response support. Configure via `application.yaml`. Multi-provider support (OpenAI, Anthropic, Google, Ollama). |
-| **Either-based client SDK** | Most templates use raw Ktor calls or basic Result. A typed `ApiClient` returning `Either<ApiError, T>` with Arrow `Raise` DSL is dramatically better DX. Combined with shared error types this eliminates an entire class of bugs. No competitor does this. | MEDIUM | Build `ApiClient` in `:shared` or new `:sdk` module. Wrap Ktor HttpClient. Map HTTP errors to sealed `ApiError` hierarchy. Use `either { }` blocks in ViewModels. Token refresh interceptor returns Either, not exceptions. |
-| **Setup CLI / init script** | JetBrains Wizard generates projects but cannot customize an existing template (rename packages, set project name, configure DB credentials, generate secrets). A `./init.sh` or Gradle task that does this turns a 30-minute manual process into 60 seconds. Multiplatform Kickstarter has scripts but they are basic. | MEDIUM | Kotlin script or shell script that: renames root package from `com.m2f.template` to user's package, updates `applicationId`, sets project name in `settings.gradle.kts`, generates JWT secret, creates `.env` from `.env.example`, runs `docker compose up -d`. |
-| **Sample dashboard screen** | Users want to see a working, data-driven screen after clone. A dashboard with real API calls, state management, loading/error states proves the architecture works end-to-end. No OSS template ships a full-stack working dashboard. | MEDIUM | Dashboard screen showing data fetched from server via SDK. Uses Navigation 3, ViewModel with Koin, Either error handling, loading/error/success states. Pull-to-refresh. Responsive layout (phone vs tablet/desktop). |
-| **Arrow-based server error handling with context receivers** | The existing `DomainError` pattern using Kotlin context parameters is ahead of the curve. Most templates use basic exception handlers. This is a genuine architectural advantage worth showcasing. | LOW | Already partially built. Extend to cover all common error cases. Document the pattern. Ensure new developers understand it. |
-| **Compose Hot Reload** | Already in the plugin list (`composeHotReload`). Most templates don't enable it. Sub-second UI iteration is a massive DX win. | LOW | Already configured. Ensure it works reliably. Document usage. |
-| **Structured observability** | Ktor monitoring bundle is configured (call logging, call ID, Micrometer/Prometheus). Combined with Koog's OpenTelemetry support, this gives production-grade observability from day one. No competitor template ships this. | MEDIUM | Already partially in place. Add: structured logging with correlation IDs, Prometheus endpoint, Grafana dashboard config, Koog agent tracing. |
-| **R2DBC / reactive database** | Using Exposed R2DBC is unusual and forward-looking. Most templates use blocking JDBC. Reactive database access under coroutines is a genuine technical differentiator. | LOW | Already configured. Ensure migration system works. Add example reactive queries. |
-| **Multi-target client** | Android, iOS, Desktop (JVM), WASM/Web from one codebase. Most competitor templates target only Android + iOS. Desktop and Web targets are genuine extras. | LOW | Already configured in `composeApp/build.gradle.kts`. Ensure all targets compile and run. |
+| **MVI test DSL as a first-class library** | No KMP template ships a ViewModel test DSL. Most show raw `runTest` + manual Flow collection. A `viewModel.test { take(...); awaitModel { ... } }` DSL is a genuine DX win that developers will adopt. | MEDIUM | Package as a reusable utility in `:core:testing` module. Works with any `MVIViewModel` subclass. Wraps Turbine + kotest. Could be extracted as a standalone library later. |
+| **Group-scoped RBAC** | Existing templates have flat RBAC (global roles). Group-scoped roles (owner/admin/member per group) is a multi-tenant pattern that real SaaS apps need. The existing `UserRole` hierarchy becomes the global tier, while group roles handle per-group permissions. | HIGH | Two-tier auth: global `UserRole` (User/Admin/PowerAdmin) for platform-level access + per-group `GroupRole` (Owner/Admin/Member) for group-level access. The `withRole()` middleware handles global; new `withGroupRole()` handles group-scoped. This is a genuine architectural differentiator. |
+| **Admin invitation flow with pre-registration** | Admin registers users into their group before the user signs up. User receives email with activation link. No other KMP template handles delegated user creation. | MEDIUM | `POST /api/groups/{id}/invite` creates a pending user record. Email contains activation token. User visits activation link, sets password, becomes active group member. Reuses `PasswordResetService` token pattern for activation. |
+| **Server integration test harness with Testcontainers** | The `testcontainers` and `testcontainers-postgresql` dependencies are already declared. Providing a working test harness that spins up real PostgreSQL in CI is a differentiator -- most templates skip this entirely or use H2 only. | MEDIUM | Abstract `IntegrationTestBase` class: spins up Testcontainers PostgreSQL, runs migrations, provides `testApplication` with real DB. Example tests prove: register -> login -> create group -> add member -> verify RBAC. |
+| **Full-stack test coverage strategy** | Demonstrating ViewModel tests + SDK tests + server integration tests + shared model tests in one template is unheard of. It proves the architecture is testable end-to-end. | HIGH | Four test layers documented and implemented: (1) `:core:models` -- serialization round-trip tests, (2) `:core:sdk` -- MockEngine tests, (3) `:app:*` -- ViewModel Turbine tests, (4) `:server` -- testApplication integration tests. Each layer has its own test utilities. |
+| **Pluralization and parameterized strings** | Beyond basic key-value localization, supporting `pluralStringResource` and `%s`/`%d` parameters shows production readiness. | LOW | `<plurals>` in strings.xml. `pluralStringResource(Res.plurals.member_count, count, count)`. Parameterized: `stringResource(Res.strings.welcome, userName)`. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that seem good but create problems in a template context.
+Features that seem like they belong in this milestone but should be deferred or avoided.
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| **In-app purchases / payments** | KMPShip includes RevenueCat integration. Users ask for monetization. | Payment SDKs are platform-specific, version-sensitive, require merchant accounts, and break on every major OS update. Tight coupling to RevenueCat/Stripe locks users in. A template should not make payment vendor choices. | Document where payment integration hooks should go. Provide the auth + user management foundation that payments build on. Link to RevenueCat KMP guide. |
-| **Push notifications** | KMPShip includes them. Expected for mobile apps. | Firebase/APNs setup requires account credentials, certificates, and platform-specific configuration that cannot work out of the box in a template. Broken push notifications in a template are worse than no push notifications. | Provide the server-side notification model and API. Document Firebase/APNs integration guide. Keep client notification handling as an add-on module, not core. |
-| **Analytics SDK integration** | Templates like KMPShip bundle analytics. | Specific analytics SDKs (Firebase Analytics, Mixpanel) require account setup and API keys. They add weight, require privacy disclosures, and the choice is highly vendor-specific. | Provide an analytics abstraction interface (`AnalyticsTracker`) in `:shared` with a no-op default. Document how to plug in Firebase/Mixpanel/Amplitude. Server-side: Prometheus metrics already covers backend analytics. |
-| **Full ORM / database abstraction** | Developers want Room or full Exposed DAO patterns. | Over-abstracting the database in a template hides how it works and makes customization harder. Templates should teach patterns, not hide them. | Ship thin repository layer over Exposed. Show raw queries for learning. Provide migration example. Let users add DAO layer if desired. |
-| **GraphQL** | Some users prefer GraphQL over REST. | Adds massive complexity (schema definition, code generation, resolver layer). Forces an opinionated choice that alienates REST users. Ktor's REST + OpenAPI is already well-configured. | Keep REST + OpenAPI. If GraphQL is needed, it can be added as a separate module. The Ktor client is transport-agnostic. |
-| **Multi-module feature architecture** | Enterprise templates like openMF have deep module hierarchies. | Over-modularization in a template increases build times, complicates navigation between features, and overwhelms new users. A template should be graspable in 15 minutes. | Start with 4-5 modules (`:shared`, `:composeApp`, `:server`, `:server:core:*`). Document how to extract feature modules when the app grows. Provide the DI infrastructure that makes extraction easy. |
-| **Internationalization / i18n** | Multiplatform Kickstarter includes FIGS translations. | Translation files are content, not architecture. Bundling them in a template adds noise. The Compose resources system already supports it natively. | Document how to use Compose Multiplatform resources for i18n. Don't bundle translation files. |
-| **CI/CD pipeline** | Several competitors include GitHub Actions. | CI/CD is highly environment-specific (GitHub vs GitLab vs Bitbucket, self-hosted vs cloud). A template's CI config often needs to be rewritten entirely. | Provide a minimal `.github/workflows/ci.yml` that runs tests and builds. Don't include deployment workflows -- those depend on infrastructure choices the template cannot know. |
-| **Social login (Google/Apple/GitHub)** | KMPShip bundles social auth. | Each social provider requires OAuth app registration, platform-specific SDKs (Google Sign-In, Sign in with Apple), and credentials that do not work out of the box. | Ship email/password auth that works immediately. Document social login integration points. Provide the server-side OAuth callback structure but don't bundle platform SDKs. |
+| **Full Redux/Orbit MVI library** | Developers familiar with Redux or Orbit-MVI want their preferred framework. | Adding a third-party MVI library creates a heavy dependency and opinionated architecture that may not match the template's Arrow-based patterns. Orbit adds its own test utilities, DSL, and conventions that conflict with our Turbine + kotest approach. The reference implementation (AiraloViewModel) is lightweight and custom. | Ship the lightweight `MVIViewModel` base class. It is 40 lines of code, not a library dependency. Users who want Orbit can swap it in. |
+| **Compose UI snapshot tests** | Visual regression testing sounds valuable for a component library. | Compose Multiplatform snapshot testing tooling is immature across KMP targets. Paparazzi is Android-only. Screenshot testing for iOS/Desktop/Web has no stable solution. Adding platform-specific snapshot tests to a template creates maintenance burden. | Focus on ViewModel behavior tests (deterministic, fast, cross-platform). Document how to add Paparazzi for Android-specific snapshot testing if desired. |
+| **Server-side i18n with Accept-Language** | HTTP `Accept-Language` header for server-side localization. | Server should return error codes, not localized strings. Localizing server responses requires maintaining translation files on the server, which duplicates the client's `strings.xml` and creates sync problems. Server i18n is a different problem than client i18n. | Server returns `ErrorResponse(code = "EMAIL_REQUIRED", message = "fallback English")`. Client maps `code` to locale-appropriate string. Clean separation of concerns. |
+| **Runtime language switching without restart** | Users want to change language without restarting the app. | Compose Multiplatform's resource system uses system locale. Runtime switching requires either platform-specific locale override APIs (different on Android vs iOS vs Desktop) or wrapping every string call in a custom provider, which defeats the built-in `stringResource()` system. | Support system locale detection (automatic). Document per-platform locale override for advanced users. Most apps follow the system setting -- forcing an in-app language picker is over-engineering for a template. |
+| **Multi-tenancy with data isolation** | Groups could use schema-per-tenant or DB-per-tenant isolation. | Extreme complexity for a template. Schema-per-tenant requires dynamic data source routing, complicates migrations, and does not work well with connection pooling. For a template, shared tables with `group_id` columns is the right level of isolation. | Use `group_id` column filtering (simplest multi-tenant pattern). Server middleware validates group membership before data access. Document how to upgrade to schema isolation for high-security use cases. |
+| **Role inheritance / permission matrix** | Fine-grained permissions beyond Admin/User (e.g., `can_edit_members`, `can_view_analytics`). | Permission matrices add enormous complexity (N permissions x M roles x G groups). For a template, three fixed group roles (Owner/Admin/Member) are sufficient to demonstrate the pattern. Adding a dynamic permission system makes the template harder to understand. | Fixed `GroupRole` enum: Owner > Admin > Member. Check `withGroupRole(GroupRole.Admin)`. Document how to extend to a permission matrix if needed. |
+
+---
 
 ## Feature Dependencies
 
 ```
-[Shared Data Models]
+[MVI Base Class]
     |
-    +--requires--> [kotlinx.serialization config] (already done)
-    |
-    +--enables--> [Ktor Client HTTP Layer]
+    +--enables--> [MVI Test DSL]
     |                 |
-    |                 +--requires--> [Platform engine selection]
+    |                 +--requires--> [Turbine] (new dependency)
+    |                 +--requires--> [kotlinx-coroutines-test] (new dependency)
+    |                 +--requires--> [kotest-assertions] (already in catalog)
+    |
+    +--enables--> [Migrate Existing ViewModels to MVI]
     |                 |
-    |                 +--enables--> [Either-based Client SDK]
-    |                                   |
-    |                                   +--requires--> [Arrow core in :shared]
-    |                                   |
-    |                                   +--enables--> [Auth Flow (client)]
-    |                                   |                 |
-    |                                   |                 +--requires--> [Local Storage (token persistence)]
-    |                                   |                 |
-    |                                   |                 +--requires--> [Auth Flow (server)]
-    |                                   |                 |                 |
-    |                                   |                 |                 +--requires--> [User table + migrations]
-    |                                   |                 |                 |
-    |                                   |                 |                 +--requires--> [JWT security] (already done)
-    |                                   |                 |
-    |                                   |                 +--enables--> [User Management]
-    |                                   |
-    |                                   +--enables--> [Sample Dashboard]
-    |                                                     |
-    |                                                     +--requires--> [Navigation]
-    |                                                     |
-    |                                                     +--requires--> [DI (client-side)]
-    |                                                     |
-    |                                                     +--requires--> [Material 3 Theming]
+    |                 +--requires--> [Existing AuthApi, UserApi] (already built)
+    |                 +--requires--> [Existing State classes] (already built)
+    |                 +--enables--> [ViewModel Unit Tests]
     |
-    +--enables--> [Koog AI Agent Infrastructure]
-                      |
-                      +--requires--> [Ktor server] (already done)
-                      |
-                      +--requires--> [Koog Ktor plugin]
-                      |
-                      +--enhances--> [Sample Dashboard] (AI-powered features demo)
+    +--enables--> [Group Management ViewModels]
 
-[Setup CLI] -- independent, can be built at any phase
-
-[Compose Hot Reload] -- independent, already configured
-
-[Observability] -- independent, already partially configured
+[Groups Entity (server)]
     |
-    +--enhances--> [Koog AI Agents] (OpenTelemetry tracing)
+    +--requires--> [UsersTable, RolesTable] (already built)
+    +--requires--> [UserRole sealed class] (already built)
+    +--requires--> [withRole() RBAC middleware] (already built)
+    |
+    +--enables--> [Group API Routes]
+    |                 +--enables--> [GroupApi SDK class]
+    |                                   +--enables--> [Group Management ViewModels]
+    |                                                     +--enables--> [Admin Dashboard Screen]
+    |
+    +--enables--> [Group-scoped content]
+    +--enables--> [Admin invitation flow]
+    +--enables--> [Server integration tests for groups]
+
+[String Resources (composeResources)]
+    |
+    +--independent (can start anytime)
+    +--enables--> [Shared StringKey enum]
+    |                 +--enables--> [ViewModel localized errors]
+    |                 +--enables--> [Server error code mapping]
+    |
+    +--enables--> [Locale-qualified resources]
+
+[Testing Infrastructure]
+    |
+    +--requires--> [MVI Base Class + Test DSL] (for ViewModel tests)
+    +--requires--> [Groups entity] (for integration test coverage)
+    +--requires--> [SDK classes] (for MockEngine tests)
+    |
+    +--enables--> [Test fixtures module]
+    +--enables--> [Server integration test harness]
+    +--enables--> [SDK MockEngine tests]
+    +--enables--> [ViewModel Turbine tests]
 ```
 
 ### Dependency Notes
 
-- **Client SDK requires Shared Data Models:** The SDK wraps API calls using shared DTOs. Models must exist first.
-- **Auth Flow requires both Client SDK and Server endpoints:** Full-stack feature. Server endpoints must exist before client can consume them. Token storage (local storage) must exist before client can persist sessions.
-- **Sample Dashboard requires Navigation + DI + SDK + Theming:** This is the integration proof. It sits at the top of the dependency chain and should be built last.
-- **Koog AI agents are independent of client features:** Server-only feature that can be built in parallel with client work. Only connects to dashboard if you want an AI-powered demo screen.
-- **Setup CLI is fully independent:** Can be built at any time. Does not depend on or block other features.
+- **MVI Base Class is the foundation:** Everything else in this milestone builds on it. Must be implemented first because ViewModel tests require it and the Group Management ViewModels will use it.
+- **Groups depends on existing RBAC:** The `UserRole` sealed class, `RolesTable`, `withRole()` middleware, and `AuthService` are all prerequisites. All exist from Milestone 1.
+- **Localization is independent:** String resources can be added at any time. However, the `StringKey` enum should exist before ViewModel migration so that migrated ViewModels emit keys instead of hardcoded strings.
+- **Testing requires everything else to exist first:** You cannot write tests for features that do not exist. The test infrastructure phase should come last (or in parallel with the features it tests).
+- **Server integration tests require Groups:** The interesting integration test scenarios involve multi-step flows (register -> create group -> invite member -> verify RBAC). Without Groups, server tests are limited to auth flow replay.
+
+---
 
 ## MVP Definition
 
-### Launch With (v1)
+### Launch With (v2 -- this milestone)
 
-Minimum viable template -- what's needed for `clone -> run -> see working app`.
+- [ ] **MVI Base ViewModel class** -- the architectural foundation everything builds on
+- [ ] **MVI Test DSL** -- inseparable from MVI (pattern without tests is incomplete)
+- [ ] **Migrate all 5 existing ViewModels to MVI** -- template must not contradict itself
+- [ ] **Group entity + CRUD API** -- create, list, get, update, delete groups
+- [ ] **Group membership management** -- add/remove/change role of members
+- [ ] **Admin registration into group** -- admin creates user accounts for their group
+- [ ] **GroupApi SDK class** -- client-side access to group endpoints
+- [ ] **Admin dashboard screen** -- admin sees group management, user sees their groups
+- [ ] **composeResources/values/strings.xml** -- all hardcoded strings extracted
+- [ ] **StringKey shared enum** -- ViewModel error messages use keys, not strings
+- [ ] **Server error code mapping** -- server returns codes, client localizes
+- [ ] **ViewModel unit tests** -- at least LoginViewModel and GroupManagementViewModel tested
+- [ ] **Server integration tests** -- auth flow + group CRUD + RBAC enforcement tested
+- [ ] **SDK MockEngine tests** -- apiCall mapping + AuthInterceptor tested
 
-- [x] Shared data models (request/response DTOs) -- enables full-stack type sharing
-- [ ] Ktor client HTTP layer with platform engines -- enables client-server communication
-- [ ] Either-based client SDK -- the DX differentiator, builds on Ktor client
-- [ ] Navigation 3 integration -- app needs multiple screens
-- [ ] Koin client-side DI with ViewModel support -- ViewModels need injection
-- [ ] Complete auth flow (server + client) -- login/register/token refresh end-to-end
-- [ ] Local key-value storage (DataStore) -- token persistence, user preferences
-- [ ] Material 3 theming (dark/light) -- professional look out of the box
-- [ ] Basic user management (profile, logout) -- inseparable from auth
-- [ ] Docker Compose polish -- `docker compose up` must just work
-- [ ] Setup CLI / init script -- first-run experience
+### Add After Validation (v2.x)
 
-### Add After Validation (v1.x)
+- [ ] **Second locale (Spanish)** -- proves the localization pattern works across languages
+- [ ] **Pluralization support** -- `<plurals>` in strings.xml for member counts etc.
+- [ ] **Group invitation flow with email** -- activation token via email for invited users
+- [ ] **Group-scoped content filtering** -- dashboard data filtered by group membership
+- [ ] **Test coverage reporting** -- Kover integrated with CI, coverage thresholds set
 
-Features to add once core architecture is proven end-to-end.
+### Future Consideration (v3+)
 
-- [ ] Koog AI agent infrastructure -- biggest differentiator, but not blocking core app functionality
-- [ ] Sample dashboard screen -- proves the architecture, but requires all v1 pieces working first
-- [ ] Structured observability (Prometheus dashboard, correlation IDs) -- production concern, not template validation
-- [ ] Testing examples (integration + unit + shared) -- important but secondary to working app
+- [ ] **Group-scoped RBAC middleware** -- `withGroupRole()` route extension
+- [ ] **Permission matrix** -- dynamic permissions beyond fixed Owner/Admin/Member roles
+- [ ] **Runtime locale switching** -- in-app language picker with persistence
+- [ ] **Compose UI snapshot tests** -- visual regression once tooling matures
+- [ ] **Test data seeding CLI** -- generate realistic test data for development
 
-### Future Consideration (v2+)
-
-Features to defer until the template has users and feedback.
-
-- [ ] Analytics abstraction interface -- design once users report actual analytics needs
-- [ ] Notification server model -- design once push notification patterns stabilize in KMP
-- [ ] Additional AI agent examples (multi-agent, persistence, MCP tools) -- expand after basic agent infra proves useful
-- [ ] Adaptive layouts (phone/tablet/desktop responsive) -- Material3 Adaptive is still maturing in CMP
+---
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Complete auth flow (server + client) | HIGH | HIGH | P1 |
-| Either-based client SDK | HIGH | MEDIUM | P1 |
-| Navigation 3 integration | HIGH | MEDIUM | P1 |
-| Koin client-side DI | HIGH | LOW | P1 |
-| Shared data models | HIGH | LOW | P1 |
-| Local key-value storage | HIGH | LOW | P1 |
-| Material 3 theming | MEDIUM | LOW | P1 |
-| Setup CLI / init script | HIGH | MEDIUM | P1 |
-| Koog AI agent infrastructure | HIGH | HIGH | P2 |
-| Sample dashboard screen | HIGH | MEDIUM | P2 |
-| User management (profile/settings) | MEDIUM | MEDIUM | P2 |
-| Testing examples | MEDIUM | MEDIUM | P2 |
-| Structured observability | MEDIUM | MEDIUM | P2 |
-| Docker Compose polish | MEDIUM | LOW | P1 |
-| Compose Hot Reload docs | LOW | LOW | P3 |
-| Analytics abstraction | LOW | LOW | P3 |
+| MVI Base ViewModel class | HIGH | MEDIUM | P1 |
+| Migrate existing ViewModels to MVI | HIGH | HIGH | P1 |
+| MVI Test DSL (Turbine) | HIGH | MEDIUM | P1 |
+| Group entity + CRUD API (server) | HIGH | HIGH | P1 |
+| Group membership management | HIGH | HIGH | P1 |
+| Admin registers users into group | HIGH | MEDIUM | P1 |
+| GroupApi SDK class | HIGH | LOW | P1 |
+| Admin dashboard screen | HIGH | MEDIUM | P1 |
+| Client string resources (strings.xml) | MEDIUM | MEDIUM | P1 |
+| StringKey shared enum | MEDIUM | LOW | P1 |
+| Server error code mapping | MEDIUM | LOW | P1 |
+| ViewModel unit tests | HIGH | MEDIUM | P1 |
+| Server integration tests | HIGH | HIGH | P1 |
+| SDK MockEngine tests | MEDIUM | MEDIUM | P1 |
+| Test fixtures module | MEDIUM | LOW | P2 |
+| Second locale (Spanish) | LOW | LOW | P2 |
+| Group invitation with email | MEDIUM | HIGH | P2 |
+| Group-scoped content | MEDIUM | HIGH | P2 |
+| Kover coverage reporting | LOW | LOW | P2 |
+| Pluralization support | LOW | LOW | P3 |
+| Group-scoped RBAC middleware | MEDIUM | MEDIUM | P3 |
 
 **Priority key:**
-- P1: Must have for launch -- without these the template is incomplete
-- P2: Should have, add when possible -- these are differentiators and polish
-- P3: Nice to have, future consideration
+- P1: Must have for this milestone
+- P2: Should have, add if time permits
+- P3: Nice to have, future milestone
 
-## Competitor Feature Analysis
+---
 
-| Feature | KMPShip | Multiplatform Kickstarter | AppKickstarter (OSS) | JetBrains Wizard | Our Approach |
-|---------|---------|--------------------------|----------------------|------------------|--------------|
-| Auth flow | Full (Apple/Google/Email) | Basic (login/register) | None | None | Email/password with JWT refresh. Server + client end-to-end. Social login documented, not bundled. |
-| Navigation | Custom (unspecified) | Voyager | Voyager | None | Navigation 3 (forward-looking, JetBrains-backed) |
-| DI | Koin | Koin | Koin | None | Koin (server + client unified) |
-| Local storage | Room | Unspecified | SQLDelight + multiplatform-settings | None | DataStore Preferences (lightweight, official Google/JetBrains) |
-| Client SDK pattern | Raw HTTP calls | Raw Ktor client | Raw Ktor client | None | `Either<ApiError, T>` with Arrow Raise DSL -- unique in market |
-| AI integration | "AI-ready architecture" (no actual AI) | None | None | None | Full Koog infrastructure with working agent routes, tool calling, MCP -- genuine AI capability |
-| Error handling | Basic try/catch | Basic | Basic | None | Arrow Either + context parameters + sealed DomainError hierarchy -- most sophisticated in market |
-| Server framework | None (client-only) | Ktor (basic) | None (client-only) | None | Ktor with OpenAPI, R2DBC, migrations, monitoring -- most complete server |
-| Setup experience | Manual | Scripts (basic) | Manual | Wizard (generates new project) | Init script: rename, configure, start -- best for template use case |
-| Payments | RevenueCat | None | None | None | Deliberately excluded. Documented integration points. |
-| Push notifications | Included | None | None | None | Deliberately excluded. Server model only. |
-| Targets | Android + iOS | Android + iOS | Android + iOS + Desktop | Configurable | Android + iOS + Desktop + WASM/Web -- most targets |
-| Testing | Setup only | None | None | None | Working examples with Testcontainers, Kotest, Ktor test host |
-| Observability | None | None | None | None | Prometheus, structured logging, call tracing, Koog OpenTelemetry |
+## Detailed Feature Specifications
+
+### A. MVI ViewModel Contract -- What "Done" Looks Like
+
+**The four types per ViewModel:**
+
+```kotlin
+// 1. Intent -- what the user wants to do
+sealed interface LoginIntent {
+    data class EmailChanged(val email: String) : LoginIntent
+    data class PasswordChanged(val password: String) : LoginIntent
+    data class RememberMeChanged(val checked: Boolean) : LoginIntent
+    data object Submit : LoginIntent
+}
+
+// 2. Model -- the full screen state (immutable)
+data class LoginModel(
+    val email: String = "",
+    val password: String = "",
+    val rememberMe: Boolean = false,
+    val isLoading: Boolean = false,
+    val emailError: StringKey? = null,
+    val passwordError: StringKey? = null,
+    val serverError: String? = null,
+)
+
+// 3. Mutation -- how state changes
+sealed interface LoginMutation {
+    data class EmailUpdated(val email: String) : LoginMutation
+    data class PasswordUpdated(val password: String) : LoginMutation
+    data class RememberMeUpdated(val checked: Boolean) : LoginMutation
+    data object Loading : LoginMutation
+    data class ValidationFailed(val emailError: StringKey?, val passwordError: StringKey?) : LoginMutation
+    data class ServerFailed(val message: String) : LoginMutation
+}
+
+// 4. Event -- one-shot side effects
+sealed interface LoginEvent {
+    data object NavigateToHome : LoginEvent
+}
+```
+
+**The reduce function is pure:**
+
+```kotlin
+override fun reduce(model: LoginModel, mutation: LoginMutation): LoginModel = when (mutation) {
+    is LoginMutation.EmailUpdated -> model.copy(email = mutation.email, emailError = null)
+    is LoginMutation.PasswordUpdated -> model.copy(password = mutation.password, passwordError = null)
+    is LoginMutation.RememberMeUpdated -> model.copy(rememberMe = mutation.checked)
+    is LoginMutation.Loading -> model.copy(isLoading = true, serverError = null)
+    is LoginMutation.ValidationFailed -> model.copy(emailError = mutation.emailError, passwordError = mutation.passwordError)
+    is LoginMutation.ServerFailed -> model.copy(serverError = mutation.message, isLoading = false)
+}
+```
+
+**handleIntent produces a Flow of Either<Event, Mutation>:**
+
+```kotlin
+override fun handleIntent(intent: LoginIntent): Flow<Either<LoginEvent, LoginMutation>> = flow {
+    when (intent) {
+        is LoginIntent.EmailChanged -> emit(LoginMutation.EmailUpdated(intent.email).right())
+        is LoginIntent.PasswordChanged -> emit(LoginMutation.PasswordUpdated(intent.password).right())
+        is LoginIntent.RememberMeChanged -> emit(LoginMutation.RememberMeUpdated(intent.checked).right())
+        is LoginIntent.Submit -> {
+            // validate, then call API
+            emit(LoginMutation.Loading.right())
+            authApi.login(...)
+                .fold(
+                    ifLeft = { emit(LoginMutation.ServerFailed(it.message).right()) },
+                    ifRight = { emit(LoginEvent.NavigateToHome.left()) }
+                )
+        }
+    }
+}
+```
+
+### B. MVI Test DSL -- What "Done" Looks Like
+
+```kotlin
+@Test
+fun `login success navigates to home`() = runTest {
+    val fakeAuthApi = FakeAuthApi(loginResult = AuthResponse(...).right())
+    val vm = LoginViewModel(fakeAuthApi)
+
+    vm.model.test {
+        // Initial state
+        awaitItem() shouldBe LoginModel()
+
+        // Type email
+        vm.take(LoginIntent.EmailChanged("user@test.com"))
+        awaitItem().email shouldBe "user@test.com"
+
+        // Type password
+        vm.take(LoginIntent.PasswordChanged("password123"))
+        awaitItem().password shouldBe "password123"
+
+        // Submit
+        vm.take(LoginIntent.Submit)
+        awaitItem().isLoading shouldBe true
+    }
+
+    vm.events.test {
+        vm.take(LoginIntent.Submit)
+        awaitItem() shouldBe LoginEvent.NavigateToHome
+    }
+}
+```
+
+### C. Groups Server Schema
+
+```sql
+-- New tables
+CREATE TABLE groups (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    created_by UUID NOT NULL REFERENCES users(id),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE group_memberships (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(20) NOT NULL DEFAULT 'MEMBER',  -- OWNER, ADMIN, MEMBER
+    joined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(group_id, user_id)
+);
+```
+
+### D. Localization Resource Structure
+
+```
+core/localization/src/commonMain/kotlin/
+    com/m2f/template/localization/
+        StringKey.kt          -- shared enum of all string keys
+
+composeApp/src/commonMain/composeResources/
+    values/
+        strings.xml           -- English (default)
+    values-es/
+        strings.xml           -- Spanish (example)
+```
+
+**StringKey enum:**
+
+```kotlin
+enum class StringKey {
+    // Auth
+    EMAIL_REQUIRED,
+    EMAIL_INVALID,
+    PASSWORD_REQUIRED,
+    PASSWORD_TOO_SHORT,
+    LOGIN_BUTTON,
+    REGISTER_BUTTON,
+    // Groups
+    GROUP_NAME_REQUIRED,
+    GROUP_CREATED,
+    MEMBER_ADDED,
+    // etc.
+}
+```
+
+---
 
 ## Sources
 
-- [JetBrains KMP Wizard](https://kmp.jetbrains.com/) -- official project generator, baseline comparison
-- [KMPShip](https://www.kmpship.app) -- commercial KMP starter kit, feature-rich but client-only (MEDIUM confidence, commercial product)
-- [Multiplatform Kickstarter](https://multiplatformkickstarter.com/) -- commercial full-stack template with Ktor (MEDIUM confidence, commercial product)
-- [AppKickstarter OSS Template](https://github.com/AppKickstarter/Kotlin-Multiplatform-Template) -- open-source KMP template with Voyager, SQLDelight, Koin (HIGH confidence, GitHub)
-- [openMF KMP Project Template](https://github.com/openMF/kmp-project-template) -- enterprise multi-module template (HIGH confidence, GitHub)
-- [Compose Multiplatform 1.10.0 Release](https://blog.jetbrains.com/kotlin/2026/01/compose-multiplatform-1-10-0/) -- Navigation 3 multiplatform support (HIGH confidence, JetBrains blog)
-- [Navigation 3 in CMP Docs](https://kotlinlang.org/docs/multiplatform/compose-navigation-3.html) -- official Navigation 3 documentation (HIGH confidence, official docs)
-- [Koog Documentation](https://docs.koog.ai/) -- official Koog AI agent framework docs (HIGH confidence, official docs)
-- [Koog Ktor Plugin](https://docs.koog.ai/ktor-plugin/) -- Ktor integration details (HIGH confidence, official docs)
-- [Koin Compose Multiplatform](https://insert-koin.io/docs/quickstart/cmp/) -- Koin CMP setup guide (HIGH confidence, official docs)
-- [Koin Navigation 3 Integration](https://insert-koin.io/docs/reference/koin-compose/navigation3/) -- Koin + Nav3 (HIGH confidence, official docs)
-- [DataStore for KMP](https://developer.android.com/kotlin/multiplatform/datastore) -- official DataStore KMP guide (HIGH confidence, official docs)
-- [Arrow Either for Error Handling](https://proandroiddev.com/how-to-use-arrows-either-for-exception-handling-in-your-application-a73574b39d07) -- Either pattern guide (MEDIUM confidence, community article)
-- [Ktor Full-Stack KMP Tutorial](https://ktor.io/docs/full-stack-development-with-kotlin-multiplatform.html) -- official Ktor full-stack guide (HIGH confidence, official docs)
-- [Token Refresh with Ktor KMP](https://medium.com/@lahirujay/token-refresh-implementation-with-ktor-in-kotlin-multiplatform-mobile-f4d77b33b355) -- token refresh pattern (LOW confidence, single community source)
+- [Turbine GitHub](https://github.com/cashapp/turbine) -- Flow testing library, v1.2.1 stable (HIGH confidence, official repo)
+- [Testing Android Flows with Turbine](https://proandroiddev.com/testing-android-flows-in-viewmodel-with-turbine-ea9bae7e811a) -- ViewModel + Turbine patterns (MEDIUM confidence, community)
+- [Ktor Server Testing Documentation](https://ktor.io/docs/server-testing.html) -- testApplication API (HIGH confidence, official docs)
+- [Ktor Client Testing Documentation](https://ktor.io/docs/client-testing.html) -- MockEngine for SDK tests (HIGH confidence, official docs)
+- [Compose Multiplatform Localization](https://kotlinlang.org/docs/multiplatform/compose-localize-strings.html) -- composeResources/values/ pattern (HIGH confidence, official docs)
+- [Compose Multiplatform Resources Setup](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-setup.html) -- resource directory structure (HIGH confidence, official docs)
+- [MVI Architecture in Android](https://www.droidcon.com/2025/04/29/reactive-state-management-in-compose-mvi-architecture/) -- MVI patterns 2025 (MEDIUM confidence, community)
+- [Multi-tenant SaaS Application Guide](https://blog.logto.io/build-multi-tenant-saas-application) -- group/tenant management patterns (MEDIUM confidence, community)
+- [Kotlin Coroutines Test](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/) -- runTest, TestDispatcher API (HIGH confidence, official docs)
+- [KMP Testing Guide 2025](https://www.kmpship.app/blog/kotlin-multiplatform-testing-guide-2025) -- KMP testing strategy overview (MEDIUM confidence, commercial site)
+- [Kotest Ktor Extension](https://kotest.io/docs/extensions/ktor.html) -- Kotest + Ktor integration (HIGH confidence, official docs)
 
 ---
-*Feature research for: KMP Full-Stack Project Template*
-*Researched: 2026-02-10*
+*Feature research for: KMP Full-Stack Template -- Milestone 2*
+*Researched: 2026-02-17*

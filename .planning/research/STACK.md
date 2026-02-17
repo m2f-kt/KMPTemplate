@@ -1,186 +1,321 @@
 # Stack Research
 
-**Domain:** KMP Full-Stack Template with AI Agent Support
-**Researched:** 2026-02-10
-**Confidence:** MEDIUM-HIGH (most choices verified against official docs/releases; a few emerging areas flagged)
+**Domain:** KMP Full-Stack Template -- Milestone 2: MVI ViewModel, Groups/Admin, Testing, Localization
+**Researched:** 2026-02-17
+**Confidence:** HIGH (most choices verified against official docs, existing project dependencies, and Maven Central)
 
 ---
 
-## Existing Stack (Already in Place -- Do Not Re-Add)
+## Existing Stack (Already in Place -- Do NOT Add)
 
-These are already integrated in the project. Listed here for context so the roadmap does not duplicate work.
+These are already integrated and confirmed in `gradle/libs.versions.toml`. Listed for context to prevent duplication.
 
 | Technology | Version | Purpose |
 |---|---|---|
-| Kotlin | 2.2.10 | Language (context parameters enabled) |
-| Compose Multiplatform | 1.9.0-rc01 | Shared UI framework |
-| Ktor Server | 3.3.0-openapi-eap-1394 | Backend HTTP framework |
-| Exposed | 1.0.0-rc-1 | Database ORM (R2DBC + JDBC) |
-| PostgreSQL + R2DBC | 42.7.7 / 1.0.7.RELEASE | Database driver |
-| Koin | 4.1.1 | Dependency injection |
-| Arrow | 2.1.2 | Functional programming (core/fx/resilience) |
-| SuspendApp | 2.1.2 | Graceful lifecycle |
-| JJWT | 0.13.0 | JWT auth |
-| Kotest | 6.0.1 | Testing assertions |
-| Logback | 1.5.18 | Server logging |
+| Kotlin | 2.3.10 | Language (context parameters enabled via `-Xcontext-parameters`) |
+| Compose Multiplatform | 1.10.1 | Shared UI framework (Android, iOS, Desktop, WASM) |
+| Ktor Server | 3.4.0 | Backend HTTP framework |
+| Ktor Client | 3.4.0 | Multiplatform HTTP client |
+| Exposed | 1.0.0 | Database ORM (R2DBC + JDBC) |
+| PostgreSQL + R2DBC | 42.7.9 / 1.0.7.RELEASE | Database drivers |
+| Koin | 4.1.1 | DI across server + all KMP targets |
+| Arrow | 2.2.1.1 | FP (core/fx/resilience), context parameter Raise |
+| Kotest assertions | 6.1.3 | `kotest-assertions-core`, `kotest-assertions-arrow`, `kotest-assertions-arrow-fx-coroutines` |
+| Testcontainers | 2.0.3 | Server integration testing (PostgreSQL containers) |
 | kotlinx-coroutines | 1.10.2 | Async runtime |
-| Micrometer/Prometheus | 1.15.3 | Metrics |
+| kotlinx-serialization | 1.10.0 | JSON serialization |
+| AndroidX Lifecycle ViewModel | 2.9.6 | `lifecycle-viewmodel-compose` + `lifecycle-runtime-compose` (KMP) |
+| Koin Compose ViewModel | 4.1.1 | `koin-compose-viewmodel` for ViewModel injection |
+| Navigation Compose | 2.9.2 | Multiplatform navigation |
+| Kermit | 2.0.8 | Multiplatform logging |
+| compose.components.resources | (bundled with CMP 1.10.1) | Font loading, drawable resources |
+| Ktor Server Test Host | 3.4.0 | `ktor-server-test-host` for testApplication |
+| kotlin-test | 2.3.10 | Base test assertions |
+| Kover | 0.9.7 | Code coverage |
+| Detekt | 1.23.8 | Static analysis |
+
+**Key observation:** The project has already upgraded significantly since the v1.0 research (Kotlin 2.3.10, CMP 1.10.1, Ktor 3.4.0, Exposed 1.0.0, Arrow 2.2.1.1). The `testing-server` bundle already includes kotest-assertions-core, kotest-assertions-arrow, kotest-assertions-arrow-fx, ktor-server-test-host, testcontainers, and koin-test.
 
 ---
 
-## Recommended Stack (New Additions)
+## Recommended Stack (New Additions for Milestone 2)
 
-### 1. AI Agent Infrastructure
+### 1. MVI ViewModel Infrastructure
 
-| Technology | Version | Purpose | Why Recommended | Confidence |
-|---|---|---|---|---|
-| Koog (koog-agents) | 0.6.1 | AI agent framework | Official JetBrains Kotlin-native agent framework. Idiomatic DSL, multiplatform support (JVM/JS/WasmJS/iOS), built-in fault tolerance, history compression, A2A + ACP protocol support. The only serious Kotlin-first agent framework; alternatives are Java wrappers (LangChain4j) or Python interop. | HIGH |
-| Koog Ktor Plugin (koog-ktor) | 0.6.1 | Ktor server integration | First-party plugin -- `install(Koog)` in Application.module(), configure LLM providers in application.yaml, call agents directly from routes. Eliminates manual wiring of LLM clients across server modules. | HIGH |
-| Koog MCP support | 0.6.1 (agent-mcp module) | Model Context Protocol tools | Built-in MCP client in Koog allows agents to connect to MCP servers via stdio/SSE transport, retrieve tools, and register them. MCP is now the universal standard for agent-tool integration (97M+ monthly SDK downloads, backed by Anthropic/OpenAI/Google). | HIGH |
+**No new library dependencies needed.** The MVI ViewModel base class uses only existing dependencies.
 
-**Gradle dependencies:**
+| What Exists | Version | How It Serves MVI |
+|---|---|---|
+| `androidx.lifecycle:lifecycle-viewmodel-compose` | 2.9.6 | KMP `ViewModel` base class with `viewModelScope` -- already used by LoginViewModel, ProfileViewModel, DashboardViewModel |
+| `arrow-core` | 2.2.1.1 | `Either<L, R>` for typed error handling in mutations; `Raise` context for error composition |
+| `kotlinx-coroutines` | 1.10.2 | `StateFlow`, `MutableStateFlow`, `Channel` for events |
+| `koin-compose-viewmodel` | 4.1.1 | `koinViewModel<T>()` injection in composables |
+
+**Pattern to implement (no new deps):**
 ```kotlin
-// In server/build.gradle.kts or a new server:ai module
-implementation("ai.koog:koog-agents:0.6.1")
-implementation("ai.koog:koog-ktor:0.6.1")
-```
+abstract class MviViewModel<Intent, Model, Mutation, Event>(
+    initialModel: Model,
+) : ViewModel() {
+    private val _model = MutableStateFlow(initialModel)
+    val model: StateFlow<Model> = _model.asStateFlow()
 
-**Key rationale:** Koog is the only Kotlin-native agent framework with JetBrains backing and direct Ktor integration. It targets the same platforms as this project (JVM server, multiplatform clients). The koog-ktor plugin provides seamless installation as a Ktor feature, matching the existing plugin-based server architecture (auth, CORS, content-negotiation, etc.).
+    private val _events = Channel<Event>(Channel.BUFFERED)
+    val events: Flow<Event> = _events.receiveAsFlow()
 
-### 2. Multiplatform Navigation
-
-| Technology | Version | Purpose | Why Recommended | Confidence |
-|---|---|---|---|---|
-| AndroidX Navigation Compose (Multiplatform) | 2.9.1 | Screen navigation | `org.jetbrains.androidx.navigation:navigation-compose:2.9.1`. Official JetBrains fork of AndroidX Navigation, supports all targets (Android/iOS/Desktop/Web). Type-safe routes with kotlinx-serialization. Mature, well-documented, battle-tested on Android with full multiplatform parity. | HIGH |
-
-**Gradle dependencies:**
-```kotlin
-// In composeApp/build.gradle.kts, commonMain.dependencies
-implementation("org.jetbrains.androidx.navigation:navigation-compose:2.9.1")
-```
-
-**Key rationale:** This is now THE official navigation solution for Compose Multiplatform. JetBrains contributes multiplatform support directly to the AndroidX Navigation library. Navigation 3 exists (in CMP 1.10.0) but is alpha and too early for a template -- the standard Navigation library is stable and production-ready.
-
-### 3. UI Component Library / Adaptive Layout
-
-| Technology | Version | Purpose | Why Recommended | Confidence |
-|---|---|---|---|---|
-| Compose Material3 | 1.9.0 (via compose.material3 DSL) | Design system | Already bundled with CMP 1.9.x. Material3 is the standard design system for Compose. Use `compose.material3` DSL accessor in gradle -- no separate dependency needed. | HIGH |
-| Material3 Adaptive | 1.2.0 | Responsive layouts | `org.jetbrains.compose.material3.adaptive:adaptive:1.2.0`. Provides `ListDetailPaneScaffold`, `SupportingPaneScaffold`, window size classes. Essential for a template that targets phones, tablets, and desktop simultaneously. | HIGH |
-
-**Gradle dependencies:**
-```kotlin
-// In composeApp/build.gradle.kts, commonMain.dependencies
-implementation("org.jetbrains.compose.material3.adaptive:adaptive:1.2.0")
-implementation("org.jetbrains.compose.material3.adaptive:adaptive-layout:1.2.0")
-implementation("org.jetbrains.compose.material3.adaptive:adaptive-navigation:1.2.0")
-```
-
-**Key rationale:** Material3 + Adaptive is the first-party solution from Google/JetBrains. A template project should NOT add third-party design system libraries (compose-cupertino, Composive) because they add maintenance burden and version-coupling risk. The adaptive layout library handles responsive design across all screen sizes natively.
-
-### 4. Local Storage / Preferences
-
-| Technology | Version | Purpose | Why Recommended | Confidence |
-|---|---|---|---|---|
-| DataStore Preferences | 1.1.7 | Key-value local storage | Official Jetpack library with KMP support since 1.1.0. Coroutine-based, transactional, replaces SharedPreferences. Used for auth tokens, user preferences, onboarding state. Production-stable. | HIGH |
-
-**Gradle dependencies:**
-```kotlin
-// In shared/build.gradle.kts or composeApp, commonMain.dependencies
-implementation("androidx.datastore:datastore-preferences:1.1.7")
-```
-
-**Key rationale:** DataStore Preferences is the standard for key-value storage in KMP. It is coroutine-native, integrates with Flow, and works on all KMP targets. For this template, it covers: storing JWT tokens client-side, user preference flags, theme settings. No need for SQLDelight/Room for simple key-value storage.
-
-### 5. Client SDK Layer (Either-Based Networking)
-
-| Technology | Version | Purpose | Why Recommended | Confidence |
-|---|---|---|---|---|
-| Ktor Client (multiplatform) | Match server version (3.3.x or upgrade to 3.4.0) | HTTP client | Already in version catalog as ktor-client bundle. Multiplatform engines: CIO (JVM/Android), Darwin (iOS), JS (WasmJs). | HIGH |
-| Arrow Core (shared module) | 2.2.0 (upgrade from 2.1.2) | Either-based error handling | Arrow 2.2.0 adds `arrow.core.raise.context` package -- same API as `arrow.core.raise` but using context parameters instead of extension functions. Since this project already uses `-Xcontext-parameters`, Arrow 2.2.0 is the natural fit. The new Racing DSL and `validate` function also improve error composition. | HIGH |
-
-**Pattern -- Either-based SDK:**
-```kotlin
-// In shared module, commonMain
-// Wrap all Ktor client calls in Either<ApiError, T>
-context(_: Raise<ApiError>)
-suspend fun login(credentials: LoginRequest): AuthResponse {
-    val response = httpClient.post("/api/auth/login") {
-        contentType(ContentType.Application.Json)
-        setBody(credentials)
+    fun dispatch(intent: Intent) {
+        viewModelScope.launch {
+            process(intent).collect { mutation ->
+                _model.update { reduce(it, mutation) }
+            }
+        }
     }
-    ensure(response.status == HttpStatusCode.OK) { ApiError.Unauthorized }
-    return response.body()
+
+    protected abstract fun process(intent: Intent): Flow<Mutation>
+    protected abstract fun reduce(model: Model, mutation: Mutation): Model
+    protected fun emit(event: Event) { viewModelScope.launch { _events.send(event) } }
 }
 ```
 
-**Key rationale:** Arrow 2.2.0's context parameter support aligns perfectly with Kotlin 2.2.10's context parameters feature flag already enabled in this project. The `Raise` context parameter pattern provides typed errors without exception handling, making every API call's failure modes explicit in the type signature. No separate Retrofit-Arrow integration needed -- Ktor client + Arrow Raise is the idiomatic KMP approach.
+**Why no new library:** The existing `ViewModel` from AndroidX Lifecycle 2.9.6 already supports all KMP targets. The MVI pattern is a structural concern, not a library concern. Adding third-party MVI libraries (Orbit MVI, MVIKotlin, etc.) would add unnecessary dependencies to a template project. The base class is ~30 lines of code using `StateFlow`, `Channel`, and `ViewModel` -- all already in the project.
 
-**Ktor version decision:** The project currently uses a Ktor OpenAPI EAP build (`3.3.0-openapi-eap-1394`). Ktor 3.4.0 stable was released 2026-01-22 with OpenAPI generation built in. **Recommend upgrading to Ktor 3.4.0** when ready, as it makes the EAP dependency unnecessary. This is a separate migration task.
+### 2. Testing Infrastructure -- New Additions
 
-### 6. Koin Compose Integration
-
-| Technology | Version | Purpose | Why Recommended | Confidence |
-|---|---|---|---|---|
-| koin-compose | 4.1.1 | Compose DI integration | Multiplatform Koin APIs for Compose -- `KoinApplication`, `koinInject()`. Already using koin-core/koin-ktor at 4.1.1; this is the Compose-side counterpart. | HIGH |
-| koin-compose-viewmodel | 4.1.1 | ViewModel injection | `koinViewModel<T>()` for lifecycle-aware ViewModel injection in composables. Works across Android/iOS/Desktop/Web. Essential for MVVM pattern in shared UI code. | HIGH |
-
-**Gradle dependencies:**
-```kotlin
-// In composeApp/build.gradle.kts, commonMain.dependencies
-implementation("io.insert-koin:koin-compose:4.1.1")
-implementation("io.insert-koin:koin-compose-viewmodel:4.1.1")
-```
-
-### 7. Supporting Libraries
-
-| Library | Version | Purpose | When to Use | Confidence |
-|---|---|---|---|---|
-| kotlinx-datetime | 0.7.1 | Multiplatform date/time | Token expiry, timestamps, scheduling. Uses kotlin.time.Instant from stdlib (Kotlin 2.1.20+). | HIGH |
-| kotlinx-serialization-json | 1.8.1 | JSON (de)serialization | Already used implicitly via Ktor. Pin explicitly in shared module for DTOs. Compatible with Kotlin 2.2.10 (1.10.0 requires Kotlin 2.3.0). | HIGH |
-| Kermit | 2.0.4 | Multiplatform logging | Client-side logging across Android (Logcat), iOS (OSLog), Desktop/Web (console). Lightweight, actively maintained by Touchlab. | MEDIUM |
-
-**Gradle dependencies:**
-```kotlin
-// In shared/build.gradle.kts, commonMain.dependencies
-implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.7.1")
-implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
-implementation("co.touchlab:kermit:2.0.4")
-```
-
-### 8. Setup CLI / Template Customization
+#### 2a. Turbine (Flow Testing)
 
 | Technology | Version | Purpose | Why Recommended | Confidence |
 |---|---|---|---|---|
-| Bash setup script | N/A | Project renaming / customization | Simple `setup.sh` that renames packages, application IDs, module names via sed/find-replace. No Kotlin CLI framework needed -- a bash script is the standard approach for GitHub template repos (see openMF/kmp-project-template's `customizer.sh`). | MEDIUM |
+| Turbine | 1.2.1 | Flow testing in `commonTest` and JVM test | The standard library for testing `StateFlow`/`Flow` emissions. Provides `test {}` extension, `awaitItem()`, `awaitComplete()`, `expectNoEvents()`. Essential for testing MVI ViewModel model emissions. KMP multiplatform: supports JVM, JS, wasmJs, iOS, macOS, Linux, Windows targets. | HIGH |
 
-**Rationale:** A Kotlin-based CLI tool (clikt, kotlinx-cli) would add compilation overhead and a native target requirement. For a "clone and run" template, a bash script that runs once is simpler, faster, and has no dependencies. The script should handle: package renaming, applicationId, server group, compose desktop mainClass, and database schema prefix.
+**Gradle dependency:**
+```kotlin
+// In libs.versions.toml
+turbine = "1.2.1"
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+```
+
+**Where to add:**
+- `commonTest.dependencies` in KMP app modules (app:auth, app:dashboard, app:profile, app:groups) -- for ViewModel flow testing
+- `testImplementation` in server modules -- for testing Flow-based services
+
+**Usage with MVI ViewModel:**
+```kotlin
+@Test
+fun `login intent emits loading then success`() = runTest {
+    val vm = LoginMviViewModel(fakeAuthApi)
+    vm.model.test {
+        assertThat(awaitItem()).isEqualTo(LoginModel()) // initial
+        vm.dispatch(LoginIntent.Submit("a@b.com", "pass"))
+        assertThat(awaitItem().isLoading).isTrue()
+        assertThat(awaitItem().loginSuccess).isTrue()
+    }
+}
+```
+
+#### 2b. kotlinx-coroutines-test (Test Dispatcher)
+
+| Technology | Version | Purpose | Why Recommended | Confidence |
+|---|---|---|---|---|
+| kotlinx-coroutines-test | 1.10.2 | `runTest`, `TestDispatcher`, `advanceUntilIdle` | Required for deterministic coroutine testing. Provides `runTest {}` which auto-advances virtual time for `delay()` calls. Already using coroutines 1.10.2 at runtime; this is the test counterpart. KMP multiplatform. | HIGH |
+
+**Gradle dependency:**
+```kotlin
+// In libs.versions.toml (version matches existing kotlinx-coroutines)
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+```
+
+**Where to add:**
+- `commonTest.dependencies` in KMP modules -- for ViewModel/repository tests
+- `testImplementation` in server modules -- for coroutine-based service tests
+
+#### 2c. Kotest Assertions Multiplatform (Already Partially Present)
+
+The `kotest-assertionsCore` (6.1.3) is already in the `testing-server` bundle but only available in server `testImplementation`. For KMP module testing, we need it in `commonTest`.
+
+**Where to add (no version change):**
+```kotlin
+// In KMP app module build.gradle.kts
+commonTest.dependencies {
+    implementation(libs.kotest.assertionsCore)  // already in version catalog at 6.1.3
+    implementation(libs.kotest.arrow)            // already in version catalog at 6.1.3
+}
+```
+
+**Note:** `kotest-assertions-core` at version 6.1.3 is KMP multiplatform (supports JVM, JS, wasmJs, Native). It works in `commonTest` out of the box. The `kotest-assertions-arrow` module (also at 6.1.3 under `io.kotest` group, not the old `io.kotest.extensions` group) provides `shouldBeRight()`, `shouldBeLeft()`, `shouldBeSome()` matchers.
+
+#### 2d. Testing Bundle Updates
+
+**Existing `testing-server` bundle (no changes needed):**
+```toml
+testing-server = [
+    "ktor-server-test-host",
+    "kotlin-testJunit",
+    "testcontainers",
+    "testcontainers-postgresql",
+    "koin-test",
+    "koin-test-junit4",
+    "kotest-assertionsCore",
+    "kotest-arrow",
+    "kotest-arrow-fx",
+]
+```
+
+**New bundle to add -- `testing-kmp` for multiplatform commonTest:**
+```toml
+[libraries]
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+[bundles]
+testing-kmp = [
+    "kotlin-test",
+    "kotest-assertionsCore",
+    "kotest-arrow",
+    "turbine",
+    "kotlinx-coroutines-test",
+]
+```
+
+### 3. Group Entity Management (Server-Side)
+
+**No new library dependencies needed.** Server-side group CRUD uses the same stack as existing user/auth management.
+
+| What Exists | Version | How It Serves Groups |
+|---|---|---|
+| Exposed (core, r2dbc, dao, datetime) | 1.0.0 | Table definitions for `GroupsTable`, `GroupMembershipsTable` |
+| Ktor Server (core, resources, auth, content-negotiation) | 3.4.0 | REST routes for group CRUD, admin endpoints |
+| Arrow core + fx | 2.2.1.1 | `Either`-based service layer, `Raise` context for error handling |
+| Koin (ktor, core) | 4.1.1 | DI for GroupService, GroupRepository |
+| Ktor Resources | 3.4.0 | Type-safe `@Resource` routes (already used for Users routes) |
+| RBAC (withRole plugin) | existing | `withRole(UserRole.Admin)` for admin-only group management routes |
+
+**New module recommended:** `server:groups` following the same convention as `server:auth`.
+
+**Build file pattern (mirrors server:auth):**
+```kotlin
+plugins {
+    id("server-module-convention")
+}
+group = "com.m2f.server"
+dependencies {
+    implementation(projects.core.models)
+    implementation(projects.server.core.config)
+    implementation(projects.server.core.database)
+    implementation(projects.server.core.security)
+    implementation(libs.bundles.fp)
+    implementation(libs.bundles.ktor.core)
+    implementation(libs.ktor.server.resources)
+    implementation(libs.bundles.di)
+    testImplementation(libs.bundles.testing.server)
+}
+```
+
+**New table definitions needed (Exposed 1.0.0):**
+- `GroupsTable` -- id (uuid), name, description, createdAt, createdBy
+- `GroupMembershipsTable` -- groupId, userId, role (owner/admin/member), joinedAt
+
+**New shared models needed (in core:models):**
+- `Group` data class
+- `GroupMembership` data class
+- `GroupRole` enum (Owner, Admin, Member)
+- `GroupRoutes` resource definitions (matching existing `Users` pattern)
+
+### 4. Localization System
+
+#### 4a. Client-Side Localization (Compose Multiplatform Resources)
+
+**No new library dependencies needed.** The built-in Compose Multiplatform resources system (`compose.components.resources`, already in `app/designsystem` and `composeApp`) handles client-side i18n.
+
+| What Exists | Version | How It Serves Localization |
+|---|---|---|
+| `compose.components.resources` | bundled with CMP 1.10.1 | `stringResource(Res.strings.key)`, auto-generated `Res` class, locale-qualified `values-xx/strings.xml` directories |
+| Compose resource qualifiers | CMP 1.10.1 | Language qualifier (`values-es`, `values-fr`), theme qualifier, density qualifier |
+
+**Setup needed (configuration, not new deps):**
+```
+app/designsystem/src/commonMain/composeResources/
+  values/strings.xml          -- default (English)
+  values-es/strings.xml       -- Spanish
+  values-fr/strings.xml       -- French
+  ...
+```
+
+**Access pattern:**
+```kotlin
+import template.app.designsystem.generated.resources.Res
+import template.app.designsystem.generated.resources.login_button
+import org.jetbrains.compose.resources.stringResource
+
+@Composable
+fun LoginScreen() {
+    Text(stringResource(Res.strings.login_button))
+}
+```
+
+**Locale switching:** Requires `CompositionLocalProvider` with platform `expect/actual` for locale management. No library needed -- it's built into the Compose resource environment system.
+
+#### 4b. Server-Side i18n
+
+**No third-party library recommended.** Ktor has no mature first-party i18n plugin. The best approach for server-side localization is a lightweight custom solution.
+
+| Approach | Implementation | Why |
+|---|---|---|
+| Custom `I18n` object with `.properties` files | Load `messages_en.properties`, `messages_es.properties` etc. via `java.util.ResourceBundle` or a simple map | Simple, no dependencies, matches JVM standard practices. The server only needs i18n for error messages and API response strings -- not full UI localization. |
+| `Accept-Language` header parsing | `call.request.acceptLanguageItems()` (built into Ktor 3.4.0) | Already available, returns quality-sorted language preferences. No plugin needed. |
+
+**Why NOT use third-party i18n libraries:**
+- `aymanizz/ktor-i18n` -- last updated for Ktor 2.0, incompatible with Ktor 3.x. Community project, not maintained.
+- `i18n4k` -- adds a code generator and build plugin. Overkill for server-side error messages. Adds build complexity.
+- Compose Resources on server -- technically possible but drags in Compose dependencies onto the JVM server module. Inappropriate coupling.
+
+**Shared key approach:** Define a `StringKey` enum in `core:models` that both client and server reference. The client maps keys to `Res.strings.*` via Compose resources. The server maps keys to `.properties` bundles. This keeps the localization contract type-safe across client and server without coupling their resource loading mechanisms.
+
+```kotlin
+// core:models (shared)
+enum class StringKey {
+    ERROR_UNAUTHORIZED,
+    ERROR_NOT_FOUND,
+    ERROR_VALIDATION_FAILED,
+    GROUP_CREATED,
+    GROUP_DELETED,
+    // ...
+}
+```
+
+---
+
+## Version Catalog Additions (New Entries Only)
+
+```toml
+[versions]
+turbine = "1.2.1"
+
+[libraries]
+# Testing (NEW)
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+[bundles]
+# NEW bundle for KMP commonTest
+testing-kmp = [
+    "kotlin-test",
+    "kotest-assertionsCore",
+    "kotest-arrow",
+    "turbine",
+    "kotlinx-coroutines-test",
+]
+```
+
+**That is the ENTIRE list of new version catalog entries.** Everything else needed (Exposed tables, Ktor routes, Arrow Either, Koin DI, Compose resources, ViewModel lifecycle) uses existing dependencies already in the catalog.
 
 ---
 
 ## Version Compatibility Matrix
 
-| Package | Compatible With | Notes |
+| New Addition | Compatible With | Notes |
 |---|---|---|
-| Kotlin 2.2.10 | Compose Multiplatform 1.9.x | CMP 1.9.0-rc01 supports Kotlin 2.2.x. Upgrade to 1.9.3 (stable) recommended. |
-| Kotlin 2.2.10 | Arrow 2.2.0 | Arrow 2.2.0 requires Kotlin 2.2.0+ for context parameters support |
-| Kotlin 2.2.10 | kotlinx-serialization 1.8.1 | 1.8.x series targets Kotlin 2.1.x; compatible with 2.2.10. Do NOT use 1.10.0 (requires Kotlin 2.3.0). |
-| Kotlin 2.2.10 | Koog 0.6.1 | Koog uses kotlinx-coroutines 1.10.2, kotlinx-serialization 1.8.1 -- aligned with project. |
-| Kotlin 2.2.10 | Koin 4.1.1 | Fully compatible. |
-| Ktor 3.3.x EAP | Koog koog-ktor 0.6.1 | Compatible. Ktor 3.4.0 upgrade is recommended but separate. |
-| AndroidX Navigation 2.9.1 | Compose Multiplatform 1.9.x | Based on Jetpack Navigation 2.9.4. Tested with CMP 1.8.2+. |
-| DataStore 1.1.7 | KMP all targets | Supported since DataStore 1.1.0. |
-
----
-
-## Upgrade Recommendations (Existing Dependencies)
-
-| Current | Upgrade To | Why | Priority |
-|---|---|---|---|
-| Compose Multiplatform 1.9.0-rc01 | 1.9.3 | RC01 is pre-release; 1.9.3 is the latest stable in the 1.9 line (Nov 2025). Includes accessibility improvements, web compat, AGP 9.0 support. | HIGH |
-| Arrow 2.1.2 | 2.2.0 | Enables context parameter-based Raise API, Racing DSL, validate function. Aligns with project's Kotlin 2.2.10 + context parameters. | HIGH |
-| Exposed 1.0.0-rc-1 | 1.0.0 | Exposed 1.0.0 stable released Jan 2026. Stable API guarantee, improved R2DBC support. | HIGH |
-| Ktor 3.3.0-openapi-eap | 3.4.0 (when ready) | Ktor 3.4.0 stable (Jan 2026) includes OpenAPI generation, structured concurrency. Eliminates EAP dependency. | MEDIUM (do after milestone) |
+| Turbine 1.2.1 | Kotlin 2.3.10, kotlinx-coroutines 1.10.2 | Turbine depends on kotlinx-coroutines. Version 1.2.1 works with coroutines 1.7+. No Kotlin version constraint beyond standard stdlib compatibility. Supports wasmJs target (added in 1.1.0). |
+| kotlinx-coroutines-test 1.10.2 | Kotlin 2.3.10, kotlinx-coroutines 1.10.2 | Same artifact group/version as the runtime coroutines. Must match exactly. Already at 1.10.2. |
+| Kotest 6.1.3 in commonTest | Kotlin 2.3.10, all KMP targets | Kotest 6.1.x supports Kotlin 2.0-2.3. Multiplatform artifacts exist for assertions-core. Already confirmed working in project (used in server tests). |
 
 ---
 
@@ -188,118 +323,94 @@ implementation("co.touchlab:kermit:2.0.4")
 
 | Category | Recommended | Alternative | Why Not |
 |---|---|---|---|
-| AI Agents | Koog | LangChain4j | Java-centric, no Kotlin DSL, no multiplatform support, no Ktor integration plugin. Koog is Kotlin-native with JetBrains backing. |
-| AI Agents | Koog | Spring AI | Ties you to Spring ecosystem. This project is Ktor-based. Spring AI has no KMP story. |
-| Navigation | AndroidX Navigation 2.9.1 | Voyager | Third-party, smaller community, not backed by JetBrains/Google. AndroidX Navigation is now THE official solution. |
-| Navigation | AndroidX Navigation 2.9.1 | Navigation 3 | Too new (alpha in CMP 1.10.0). Good future choice but not template-ready. Revisit when stable. |
-| Navigation | AndroidX Navigation 2.9.1 | Decompose | More complex, own lifecycle management. Overkill for a template. Good for advanced architectures but steeper learning curve. |
-| Local Storage | DataStore Preferences | multiplatform-settings | Wrapper over platform APIs. DataStore is official Jetpack, coroutine-native, more future-proof. |
-| Local Storage | DataStore Preferences | SQLDelight | Overkill for key-value storage. Use SQLDelight only if you need structured relational queries on client side. |
-| Local Storage | DataStore Preferences | Room KMP | Room KMP is still alpha quality for non-Android targets. DataStore is stable. |
-| Logging | Kermit | Napier | Both are viable. Kermit has more maintainers (Touchlab), composable log outputs, and Crashlytics integration. Napier is simpler but less actively maintained. |
-| UI Components | Material3 + Adaptive | compose-cupertino | Adds iOS-native look but at cost of maintaining a third-party dependency. A template should stay with official components. Users can add compose-cupertino if they want iOS-native aesthetics. |
-| Client DI | Koin Compose | Kodein | Project already uses Koin server-side. Using Kodein client-side would split DI frameworks. Stay consistent. |
-| Setup CLI | Bash script | Kotlin CLI (clikt) | Over-engineered for a one-time rename operation. Bash works everywhere, no compilation needed. |
-| Serialization | kotlinx-serialization 1.8.1 | Moshi/Gson | Not multiplatform. kotlinx-serialization is the only KMP-compatible JSON library with compiler plugin support. |
+| MVI Framework | Custom base class (~30 LOC) | Orbit MVI | Adds unnecessary dependency. Orbit is great for complex apps but overkill for a template. The MVI pattern is trivial to implement with StateFlow + Channel. |
+| MVI Framework | Custom base class | MVIKotlin (Arkadii Ivanov) | Brings its own store/lifecycle model that conflicts with AndroidX ViewModel. Over-engineered for this use case. |
+| MVI Framework | Custom base class | Decompose | Full lifecycle framework. Already decided against in v1.0 research. Template uses AndroidX Lifecycle + Navigation. |
+| Flow Testing | Turbine 1.2.1 | Manual `toList()` / `first()` | Fragile, timing-dependent, no timeout handling. Turbine is the industry standard for Flow testing in Kotlin. |
+| Flow Testing | Turbine 1.2.1 | kotlinx-coroutines-test only | `runTest` + `TestScope` works for simple cases but lacks Turbine's `awaitItem()` / `expectNoEvents()` semantics for StateFlow testing. |
+| Client i18n | Compose Multiplatform Resources | Moko Resources | Third-party library that predates official CMP resource support. CMP 1.10.1 has stable, built-in string resources with locale qualifiers. No reason to add a third-party alternative. |
+| Client i18n | Compose Multiplatform Resources | i18n4k | Adds a code generator build plugin. Compose Resources already generates `Res` class with type-safe string accessors. Redundant. |
+| Server i18n | java.util.ResourceBundle / custom | ktor-i18n (aymanizz) | Unmaintained, Ktor 2.x only, not compatible with Ktor 3.4.0. |
+| Server i18n | java.util.ResourceBundle / custom | Spring MessageSource | Wrong ecosystem. This is Ktor. |
+| Mocking (KMP) | Manual fakes / interfaces | MockK | MockK does NOT support Kotlin/Native, wasmJs, or iOS targets. Cannot be used in `commonTest`. Manual fakes are the recommended KMP testing pattern. |
+| Mocking (KMP) | Manual fakes | Mockative / MocKMP | KSP-based mocking frameworks add build complexity and code generation overhead. For a template, manual fakes are clearer and demonstrate good testing patterns. |
 
 ---
 
-## What NOT to Use
+## What NOT to Add
 
 | Avoid | Why | Use Instead |
 |---|---|---|
-| Navigation 3 | Alpha status (CMP 1.10.0-alpha). Will change. Not production-ready for a template. | AndroidX Navigation 2.9.1 |
-| Compose Multiplatform 1.10.0 | Requires Kotlin 2.3.0 which is newer than project's 2.2.10. Would force Kotlin upgrade and risk cascading dependency breaks. | CMP 1.9.3 (stable, Kotlin 2.2.x compatible) |
-| kotlinx-serialization 1.10.0 | Requires Kotlin 2.3.0. Incompatible with project's Kotlin 2.2.10. | 1.8.1 (compatible with Kotlin 2.2.x) |
-| Spring Boot / Spring AI | Wrong ecosystem. This is a Ktor project. Adding Spring creates architectural split. | Koog + Ktor plugin |
-| Retrofit | Not multiplatform. Android-only. | Ktor Client (already in project) |
-| Hilt / Dagger | Not multiplatform. Android-only DI. | Koin (already in project) |
-| SharedPreferences / NSUserDefaults | Platform-specific, no coroutine support, no transactional guarantees. | DataStore Preferences |
-| SQLDelight for preferences | Over-engineered for key-value storage. SQL schema overhead for simple flags/tokens. | DataStore Preferences |
-| Room KMP | Alpha quality on non-Android targets. Unstable API. | DataStore for KV; Exposed (server) for relational data |
+| Orbit MVI / MVIKotlin | Over-engineered for a template. MVI is ~30 lines of code with StateFlow + Channel. Adding a framework obscures the pattern. | Custom `MviViewModel` base class |
+| MockK for KMP tests | No Kotlin/Native, wasmJs, or iOS support. Only works in JVM tests. | Manual fakes implementing interfaces. MockK is fine in server `test/` (JVM-only) if needed, but don't add it to `commonTest`. |
+| Moko Resources | Third-party; Compose Multiplatform 1.10.1 has built-in localization. Moko predates the official solution. | `compose.components.resources` (already in project) |
+| i18n4k | Adds a Gradle plugin for code generation. Compose Resources already code-generates `Res.strings.*`. | Compose Resources for client, ResourceBundle for server |
+| ktor-i18n | Unmaintained, Ktor 2.x only. | Custom `Accept-Language` parsing with Ktor's built-in `acceptLanguageItems()` |
+| Room KMP for groups | Overkill for server-side. The server uses Exposed. Client doesn't need local group storage. | Exposed 1.0.0 (server), SDK API calls (client) |
+| SQLDelight for client | No client-side database needed. Groups are fetched from server via SDK. | Ktor Client + Arrow Either (already in project) |
+| New Ktor plugins for admin | Existing RBAC (`withRole`) already handles admin routes. No new auth plugin needed. | Existing `withRole(UserRole.Admin)` / `withRole(UserRole.PowerAdmin)` |
 
 ---
 
-## Gradle Version Catalog Additions
+## Stack Patterns by Feature
 
-The following entries should be added to `gradle/libs.versions.toml`:
+### If implementing MVI ViewModel:
+- Use `ViewModel` from `org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose:2.9.6` (already present)
+- Use `StateFlow<Model>` for UI state, `Channel<Event>` for one-shot events
+- Test with Turbine's `model.test { awaitItem() }` in `commonTest`
+- Inject via `koinViewModel<MyMviViewModel>()` (already present)
+- No new dependencies needed
 
-```toml
-[versions]
-# New additions
-koog = "0.6.1"
-navigation-compose = "2.9.1"
-material3-adaptive = "1.2.0"
-datastore = "1.1.7"
-kermit = "2.0.4"
-kotlinx-datetime = "0.7.1"
+### If implementing Groups server module:
+- Mirror `server:auth` module structure (convention plugin, same deps)
+- Tables: `GroupsTable`, `GroupMembershipsTable` in Exposed 1.0.0
+- Routes: Type-safe `@Resource` classes in `core:models`
+- Service layer: `context(Raise<DomainError>)` following existing Arrow pattern
+- Admin routes: `withRole(UserRole.Admin) { ... }` (existing RBAC)
+- No new dependencies needed
 
-# Upgrades
-arrow = "2.2.0"              # was 2.1.2
-composeMultiplatform = "1.9.3"  # was 1.9.0-rc01
-exposed = "1.0.0"              # was 1.0.0-rc-1
+### If implementing Testing infrastructure:
+- Add Turbine 1.2.1 and kotlinx-coroutines-test 1.10.2 to version catalog
+- Create `testing-kmp` bundle for commonTest
+- Server tests: use existing `testing-server` bundle (unchanged)
+- KMP tests: use new `testing-kmp` bundle in commonTest
+- Write manual fakes for interfaces (no mocking library in commonTest)
 
-[libraries]
-# AI Agents
-koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
-koog-ktor = { module = "ai.koog:koog-ktor", version.ref = "koog" }
-
-# Navigation
-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation-compose" }
-
-# Adaptive Layout
-material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "material3-adaptive" }
-material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "material3-adaptive" }
-material3-adaptive-navigation = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation", version.ref = "material3-adaptive" }
-
-# Local Storage
-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
-
-# Koin Compose
-koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
-koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
-
-# Supporting
-kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-
-[bundles]
-koog = ["koog-agents", "koog-ktor"]
-navigation = ["navigation-compose"]
-adaptive = ["material3-adaptive", "material3-adaptive-layout", "material3-adaptive-navigation"]
-koin-compose = ["koin-compose", "koin-compose-viewmodel"]
-```
+### If implementing Localization:
+- Client: Add `values/strings.xml` files under `composeResources/` in `app/designsystem`
+- Client: Use `stringResource(Res.strings.key)` in composables
+- Server: Create `I18n` utility with `.properties` files per locale
+- Server: Parse `Accept-Language` via Ktor's built-in `call.request.acceptLanguageItems()`
+- Shared: `StringKey` enum in `core:models` for type-safe key references
+- No new library dependencies needed for either client or server
 
 ---
 
 ## Sources
 
-### HIGH Confidence (Official docs, releases, verified)
-- [Koog GitHub - JetBrains](https://github.com/JetBrains/koog) -- Version 0.6.1, module structure, platform support
-- [Koog Official Docs](https://docs.koog.ai/) -- Getting started, Ktor plugin, MCP integration
-- [Koog Ktor Plugin Docs](https://docs.koog.ai/ktor-plugin/) -- koog-ktor dependency and installation
-- [Compose Multiplatform Releases](https://github.com/JetBrains/compose-multiplatform/releases) -- Version history, 1.9.3 and 1.10.0
-- [Kotlin Multiplatform Navigation Docs](https://kotlinlang.org/docs/multiplatform/compose-navigation.html) -- AndroidX Navigation 2.9.1
-- [Arrow 2.2.0 Release](https://arrow-kt.io/community/blog/2025/11/01/arrow-2-2/) -- Context parameters, Racing DSL
-- [Exposed 1.0 Release](https://blog.jetbrains.com/kotlin/2026/01/exposed-1-0-is-now-available/) -- Stable API
-- [Ktor 3.4.0 Release](https://blog.jetbrains.com/kotlin/2026/01/ktor-3-4-0-is-now-available/) -- OpenAPI, structured concurrency
-- [DataStore KMP Setup](https://developer.android.com/kotlin/multiplatform/datastore) -- Official Google docs
-- [Koin 4.1 Release](https://blog.kotzilla.io/koin-4.1-is-here) -- Compose support, koin-compose-viewmodel
-- [Compose Compatibility Matrix](https://kotlinlang.org/docs/multiplatform/compose-compatibility-and-versioning.html) -- CMP/Kotlin version alignment
-- [kotlinx-serialization Releases](https://github.com/Kotlin/kotlinx.serialization/releases) -- Version 1.8.1/1.10.0 Kotlin requirements
+### HIGH Confidence (Official docs, releases, verified against project)
+- [Turbine GitHub](https://github.com/cashapp/turbine) -- Version 1.2.1, KMP multiplatform support (JVM, JS, wasmJs, Native)
+- [Turbine Releases](https://github.com/cashapp/turbine/releases) -- 1.2.1 released Jun 2024, wasmJs added in 1.1.0
+- [Kotest Official Docs](https://kotest.io/docs/assertions/arrow.html) -- Arrow assertions module (io.kotest group, matches kotest version)
+- [Kotest Releases](https://github.com/kotest/kotest/releases) -- v6.1.3 (Feb 2025), supports Kotlin 2.0-2.3
+- [Compose Multiplatform Resources](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources.html) -- String localization, locale qualifiers
+- [Compose Localize Strings](https://kotlinlang.org/docs/multiplatform/compose-localize-strings.html) -- stringResource(), Res.strings, values-xx directories
+- [Compose Resource Environment](https://kotlinlang.org/docs/multiplatform/compose-resource-environment.html) -- Programmatic locale switching via CompositionLocal
+- [Ktor Testing Docs](https://ktor.io/docs/server-testing.html) -- testApplication {}, test client configuration
+- [Ktor acceptLanguageItems](https://api.ktor.io/ktor-server/ktor-server-core/io.ktor.server.request/accept-language-items.html) -- Built-in Accept-Language parsing
+- [AndroidX ViewModel KMP](https://developer.android.com/kotlin/multiplatform/viewmodel) -- ViewModel 2.8.0+ supports KMP, confirmed at 2.9.6
+- [JetBrains Common ViewModel](https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-viewmodel.html) -- lifecycle-viewmodel-compose multiplatform
+- [kotlinx-coroutines-test Docs](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/) -- runTest, TestDispatcher, advanceUntilIdle
 
-### MEDIUM Confidence (Multiple sources, community verified)
-- [Kermit by Touchlab](https://kermit.touchlab.co/docs/) -- Version 2.0.4, multiplatform logging
-- [kotlinx-datetime Releases](https://github.com/Kotlin/kotlinx-datetime/releases) -- Version 0.7.1
-- [Compose Material3 Adaptive Docs](https://kotlinlang.org/docs/multiplatform/compose-adaptive-layouts.html) -- Adaptive layout APIs
-- [Koog A2A Blog Post](https://blog.jetbrains.com/ai/2025/10/koog-a2a-building-connected-ai-agents-in-kotlin/) -- A2A integration
-- [Koog ACP Blog Post](https://blog.jetbrains.com/ai/2026/02/koog-x-acp-connect-an-agent-to-your-ide-and-more/) -- ACP protocol
+### MEDIUM Confidence (Multiple sources agree)
+- [KMP Testing Guide 2025](https://www.kmpship.app/blog/kotlin-multiplatform-testing-guide-2025) -- Turbine + Kotest + coroutines-test as standard KMP test stack
+- [MockK KMP Limitations](https://github.com/mockk/mockk) -- Confirmed no Kotlin/Native support, manual fakes recommended for KMP
 
 ### LOW Confidence (Needs validation during implementation)
-- Koog 0.6.1 compatibility with Ktor 3.3.0-openapi-eap specifically -- may need Ktor 3.4.0 upgrade first
-- DataStore 1.1.7 vs 1.2.0 on WasmJs target -- WasmJs support status unclear, may need platform-specific expect/actual
+- Turbine 1.2.1 precise compatibility with Kotlin 2.3.10 -- likely fine (no Kotlin version constraint documented), but latest Turbine release predates Kotlin 2.3. If issues arise, 1.3.0-SNAPSHOT is available.
+- Kotest 6.1.3 `kotest-assertions-arrow` in wasmJs `commonTest` -- multiplatform artifacts exist but wasmJs target specifically may have edge cases.
 
 ---
 
-*Stack research for: KMP Full-Stack Template with AI Agent Support*
-*Researched: 2026-02-10*
+*Stack research for: KMP Full-Stack Template -- Milestone 2 (MVI, Groups, Testing, Localization)*
+*Researched: 2026-02-17*
