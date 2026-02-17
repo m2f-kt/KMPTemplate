@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 10 of 15 (MVI ViewModel Foundation)
-Plan: 0 of 0 in current phase
-Status: Ready to plan
-Last activity: 2026-02-18 -- Phase 10 context gathered
+Plan: 1 of 1 in current phase
+Status: Phase 10 complete
+Last activity: 2026-02-18 -- Completed 10-01-PLAN.md
 
-Progress: [░░░░░░░░░░░░░░░░░░░░] 0%
+Progress: [███░░░░░░░░░░░░░░░░░] 17% (1/6 plans)
 
 ## v1.0 Performance (archived)
 
@@ -31,11 +31,15 @@ Progress: [████████████████████] 100% (3
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 
 ## Accumulated Context
 
 ### Decisions
+
+- Phase 10: extraBufferCapacity=64 on MviViewModel pipeline to prevent emit suspension before collectors ready
+- Phase 10: reduce is suspend per user decision (diverges from Airalo reference)
+- Phase 10: koin-core kept as implementation dependency (not exposed to consumers)
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -48,5 +52,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Phase 10 context gathered
-Resume file: .planning/phases/10-mvi-viewmodel-foundation/10-CONTEXT.md
+Stopped at: Completed 10-01-PLAN.md
+Resume file: .planning/phases/10-mvi-viewmodel-foundation/10-01-SUMMARY.md
