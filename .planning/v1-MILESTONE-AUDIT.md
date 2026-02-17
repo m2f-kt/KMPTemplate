@@ -1,7 +1,7 @@
 ---
 milestone: v1.0
 audited: 2026-02-17T00:00:00Z
-status: tech_debt
+status: complete
 scores:
   requirements: 32/32
   phases: 10/10
@@ -12,24 +12,22 @@ gaps:
   integration: []
   flows: []
 documentation_gaps:
+  - type: "missing_summary_frontmatter"
+    detail: "No SUMMARY.md files contain requirements-completed field in frontmatter (3-source cross-reference reduced to 2 sources). Deferred -- low impact."
+documentation_gaps_resolved:
   - type: "missing_verification"
     phase: "09-wasm-http-engine-fix"
-    detail: "No VERIFICATION.md file. UAT exists (4/4 passed) as substitute evidence."
+    resolved_by: "quick-27 (created 09-VERIFICATION.md from UAT evidence)"
   - type: "unchecked_traceability"
-    detail: "REQUIREMENTS.md traceability table has all 32 requirements at 'Pending' status — checkboxes never updated."
+    resolved_by: "quick-27 (all 32 requirements updated to Satisfied)"
   - type: "missing_req_mapping"
     phase: "03-client-sdk-storage"
-    detail: "Phase 3 VERIFICATION.md uses goal-level verification without explicit requirement ID mapping (SDK-01 through SDK-04, STOR-01, STOR-02)."
-  - type: "missing_summary_frontmatter"
-    detail: "No SUMMARY.md files contain requirements-completed field in frontmatter (3-source cross-reference reduced to 2 sources)."
+    resolved_by: "quick-27 (added explicit SDK-01 through SDK-04, STOR-01, STOR-02 mapping table)"
 tech_debt:
   - phase: 01-foundation-module-structure
     items:
       - "Runtime Koin DI verification needed on all 4 KMP targets (human_needed)"
       - "WASM production build stability unconfirmed (Phase 9 UAT showed WASM browser works in dev)"
-  - phase: 06.1-chat-agent-streaming-refactor
-    items:
-      - "06.1-VERIFICATION.md documents SSE transport but code now uses WebSocket (quick-24 post-verification change)"
   - phase: general
     items:
       - "STOR-02 (PreferencesStorage) — module exists and wired in DI but no consumer uses it (infrastructure-ready, no runtime usage)"
@@ -39,7 +37,7 @@ tech_debt:
 
 **Project:** KMP Full-Stack Template
 **Audited:** 2026-02-17 (update of 2026-02-15 initial audit)
-**Status:** tech_debt (all requirements met, no critical blockers, minor accumulated debt)
+**Status:** complete (all requirements met, documentation debt resolved, minor human-needed tech debt deferred)
 
 ## Scores Summary
 
@@ -66,7 +64,7 @@ tech_debt:
 - ~~Stale SSE comment in ChatStreamingStrategy.kt~~ → **FIXED** in Phase 7
 - ~~Config naming mismatch (openaiApiKey vs googleApiKey)~~ → **RESOLVED** in Phase 7 refactor
 
-### Tech Debt Remaining: 4 items (down from 6)
+### Tech Debt Remaining: 3 items (down from 6; 06.1 stale verification resolved by quick-27)
 
 ## Phase Verification Summary
 
@@ -74,14 +72,14 @@ tech_debt:
 |-------|--------|-------|-------|
 | 01: Foundation & Module Structure | human_needed | 10/10 truths | Runtime DI/WASM need human verification |
 | 02: Server Auth & Users | passed | 16/16 truths | Clean pass |
-| 03: Client SDK & Storage | passed | 7/7 truths | Goal-level verification (no explicit req IDs) |
+| 03: Client SDK & Storage | passed | 7/7 truths | Explicit req ID mapping added (SDK-01 through STOR-02) |
 | 04: Navigation & UI Components | passed | 11/11 truths | Re-verified after preview gap closure |
 | 05: Auth Screens, Dashboard & Setup CLI | passed | 25/25 truths | Re-verified twice after UAT gaps |
 | 06: AI Agent Infrastructure | passed | 4/4 truths | Clean pass |
-| 06.1: Chat Agent Streaming Refactor | passed | 10/10 truths | Verification docs stale (SSE → WebSocket) |
+| 06.1: Chat Agent Streaming Refactor | passed | 10/10 truths | Re-verified: SSE -> WebSocket (quick-27) |
 | 07: Role System Refactor & Tech Debt | passed | 13/13 truths | Clean pass, closed 2 prior tech debt items |
 | 08: Type-Safe Shared Routes | passed | 5/5 truths | Clean pass |
-| 09: WASM HTTP Engine Fix | **no verification** | — | UAT 4/4 passed (substitute evidence) |
+| 09: WASM HTTP Engine Fix | passed | 3/3 truths | Created from UAT evidence (quick-27) |
 
 ## Requirements Coverage (3-Source Cross-Reference)
 
@@ -89,75 +87,75 @@ tech_debt:
 
 | Source | Available | Notes |
 |--------|-----------|-------|
-| VERIFICATION.md | 9/10 phases | Phase 9 missing (UAT exists) |
-| SUMMARY frontmatter (requirements-completed) | 0/39 plans | Field never populated |
-| REQUIREMENTS.md traceability | 32/32 | All show "Pending" (never updated) |
+| VERIFICATION.md | 10/10 phases | All phases have verification reports |
+| SUMMARY frontmatter (requirements-completed) | 0/39 plans | Field never populated (deferred) |
+| REQUIREMENTS.md traceability | 32/32 | All show "Satisfied" |
 
 ### Foundation (Phase 1) — 9/9
 
 | ID | VERIFICATION | SUMMARY | Traceability | Final Status |
 |----|-------------|---------|--------------|--------------|
-| FOUND-01 | passed | — | Pending | **satisfied** |
-| FOUND-02 | passed | — | Pending | **satisfied** |
-| FOUND-03 | passed | — | Pending | **satisfied** |
-| FOUND-04 | passed | — | Pending | **satisfied** |
-| FOUND-05 | passed (human_needed) | — | Pending | **satisfied** (runtime test pending) |
-| FOUND-06 | passed | — | Pending | **satisfied** |
-| FOUND-07 | passed | — | Pending | **satisfied** |
-| CC-01 | passed | — | Pending | **satisfied** |
-| CC-02 | passed | — | Pending | **satisfied** |
+| FOUND-01 | passed | — | Satisfied | **satisfied** |
+| FOUND-02 | passed | — | Satisfied | **satisfied** |
+| FOUND-03 | passed | — | Satisfied | **satisfied** |
+| FOUND-04 | passed | — | Satisfied | **satisfied** |
+| FOUND-05 | passed (human_needed) | — | Satisfied | **satisfied** (runtime test pending) |
+| FOUND-06 | passed | — | Satisfied | **satisfied** |
+| FOUND-07 | passed | — | Satisfied | **satisfied** |
+| CC-01 | passed | — | Satisfied | **satisfied** |
+| CC-02 | passed | — | Satisfied | **satisfied** |
 
 ### Authentication & Users (Phase 2) — 7/7
 
 | ID | VERIFICATION | SUMMARY | Traceability | Final Status |
 |----|-------------|---------|--------------|--------------|
-| AUTH-01 | passed | — | Pending | **satisfied** |
-| AUTH-02 | passed | — | Pending | **satisfied** |
-| AUTH-03 | passed | — | Pending | **satisfied** |
-| AUTH-04 | passed | — | Pending | **satisfied** |
-| AUTH-05 | passed | — | Pending | **satisfied** |
-| AUTH-06 | passed | — | Pending | **satisfied** |
-| AUTH-07 | passed | — | Pending | **satisfied** |
+| AUTH-01 | passed | — | Satisfied | **satisfied** |
+| AUTH-02 | passed | — | Satisfied | **satisfied** |
+| AUTH-03 | passed | — | Satisfied | **satisfied** |
+| AUTH-04 | passed | — | Satisfied | **satisfied** |
+| AUTH-05 | passed | — | Satisfied | **satisfied** |
+| AUTH-06 | passed | — | Satisfied | **satisfied** |
+| AUTH-07 | passed | — | Satisfied | **satisfied** |
 
 ### Client SDK (Phase 3) — 6/6
 
 | ID | VERIFICATION | SUMMARY | Traceability | Final Status |
 |----|-------------|---------|--------------|--------------|
-| SDK-01 | goal-level pass | — | Pending | **satisfied** (integration checker confirmed) |
-| SDK-02 | goal-level pass | — | Pending | **satisfied** (integration checker confirmed) |
-| SDK-03 | goal-level pass | — | Pending | **satisfied** (integration checker confirmed) |
-| SDK-04 | goal-level pass | — | Pending | **satisfied** (integration checker confirmed) |
-| STOR-01 | goal-level pass | — | Pending | **satisfied** (integration checker confirmed) |
-| STOR-02 | goal-level pass | — | Pending | **satisfied** (infrastructure exists, no consumer) |
+| SDK-01 | passed (explicit mapping) | — | Satisfied | **satisfied** |
+| SDK-02 | passed (explicit mapping) | — | Satisfied | **satisfied** |
+| SDK-03 | passed (explicit mapping) | — | Satisfied | **satisfied** |
+| SDK-04 | passed (explicit mapping) | — | Satisfied | **satisfied** |
+| STOR-01 | passed (explicit mapping) | — | Satisfied | **satisfied** |
+| STOR-02 | passed (explicit mapping) | — | Satisfied | **satisfied** (infrastructure-ready) |
 
 ### Navigation & UI (Phase 4) — 3/3
 
 | ID | VERIFICATION | SUMMARY | Traceability | Final Status |
 |----|-------------|---------|--------------|--------------|
-| NAV-01 | passed | — | Pending | **satisfied** |
-| NAV-03 | passed | — | Pending | **satisfied** |
-| NAV-04 | passed | — | Pending | **satisfied** |
+| NAV-01 | passed | — | Satisfied | **satisfied** |
+| NAV-03 | passed | — | Satisfied | **satisfied** |
+| NAV-04 | passed | — | Satisfied | **satisfied** |
 
 ### Screens & DX (Phase 5) — 3/3
 
 | ID | VERIFICATION | SUMMARY | Traceability | Final Status |
 |----|-------------|---------|--------------|--------------|
-| NAV-02 | passed | — | Pending | **satisfied** |
-| DX-01 | passed | — | Pending | **satisfied** |
-| DX-02 | passed | — | Pending | **satisfied** |
+| NAV-02 | passed | — | Satisfied | **satisfied** |
+| DX-01 | passed | — | Satisfied | **satisfied** |
+| DX-02 | passed | — | Satisfied | **satisfied** |
 
 ### AI Agents (Phase 6 + 6.1) — 4/4
 
 | ID | VERIFICATION | SUMMARY | Traceability | Final Status |
 |----|-------------|---------|--------------|--------------|
-| AI-01 | passed | — | Pending | **satisfied** |
-| AI-02 | passed | — | Pending | **satisfied** |
-| AI-03 | passed | — | Pending | **satisfied** |
-| AI-04 | passed | — | Pending | **satisfied** |
+| AI-01 | passed | — | Satisfied | **satisfied** |
+| AI-02 | passed | — | Satisfied | **satisfied** |
+| AI-03 | passed | — | Satisfied | **satisfied** |
+| AI-04 | passed | — | Satisfied | **satisfied** |
 
 ### Orphan Detection
 
-No orphaned requirements. All 32 requirements appear in at least one phase VERIFICATION.md (Phase 3's goal-level verification implicitly covers SDK-01 through SDK-04, STOR-01, STOR-02; confirmed by integration checker code analysis).
+No orphaned requirements. All 32 requirements appear in at least one phase VERIFICATION.md with explicit requirement ID mapping (Phase 3 now has explicit SDK-01 through SDK-04, STOR-01, STOR-02 mapping table).
 
 ## Cross-Phase Integration (15 points)
 
@@ -211,37 +209,49 @@ Token expires → Auto-refresh → Refresh fails → Session expiry event → Na
 - **Runtime verification pending:** Koin DI resolution on all 4 KMP targets needs human runtime testing
 - **WASM stability:** Production build stability unconfirmed (dev WASM works per Phase 9 UAT)
 
-### Phase 06.1: Streaming Refactor (1 item)
-- **Stale verification:** 06.1-VERIFICATION.md documents SSE transport, code now uses WebSocket (quick-24)
+### ~~Phase 06.1: Streaming Refactor~~ (RESOLVED by quick-27)
+- ~~Stale verification: 06.1-VERIFICATION.md documents SSE transport~~ -- **FIXED**: Re-verified with WebSocket transport references
 
 ### General (1 item)
 - **STOR-02 unused:** PreferencesStorage module exists and is wired in DI, but no screen/ViewModel consumes it yet (infrastructure-ready for developers to use)
 
-### Total: 4 items across 3 categories (reduced from 6 in previous audit)
+### Total: 3 items across 2 categories (reduced from 6 in initial audit; 06.1 stale verification resolved by quick-27)
 
 ## Documentation Debt
 
 These are process documentation gaps that don't affect functionality:
 
-1. **REQUIREMENTS.md traceability checkboxes:** All 32 requirements still show `[ ]` Pending — never updated to reflect completion
-2. **Phase 3 VERIFICATION.md:** Uses goal-level verification without explicit requirement ID mapping
-3. **Phase 9 VERIFICATION.md:** Missing entirely (UAT 4/4 passed serves as substitute)
-4. **SUMMARY frontmatter:** No plan SUMMARY.md files include `requirements-completed` field (3-source cross-reference degraded to 2 sources)
+1. ~~**REQUIREMENTS.md traceability checkboxes:**~~ **FIXED** (quick-27) -- All 32 requirements updated to `[x]` Satisfied
+2. ~~**Phase 3 VERIFICATION.md:**~~ **FIXED** (quick-27) -- Added explicit requirement ID mapping table (SDK-01 through STOR-02)
+3. ~~**Phase 9 VERIFICATION.md:**~~ **FIXED** (quick-27) -- Created from UAT evidence (3/3 truths verified)
+4. **SUMMARY frontmatter:** No plan SUMMARY.md files include `requirements-completed` field (deferred -- low impact, 2-source cross-reference sufficient)
+
+## Changes Since Second Audit (2026-02-17 quick-27)
+
+### Documentation Debt Resolved
+- **REQUIREMENTS.md:** All 32 traceability rows updated from Pending to Satisfied, all checkboxes checked
+- **Phase 3 VERIFICATION.md:** Explicit requirement ID mapping table added (SDK-01 through STOR-02)
+- **Phase 9 VERIFICATION.md:** Created from UAT evidence (3/3 truths verified)
+- **Phase 06.1 VERIFICATION.md:** Re-verified with WebSocket transport references (SSE references updated)
+
+### Tech Debt Resolved
+- ~~06.1-VERIFICATION.md stale SSE references~~ -- **FIXED** by quick-27 re-verification
+
+### Status Change
+- `tech_debt` -> `complete` (all actionable documentation debt resolved; remaining items are human-needed runtime tests and deferred low-impact items)
 
 ## Conclusion
 
-**Milestone v1.0 has achieved its definition of done.** All 32 requirements are functionally satisfied across 10 completed phases. Cross-phase integration is fully wired with 15 verified connection points and no orphaned exports. All 6 E2E user flows work end-to-end.
+**Milestone v1.0 is complete.** All 32 requirements are functionally satisfied across 10 completed phases. Cross-phase integration is fully wired with 15 verified connection points and no orphaned exports. All 6 E2E user flows work end-to-end. All 10 phases have VERIFICATION.md reports. REQUIREMENTS.md traceability is fully updated.
 
-Since the previous audit (2026-02-15):
-- 3 additional phases completed (7, 8, 9) closing all identified gaps
-- 2 quick tasks (25, 26) improved auth UX and mobile platform support
-- Tech debt reduced from 6 to 4 items (2 fixed by Phase 7, 1 resolved)
-- No new critical gaps introduced
-
-The remaining tech debt (4 items) is minor — pending human runtime tests, one stale verification doc, and one unused-but-available storage module. None are functional blockers.
+The remaining tech debt (3 items) is non-blocking:
+- 2 human-needed items (Phase 01 runtime DI verification, WASM production stability) require manual runtime testing
+- 1 infrastructure-ready item (STOR-02 PreferencesStorage has no runtime consumer yet)
+- 1 deferred documentation item (SUMMARY frontmatter requirements-completed field, low impact)
 
 ---
 
 *Initial audit: 2026-02-15*
-*Updated: 2026-02-17 (post Phase 7, 8, 9 + quick tasks 25, 26)*
+*Second update: 2026-02-17 (post Phase 7, 8, 9 + quick tasks 25, 26)*
+*Third update: 2026-02-17 (documentation debt resolved by quick-27)*
 *Auditor: Claude (gsd-audit-milestone)*
