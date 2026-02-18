@@ -91,7 +91,14 @@ Plans:
   2. Boolean navigation flags (loginSuccess, logoutTriggered) are replaced with Channel-based effects
   3. Composables consume effects via LaunchedEffect collection instead of state observation for one-shot actions
   4. Each migrated ViewModel has at least one unit test using the core:testing DSL
-**Plans**: TBD
+**Plans**: 6 plans
+Plans:
+- [ ] 12-01-PLAN.md -- Migrate LoginViewModel to MVI (reference implementation)
+- [ ] 12-02-PLAN.md -- Migrate RegisterViewModel to MVI
+- [ ] 12-03-PLAN.md -- Migrate ForgotPasswordViewModel to MVI
+- [ ] 12-04-PLAN.md -- Migrate ProfileViewModel to MVI
+- [ ] 12-05-PLAN.md -- Migrate DashboardViewModel to MVI
+- [ ] 12-06-PLAN.md -- Remove legacy State files and final verification
 
 ### Phase 13: Group Server & SDK
 **Goal**: The server supports group-based user organization with CRUD operations, membership management, and data isolation -- accessible through the shared SDK
@@ -147,7 +154,7 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
 | 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
 | 11.1. Fake SDK facade & fixes | 2/2 | Complete    | 2026-02-18 | - |
-| 12. ViewModel Migration | v1.1 | 0/0 | Not started | - |
+| 12. ViewModel Migration | v1.1 | 0/6 | Planned | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
 | 15. Localization | v1.1 | 0/0 | Not started | - |
