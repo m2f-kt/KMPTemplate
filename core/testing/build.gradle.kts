@@ -30,6 +30,7 @@ kotlin {
             api(libs.kotlin.test)
             implementation(projects.core.mvi)
             implementation(projects.core.models)
+            implementation(projects.core.sdk)
             implementation(libs.arrow.core)
             implementation(libs.kotlinx.coroutines)
         }
