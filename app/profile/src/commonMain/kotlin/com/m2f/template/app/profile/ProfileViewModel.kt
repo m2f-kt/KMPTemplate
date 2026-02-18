@@ -5,15 +5,21 @@ import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.UpdateProfileRequest
 import com.m2f.template.models.dto.tier
 import com.m2f.template.sdk.Sdk
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 
 class ProfileViewModel(
     private val sdk: Sdk,
 ) : MviViewModel<ProfileIntent, ProfileModel, ProfileMutation, ProfileEvent>(
-    initialState = ProfileModel()
+    initialState = ProfileModel(),
+    modelSharingStarted = SharingStarted.Eagerly,
 ) {
 
     init {
+        // Eagerly initialize model and event collectors before dispatching LoadProfile,
+        // otherwise the lazy stateIn/shareIn would miss mutations emitted during init.
+        model
+        event
         take(ProfileIntent.LoadProfile)
     }
 
