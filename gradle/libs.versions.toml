@@ -154,6 +154,8 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 koin-test-junit5 = { module = "io.insert-koin:koin-test-junit5", version.ref = "koin" }
 
 # Testing
+turbine = { module = "app.cash.turbine:turbine", version = "1.2.1" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 testcontainers = { group = "org.testcontainers", name = "testcontainers", version.ref = "testcontainers" }
 testcontainers-postgresql = { group = "org.testcontainers", name = "testcontainers-postgresql", version.ref = "testcontainers" }
 koin-test = { group = "io.insert-koin", name = "koin-test", version.ref = "koin" }
