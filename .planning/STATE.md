@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 11 of 15 (Testing Infrastructure)
-Plan: 1 of 3 in current phase
+Plan: 2 of 3 in current phase
 Status: Executing phase 11
-Last activity: 2026-02-18 -- Completed 11-01-PLAN.md
+Last activity: 2026-02-18 -- Completed 11-02-PLAN.md
 
-Progress: [████░░░░░░░░░░░░░░░░] 33% (2/6 plans)
+Progress: [██████░░░░░░░░░░░░░░] 50% (3/6 plans)
 
 ## v1.0 Performance (archived)
 
@@ -32,7 +32,7 @@ Progress: [████████████████████] 100% (3
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
-| 11. Testing Infrastructure | 1 | 5min | 5min |
+| 11. Testing Infrastructure | 2 | 18min | 9min |
 
 ## Accumulated Context
 
@@ -43,17 +43,20 @@ Progress: [████████████████████] 100% (3
 - Phase 10: koin-core kept as implementation dependency (not exposed to consumers)
 - Phase 11: Interface gets clean name (AuthApi), Impl suffix for concrete class (AuthApiImpl)
 - Phase 11: SdkModule Koin bindings use interface type qualifiers (single<AuthApi>) for correct DI resolution
+- Phase 11: Added kotlin-test-junit JVM dependency for @BeforeTest/@AfterTest resolution in commonMain test library
+- Phase 11: Statement queuing pattern for ViewModel test DSL (intent/model/event calls build list, runner processes sequentially)
+- Phase 11: Initial StateFlow emission auto-consumed in DSL so test authors only see state changes
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
 ### Blockers/Concerns
 
-- Research flags: Turbine 1.2.1 + Kotlin 2.3.10 compatibility unverified (validate in Phase 11)
+- RESOLVED: Turbine 1.2.1 + Kotlin 2.3.10 compatibility verified (compiles on all KMP targets including wasmJs)
 - Research flags: Ktor testApplication dispatcher issue (KTOR-7121) needs spike in Phase 11
 - Research flags: WASM async resource loading timing needs smoke test in Phase 15
 
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 11-01-PLAN.md
-Resume file: .planning/phases/11-testing-infrastructure/11-01-SUMMARY.md
+Stopped at: Completed 11-02-PLAN.md
+Resume file: .planning/phases/11-testing-infrastructure/11-02-SUMMARY.md
