@@ -1,79 +1,48 @@
 package com.m2f.template.app.auth
 
 import arrow.core.Either
-import app.cash.turbine.test
 import com.m2f.template.core.testing.ViewModelTest
 import com.m2f.template.core.testing.fakes.fakeSdk
+import com.m2f.template.core.testing.test
 import com.m2f.template.models.AppError
 import com.m2f.template.models.dto.AuthResponse
-import io.kotest.matchers.shouldBe
 import kotlin.test.Test
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
-import kotlinx.coroutines.test.runTest
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LoginViewModelTest : ViewModelTest() {
 
     @Test
-    fun `login success updates state with loginSuccess true`() = runTest {
+    fun `successful login emits NavigateToDashboard event`() {
         val sdk = fakeSdk {
             auth {
                 login { _, _ ->
-                    Either.Right(AuthResponse(accessToken = "test-access", refreshToken = "test-refresh", expiresIn = 3600))
+                    Either.Right(AuthResponse(accessToken = "tok", refreshToken = "ref", expiresIn = 3600))
                 }
             }
         }
         val viewModel = LoginViewModel(sdk)
-
-        viewModel.state.test {
-            // Initial state
-            awaitItem() shouldBe LoginState()
-
-            // Enter email
-            viewModel.onEmailChange("user@test.com")
-            awaitItem().email shouldBe "user@test.com"
-
-            // Enter password
-            viewModel.onPasswordChange("password123")
-            awaitItem().password shouldBe "password123"
-
-            // Trigger login -- uses viewModelScope.launch internally
-            viewModel.login()
-            advanceUntilIdle() // drain viewModelScope coroutine
-
-            // Loading state
-            val loading = awaitItem()
-            loading.isLoading shouldBe true
-
-            // Success state
-            val success = awaitItem()
-            success.loginSuccess shouldBe true
-            success.isLoading shouldBe false
-
-            cancelAndIgnoreRemainingEvents()
+        viewModel.test {
+            intent(LoginIntent.EmailChanged("user@test.com"))
+            model(LoginModel(email = "user@test.com"))
+            intent(LoginIntent.PasswordChanged("password123"))
+            model(LoginModel(email = "user@test.com", password = "password123"))
+            intent(LoginIntent.SubmitLoginClicked)
+            model(LoginModel(email = "user@test.com", password = "password123", isLoading = true))
+            event(LoginEvent.NavigateToDashboard)
         }
     }
 
     @Test
-    fun `login with blank email shows email error`() = runTest {
-        val sdk = fakeSdk() // unconfigured -- won't be called
+    fun `blank email shows validation error`() {
+        val sdk = fakeSdk()
         val viewModel = LoginViewModel(sdk)
-
-        viewModel.state.test {
-            awaitItem() // initial state
-
-            // login() with blank email returns synchronously (no viewModelScope.launch)
-            viewModel.login()
-            val errorState = awaitItem()
-            errorState.emailError shouldBe "Email must not be blank"
-
-            cancelAndIgnoreRemainingEvents()
+        viewModel.test {
+            intent(LoginIntent.SubmitLoginClicked)
+            model(LoginModel(emailError = "Email must not be blank", passwordError = "Password must not be blank"))
         }
     }
 
     @Test
-    fun `login failure shows server error`() = runTest {
+    fun `server error shows error in model`() {
         val sdk = fakeSdk {
             auth {
                 login { _, _ ->
@@ -82,27 +51,15 @@ class LoginViewModelTest : ViewModelTest() {
             }
         }
         val viewModel = LoginViewModel(sdk)
-
-        viewModel.state.test {
-            awaitItem() // initial state
-
-            viewModel.onEmailChange("user@test.com")
-            awaitItem()
-            viewModel.onPasswordChange("password123")
-            awaitItem()
-
-            // Trigger login -- uses viewModelScope.launch internally
-            viewModel.login()
-            advanceUntilIdle() // drain viewModelScope coroutine
-
-            val loading = awaitItem()
-            loading.isLoading shouldBe true
-
-            val error = awaitItem()
-            error.serverError shouldBe "Email or password is incorrect"
-            error.isLoading shouldBe false
-
-            cancelAndIgnoreRemainingEvents()
+        viewModel.test {
+            intent(LoginIntent.EmailChanged("user@test.com"))
+            model(LoginModel(email = "user@test.com"))
+            intent(LoginIntent.PasswordChanged("password123"))
+            model(LoginModel(email = "user@test.com", password = "password123"))
+            intent(LoginIntent.SubmitLoginClicked)
+            // Note: isLoading=true intermediate state is conflated by StateFlow because
+            // the fake SDK returns synchronously, so SetServerError follows immediately.
+            model(LoginModel(email = "user@test.com", password = "password123", serverError = "Email or password is incorrect"))
         }
     }
 }
