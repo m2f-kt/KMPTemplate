@@ -3,14 +3,14 @@ package com.m2f.template.app.auth
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.models.dto.LoginRequest
-import com.m2f.template.sdk.api.AuthApi
+import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    private val authApi: AuthApi,
+    private val sdk: Sdk,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LoginState())
@@ -50,7 +50,7 @@ class LoginViewModel(
         _state.update { it.copy(isLoading = true, serverError = null) }
 
         viewModelScope.launch {
-            authApi.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
+            sdk.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
                 .fold(
                     ifLeft = { error ->
                         _state.update { it.copy(serverError = error.message, isLoading = false) }
