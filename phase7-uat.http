@@ -1,0 +1,53 @@
+### Phase 7 UAT: Role System Refactor & Tech Debt
+### Server must be running on localhost:8080
+
+### ===== Test 1: UserRole in login/register API response =====
+### Register a new user — response should have "role": "USER" as flat string
+
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "uat-phase7@test.com",
+  "password": "TestPass123!",
+  "firstName": "UAT",
+  "lastName": "Tester"
+}
+
+### Login with that user — response should have accessToken, refreshToken
+### Save the accessToken for subsequent requests
+
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ignis.fatue@gmail.com",
+  "password": "Mm.12345"
+}
+
+> {%
+    client.global.set("accessToken", response.body.accessToken);
+    client.global.set("refreshToken", response.body.refreshToken);
+%}
+
+### ===== Test 2: Admin route protection with typed UserRole =====
+### GET user by ID as non-admin — should return 403 Forbidden
+
+GET http://localhost:8080/api/users/00000000-0000-0000-0000-000000000001
+Authorization: Bearer {{accessToken}}
+
+### ===== Test 4: Verify user has role_id (via GET /me) =====
+### GET own profile — response should include "role": "USER"
+
+GET http://localhost:8080/api/users/me
+Authorization: Bearer {{accessToken}}
+
+### ===== Test 7: JWT encodes role as flat string =====
+### Decode the accessToken at jwt.io or inspect the login response above.
+### The JWT payload should contain a "role" claim with value "USER" (flat string).
+### (Use the accessToken from the login response above)
+
+### ===== Cleanup: Logout =====
+
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer {{accessToken}}

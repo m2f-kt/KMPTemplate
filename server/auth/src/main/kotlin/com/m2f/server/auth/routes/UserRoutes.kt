@@ -36,7 +36,7 @@ fun Route.userRoutes(userService: UserService) {
         }
 
         // Admin: get any user by ID
-        withRole(UserRole.Admin) {
+        withRole(UserRole.PowerAdmin) {
             get<Users.ById> { resource ->
                 conduitAuth { _ ->
                     userService.getUserById(resource.id)

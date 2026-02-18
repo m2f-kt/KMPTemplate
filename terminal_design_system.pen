@@ -4,8 +4,8 @@
     {
       "type": "frame",
       "id": "MpP3e",
-      "x": 273,
-      "y": -79,
+      "x": 0,
+      "y": 0,
       "name": "terminal: design system",
       "theme": {
         "Mode": "Light"
@@ -3904,8 +3904,8 @@
     {
       "type": "frame",
       "id": "ZC9TD",
-      "x": 1973,
-      "y": -79,
+      "x": 1800,
+      "y": 0,
       "name": "terminal: design system (dark)",
       "theme": {
         "Mode": "Dark"
@@ -6557,8 +6557,8 @@
     {
       "type": "frame",
       "id": "NHOpq",
-      "x": 3791,
-      "y": 759,
+      "x": 2000,
+      "y": 4000,
       "name": "terminal: design tokens (dark)",
       "width": 3400,
       "fill": "#0D0D0D",
@@ -9976,8 +9976,8 @@
     {
       "type": "frame",
       "id": "Zw1LG",
-      "x": 3791,
-      "y": -161,
+      "x": 0,
+      "y": 4000,
       "name": "terminal: components library",
       "width": 1800,
       "fill": "#F5F5F5",
@@ -10735,8 +10735,8 @@
     {
       "type": "frame",
       "id": "SLzCX",
-      "x": 3791,
-      "y": 3111,
+      "x": 5600,
+      "y": 4000,
       "name": "terminal: design tokens",
       "width": 3400,
       "fill": "#F0F0F0",
@@ -14154,8 +14154,8 @@
     {
       "type": "frame",
       "id": "EnD7X",
-      "x": 273,
-      "y": 5544,
+      "x": 0,
+      "y": 9600,
       "name": "Profile / Free Tier",
       "width": 1440,
       "fill": "$--terminal-bg",
@@ -14694,8 +14694,8 @@
     {
       "type": "frame",
       "id": "ENKv0",
-      "x": 1813,
-      "y": 5544,
+      "x": 1640,
+      "y": 9600,
       "name": "Profile / Paid User",
       "width": 1440,
       "fill": "$--terminal-bg",
@@ -15304,8 +15304,8 @@
     {
       "type": "frame",
       "id": "d4oDS",
-      "x": 3353,
-      "y": 5544,
+      "x": 3280,
+      "y": 9600,
       "name": "Profile / Premium User",
       "width": 1440,
       "fill": "$--terminal-bg",
@@ -15890,10 +15890,11 @@
     {
       "type": "frame",
       "id": "uGWqD",
-      "x": 4893,
-      "y": 5544,
+      "x": 4920,
+      "y": 9600,
       "name": "Profile / Admin User",
       "width": 1440,
+      "height": 1152,
       "fill": "$--terminal-bg",
       "children": [
         {
@@ -16575,8 +16576,8 @@
     {
       "type": "frame",
       "id": "QFwfO",
-      "x": 6433,
-      "y": 5544,
+      "x": 6560,
+      "y": 9600,
       "name": "Profile / PowerAdmin",
       "width": 1582,
       "height": 1152,
@@ -17941,8 +17942,8 @@
     {
       "type": "frame",
       "id": "rCzUG",
-      "x": 273,
-      "y": 6644,
+      "x": 0,
+      "y": 11200,
       "name": "Mobile / Profile / Free Tier",
       "clip": true,
       "width": 402,
@@ -18326,8 +18327,8 @@
     {
       "type": "frame",
       "id": "k6yQw",
-      "x": 775,
-      "y": 6644,
+      "x": 600,
+      "y": 11200,
       "name": "Mobile / Profile / Paid User",
       "clip": true,
       "width": 402,
@@ -18727,8 +18728,8 @@
     {
       "type": "frame",
       "id": "qgU7x",
-      "x": 1277,
-      "y": 6644,
+      "x": 1200,
+      "y": 11200,
       "name": "Mobile / Profile / Premium User",
       "clip": true,
       "width": 402,
@@ -19070,8 +19071,8 @@
     {
       "type": "frame",
       "id": "jiyew",
-      "x": 1779,
-      "y": 6644,
+      "x": 1800,
+      "y": 11200,
       "name": "Mobile / Profile / Admin User",
       "clip": true,
       "width": 402,
@@ -19453,8 +19454,8 @@
     {
       "type": "frame",
       "id": "OSLp4",
-      "x": 2281,
-      "y": 6644,
+      "x": 2400,
+      "y": 11200,
       "name": "Mobile / Profile / PowerAdmin",
       "clip": true,
       "width": 402,
@@ -19997,8 +19998,8 @@
     {
       "type": "frame",
       "id": "9JbaX",
-      "x": 8668,
-      "y": 1454,
+      "x": 0,
+      "y": 8200,
       "name": "Dashboard — Desktop",
       "clip": true,
       "width": 1440,
@@ -20949,8 +20950,8 @@
     {
       "type": "frame",
       "id": "dezbz",
-      "x": 10181,
-      "y": 1454,
+      "x": 1640,
+      "y": 8200,
       "name": "Dashboard — Mobile",
       "clip": true,
       "width": 402,
@@ -21762,8 +21763,8 @@
     {
       "type": "group",
       "id": "qhKMt",
-      "x": 1349,
-      "y": 20,
+      "x": 0,
+      "y": 7000,
       "name": "Auth",
       "children": [
         {
