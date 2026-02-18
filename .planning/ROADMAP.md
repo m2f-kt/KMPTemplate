@@ -31,6 +31,7 @@ Full details: milestones/v1.0-ROADMAP.md
 
 - [x] **Phase 10: MVI ViewModel Foundation** - Base class with Intent/Model/Mutation/Event, StateFlow state, SharedFlow effects, Koin injection (completed 2026-02-17)
 - [x] **Phase 11: Testing Infrastructure** - core:testing module with Turbine DSL, SDK interface extraction, fake implementations, shared fixtures (completed 2026-02-18)
+- [ ] **Phase 11.1: Fake SDK facade, fix Android compile, update mvi-viewmodel skill** (INSERTED)
 - [ ] **Phase 12: ViewModel Migration** - Migrate all 5 existing ViewModels to MVI pattern with tests
 - [ ] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests
 - [ ] **Phase 14: Group Admin UI** - Admin panel with group management screens and role-gated navigation
@@ -65,6 +66,21 @@ Plans:
 - [ ] 11-01-PLAN.md -- Extract SDK interfaces, create Impl classes, Sdk facade, update Koin bindings
 - [ ] 11-02-PLAN.md -- Create core:testing module with Turbine DSL, annotations, ViewModelTest base class
 - [ ] 11-03-PLAN.md -- Fake SDK builder DSL and reference LoginViewModel test
+
+### Phase 11.1: Fake SDK facade, fix Android compile, update mvi-viewmodel skill (INSERTED)
+**Goal:** Fix Android compilation blocker, create FakeSdkBuilder composing sub-API fakers into a parent-level fakeSdk {} DSL, migrate LoginViewModel to use Sdk as dependency, and update the mvi-viewmodel skill to document the canonical pattern
+**Depends on:** Phase 11
+**Requirements:** FIX-ANDROID, FAKE-SDK, UPDATE-LOGINVM, UPDATE-LOGINVM-TEST, UPDATE-KOIN, UPDATE-SKILL, REMOVE-SENDSTATEMENT
+**Success Criteria** (what must be TRUE):
+  1. Android target in core:testing compiles successfully (kotlin-test-junit added for androidMain)
+  2. FakeSdkBuilder composes FakeAuthApiBuilder + FakeUserApiBuilder; fakeSdk {} DSL is available
+  3. LoginViewModel takes Sdk as dependency; LoginViewModelTest uses fakeSdk { auth { ... } }
+  4. mvi-viewmodel skill documents that ViewModels MUST use Sdk and tests MUST use fakeSdk {}
+  5. sendStatement removed from MviViewModel (unused dead code)
+**Plans**: 2 plans
+Plans:
+- [ ] 11.1-01-PLAN.md -- Fix Android compile, create FakeSdkBuilder, remove sendStatement
+- [ ] 11.1-02-PLAN.md -- Migrate LoginViewModel to Sdk, update test to fakeSdk, update skill docs
 
 ### Phase 12: ViewModel Migration
 **Goal**: All existing ViewModels use the MVI pattern consistently -- the template demonstrates one approach, not two
@@ -114,7 +130,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 10 -> 11 -> 12 -> 13 -> 14 -> 15
+Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -130,6 +146,7 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13 -> 14 -> 15
 | 9. WASM HTTP Engine Fix | v1.0 | 1/1 | Complete | 2026-02-16 |
 | 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
 | 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
+| 11.1. Fake SDK facade & fixes | v1.1 | 0/2 | Not started | - |
 | 12. ViewModel Migration | v1.1 | 0/0 | Not started | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
