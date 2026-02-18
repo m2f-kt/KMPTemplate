@@ -146,7 +146,7 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 9. WASM HTTP Engine Fix | v1.0 | 1/1 | Complete | 2026-02-16 |
 | 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
 | 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
-| 11.1. Fake SDK facade & fixes | v1.1 | 0/2 | Not started | - |
+| 11.1. Fake SDK facade & fixes | 1/2 | In Progress|  | - |
 | 12. ViewModel Migration | v1.1 | 0/0 | Not started | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |

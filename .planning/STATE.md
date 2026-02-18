@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 11 -- Testing Infrastructure
+**Current focus:** Phase 11.1 -- Fake SDK Facade, Fix Android Compile, Update MVI-ViewModel Skill
 
 ## Current Position
 
-Phase: 11 of 15 (Testing Infrastructure) -- COMPLETE
-Plan: 3 of 3 in current phase
-Status: Phase 11 complete
-Last activity: 2026-02-18 -- Completed 11-03-PLAN.md
+Phase: 11.1 (Fake SDK Facade, Fix Android Compile, Update MVI-ViewModel Skill)
+Plan: 1 of 2 in current phase
+Status: Executing phase 11.1
+Last activity: 2026-02-18 -- Completed 11.1-01-PLAN.md
 
-Progress: [██████████░░░░░░░░░░] 67% (4/6 plans)
+Progress: [██████████░░░░░░░░░░] 71% (5/7 plans)
 
 ## v1.0 Performance (archived)
 
@@ -33,6 +33,7 @@ Progress: [████████████████████] 100% (3
 |-------|-------|-------|----------|
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
+| 11.1 Fake SDK Facade + Fixes | 1 | 2min | 2min |
 
 ## Accumulated Context
 
@@ -48,8 +49,14 @@ Progress: [████████████████████] 100% (3
 - Phase 11: Initial StateFlow emission auto-consumed in DSL so test authors only see state changes
 - Phase 11: MviViewModel.test{} DSL sets Dispatchers.Main to UnconfinedTestDispatcher(testScheduler) for scheduler alignment
 - Phase 11: advanceUntilIdle() after each intent dispatch in DSL ensures viewModelScope coroutines complete
+- Phase 11.1: FakeSdkBuilder uses direct Sdk constructor instead of subclassing (Sdk is final class)
+- Phase 11.1: Android kotlin-test-junit declared separately from jvmMain (KMP androidTarget is independent compilation unit)
 
 Decisions are logged in PROJECT.md Key Decisions table.
+
+### Roadmap Evolution
+
+- Phase 11.1 inserted after Phase 11: Fake SDK facade, fix Android compile, update mvi-viewmodel skill (URGENT)
 
 ### Blockers/Concerns
 
@@ -60,5 +67,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 11-03-PLAN.md (Phase 11 complete)
-Resume file: .planning/phases/11-testing-infrastructure/11-03-SUMMARY.md
+Stopped at: Completed 11.1-01-PLAN.md
+Resume file: .planning/phases/11.1-fake-sdk-facade-fix-android-compile-update-mvi-viewmodel-skill/11.1-01-SUMMARY.md
