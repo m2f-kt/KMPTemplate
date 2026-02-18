@@ -35,6 +35,7 @@ Progress: [████████████████████] 100% (3
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
 | 12. ViewModel Migration | 5/6 | 23min | ~5min |
+| Phase 12 P04 | 22min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,8 @@ Progress: [████████████████████] 100% (3
 - Phase 12: Init-block auto-dispatched intents require explicit intent() call in test DSL (init coroutine orphaned on setUp's StandardTestDispatcher)
 
 Decisions are logged in PROJECT.md Key Decisions table.
+- [Phase 12]: SharingStarted.Eagerly for init-dispatching ViewModels: WhileSubscribed loses mutations emitted before first subscriber; use Eagerly + eager model/event access in init block
+- [Phase 12]: turbineScope testing for init-dispatch VMs: MviViewModel.test{} DSL incompatible with init { take() }; use UnconfinedTestDispatcher + turbineScope { testIn(backgroundScope) } directly
 
 ### Roadmap Evolution
 
@@ -79,5 +82,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 12-05-PLAN.md (Dashboard ViewModel MVI migration)
-Resume file: .planning/phases/12-viewmodel-migration/12-05-SUMMARY.md
+Stopped at: Completed 12-04-PLAN.md (Profile ViewModel MVI migration with tests)
+Resume file: .planning/phases/12-viewmodel-migration/12-04-SUMMARY.md
