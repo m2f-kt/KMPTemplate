@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 11.1 -- Fake SDK Facade, Fix Android Compile, Update MVI-ViewModel Skill
+**Current focus:** Phase 12 -- ViewModel Migration (MVI pattern)
 
 ## Current Position
 
-Phase: 11.1 (Fake SDK Facade, Fix Android Compile, Update MVI-ViewModel Skill)
-Plan: 2 of 2 in current phase (COMPLETE)
-Status: Phase 11.1 complete
-Last activity: 2026-02-18 -- Completed 11.1-02-PLAN.md
+Phase: 12 (ViewModel Migration)
+Plan: 1 of 6 in current phase
+Status: Executing phase 12
+Last activity: 2026-02-18 -- Completed 12-01-PLAN.md (Login ViewModel MVI migration)
 
-Progress: [████████████████░░░░] 86% (6/7 plans)
+Progress: [████████████████░░░░] 88% (7/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -34,6 +34,7 @@ Progress: [████████████████████] 100% (3
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
+| 12. ViewModel Migration | 1/6 | 5min | 5min |
 
 ## Accumulated Context
 
@@ -53,6 +54,8 @@ Progress: [████████████████████] 100% (3
 - Phase 11.1: Android kotlin-test-junit declared separately from jvmMain (KMP androidTarget is independent compilation unit)
 - Phase 11.1: No AppModule.kt change needed -- Koin viewModelOf auto-resolves Sdk from sdkModule
 - Phase 11.1: mvi-viewmodel skill mandates Sdk as ViewModel dependency and fakeSdk {} as test entry point
+- Phase 12: StateFlow conflation -- sync fake SDK causes isLoading=true to be conflated with SetServerError in error path; test expects final state only
+- Phase 12: LoginScreen parameter stays state: LoginModel (not model) to minimize churn in composable body references
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -69,5 +72,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Phase 12 context gathered
-Resume file: .planning/phases/12-viewmodel-migration/12-CONTEXT.md
+Stopped at: Completed 12-01-PLAN.md (Login ViewModel MVI migration)
+Resume file: .planning/phases/12-viewmodel-migration/12-01-SUMMARY.md
