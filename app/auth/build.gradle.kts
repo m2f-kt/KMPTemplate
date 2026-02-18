@@ -23,6 +23,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.models)
             implementation(projects.core.sdk)
+            implementation(projects.core.mvi)
             implementation(projects.core.storage)
             implementation(projects.app.designsystem)
             implementation(compose.runtime)

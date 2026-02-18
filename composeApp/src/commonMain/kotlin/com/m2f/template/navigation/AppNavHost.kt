@@ -15,6 +15,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.m2f.template.app.auth.ForgotPasswordScreen
 import com.m2f.template.app.auth.ForgotPasswordViewModel
+import com.m2f.template.app.auth.LoginEvent
+import com.m2f.template.app.auth.LoginIntent
 import com.m2f.template.app.auth.LoginScreen
 import com.m2f.template.app.auth.LoginViewModel
 import com.m2f.template.app.auth.OAuthCallbackHandler
@@ -84,22 +86,26 @@ fun AppNavHost() {
         ) {
             composable<LoginRoute> {
                 val viewModel = koinViewModel<LoginViewModel>()
-                val state by viewModel.state.collectAsStateWithLifecycle()
+                val state by viewModel.model.collectAsStateWithLifecycle()
                 LoginScreen(
                     state = state,
-                    onEmailChange = viewModel::onEmailChange,
-                    onPasswordChange = viewModel::onPasswordChange,
-                    onRememberMeChange = viewModel::onRememberMeChange,
-                    onLoginClick = viewModel::login,
+                    onEmailChange = { viewModel.take(LoginIntent.EmailChanged(it)) },
+                    onPasswordChange = { viewModel.take(LoginIntent.PasswordChanged(it)) },
+                    onRememberMeChange = { viewModel.take(LoginIntent.RememberMeChanged(it)) },
+                    onLoginClick = { viewModel.take(LoginIntent.SubmitLoginClicked) },
                     onGoogleClick = { oauthHandler.startOAuth("google") },
                     onAppleClick = { oauthHandler.startOAuth("apple") },
                     onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
                     onRegister = { navController.navigate(RegisterRoute) },
                 )
-                LaunchedEffect(state.loginSuccess) {
-                    if (state.loginSuccess) {
-                        navController.navigate(DashboardRoute) {
-                            popUpTo<LoginRoute> { inclusive = true }
+                LaunchedEffect(Unit) {
+                    viewModel.event.collect { event ->
+                        when (event) {
+                            is LoginEvent.NavigateToDashboard -> {
+                                navController.navigate(DashboardRoute) {
+                                    popUpTo<LoginRoute> { inclusive = true }
+                                }
+                            }
                         }
                     }
                 }

@@ -1,35 +1,30 @@
 package com.m2f.template.app.auth
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.sdk.Sdk
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val sdk: Sdk,
-) : ViewModel() {
+) : MviViewModel<LoginIntent, LoginModel, LoginMutation, LoginEvent>(
+    initialState = LoginModel()
+) {
 
-    private val _state = MutableStateFlow(LoginState())
-    val state = _state.asStateFlow()
-
-    fun onEmailChange(email: String) {
-        _state.update { it.copy(email = email, emailError = null) }
+    override fun take(intent: LoginIntent) {
+        viewModelScope.launch {
+            when (intent) {
+                is LoginIntent.EmailChanged -> sendMutation(LoginMutation.SetEmail(intent.email))
+                is LoginIntent.PasswordChanged -> sendMutation(LoginMutation.SetPassword(intent.password))
+                is LoginIntent.RememberMeChanged -> sendMutation(LoginMutation.SetRememberMe(intent.checked))
+                is LoginIntent.SubmitLoginClicked -> handleLogin()
+            }
+        }
     }
 
-    fun onPasswordChange(password: String) {
-        _state.update { it.copy(password = password, passwordError = null) }
-    }
-
-    fun onRememberMeChange(checked: Boolean) {
-        _state.update { it.copy(rememberMe = checked) }
-    }
-
-    fun login() {
-        val current = _state.value
+    private suspend fun handleLogin() {
+        val current = model.value
 
         // Local validation
         val emailError = when {
@@ -43,22 +38,30 @@ class LoginViewModel(
         }
 
         if (emailError != null || passwordError != null) {
-            _state.update { it.copy(emailError = emailError, passwordError = passwordError) }
+            sendMutation(LoginMutation.SetValidationErrors(emailError = emailError, passwordError = passwordError))
             return
         }
 
-        _state.update { it.copy(isLoading = true, serverError = null) }
+        sendMutation(LoginMutation.SetLoading(true))
 
-        viewModelScope.launch {
-            sdk.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
-                .fold(
-                    ifLeft = { error ->
-                        _state.update { it.copy(serverError = error.message, isLoading = false) }
-                    },
-                    ifRight = {
-                        _state.update { it.copy(loginSuccess = true, isLoading = false) }
-                    },
-                )
-        }
+        sdk.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
+            .fold(
+                ifLeft = { error ->
+                    sendMutation(LoginMutation.SetServerError(error.message))
+                },
+                ifRight = {
+                    sendEvent(LoginEvent.NavigateToDashboard)
+                },
+            )
     }
+
+    override suspend fun reduce(model: LoginModel, mutation: LoginMutation): LoginModel =
+        when (mutation) {
+            is LoginMutation.SetEmail -> model.copy(email = mutation.email, emailError = null)
+            is LoginMutation.SetPassword -> model.copy(password = mutation.password, passwordError = null)
+            is LoginMutation.SetRememberMe -> model.copy(rememberMe = mutation.checked)
+            is LoginMutation.SetLoading -> model.copy(isLoading = mutation.loading, serverError = null)
+            is LoginMutation.SetValidationErrors -> model.copy(emailError = mutation.emailError, passwordError = mutation.passwordError)
+            is LoginMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
+        }
 }

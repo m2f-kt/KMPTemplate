@@ -53,7 +53,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  */
 @Composable
 fun LoginScreen(
-    state: LoginState,
+    state: LoginModel,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
@@ -102,7 +102,7 @@ fun LoginScreen(
 
 @Composable
 private fun LoginDesktopLayout(
-    state: LoginState,
+    state: LoginModel,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
@@ -286,7 +286,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
 
 @Composable
 private fun LoginMobileLayout(
-    state: LoginState,
+    state: LoginModel,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
@@ -383,7 +383,7 @@ private fun LoginMobileLayout(
 
 @Composable
 private fun LoginFormContent(
-    state: LoginState,
+    state: LoginModel,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onRememberMeChange: (Boolean) -> Unit,
