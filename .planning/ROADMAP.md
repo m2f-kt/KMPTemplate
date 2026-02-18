@@ -30,7 +30,7 @@ Full details: milestones/v1.0-ROADMAP.md
 **Milestone Goal:** Add architectural patterns and domain capabilities: MVI ViewModel layer, group-based user management with admin panel, full testing infrastructure, and localization system.
 
 - [x] **Phase 10: MVI ViewModel Foundation** - Base class with Intent/Model/Mutation/Event, StateFlow state, SharedFlow effects, Koin injection (completed 2026-02-17)
-- [ ] **Phase 11: Testing Infrastructure** - core:testing module with Turbine DSL, SDK interface extraction, fake implementations, shared fixtures
+- [x] **Phase 11: Testing Infrastructure** - core:testing module with Turbine DSL, SDK interface extraction, fake implementations, shared fixtures (completed 2026-02-18)
 - [ ] **Phase 12: ViewModel Migration** - Migrate all 5 existing ViewModels to MVI pattern with tests
 - [ ] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests
 - [ ] **Phase 14: Group Admin UI** - Admin panel with group management screens and role-gated navigation
@@ -129,7 +129,7 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13 -> 14 -> 15
 | 8. Type-Safe Shared Routes | v1.0 | 3/3 | Complete | 2026-02-15 |
 | 9. WASM HTTP Engine Fix | v1.0 | 1/1 | Complete | 2026-02-16 |
 | 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
-| 11. Testing Infrastructure | v1.1 | 0/3 | Planned | - |
+| 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
 | 12. ViewModel Migration | v1.1 | 0/0 | Not started | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
