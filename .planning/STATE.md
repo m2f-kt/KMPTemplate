@@ -69,5 +69,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 11.1-02-PLAN.md (Phase 11.1 complete)
-Resume file: .planning/phases/11.1-fake-sdk-facade-fix-android-compile-update-mvi-viewmodel-skill/11.1-02-SUMMARY.md
+Stopped at: Phase 12 context gathered
+Resume file: .planning/phases/12-viewmodel-migration/12-CONTEXT.md
