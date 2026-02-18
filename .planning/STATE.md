@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 11 of 15 (Testing Infrastructure)
-Plan: 2 of 3 in current phase
-Status: Executing phase 11
-Last activity: 2026-02-18 -- Completed 11-02-PLAN.md
+Phase: 11 of 15 (Testing Infrastructure) -- COMPLETE
+Plan: 3 of 3 in current phase
+Status: Phase 11 complete
+Last activity: 2026-02-18 -- Completed 11-03-PLAN.md
 
-Progress: [██████░░░░░░░░░░░░░░] 50% (3/6 plans)
+Progress: [██████████░░░░░░░░░░] 67% (4/6 plans)
 
 ## v1.0 Performance (archived)
 
@@ -32,7 +32,7 @@ Progress: [████████████████████] 100% (3
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
-| 11. Testing Infrastructure | 2 | 18min | 9min |
+| 11. Testing Infrastructure | 3 | 24min | 8min |
 
 ## Accumulated Context
 
@@ -46,6 +46,8 @@ Progress: [████████████████████] 100% (3
 - Phase 11: Added kotlin-test-junit JVM dependency for @BeforeTest/@AfterTest resolution in commonMain test library
 - Phase 11: Statement queuing pattern for ViewModel test DSL (intent/model/event calls build list, runner processes sequentially)
 - Phase 11: Initial StateFlow emission auto-consumed in DSL so test authors only see state changes
+- Phase 11: MviViewModel.test{} DSL sets Dispatchers.Main to UnconfinedTestDispatcher(testScheduler) for scheduler alignment
+- Phase 11: advanceUntilIdle() after each intent dispatch in DSL ensures viewModelScope coroutines complete
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -58,5 +60,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 11-02-PLAN.md
-Resume file: .planning/phases/11-testing-infrastructure/11-02-SUMMARY.md
+Stopped at: Completed 11-03-PLAN.md (Phase 11 complete)
+Resume file: .planning/phases/11-testing-infrastructure/11-03-SUMMARY.md
