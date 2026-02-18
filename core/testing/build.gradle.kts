@@ -33,6 +33,9 @@ kotlin {
             implementation(libs.arrow.core)
             implementation(libs.kotlinx.coroutines)
         }
+        jvmMain.dependencies {
+            api(libs.kotlin.testJunit)
+        }
     }
 }
 
