@@ -34,7 +34,7 @@ Progress: [████████████████████] 100% (3
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
-| 12. ViewModel Migration | 2/6 | 10min | 5min |
+| 12. ViewModel Migration | 3/6 | 15min | 5min |
 
 ## Accumulated Context
 
@@ -58,6 +58,9 @@ Progress: [████████████████████] 100% (3
 - Phase 12: LoginScreen parameter stays state: LoginModel (not model) to minimize churn in composable body references
 - Phase 12: RegisterScreen parameter stays state: RegisterModel (matching Login pattern) to minimize churn
 - Phase 12: StateFlow conflation pattern confirmed reusable across all ViewModel error-path tests with sync fakes
+- Phase 12: emailSent stays as Model field (not Event) because user remains on screen to see success message
+- Phase 12: ForgotPasswordEvent is empty sealed interface -- no ViewModel-driven navigation for this screen
+- Phase 12: StateFlow conflation also affects success path when both SetLoading and SetEmailSent are Mutations (unlike Login where success emits Event)
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -74,5 +77,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 12-02-PLAN.md (Register ViewModel MVI migration)
-Resume file: .planning/phases/12-viewmodel-migration/12-02-SUMMARY.md
+Stopped at: Completed 12-03-PLAN.md (ForgotPassword ViewModel MVI migration)
+Resume file: .planning/phases/12-viewmodel-migration/12-03-SUMMARY.md
