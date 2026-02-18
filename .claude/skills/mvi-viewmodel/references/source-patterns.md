@@ -55,10 +55,6 @@ abstract class MviViewModel<Intent, Model, Mutation, Event>(
     protected suspend fun sendMutation(mutation: Mutation) {
         pipeline.emit(Either.Right(mutation))
     }
-
-    protected suspend fun sendStatement(statement: Either<Event, Mutation>) {
-        pipeline.emit(statement)
-    }
 }
 ```
 
