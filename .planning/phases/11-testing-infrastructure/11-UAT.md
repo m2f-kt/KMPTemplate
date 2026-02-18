@@ -1,5 +1,5 @@
 ---
-status: complete
+status: resolved
 phase: 11-testing-infrastructure
 source: 11-01-SUMMARY.md, 11-02-SUMMARY.md, 11-03-SUMMARY.md
 started: 2026-02-18T13:57:11Z
@@ -53,11 +53,14 @@ skipped: 0
 ## Gaps
 
 - truth: "core:testing module compiles on all KMP targets including Android"
-  status: failed
+  status: resolved
   reason: "User reported: compileReleaseKotlinAndroid and compileDebugKotlinAndroid fail with Unresolved reference 'AfterTest' and 'BeforeTest' in ViewModelTest.kt. kotlin-test-junit was added for JVM but Android target wasn't covered."
   severity: blocker
   test: 4
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "kotlin-test-junit added only to jvmMain.dependencies but androidTarget is a separate compilation unit in KMP that does not inherit jvmMain dependencies. @BeforeTest/@AfterTest are expect declarations needing kotlin-test-junit actual provider on Android classpath too."
+  artifacts:
+    - path: "core/testing/build.gradle.kts"
+      issue: "kotlin-test-junit only in jvmMain.dependencies, missing from androidMain"
+  missing:
+    - "Add androidMain.dependencies { api(libs.kotlin.testJunit) } to core/testing/build.gradle.kts"
   debug_session: ""
