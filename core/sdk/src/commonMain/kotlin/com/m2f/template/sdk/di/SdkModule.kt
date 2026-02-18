@@ -2,7 +2,9 @@ package com.m2f.template.sdk.di
 
 import com.m2f.template.sdk.AuthInterceptor
 import com.m2f.template.sdk.api.AuthApi
+import com.m2f.template.sdk.api.AuthApiImpl
 import com.m2f.template.sdk.api.UserApi
+import com.m2f.template.sdk.api.UserApiImpl
 import com.m2f.template.sdk.createApiClient
 import com.m2f.template.sdk.defaultBaseUrl
 import org.koin.dsl.module
@@ -26,6 +28,6 @@ val sdkModule = module {
             baseUrl = defaultBaseUrl(),
         )
     }
-    single { AuthApi(client = get(), tokenStorage = get()) }
-    single { UserApi(client = get()) }
+    single<AuthApi> { AuthApiImpl(client = get(), tokenStorage = get()) }
+    single<UserApi> { UserApiImpl(client = get()) }
 }
