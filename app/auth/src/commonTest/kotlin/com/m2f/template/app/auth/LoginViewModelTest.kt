@@ -3,7 +3,7 @@ package com.m2f.template.app.auth
 import arrow.core.Either
 import app.cash.turbine.test
 import com.m2f.template.core.testing.ViewModelTest
-import com.m2f.template.core.testing.fakes.fakeAuthApi
+import com.m2f.template.core.testing.fakes.fakeSdk
 import com.m2f.template.models.AppError
 import com.m2f.template.models.dto.AuthResponse
 import io.kotest.matchers.shouldBe
@@ -17,12 +17,14 @@ class LoginViewModelTest : ViewModelTest() {
 
     @Test
     fun `login success updates state with loginSuccess true`() = runTest {
-        val authApi = fakeAuthApi {
-            login { _, _ ->
-                Either.Right(AuthResponse(accessToken = "test-access", refreshToken = "test-refresh", expiresIn = 3600))
+        val sdk = fakeSdk {
+            auth {
+                login { _, _ ->
+                    Either.Right(AuthResponse(accessToken = "test-access", refreshToken = "test-refresh", expiresIn = 3600))
+                }
             }
         }
-        val viewModel = LoginViewModel(authApi)
+        val viewModel = LoginViewModel(sdk)
 
         viewModel.state.test {
             // Initial state
@@ -55,8 +57,8 @@ class LoginViewModelTest : ViewModelTest() {
 
     @Test
     fun `login with blank email shows email error`() = runTest {
-        val authApi = fakeAuthApi() // unconfigured -- won't be called
-        val viewModel = LoginViewModel(authApi)
+        val sdk = fakeSdk() // unconfigured -- won't be called
+        val viewModel = LoginViewModel(sdk)
 
         viewModel.state.test {
             awaitItem() // initial state
@@ -72,12 +74,14 @@ class LoginViewModelTest : ViewModelTest() {
 
     @Test
     fun `login failure shows server error`() = runTest {
-        val authApi = fakeAuthApi {
-            login { _, _ ->
-                Either.Left(AppError.Auth.InvalidCredentials())
+        val sdk = fakeSdk {
+            auth {
+                login { _, _ ->
+                    Either.Left(AppError.Auth.InvalidCredentials())
+                }
             }
         }
-        val viewModel = LoginViewModel(authApi)
+        val viewModel = LoginViewModel(sdk)
 
         viewModel.state.test {
             awaitItem() // initial state
