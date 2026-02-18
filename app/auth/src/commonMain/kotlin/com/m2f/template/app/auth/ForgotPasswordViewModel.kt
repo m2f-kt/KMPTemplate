@@ -1,27 +1,28 @@
 package com.m2f.template.app.auth
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.ForgotPasswordRequest
-import com.m2f.template.sdk.api.AuthApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
 
 class ForgotPasswordViewModel(
-    private val authApi: AuthApi,
-) : ViewModel() {
+    private val sdk: Sdk,
+) : MviViewModel<ForgotPasswordIntent, ForgotPasswordModel, ForgotPasswordMutation, ForgotPasswordEvent>(
+    initialState = ForgotPasswordModel()
+) {
 
-    private val _state = MutableStateFlow(ForgotPasswordState())
-    val state = _state.asStateFlow()
-
-    fun onEmailChange(email: String) {
-        _state.update { it.copy(email = email, emailError = null) }
+    override fun take(intent: ForgotPasswordIntent) {
+        viewModelScope.launch {
+            when (intent) {
+                is ForgotPasswordIntent.EmailChanged -> sendMutation(ForgotPasswordMutation.SetEmail(intent.email))
+                is ForgotPasswordIntent.SubmitForgotPasswordClicked -> handleSubmit()
+            }
+        }
     }
 
-    fun submit() {
-        val current = _state.value
+    private suspend fun handleSubmit() {
+        val current = model.value
 
         // Local email validation
         val emailError = when {
@@ -31,22 +32,29 @@ class ForgotPasswordViewModel(
         }
 
         if (emailError != null) {
-            _state.update { it.copy(emailError = emailError) }
+            sendMutation(ForgotPasswordMutation.SetEmailError(emailError))
             return
         }
 
-        _state.update { it.copy(isLoading = true, serverError = null) }
+        sendMutation(ForgotPasswordMutation.SetLoading(true))
 
-        viewModelScope.launch {
-            authApi.forgotPassword(ForgotPasswordRequest(current.email.trim()))
-                .fold(
-                    ifLeft = { error ->
-                        _state.update { it.copy(serverError = error.message, isLoading = false) }
-                    },
-                    ifRight = {
-                        _state.update { it.copy(emailSent = true, isLoading = false) }
-                    },
-                )
-        }
+        sdk.forgotPassword(ForgotPasswordRequest(current.email.trim()))
+            .fold(
+                ifLeft = { error ->
+                    sendMutation(ForgotPasswordMutation.SetServerError(error.message))
+                },
+                ifRight = {
+                    sendMutation(ForgotPasswordMutation.SetEmailSent)
+                },
+            )
     }
+
+    override suspend fun reduce(model: ForgotPasswordModel, mutation: ForgotPasswordMutation): ForgotPasswordModel =
+        when (mutation) {
+            is ForgotPasswordMutation.SetEmail -> model.copy(email = mutation.email, emailError = null)
+            is ForgotPasswordMutation.SetLoading -> model.copy(isLoading = mutation.loading, serverError = null)
+            is ForgotPasswordMutation.SetEmailSent -> model.copy(isLoading = false, emailSent = true)
+            is ForgotPasswordMutation.SetEmailError -> model.copy(emailError = mutation.error)
+            is ForgotPasswordMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
+        }
 }

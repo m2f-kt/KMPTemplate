@@ -37,7 +37,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  */
 @Composable
 fun ForgotPasswordScreen(
-    state: ForgotPasswordState,
+    state: ForgotPasswordModel,
     onEmailChange: (String) -> Unit,
     onSubmit: () -> Unit,
     onBackToLogin: () -> Unit,
