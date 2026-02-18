@@ -37,6 +37,9 @@ kotlin {
         jvmMain.dependencies {
             api(libs.kotlin.testJunit)
         }
+        androidMain.dependencies {
+            api(libs.kotlin.testJunit)
+        }
     }
 }
 
