@@ -1,85 +1,41 @@
 package com.m2f.template.app.auth
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import arrow.core.raise.either
 import arrow.core.raise.ensure
 import arrow.core.raise.withError
 import arrow.core.raise.zipOrAccumulate
+import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.FieldError
 import com.m2f.template.models.dto.RegisterRequest
 import com.m2f.template.models.validation.validateEmail
 import com.m2f.template.models.validation.validateName
 import com.m2f.template.models.validation.validatePassword
-import com.m2f.template.sdk.api.AuthApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val authApi: AuthApi,
-) : ViewModel() {
+    private val sdk: Sdk,
+) : MviViewModel<RegisterIntent, RegisterModel, RegisterMutation, RegisterEvent>(
+    initialState = RegisterModel()
+) {
 
-    private val _state = MutableStateFlow(RegisterState())
-    val state = _state.asStateFlow()
-
-    fun onFirstNameChange(firstName: String) {
-        _state.update {
-            it.copy(
-                firstName = firstName,
-                fieldErrors = it.fieldErrors - "firstName",
-            )
+    override fun take(intent: RegisterIntent) {
+        viewModelScope.launch {
+            when (intent) {
+                is RegisterIntent.FirstNameChanged -> sendMutation(RegisterMutation.SetFirstName(intent.firstName))
+                is RegisterIntent.LastNameChanged -> sendMutation(RegisterMutation.SetLastName(intent.lastName))
+                is RegisterIntent.EmailChanged -> sendMutation(RegisterMutation.SetEmail(intent.email))
+                is RegisterIntent.PasswordChanged -> sendMutation(RegisterMutation.SetPassword(intent.password))
+                is RegisterIntent.ConfirmPasswordChanged -> sendMutation(RegisterMutation.SetConfirmPassword(intent.confirmPassword))
+                is RegisterIntent.TermsAcceptedChanged -> sendMutation(RegisterMutation.SetTermsAccepted(intent.accepted))
+                is RegisterIntent.SubmitRegisterClicked -> handleRegister()
+            }
         }
     }
 
-    fun onLastNameChange(lastName: String) {
-        _state.update {
-            it.copy(
-                lastName = lastName,
-                fieldErrors = it.fieldErrors - "lastName",
-            )
-        }
-    }
-
-    fun onEmailChange(email: String) {
-        _state.update {
-            it.copy(
-                email = email,
-                fieldErrors = it.fieldErrors - "email",
-            )
-        }
-    }
-
-    fun onPasswordChange(password: String) {
-        _state.update {
-            it.copy(
-                password = password,
-                fieldErrors = it.fieldErrors - "password",
-            )
-        }
-    }
-
-    fun onConfirmPasswordChange(confirmPassword: String) {
-        _state.update {
-            it.copy(
-                confirmPassword = confirmPassword,
-                fieldErrors = it.fieldErrors - "confirmPassword",
-            )
-        }
-    }
-
-    fun onTermsAcceptedChange(accepted: Boolean) {
-        _state.update {
-            it.copy(
-                termsAccepted = accepted,
-                fieldErrors = it.fieldErrors - "terms",
-            )
-        }
-    }
-
-    fun register() {
-        val current = _state.value
+    private suspend fun handleRegister() {
+        val current = model.value
 
         val validationResult = either {
             zipOrAccumulate(
@@ -118,21 +74,32 @@ class RegisterViewModel(
         validationResult.fold(
             ifLeft = { errors ->
                 val fieldErrorMap = errors.associate { it.field to it.message }
-                _state.update { it.copy(fieldErrors = fieldErrorMap) }
+                sendMutation(RegisterMutation.SetFieldErrors(fieldErrorMap))
             },
             ifRight = { request ->
-                _state.update { it.copy(isLoading = true, serverError = null, fieldErrors = emptyMap()) }
-                viewModelScope.launch {
-                    authApi.register(request).fold(
-                        ifLeft = { error ->
-                            _state.update { it.copy(serverError = error.message, isLoading = false) }
-                        },
-                        ifRight = {
-                            _state.update { it.copy(registerSuccess = true, isLoading = false) }
-                        },
-                    )
-                }
+                sendMutation(RegisterMutation.SetLoading(true))
+                sdk.register(request).fold(
+                    ifLeft = { error ->
+                        sendMutation(RegisterMutation.SetServerError(error.message))
+                    },
+                    ifRight = {
+                        sendEvent(RegisterEvent.NavigateToDashboard)
+                    },
+                )
             },
         )
     }
+
+    override suspend fun reduce(model: RegisterModel, mutation: RegisterMutation): RegisterModel =
+        when (mutation) {
+            is RegisterMutation.SetFirstName -> model.copy(firstName = mutation.firstName, fieldErrors = model.fieldErrors - "firstName")
+            is RegisterMutation.SetLastName -> model.copy(lastName = mutation.lastName, fieldErrors = model.fieldErrors - "lastName")
+            is RegisterMutation.SetEmail -> model.copy(email = mutation.email, fieldErrors = model.fieldErrors - "email")
+            is RegisterMutation.SetPassword -> model.copy(password = mutation.password, fieldErrors = model.fieldErrors - "password")
+            is RegisterMutation.SetConfirmPassword -> model.copy(confirmPassword = mutation.confirmPassword, fieldErrors = model.fieldErrors - "confirmPassword")
+            is RegisterMutation.SetTermsAccepted -> model.copy(termsAccepted = mutation.accepted, fieldErrors = model.fieldErrors - "terms")
+            is RegisterMutation.SetLoading -> model.copy(isLoading = mutation.loading, serverError = null)
+            is RegisterMutation.SetFieldErrors -> model.copy(fieldErrors = mutation.errors)
+            is RegisterMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
+        }
 }

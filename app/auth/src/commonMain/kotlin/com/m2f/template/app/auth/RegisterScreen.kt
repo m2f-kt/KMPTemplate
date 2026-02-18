@@ -50,7 +50,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  */
 @Composable
 fun RegisterScreen(
-    state: RegisterState,
+    state: RegisterModel,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
@@ -105,7 +105,7 @@ fun RegisterScreen(
 
 @Composable
 private fun RegisterDesktopLayout(
-    state: RegisterState,
+    state: RegisterModel,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
@@ -272,7 +272,7 @@ private fun FeatureBullet(
 
 @Composable
 private fun RegisterMobileLayout(
-    state: RegisterState,
+    state: RegisterModel,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
@@ -380,7 +380,7 @@ private fun RegisterMobileLayout(
 
 @Composable
 private fun RegisterFormContent(
-    state: RegisterState,
+    state: RegisterModel,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
@@ -476,7 +476,7 @@ private fun RegisterFormContent(
 
 @Composable
 private fun RegisterFormFields(
-    state: RegisterState,
+    state: RegisterModel,
     onFirstNameChange: (String) -> Unit,
     onLastNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
