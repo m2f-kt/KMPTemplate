@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 12 (ViewModel Migration)
-Plan: 6 of 6 in current phase (COMPLETE)
-Status: Phase 12 complete
-Last activity: 2026-02-18 -- Completed 12-06-PLAN.md (Legacy State cleanup, phase complete)
+Plan: 7 of 7 in current phase (COMPLETE)
+Status: Phase 12 fully complete (gap closure plan 07 done)
+Last activity: 2026-02-18 -- Completed 12-07-PLAN.md (ProfileViewModelTest DSL gap closure)
 
-Progress: [████████████████████] 100% (12/13 plans)
+Progress: [████████████████████] 100% (13/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -34,8 +34,9 @@ Progress: [████████████████████] 100% (3
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
-| 12. ViewModel Migration | 6/6 | 25min | ~4min |
+| 12. ViewModel Migration | 7/7 | 34min | ~5min |
 | Phase 12 P04 | 22min | 2 tasks | 14 files |
+| Phase 12 P07 | 9min | 1 task | 1 file |
 
 ## Accumulated Context
 
@@ -68,6 +69,7 @@ Progress: [████████████████████] 100% (3
 Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 12]: SharingStarted.Eagerly for init-dispatching ViewModels: WhileSubscribed loses mutations emitted before first subscriber; use Eagerly + eager model/event access in init block
 - [Phase 12]: turbineScope testing for init-dispatch VMs: MviViewModel.test{} DSL incompatible with init { take() }; use UnconfinedTestDispatcher + turbineScope { testIn(backgroundScope) } directly
+- [Phase 12-07]: SharingStarted.Eagerly VMs (ProfileViewModel) auto-dispatch init intents in DSL tests; do NOT use explicit intent(LoadProfile) -- it causes duplicate coroutine interference. WhileSubscribed VMs (DashboardViewModel) still need explicit intent().
 
 ### Roadmap Evolution
 
@@ -82,5 +84,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 12-06-PLAN.md (Phase 12 complete -- all legacy State files removed)
-Resume file: .planning/phases/12-viewmodel-migration/12-06-SUMMARY.md
+Stopped at: Completed 12-07-PLAN.md (ProfileViewModelTest DSL gap closure -- Phase 12 fully complete)
+Resume file: .planning/phases/12-viewmodel-migration/12-07-SUMMARY.md
