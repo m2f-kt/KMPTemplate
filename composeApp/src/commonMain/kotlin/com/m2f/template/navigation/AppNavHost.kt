@@ -27,8 +27,11 @@ import com.m2f.template.app.auth.RegisterIntent
 import com.m2f.template.app.auth.RegisterScreen
 import com.m2f.template.app.auth.RegisterViewModel
 import com.m2f.template.app.auth.checkOAuthCallback
+import com.m2f.template.app.dashboard.DashboardIntent
 import com.m2f.template.app.dashboard.DashboardScreen
 import com.m2f.template.app.dashboard.DashboardViewModel
+import com.m2f.template.app.profile.ProfileEvent
+import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
 import com.m2f.template.app.profile.ProfileViewModel
 import com.m2f.template.sdk.AuthInterceptor
@@ -165,11 +168,11 @@ fun AppNavHost() {
 
             composable<DashboardRoute> {
                 val dashboardViewModel = koinViewModel<DashboardViewModel>()
-                val dashboardState by dashboardViewModel.state.collectAsStateWithLifecycle()
+                val dashboardState by dashboardViewModel.model.collectAsStateWithLifecycle()
 
                 DashboardScreen(
                     state = dashboardState,
-                    onNavItemSelected = dashboardViewModel::selectNavItem,
+                    onNavItemSelected = { dashboardViewModel.take(DashboardIntent.NavItemSelected(it)) },
                     onProfileClick = { navController.navigate(ProfileRoute) },
                     onLogout = {
                         navController.navigate(LoginRoute) {
@@ -181,22 +184,25 @@ fun AppNavHost() {
 
             composable<ProfileRoute> {
                 val viewModel = koinViewModel<ProfileViewModel>()
-                val state by viewModel.state.collectAsStateWithLifecycle()
+                val state by viewModel.model.collectAsStateWithLifecycle()
                 ProfileScreen(
                     state = state,
-                    onStartEditing = viewModel::startEditing,
-                    onCancelEditing = viewModel::cancelEditing,
-                    onEditNameChange = viewModel::onEditNameChange,
-                    onEditEmailChange = viewModel::onEditEmailChange,
-                    onSaveProfile = viewModel::saveProfile,
-                    onLogout = viewModel::logout,
+                    onStartEditing = { viewModel.take(ProfileIntent.StartEditing) },
+                    onCancelEditing = { viewModel.take(ProfileIntent.CancelEditing) },
+                    onEditNameChange = { viewModel.take(ProfileIntent.EditNameChanged(it)) },
+                    onEditEmailChange = { viewModel.take(ProfileIntent.EditEmailChanged(it)) },
+                    onSaveProfile = { viewModel.take(ProfileIntent.SaveProfileClicked) },
+                    onLogout = { viewModel.take(ProfileIntent.LogoutClicked) },
                     onBack = { navController.popBackStack() },
                 )
-                // Handle logout navigation
-                LaunchedEffect(state.logoutTriggered) {
-                    if (state.logoutTriggered) {
-                        navController.navigate(LoginRoute) {
-                            popUpTo(0) { inclusive = true }
+                LaunchedEffect(Unit) {
+                    viewModel.event.collect { event ->
+                        when (event) {
+                            is ProfileEvent.NavigateToLogin -> {
+                                navController.navigate(LoginRoute) {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }
                         }
                     }
                 }

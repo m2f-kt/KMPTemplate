@@ -1,33 +1,39 @@
 package com.m2f.template.app.dashboard
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.m2f.template.core.mvi.MviViewModel
+import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel providing static mock data for the dashboard screen.
- *
- * Simulates a brief loading delay on init, then exposes a [DashboardState]
- * with pre-defined mock metrics, processes, activity, and deployment data.
- */
-class DashboardViewModel : ViewModel() {
-
-    private val _state = MutableStateFlow(DashboardState(isLoading = true))
-    val state: StateFlow<DashboardState> = _state.asStateFlow()
+class DashboardViewModel(
+    private val sdk: Sdk,
+) : MviViewModel<DashboardIntent, DashboardModel, DashboardMutation, DashboardEvent>(
+    initialState = DashboardModel()
+) {
 
     init {
+        take(DashboardIntent.LoadDashboard)
+    }
+
+    override fun take(intent: DashboardIntent) {
         viewModelScope.launch {
-            delay(300)
-            _state.update { it.copy(isLoading = false) }
+            when (intent) {
+                is DashboardIntent.LoadDashboard -> {
+                    sendMutation(DashboardMutation.SetLoading(true))
+                    delay(300)
+                    sendMutation(DashboardMutation.SetLoading(false))
+                }
+                is DashboardIntent.NavItemSelected -> {
+                    sendMutation(DashboardMutation.SetNavItem(intent.item))
+                }
+            }
         }
     }
 
-    fun selectNavItem(item: String) {
-        _state.update { it.copy(selectedNavItem = item) }
-    }
+    override suspend fun reduce(model: DashboardModel, mutation: DashboardMutation): DashboardModel =
+        when (mutation) {
+            is DashboardMutation.SetLoading -> model.copy(isLoading = mutation.loading)
+            is DashboardMutation.SetNavItem -> model.copy(selectedNavItem = mutation.item)
+        }
 }

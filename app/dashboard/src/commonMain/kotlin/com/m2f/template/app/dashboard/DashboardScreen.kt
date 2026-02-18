@@ -44,7 +44,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  * Desktop shows a 260dp sidebar + main content area.
  * Mobile shows vertical content with a bottom navigation bar.
  *
- * Content switching is state-based: sidebar/bottom nav items update [DashboardState.selectedNavItem]
+ * Content switching is state-based: sidebar/bottom nav items update [DashboardModel.selectedNavItem]
  * and the content area renders the appropriate section inline. The sidebar/bottom nav remain
  * visible at all times.
  *
@@ -56,7 +56,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  */
 @Composable
 fun DashboardScreen(
-    state: DashboardState,
+    state: DashboardModel,
     onNavItemSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     onLogout: () -> Unit,
@@ -90,7 +90,7 @@ fun DashboardScreen(
 
 @Composable
 private fun DesktopDashboard(
-    state: DashboardState,
+    state: DashboardModel,
     onNavItemSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     onLogout: () -> Unit,
@@ -228,7 +228,7 @@ private fun DesktopHeader(
 
 @Composable
 private fun MobileDashboard(
-    state: DashboardState,
+    state: DashboardModel,
     onTabSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
 ) {

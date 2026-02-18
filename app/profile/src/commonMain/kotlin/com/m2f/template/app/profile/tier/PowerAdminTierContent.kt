@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.app.profile.ProfileState
+import com.m2f.template.app.profile.ProfileModel
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.components.button.ButtonVariant
 import com.m2f.template.designsystem.components.button.TerminalButton
@@ -38,7 +38,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
  */
 @Composable
 fun PowerAdminTierContent(
-    state: ProfileState,
+    state: ProfileModel,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors

@@ -1,107 +1,52 @@
 package com.m2f.template.app.profile
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.UpdateProfileRequest
 import com.m2f.template.models.dto.tier
-import com.m2f.template.sdk.api.AuthApi
-import com.m2f.template.sdk.api.UserApi
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
 
-/**
- * ViewModel for the profile screen.
- *
- * Loads user data via [UserApi.getProfile], maps role to [com.m2f.template.models.UserTier],
- * supports inline editing of name and email via [UserApi.updateProfile],
- * and handles logout via [AuthApi.logout].
- */
 class ProfileViewModel(
-    private val userApi: UserApi,
-    private val authApi: AuthApi,
-) : ViewModel() {
-
-    private val _state = MutableStateFlow(ProfileState())
-    val state: StateFlow<ProfileState> = _state.asStateFlow()
+    private val sdk: Sdk,
+) : MviViewModel<ProfileIntent, ProfileModel, ProfileMutation, ProfileEvent>(
+    initialState = ProfileModel()
+) {
 
     init {
-        loadProfile()
+        take(ProfileIntent.LoadProfile)
     }
 
-    fun loadProfile() {
+    override fun take(intent: ProfileIntent) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, serverError = null) }
-            userApi.getProfile().fold(
-                ifLeft = { error ->
-                    _state.update {
-                        it.copy(
-                            isLoading = false,
-                            serverError = error.message,
-                        )
-                    }
-                },
-                ifRight = { user ->
-                    _state.update {
-                        it.copy(
-                            userId = user.id,
-                            email = user.email,
-                            name = user.name,
-                            tier = user.tier,
-                            isLoading = false,
-                        )
-                    }
-                },
-            )
+            when (intent) {
+                is ProfileIntent.LoadProfile -> handleLoadProfile()
+                is ProfileIntent.StartEditing -> sendMutation(ProfileMutation.StartEdit)
+                is ProfileIntent.CancelEditing -> sendMutation(ProfileMutation.CancelEdit)
+                is ProfileIntent.EditNameChanged -> sendMutation(ProfileMutation.SetEditName(intent.name))
+                is ProfileIntent.EditEmailChanged -> sendMutation(ProfileMutation.SetEditEmail(intent.email))
+                is ProfileIntent.SaveProfileClicked -> handleSaveProfile()
+                is ProfileIntent.LogoutClicked -> handleLogout()
+            }
         }
     }
 
-    fun startEditing() {
-        _state.update {
-            it.copy(
-                isEditing = true,
-                editName = it.name,
-                editEmail = it.email,
-                fieldErrors = emptyMap(),
-                serverError = null,
-                saveSuccess = false,
-            )
-        }
+    private suspend fun handleLoadProfile() {
+        sendMutation(ProfileMutation.SetLoading(true))
+        sdk.getProfile().fold(
+            ifLeft = { error ->
+                sendMutation(ProfileMutation.SetServerError(error.message))
+                sendMutation(ProfileMutation.SetLoading(false))
+            },
+            ifRight = { user ->
+                sendMutation(ProfileMutation.SetProfile(user.id, user.email, user.name, user.tier))
+            },
+        )
     }
 
-    fun cancelEditing() {
-        _state.update {
-            it.copy(
-                isEditing = false,
-                editName = "",
-                editEmail = "",
-                fieldErrors = emptyMap(),
-            )
-        }
-    }
+    private suspend fun handleSaveProfile() {
+        val current = model.value
 
-    fun onEditNameChange(name: String) {
-        _state.update {
-            it.copy(
-                editName = name,
-                fieldErrors = it.fieldErrors - "name",
-            )
-        }
-    }
-
-    fun onEditEmailChange(email: String) {
-        _state.update {
-            it.copy(
-                editEmail = email,
-                fieldErrors = it.fieldErrors - "email",
-            )
-        }
-    }
-
-    fun saveProfile() {
-        val current = _state.value
         val errors = mutableMapOf<String, String>()
         if (current.editName.isBlank()) {
             errors["name"] = "Name is required"
@@ -111,41 +56,72 @@ class ProfileViewModel(
         } else if (!current.editEmail.contains("@")) {
             errors["email"] = "Invalid email format"
         }
+
         if (errors.isNotEmpty()) {
-            _state.update { it.copy(fieldErrors = errors) }
+            sendMutation(ProfileMutation.SetFieldErrors(errors))
             return
         }
-        viewModelScope.launch {
-            _state.update { it.copy(serverError = null) }
-            userApi.updateProfile(
-                UpdateProfileRequest(
-                    name = current.editName.trim(),
-                    email = current.editEmail.trim(),
-                ),
-            ).fold(
-                ifLeft = { error ->
-                    _state.update { it.copy(serverError = error.message) }
-                },
-                ifRight = { user ->
-                    _state.update {
-                        it.copy(
-                            name = user.name,
-                            email = user.email,
-                            isEditing = false,
-                            editName = "",
-                            editEmail = "",
-                            saveSuccess = true,
-                        )
-                    }
-                },
-            )
-        }
+
+        sendMutation(ProfileMutation.SetLoading(true))
+        sdk.updateProfile(
+            UpdateProfileRequest(
+                name = current.editName.trim(),
+                email = current.editEmail.trim(),
+            ),
+        ).fold(
+            ifLeft = { error ->
+                sendMutation(ProfileMutation.SetServerError(error.message))
+                sendMutation(ProfileMutation.SetLoading(false))
+            },
+            ifRight = { user ->
+                sendMutation(ProfileMutation.SetProfile(user.id, user.email, user.name, user.tier))
+                sendMutation(ProfileMutation.SetSaveSuccess)
+            },
+        )
     }
 
-    fun logout() {
-        viewModelScope.launch {
-            authApi.logout()
-            _state.update { it.copy(logoutTriggered = true) }
-        }
+    private suspend fun handleLogout() {
+        sdk.logout()
+        sendEvent(ProfileEvent.NavigateToLogin)
     }
+
+    override suspend fun reduce(model: ProfileModel, mutation: ProfileMutation): ProfileModel =
+        when (mutation) {
+            is ProfileMutation.SetProfile -> model.copy(
+                userId = mutation.userId,
+                email = mutation.email,
+                name = mutation.name,
+                tier = mutation.tier,
+                isLoading = false,
+            )
+            is ProfileMutation.SetLoading -> model.copy(isLoading = mutation.loading)
+            is ProfileMutation.StartEdit -> model.copy(
+                isEditing = true,
+                editName = model.name,
+                editEmail = model.email,
+                saveSuccess = false,
+                fieldErrors = emptyMap(),
+            )
+            is ProfileMutation.CancelEdit -> model.copy(
+                isEditing = false,
+                editName = "",
+                editEmail = "",
+                fieldErrors = emptyMap(),
+            )
+            is ProfileMutation.SetEditName -> model.copy(
+                editName = mutation.name,
+                fieldErrors = model.fieldErrors - "name",
+            )
+            is ProfileMutation.SetEditEmail -> model.copy(
+                editEmail = mutation.email,
+                fieldErrors = model.fieldErrors - "email",
+            )
+            is ProfileMutation.SetFieldErrors -> model.copy(fieldErrors = mutation.errors)
+            is ProfileMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
+            is ProfileMutation.SetSaveSuccess -> model.copy(
+                isEditing = false,
+                saveSuccess = true,
+                isLoading = false,
+            )
+        }
 }

@@ -64,7 +64,7 @@ import com.m2f.template.models.UserTier
  */
 @Composable
 fun ProfileScreen(
-    state: ProfileState,
+    state: ProfileModel,
     onStartEditing: () -> Unit,
     onCancelEditing: () -> Unit,
     onEditNameChange: (String) -> Unit,
@@ -120,7 +120,7 @@ fun ProfileScreen(
 
 @Composable
 private fun DesktopProfile(
-    state: ProfileState,
+    state: ProfileModel,
     onStartEditing: () -> Unit,
     onCancelEditing: () -> Unit,
     onEditNameChange: (String) -> Unit,
@@ -181,7 +181,7 @@ private fun DesktopProfile(
 
 @Composable
 private fun MobileProfile(
-    state: ProfileState,
+    state: ProfileModel,
     onStartEditing: () -> Unit,
     onCancelEditing: () -> Unit,
     onEditNameChange: (String) -> Unit,
@@ -255,7 +255,7 @@ private fun MobileProfile(
 // -- Shared Components --
 
 @Composable
-private fun ProfileHeader(state: ProfileState) {
+private fun ProfileHeader(state: ProfileModel) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
@@ -275,7 +275,7 @@ private fun ProfileHeader(state: ProfileState) {
 
 @Composable
 private fun ProfileInfoCard(
-    state: ProfileState,
+    state: ProfileModel,
     onStartEditing: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
@@ -348,7 +348,7 @@ private fun InfoRow(label: String, value: String) {
 
 @Composable
 private fun EditProfileSection(
-    state: ProfileState,
+    state: ProfileModel,
     onEditNameChange: (String) -> Unit,
     onEditEmailChange: (String) -> Unit,
     onSaveProfile: () -> Unit,
@@ -407,7 +407,7 @@ private fun EditProfileSection(
 }
 
 @Composable
-private fun TierContent(state: ProfileState) {
+private fun TierContent(state: ProfileModel) {
     when (state.tier) {
         is UserTier.Free -> FreeTierContent(state = state)
         is UserTier.Paid -> PaidTierContent(state = state)

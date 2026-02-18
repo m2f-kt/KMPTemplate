@@ -23,13 +23,18 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.core.models)
             implementation(projects.core.sdk)
+            implementation(projects.core.mvi)
             implementation(projects.app.designsystem)
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(libs.arrow.core)
+            implementation(libs.kotlinx.coroutines)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.navigation.compose)
+        }
+        commonTest.dependencies {
+            implementation(projects.core.testing)
         }
     }
 }
