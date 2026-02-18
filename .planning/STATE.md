@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 10 -- MVI ViewModel Foundation
+**Current focus:** Phase 11 -- Testing Infrastructure
 
 ## Current Position
 
-Phase: 10 of 15 (MVI ViewModel Foundation)
-Plan: 1 of 1 in current phase
-Status: Phase 10 complete
-Last activity: 2026-02-18 -- Completed 10-01-PLAN.md
+Phase: 11 of 15 (Testing Infrastructure)
+Plan: 1 of 3 in current phase
+Status: Executing phase 11
+Last activity: 2026-02-18 -- Completed 11-01-PLAN.md
 
-Progress: [███░░░░░░░░░░░░░░░░░] 17% (1/6 plans)
+Progress: [████░░░░░░░░░░░░░░░░] 33% (2/6 plans)
 
 ## v1.0 Performance (archived)
 
@@ -32,6 +32,7 @@ Progress: [████████████████████] 100% (3
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
+| 11. Testing Infrastructure | 1 | 5min | 5min |
 
 ## Accumulated Context
 
@@ -40,6 +41,8 @@ Progress: [████████████████████] 100% (3
 - Phase 10: extraBufferCapacity=64 on MviViewModel pipeline to prevent emit suspension before collectors ready
 - Phase 10: reduce is suspend per user decision (diverges from Airalo reference)
 - Phase 10: koin-core kept as implementation dependency (not exposed to consumers)
+- Phase 11: Interface gets clean name (AuthApi), Impl suffix for concrete class (AuthApiImpl)
+- Phase 11: SdkModule Koin bindings use interface type qualifiers (single<AuthApi>) for correct DI resolution
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -52,5 +55,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 10-01-PLAN.md
-Resume file: .planning/phases/10-mvi-viewmodel-foundation/10-01-SUMMARY.md
+Stopped at: Completed 11-01-PLAN.md
+Resume file: .planning/phases/11-testing-infrastructure/11-01-SUMMARY.md
