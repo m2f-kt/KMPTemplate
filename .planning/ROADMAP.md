@@ -154,7 +154,7 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
 | 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
 | 11.1. Fake SDK facade & fixes | 2/2 | Complete    | 2026-02-18 | - |
-| 12. ViewModel Migration | 3/6 | In Progress|  | - |
+| 12. ViewModel Migration | 4/6 | In Progress|  | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
 | 15. Localization | v1.1 | 0/0 | Not started | - |

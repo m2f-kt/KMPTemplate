@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 12 (ViewModel Migration)
-Plan: 3 of 6 in current phase
+Plan: 5 of 6 in current phase
 Status: Executing phase 12
-Last activity: 2026-02-18 -- Completed 12-03-PLAN.md (ForgotPassword ViewModel MVI migration)
+Last activity: 2026-02-18 -- Completed 12-05-PLAN.md (Dashboard ViewModel MVI migration)
 
-Progress: [█████████████████░░░] 89% (9/13 plans)
+Progress: [███████████████████░] 92% (11/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -34,7 +34,7 @@ Progress: [████████████████████] 100% (3
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
-| 12. ViewModel Migration | 3/6 | 15min | 5min |
+| 12. ViewModel Migration | 5/6 | 23min | ~5min |
 
 ## Accumulated Context
 
@@ -61,6 +61,8 @@ Progress: [████████████████████] 100% (3
 - Phase 12: emailSent stays as Model field (not Event) because user remains on screen to see success message
 - Phase 12: ForgotPasswordEvent is empty sealed interface -- no ViewModel-driven navigation for this screen
 - Phase 12: StateFlow conflation also affects success path when both SetLoading and SetEmailSent are Mutations (unlike Login where success emits Event)
+- Phase 12: DashboardEvent is empty sealed interface -- no ViewModel-driven navigation for dashboard screen
+- Phase 12: Init-block auto-dispatched intents require explicit intent() call in test DSL (init coroutine orphaned on setUp's StandardTestDispatcher)
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -77,5 +79,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 12-03-PLAN.md (ForgotPassword ViewModel MVI migration)
-Resume file: .planning/phases/12-viewmodel-migration/12-03-SUMMARY.md
+Stopped at: Completed 12-05-PLAN.md (Dashboard ViewModel MVI migration)
+Resume file: .planning/phases/12-viewmodel-migration/12-05-SUMMARY.md
