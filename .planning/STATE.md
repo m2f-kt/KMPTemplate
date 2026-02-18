@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 12 (ViewModel Migration)
-Plan: 5 of 6 in current phase
-Status: Executing phase 12
-Last activity: 2026-02-18 -- Completed 12-05-PLAN.md (Dashboard ViewModel MVI migration)
+Plan: 6 of 6 in current phase (COMPLETE)
+Status: Phase 12 complete
+Last activity: 2026-02-18 -- Completed 12-06-PLAN.md (Legacy State cleanup, phase complete)
 
-Progress: [███████████████████░] 92% (11/13 plans)
+Progress: [████████████████████] 100% (12/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -34,7 +34,7 @@ Progress: [████████████████████] 100% (3
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
-| 12. ViewModel Migration | 5/6 | 23min | ~5min |
+| 12. ViewModel Migration | 6/6 | 25min | ~4min |
 | Phase 12 P04 | 22min | 2 tasks | 14 files |
 
 ## Accumulated Context
@@ -82,5 +82,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 12-04-PLAN.md (Profile ViewModel MVI migration with tests)
-Resume file: .planning/phases/12-viewmodel-migration/12-04-SUMMARY.md
+Stopped at: Completed 12-06-PLAN.md (Phase 12 complete -- all legacy State files removed)
+Resume file: .planning/phases/12-viewmodel-migration/12-06-SUMMARY.md
