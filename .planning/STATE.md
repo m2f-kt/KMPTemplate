@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 12 (ViewModel Migration)
-Plan: 1 of 6 in current phase
+Plan: 3 of 6 in current phase
 Status: Executing phase 12
-Last activity: 2026-02-18 -- Completed 12-01-PLAN.md (Login ViewModel MVI migration)
+Last activity: 2026-02-18 -- Completed 12-03-PLAN.md (ForgotPassword ViewModel MVI migration)
 
-Progress: [████████████████░░░░] 88% (7/13 plans)
+Progress: [█████████████████░░░] 89% (9/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -34,7 +34,7 @@ Progress: [████████████████████] 100% (3
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
 | 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
-| 12. ViewModel Migration | 1/6 | 5min | 5min |
+| 12. ViewModel Migration | 2/6 | 10min | 5min |
 
 ## Accumulated Context
 
@@ -56,6 +56,8 @@ Progress: [████████████████████] 100% (3
 - Phase 11.1: mvi-viewmodel skill mandates Sdk as ViewModel dependency and fakeSdk {} as test entry point
 - Phase 12: StateFlow conflation -- sync fake SDK causes isLoading=true to be conflated with SetServerError in error path; test expects final state only
 - Phase 12: LoginScreen parameter stays state: LoginModel (not model) to minimize churn in composable body references
+- Phase 12: RegisterScreen parameter stays state: RegisterModel (matching Login pattern) to minimize churn
+- Phase 12: StateFlow conflation pattern confirmed reusable across all ViewModel error-path tests with sync fakes
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -72,5 +74,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 12-01-PLAN.md (Login ViewModel MVI migration)
-Resume file: .planning/phases/12-viewmodel-migration/12-01-SUMMARY.md
+Stopped at: Completed 12-02-PLAN.md (Register ViewModel MVI migration)
+Resume file: .planning/phases/12-viewmodel-migration/12-02-SUMMARY.md
