@@ -60,7 +60,11 @@ Full details: milestones/v1.0-ROADMAP.md
   3. Shared test fixtures and utilities are available as a core:testing module importable by any project module
   4. Kotest assertions work with Arrow Either/Raise types in multiplatform tests (JVM, iOS, WASM)
   5. At least one working ViewModel test (LoginViewModel) demonstrates the full pattern as a reference
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 11-01-PLAN.md -- Extract SDK interfaces, create Impl classes, Sdk facade, update Koin bindings
+- [ ] 11-02-PLAN.md -- Create core:testing module with Turbine DSL, annotations, ViewModelTest base class
+- [ ] 11-03-PLAN.md -- Fake SDK builder DSL and reference LoginViewModel test
 
 ### Phase 12: ViewModel Migration
 **Goal**: All existing ViewModels use the MVI pattern consistently -- the template demonstrates one approach, not two
@@ -125,7 +129,7 @@ Phases execute in numeric order: 10 -> 11 -> 12 -> 13 -> 14 -> 15
 | 8. Type-Safe Shared Routes | v1.0 | 3/3 | Complete | 2026-02-15 |
 | 9. WASM HTTP Engine Fix | v1.0 | 1/1 | Complete | 2026-02-16 |
 | 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
-| 11. Testing Infrastructure | v1.1 | 0/0 | Not started | - |
+| 11. Testing Infrastructure | v1.1 | 0/3 | Planned | - |
 | 12. ViewModel Migration | v1.1 | 0/0 | Not started | - |
 | 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
