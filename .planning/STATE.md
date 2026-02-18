@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 11.1 (Fake SDK Facade, Fix Android Compile, Update MVI-ViewModel Skill)
-Plan: 1 of 2 in current phase
-Status: Executing phase 11.1
-Last activity: 2026-02-18 -- Completed 11.1-01-PLAN.md
+Plan: 2 of 2 in current phase (COMPLETE)
+Status: Phase 11.1 complete
+Last activity: 2026-02-18 -- Completed 11.1-02-PLAN.md
 
-Progress: [██████████░░░░░░░░░░] 71% (5/7 plans)
+Progress: [████████████████░░░░] 86% (6/7 plans)
 
 ## v1.0 Performance (archived)
 
@@ -33,7 +33,7 @@ Progress: [████████████████████] 100% (3
 |-------|-------|-------|----------|
 | 10. MVI ViewModel Foundation | 1 | 2min | 2min |
 | 11. Testing Infrastructure | 3 | 24min | 8min |
-| 11.1 Fake SDK Facade + Fixes | 1 | 2min | 2min |
+| 11.1 Fake SDK Facade + Fixes | 2 | 6min | 3min |
 
 ## Accumulated Context
 
@@ -51,6 +51,8 @@ Progress: [████████████████████] 100% (3
 - Phase 11: advanceUntilIdle() after each intent dispatch in DSL ensures viewModelScope coroutines complete
 - Phase 11.1: FakeSdkBuilder uses direct Sdk constructor instead of subclassing (Sdk is final class)
 - Phase 11.1: Android kotlin-test-junit declared separately from jvmMain (KMP androidTarget is independent compilation unit)
+- Phase 11.1: No AppModule.kt change needed -- Koin viewModelOf auto-resolves Sdk from sdkModule
+- Phase 11.1: mvi-viewmodel skill mandates Sdk as ViewModel dependency and fakeSdk {} as test entry point
 
 Decisions are logged in PROJECT.md Key Decisions table.
 
@@ -67,5 +69,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-18
-Stopped at: Completed 11.1-01-PLAN.md
-Resume file: .planning/phases/11.1-fake-sdk-facade-fix-android-compile-update-mvi-viewmodel-skill/11.1-01-SUMMARY.md
+Stopped at: Completed 11.1-02-PLAN.md (Phase 11.1 complete)
+Resume file: .planning/phases/11.1-fake-sdk-facade-fix-android-compile-update-mvi-viewmodel-skill/11.1-02-SUMMARY.md
