@@ -11,6 +11,7 @@ import com.m2f.template.models.dto.CreateGroupRequest
 import com.m2f.template.models.dto.RegisterMemberRequest
 import com.m2f.template.models.dto.UpdateGroupRequest
 import com.m2f.template.models.routes.Groups
+import com.m2f.template.models.routes.Users
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.auth.jwt.JWTPrincipal
@@ -28,6 +29,13 @@ import io.ktor.server.routing.RoutingContext
  */
 fun Route.groupRoutes(groupService: GroupService) {
     authenticate {
+        // Get current user's group memberships -- no role restriction, any authenticated user
+        get<Users.Me.Memberships> {
+            conduitAuth { userId ->
+                groupService.getMyMemberships(userId)
+            }
+        }
+
         // Create group -- Admin+ system role required
         withRole(UserRole.Admin, UserRole.PowerAdmin) {
             post<Groups.Create> {

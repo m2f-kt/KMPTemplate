@@ -23,6 +23,7 @@ import com.m2f.template.models.dto.AddMemberRequest
 import com.m2f.template.models.dto.CreateGroupRequest
 import com.m2f.template.models.dto.GroupResponse
 import com.m2f.template.models.dto.MemberResponse
+import com.m2f.template.models.dto.MembershipSummary
 import com.m2f.template.models.dto.PaginatedMemberResponse
 import com.m2f.template.models.dto.RegisterMemberRequest
 import com.m2f.template.models.dto.RegisterRequest
@@ -158,6 +159,24 @@ class GroupService(
     }
 
     // ---- Member Management ----
+
+    /**
+     * Get all group memberships for the current user.
+     * Returns a lightweight summary with groupId, groupName, and GroupRole.
+     * No RBAC check needed — users can always see their own memberships.
+     */
+    suspend fun getMyMemberships(userId: String): List<MembershipSummary> {
+        val uid = Uuid.parse(userId)
+        val memberships = membershipRepository.findByUserId(uid)
+        return memberships.map { record ->
+            val group = groupRepository.findById(record.groupId)
+            MembershipSummary(
+                groupId = record.groupId.toString(),
+                groupName = group?.name ?: "",
+                groupRole = GroupRole.fromString(record.role),
+            )
+        }
+    }
 
     /**
      * List members of a group with cursor-based pagination.

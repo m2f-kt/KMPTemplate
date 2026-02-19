@@ -59,6 +59,17 @@ data class RegisterMemberRequest(
 )
 
 /**
+ * Lightweight summary of a user's membership in a group.
+ * Used by the client to determine the user's role in each group (e.g. for role-gated navigation).
+ */
+@Serializable
+data class MembershipSummary(
+    val groupId: String,
+    val groupName: String,
+    val groupRole: GroupRole,
+)
+
+/**
  * Server response representing a group member.
  */
 @Serializable

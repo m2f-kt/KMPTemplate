@@ -29,7 +29,10 @@ class Auth {
 @Resource("/api/users")
 class Users {
     @Serializable @Resource("me")
-    class Me(val parent: Users = Users())
+    class Me(val parent: Users = Users()) {
+        @Serializable @Resource("memberships")
+        class Memberships(val parent: Me = Me())
+    }
 
     @Serializable @Resource("{id}")
     class ById(val parent: Users = Users(), val id: String)
