@@ -33,7 +33,7 @@ Full details: milestones/v1.0-ROADMAP.md
 - [x] **Phase 11: Testing Infrastructure** - core:testing module with Turbine DSL, SDK interface extraction, fake implementations, shared fixtures (completed 2026-02-18)
 - [x] **Phase 11.1: Fake SDK facade, fix Android compile, update mvi-viewmodel skill** (INSERTED) (completed 2026-02-18)
 - [x] **Phase 12: ViewModel Migration** - Migrate all 5 existing ViewModels to MVI pattern with tests (completed 2026-02-18)
-- [ ] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests
+- [x] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests (completed 2026-02-19)
 - [ ] **Phase 14: Group Admin UI** - Admin panel with group management screens and role-gated navigation
 - [ ] **Phase 15: Localization** - StringKey enum, resource files, server i18n, client string loading, runtime locale switching
 
@@ -161,6 +161,6 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
 | 11.1. Fake SDK facade & fixes | 2/2 | Complete    | 2026-02-18 | - |
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
-| 13. Group Server & SDK | 1/4 | In Progress|  | - |
+| 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
 | 15. Localization | v1.1 | 0/0 | Not started | - |
