@@ -140,7 +140,8 @@ class GroupService(
             requireGroupRole(uid, gid, GroupRole.Owner)
         }
 
-        // Delete group (memberships will be cleaned up by DB cascade or manual delete)
+        // Delete memberships first (no ON DELETE CASCADE on FK)
+        membershipRepository.deleteByGroup(gid)
         groupRepository.delete(gid)
     }
 

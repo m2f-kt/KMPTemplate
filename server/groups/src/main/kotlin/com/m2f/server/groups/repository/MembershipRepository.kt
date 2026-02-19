@@ -129,6 +129,12 @@ class MembershipRepository(private val db: R2dbcDatabase) {
             }
         }
 
+    suspend fun deleteByGroup(groupId: Uuid): Int = suspendTransaction(db = db) {
+        UserGroupMembershipsTable.deleteWhere {
+            UserGroupMembershipsTable.groupId eq groupId
+        }
+    }
+
     suspend fun delete(userId: Uuid, groupId: Uuid): Boolean = suspendTransaction(db = db) {
         val rowsDeleted = UserGroupMembershipsTable.deleteWhere {
             (UserGroupMembershipsTable.userId eq userId) and
