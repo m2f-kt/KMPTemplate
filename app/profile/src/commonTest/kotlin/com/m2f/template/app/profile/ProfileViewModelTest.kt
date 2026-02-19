@@ -8,6 +8,7 @@ import com.m2f.template.models.AppError
 import com.m2f.template.models.UserRole
 import com.m2f.template.models.UserTier
 import com.m2f.template.models.dto.UserResponse
+import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
 
 class ProfileViewModelTest : ViewModelTest() {
@@ -65,7 +66,7 @@ class ProfileViewModelTest : ViewModelTest() {
         }
         val viewModel = ProfileViewModel(sdk)
         viewModel.test {
-            model(ProfileModel(isLoading = false, serverError = "Network error"))
+            model(ProfileModel(isLoading = false, serverError = StringKey.SERVER_INTERNAL_ERROR))
         }
     }
 

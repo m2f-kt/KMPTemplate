@@ -90,7 +90,7 @@ fun AdminPanelScreen(
                 variant = CardVariant.Default,
             ) {
                 TerminalBadge(
-                    text = "error: ${state.error}",
+                    text = "error: ${state.error.code}",
                     variant = BadgeVariant.Error,
                 )
             }

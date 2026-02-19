@@ -9,6 +9,7 @@ import com.m2f.template.models.GroupRole
 import com.m2f.template.models.dto.GroupResponse
 import com.m2f.template.models.dto.MemberResponse
 import com.m2f.template.models.dto.PaginatedMemberResponse
+import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
 
 class AdminPanelViewModelTest : ViewModelTest() {
@@ -72,7 +73,7 @@ class AdminPanelViewModelTest : ViewModelTest() {
         viewModel.test {
             intent(AdminPanelIntent.LoadAdminPanel("g1"))
             // Sync fakes conflate SetLoading(true) + SetError + SetLoading(false); assert final state
-            model(AdminPanelModel(isLoading = false, error = "Access denied"))
+            model(AdminPanelModel(isLoading = false, error = StringKey.GROUP_FORBIDDEN))
         }
     }
 

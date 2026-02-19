@@ -292,7 +292,7 @@ private fun ProfileInfoCard(
 
     if (state.serverError != null) {
         TerminalAlert(
-            message = state.serverError,
+            message = state.serverError.code,
             variant = AlertVariant.Error,
             title = "error",
         )
@@ -364,7 +364,7 @@ private fun EditProfileSection(
         ) {
             if (state.serverError != null) {
                 TerminalAlert(
-                    message = state.serverError,
+                    message = state.serverError.code,
                     variant = AlertVariant.Error,
                     title = "error",
                 )
@@ -376,7 +376,7 @@ private fun EditProfileSection(
                 label = "name",
                 placeholder = "Enter your name",
                 isError = state.fieldErrors.containsKey("name"),
-                errorMessage = state.fieldErrors["name"],
+                errorMessage = state.fieldErrors["name"]?.code,
             )
 
             TerminalInput(
@@ -385,7 +385,7 @@ private fun EditProfileSection(
                 label = "email",
                 placeholder = "Enter your email",
                 isError = state.fieldErrors.containsKey("email"),
-                errorMessage = state.fieldErrors["email"],
+                errorMessage = state.fieldErrors["email"]?.code,
             )
 
             Row(

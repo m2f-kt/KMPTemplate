@@ -87,7 +87,7 @@ fun RegisterMemberScreen(
             label = "first_name",
             placeholder = "John",
             isError = firstNameError != null,
-            errorMessage = firstNameError,
+            errorMessage = firstNameError?.code,
         )
 
         // Last Name
@@ -98,7 +98,7 @@ fun RegisterMemberScreen(
             label = "last_name",
             placeholder = "Doe",
             isError = lastNameError != null,
-            errorMessage = lastNameError,
+            errorMessage = lastNameError?.code,
         )
 
         // Email
@@ -109,7 +109,7 @@ fun RegisterMemberScreen(
             label = "email",
             placeholder = "user@example.com",
             isError = emailError != null,
-            errorMessage = emailError,
+            errorMessage = emailError?.code,
         )
 
         // Password
@@ -120,7 +120,7 @@ fun RegisterMemberScreen(
             label = "password",
             placeholder = "min. 8 characters",
             isError = passwordError != null,
-            errorMessage = passwordError,
+            errorMessage = passwordError?.code,
         )
 
         // Role selector
@@ -153,7 +153,7 @@ fun RegisterMemberScreen(
         // Server error
         if (state.serverError != null) {
             TerminalBadge(
-                text = state.serverError,
+                text = state.serverError.code,
                 variant = BadgeVariant.Error,
             )
         }

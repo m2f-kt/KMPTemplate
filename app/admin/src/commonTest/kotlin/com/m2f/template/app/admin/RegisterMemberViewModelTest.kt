@@ -7,6 +7,7 @@ import com.m2f.template.core.testing.test
 import com.m2f.template.models.AppError
 import com.m2f.template.models.GroupRole
 import com.m2f.template.models.dto.MemberResponse
+import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
 
 class RegisterMemberViewModelTest : ViewModelTest() {
@@ -46,10 +47,10 @@ class RegisterMemberViewModelTest : ViewModelTest() {
             model(
                 RegisterMemberModel(
                     fieldErrors = mapOf(
-                        "firstName" to "Name must not be blank",
-                        "lastName" to "Name must not be blank",
-                        "email" to "Email must not be blank",
-                        "password" to "Password must be at least 8 characters",
+                        "firstName" to StringKey.VALIDATION_NAME_BLANK,
+                        "lastName" to StringKey.VALIDATION_NAME_BLANK,
+                        "email" to StringKey.VALIDATION_EMAIL_BLANK,
+                        "password" to StringKey.VALIDATION_PASSWORD_TOO_SHORT,
                     ),
                 ),
             )
@@ -99,7 +100,7 @@ class RegisterMemberViewModelTest : ViewModelTest() {
             model(RegisterMemberModel(firstName = "New", lastName = "User", email = "new@test.com", password = "password123"))
             intent(RegisterMemberIntent.SubmitRegisterMember("g1"))
             // Sync fakes: SetLoading(true) followed by SetServerError conflate; assert final settled state
-            model(RegisterMemberModel(firstName = "New", lastName = "User", email = "new@test.com", password = "password123", serverError = "User already in group"))
+            model(RegisterMemberModel(firstName = "New", lastName = "User", email = "new@test.com", password = "password123", serverError = StringKey.GROUP_MEMBER_ALREADY_EXISTS))
         }
     }
 
@@ -113,10 +114,10 @@ class RegisterMemberViewModelTest : ViewModelTest() {
             model(
                 RegisterMemberModel(
                     fieldErrors = mapOf(
-                        "firstName" to "Name must not be blank",
-                        "lastName" to "Name must not be blank",
-                        "email" to "Email must not be blank",
-                        "password" to "Password must be at least 8 characters",
+                        "firstName" to StringKey.VALIDATION_NAME_BLANK,
+                        "lastName" to StringKey.VALIDATION_NAME_BLANK,
+                        "email" to StringKey.VALIDATION_EMAIL_BLANK,
+                        "password" to StringKey.VALIDATION_PASSWORD_TOO_SHORT,
                     ),
                 ),
             )
@@ -126,9 +127,9 @@ class RegisterMemberViewModelTest : ViewModelTest() {
                 RegisterMemberModel(
                     firstName = "John",
                     fieldErrors = mapOf(
-                        "lastName" to "Name must not be blank",
-                        "email" to "Email must not be blank",
-                        "password" to "Password must be at least 8 characters",
+                        "lastName" to StringKey.VALIDATION_NAME_BLANK,
+                        "email" to StringKey.VALIDATION_EMAIL_BLANK,
+                        "password" to StringKey.VALIDATION_PASSWORD_TOO_SHORT,
                     ),
                 ),
             )
