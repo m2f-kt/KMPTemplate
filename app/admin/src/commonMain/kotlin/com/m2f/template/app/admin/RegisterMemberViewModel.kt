@@ -7,6 +7,7 @@ import arrow.core.raise.zipOrAccumulate
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.FieldError
 import com.m2f.template.models.dto.RegisterMemberRequest
+import com.m2f.template.models.localization.StringKey
 import com.m2f.template.models.validation.validateEmail
 import com.m2f.template.models.validation.validateName
 import com.m2f.template.models.validation.validatePassword
@@ -62,14 +63,14 @@ class RegisterMemberViewModel(
 
         validationResult.fold(
             ifLeft = { errors ->
-                val fieldErrorMap = errors.associate { it.field to it.message }
+                val fieldErrorMap = errors.associate { it.field to (StringKey.fromCode(it.message) ?: StringKey.GENERIC_ERROR) }
                 sendMutation(RegisterMemberMutation.SetFieldErrors(fieldErrorMap))
             },
             ifRight = { request ->
                 sendMutation(RegisterMemberMutation.SetLoading(true))
                 sdk.registerMember(groupId, request).fold(
                     ifLeft = { error ->
-                        sendMutation(RegisterMemberMutation.SetServerError(error.message))
+                        sendMutation(RegisterMemberMutation.SetServerError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
                     },
                     ifRight = {
                         sendEvent(RegisterMemberEvent.RegistrationSuccess)

@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.UpdateProfileRequest
 import com.m2f.template.models.dto.tier
+import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
@@ -41,7 +42,7 @@ class ProfileViewModel(
         sendMutation(ProfileMutation.SetLoading(true))
         sdk.getProfile().fold(
             ifLeft = { error ->
-                sendMutation(ProfileMutation.SetServerError(error.message))
+                sendMutation(ProfileMutation.SetServerError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
                 sendMutation(ProfileMutation.SetLoading(false))
             },
             ifRight = { user ->
@@ -53,14 +54,14 @@ class ProfileViewModel(
     private suspend fun handleSaveProfile() {
         val current = model.value
 
-        val errors = mutableMapOf<String, String>()
+        val errors = mutableMapOf<String, StringKey>()
         if (current.editName.isBlank()) {
-            errors["name"] = "Name is required"
+            errors["name"] = StringKey.VALIDATION_NAME_BLANK
         }
         if (current.editEmail.isBlank()) {
-            errors["email"] = "Email is required"
+            errors["email"] = StringKey.VALIDATION_EMAIL_BLANK
         } else if (!current.editEmail.contains("@")) {
-            errors["email"] = "Invalid email format"
+            errors["email"] = StringKey.VALIDATION_EMAIL_INVALID
         }
 
         if (errors.isNotEmpty()) {
@@ -76,7 +77,7 @@ class ProfileViewModel(
             ),
         ).fold(
             ifLeft = { error ->
-                sendMutation(ProfileMutation.SetServerError(error.message))
+                sendMutation(ProfileMutation.SetServerError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
                 sendMutation(ProfileMutation.SetLoading(false))
             },
             ifRight = { user ->

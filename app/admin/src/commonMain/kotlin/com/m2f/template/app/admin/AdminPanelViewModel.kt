@@ -2,6 +2,7 @@ package com.m2f.template.app.admin
 
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
+import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
 
@@ -30,7 +31,7 @@ class AdminPanelViewModel(
         sendMutation(AdminPanelMutation.SetLoading(true))
         sdk.getGroup(groupId).fold(
             ifLeft = { error ->
-                sendMutation(AdminPanelMutation.SetError(error.message))
+                sendMutation(AdminPanelMutation.SetError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
                 sendMutation(AdminPanelMutation.SetLoading(false))
             },
             ifRight = { group ->
@@ -45,7 +46,7 @@ class AdminPanelViewModel(
                 )
                 sdk.getMembers(groupId, cursor = null, limit = 20).fold(
                     ifLeft = { error ->
-                        sendMutation(AdminPanelMutation.SetError(error.message))
+                        sendMutation(AdminPanelMutation.SetError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
                         sendMutation(AdminPanelMutation.SetLoading(false))
                     },
                     ifRight = { page ->
@@ -69,7 +70,7 @@ class AdminPanelViewModel(
         sendMutation(AdminPanelMutation.SetLoadingMore(true))
         sdk.getMembers(current.groupId, cursor = current.membersCursor, limit = 20).fold(
             ifLeft = { error ->
-                sendMutation(AdminPanelMutation.SetError(error.message))
+                sendMutation(AdminPanelMutation.SetError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
                 sendMutation(AdminPanelMutation.SetLoadingMore(false))
             },
             ifRight = { page ->

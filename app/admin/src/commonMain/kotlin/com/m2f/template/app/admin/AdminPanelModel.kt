@@ -1,6 +1,7 @@
 package com.m2f.template.app.admin
 
 import com.m2f.template.models.dto.MemberResponse
+import com.m2f.template.models.localization.StringKey
 
 data class AdminPanelModel(
     val groupId: String = "",
@@ -13,5 +14,5 @@ data class AdminPanelModel(
     val hasMoreMembers: Boolean = false,
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
-    val error: String? = null,
+    val error: StringKey? = null,
 )

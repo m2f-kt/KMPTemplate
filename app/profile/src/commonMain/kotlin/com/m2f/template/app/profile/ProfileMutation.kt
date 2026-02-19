@@ -1,6 +1,7 @@
 package com.m2f.template.app.profile
 
 import com.m2f.template.models.UserTier
+import com.m2f.template.models.localization.StringKey
 
 sealed interface ProfileMutation {
     data class SetProfile(val userId: String, val email: String, val name: String, val tier: UserTier) : ProfileMutation
@@ -9,7 +10,7 @@ sealed interface ProfileMutation {
     data object CancelEdit : ProfileMutation
     data class SetEditName(val name: String) : ProfileMutation
     data class SetEditEmail(val email: String) : ProfileMutation
-    data class SetFieldErrors(val errors: Map<String, String>) : ProfileMutation
-    data class SetServerError(val error: String?) : ProfileMutation
+    data class SetFieldErrors(val errors: Map<String, StringKey>) : ProfileMutation
+    data class SetServerError(val error: StringKey?) : ProfileMutation
     data object SetSaveSuccess : ProfileMutation
 }

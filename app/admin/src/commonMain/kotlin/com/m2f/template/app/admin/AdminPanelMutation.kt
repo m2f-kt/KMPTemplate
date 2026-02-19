@@ -1,6 +1,7 @@
 package com.m2f.template.app.admin
 
 import com.m2f.template.models.dto.MemberResponse
+import com.m2f.template.models.localization.StringKey
 
 sealed interface AdminPanelMutation {
     data class SetLoading(val loading: Boolean) : AdminPanelMutation
@@ -22,5 +23,5 @@ sealed interface AdminPanelMutation {
         val cursor: String?,
         val hasMore: Boolean,
     ) : AdminPanelMutation
-    data class SetError(val error: String) : AdminPanelMutation
+    data class SetError(val error: StringKey) : AdminPanelMutation
 }

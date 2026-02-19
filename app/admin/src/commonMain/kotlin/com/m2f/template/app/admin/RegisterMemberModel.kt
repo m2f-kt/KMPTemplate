@@ -1,6 +1,7 @@
 package com.m2f.template.app.admin
 
 import com.m2f.template.models.GroupRole
+import com.m2f.template.models.localization.StringKey
 
 data class RegisterMemberModel(
     val email: String = "",
@@ -9,6 +10,6 @@ data class RegisterMemberModel(
     val lastName: String = "",
     val role: GroupRole = GroupRole.Member,
     val isLoading: Boolean = false,
-    val fieldErrors: Map<String, String> = emptyMap(),
-    val serverError: String? = null,
+    val fieldErrors: Map<String, StringKey> = emptyMap(),
+    val serverError: StringKey? = null,
 )
