@@ -143,7 +143,13 @@ Plans:
   3. Server returns localized error messages based on the Accept-Language header
   4. User can switch locale at runtime and all UI strings update without app restart
   5. A bridge function maps StringKey values to Compose Res.strings accessors for type-safe string resolution
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 15-01-PLAN.md — Foundation: StringKey enum + English strings.xml + bridge function
+- [ ] 15-02-PLAN.md — Auth module localization: Login/Register/ForgotPassword ViewModels + screens + tests
+- [ ] 15-03-PLAN.md — Feature module localization: Profile/Dashboard/AdminPanel/RegisterMember
+- [ ] 15-04-PLAN.md — Server i18n: ServerStrings + Accept-Language + Spanish locale
+- [ ] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
 
 ## Progress
 
@@ -168,4 +174,4 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
 | 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
 | 14. Group Admin UI | v1.1 | 4/4 | Complete | 2026-02-19 |
-| 15. Localization | v1.1 | 0/0 | Not started | - |
+| 15. Localization | v1.1 | 0/5 | Planned | - |
