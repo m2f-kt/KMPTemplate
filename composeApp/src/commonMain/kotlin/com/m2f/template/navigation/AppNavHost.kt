@@ -35,6 +35,10 @@ import com.m2f.template.app.admin.AdminPanelEvent
 import com.m2f.template.app.admin.AdminPanelIntent
 import com.m2f.template.app.admin.AdminPanelScreen
 import com.m2f.template.app.admin.AdminPanelViewModel
+import com.m2f.template.app.admin.RegisterMemberEvent
+import com.m2f.template.app.admin.RegisterMemberIntent
+import com.m2f.template.app.admin.RegisterMemberScreen
+import com.m2f.template.app.admin.RegisterMemberViewModel
 import com.m2f.template.app.profile.ProfileEvent
 import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
@@ -255,6 +259,31 @@ fun AppNavHost() {
                         when (event) {
                             is AdminPanelEvent.NavigateToRegisterMember -> {
                                 navController.navigate(RegisterMemberRoute(groupId = event.groupId))
+                            }
+                        }
+                    }
+                }
+            }
+
+            composable<RegisterMemberRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<RegisterMemberRoute>()
+                val viewModel = koinViewModel<RegisterMemberViewModel>()
+                val state by viewModel.model.collectAsStateWithLifecycle()
+                RegisterMemberScreen(
+                    state = state,
+                    onEmailChange = { viewModel.take(RegisterMemberIntent.EmailChanged(it)) },
+                    onPasswordChange = { viewModel.take(RegisterMemberIntent.PasswordChanged(it)) },
+                    onFirstNameChange = { viewModel.take(RegisterMemberIntent.FirstNameChanged(it)) },
+                    onLastNameChange = { viewModel.take(RegisterMemberIntent.LastNameChanged(it)) },
+                    onRoleChange = { viewModel.take(RegisterMemberIntent.RoleChanged(it)) },
+                    onSubmit = { viewModel.take(RegisterMemberIntent.SubmitRegisterMember(route.groupId)) },
+                    onBack = { navController.popBackStack() },
+                )
+                LaunchedEffect(Unit) {
+                    viewModel.event.collect { event ->
+                        when (event) {
+                            is RegisterMemberEvent.RegistrationSuccess -> {
+                                navController.popBackStack()
                             }
                         }
                     }
