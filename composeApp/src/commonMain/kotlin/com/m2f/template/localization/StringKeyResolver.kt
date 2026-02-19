@@ -35,6 +35,8 @@ import template.composeapp.generated.resources.error_validation_name_blank
 import template.composeapp.generated.resources.error_validation_name_length
 import template.composeapp.generated.resources.error_validation_password_blank
 import template.composeapp.generated.resources.error_validation_password_too_short
+import template.composeapp.generated.resources.error_validation_passwords_mismatch
+import template.composeapp.generated.resources.error_validation_terms_not_accepted
 
 /**
  * Composable bridge function that resolves a [StringKey] to its localized string.
@@ -97,6 +99,8 @@ fun resolveStringKey(key: StringKey, vararg args: Any): String =
         StringKey.VALIDATION_NAME_BLANK -> stringResource(Res.string.error_validation_name_blank, *args)
         StringKey.VALIDATION_NAME_LENGTH -> stringResource(Res.string.error_validation_name_length, *args)
         StringKey.VALIDATION_FIELD_REQUIRED -> stringResource(Res.string.error_validation_field_required, *args)
+        StringKey.VALIDATION_PASSWORDS_MISMATCH -> stringResource(Res.string.error_validation_passwords_mismatch, *args)
+        StringKey.VALIDATION_TERMS_NOT_ACCEPTED -> stringResource(Res.string.error_validation_terms_not_accepted, *args)
 
         // Generic fallback
         StringKey.GENERIC_ERROR -> stringResource(Res.string.error_generic, *args)

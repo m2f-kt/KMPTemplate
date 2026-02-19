@@ -1,5 +1,7 @@
 package com.m2f.template.app.auth
 
+import com.m2f.template.models.localization.StringKey
+
 data class RegisterModel(
     val firstName: String = "",
     val lastName: String = "",
@@ -8,6 +10,6 @@ data class RegisterModel(
     val confirmPassword: String = "",
     val termsAccepted: Boolean = false,
     val isLoading: Boolean = false,
-    val fieldErrors: Map<String, String> = emptyMap(),
-    val serverError: String? = null,
+    val fieldErrors: Map<String, StringKey> = emptyMap(),
+    val serverError: StringKey? = null,
 )

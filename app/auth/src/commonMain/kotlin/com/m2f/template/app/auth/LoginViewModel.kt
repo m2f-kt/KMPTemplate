@@ -3,6 +3,7 @@ package com.m2f.template.app.auth
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.LoginRequest
+import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
 
@@ -28,12 +29,12 @@ class LoginViewModel(
 
         // Local validation
         val emailError = when {
-            current.email.isBlank() -> "Email must not be blank"
-            !current.email.contains("@") || !current.email.contains(".") -> "Email format is invalid"
+            current.email.isBlank() -> StringKey.VALIDATION_EMAIL_BLANK
+            !current.email.contains("@") || !current.email.contains(".") -> StringKey.VALIDATION_EMAIL_INVALID
             else -> null
         }
         val passwordError = when {
-            current.password.isBlank() -> "Password must not be blank"
+            current.password.isBlank() -> StringKey.VALIDATION_PASSWORD_BLANK
             else -> null
         }
 
@@ -47,7 +48,8 @@ class LoginViewModel(
         sdk.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
             .fold(
                 ifLeft = { error ->
-                    sendMutation(LoginMutation.SetServerError(error.message))
+                    val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                    sendMutation(LoginMutation.SetServerError(key))
                 },
                 ifRight = {
                     sendEvent(LoginEvent.NavigateToDashboard)

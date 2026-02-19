@@ -8,6 +8,7 @@ import arrow.core.raise.zipOrAccumulate
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.FieldError
 import com.m2f.template.models.dto.RegisterRequest
+import com.m2f.template.models.localization.StringKey
 import com.m2f.template.models.validation.validateEmail
 import com.m2f.template.models.validation.validateName
 import com.m2f.template.models.validation.validatePassword
@@ -53,12 +54,12 @@ class RegisterViewModel(
                 { validatePassword(current.password) },
                 {
                     ensure(current.confirmPassword == current.password) {
-                        FieldError("confirmPassword", "Passwords do not match")
+                        FieldError("confirmPassword", StringKey.VALIDATION_PASSWORDS_MISMATCH.code)
                     }
                 },
                 {
                     ensure(current.termsAccepted) {
-                        FieldError("terms", "You must accept the terms")
+                        FieldError("terms", StringKey.VALIDATION_TERMS_NOT_ACCEPTED.code)
                     }
                 },
             ) { firstName, lastName, email, password, _, _ ->
@@ -73,14 +74,17 @@ class RegisterViewModel(
 
         validationResult.fold(
             ifLeft = { errors ->
-                val fieldErrorMap = errors.associate { it.field to it.message }
+                val fieldErrorMap = errors.associate {
+                    it.field to (StringKey.fromCode(it.message) ?: StringKey.GENERIC_ERROR)
+                }
                 sendMutation(RegisterMutation.SetFieldErrors(fieldErrorMap))
             },
             ifRight = { request ->
                 sendMutation(RegisterMutation.SetLoading(true))
                 sdk.register(request).fold(
                     ifLeft = { error ->
-                        sendMutation(RegisterMutation.SetServerError(error.message))
+                        val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                        sendMutation(RegisterMutation.SetServerError(key))
                     },
                     ifRight = {
                         sendEvent(RegisterEvent.NavigateToDashboard)

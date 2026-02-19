@@ -3,6 +3,7 @@ package com.m2f.template.models.validation
 import arrow.core.raise.Raise
 import arrow.core.raise.ensure
 import com.m2f.template.models.FieldError
+import com.m2f.template.models.localization.StringKey
 
 /**
  * Validates an email address format.
@@ -10,9 +11,9 @@ import com.m2f.template.models.FieldError
  */
 context(raise: Raise<FieldError>)
 fun validateEmail(email: String): String {
-    raise.ensure(email.isNotBlank()) { FieldError("email", "Email must not be blank") }
+    raise.ensure(email.isNotBlank()) { FieldError("email", StringKey.VALIDATION_EMAIL_BLANK.code) }
     raise.ensure(email.contains("@") && email.contains(".")) {
-        FieldError("email", "Email format is invalid")
+        FieldError("email", StringKey.VALIDATION_EMAIL_INVALID.code)
     }
     return email.trim().lowercase()
 }
@@ -23,7 +24,7 @@ fun validateEmail(email: String): String {
 context(raise: Raise<FieldError>)
 fun validatePassword(password: String): String {
     raise.ensure(password.length >= 8) {
-        FieldError("password", "Password must be at least 8 characters")
+        FieldError("password", StringKey.VALIDATION_PASSWORD_TOO_SHORT.code)
     }
     return password
 }
@@ -33,9 +34,9 @@ fun validatePassword(password: String): String {
  */
 context(raise: Raise<FieldError>)
 fun validateName(name: String): String {
-    raise.ensure(name.isNotBlank()) { FieldError("name", "Name must not be blank") }
+    raise.ensure(name.isNotBlank()) { FieldError("name", StringKey.VALIDATION_NAME_BLANK.code) }
     raise.ensure(name.length in 2..100) {
-        FieldError("name", "Name must be between 2 and 100 characters")
+        FieldError("name", StringKey.VALIDATION_NAME_LENGTH.code)
     }
     return name.trim()
 }
@@ -45,7 +46,7 @@ fun validateName(name: String): String {
  */
 context(raise: Raise<FieldError>)
 fun validateRequired(value: String, fieldName: String): String {
-    raise.ensure(value.isNotBlank()) { FieldError(fieldName, "$fieldName must not be blank") }
+    raise.ensure(value.isNotBlank()) { FieldError(fieldName, StringKey.VALIDATION_FIELD_REQUIRED.code) }
     return value.trim()
 }
 

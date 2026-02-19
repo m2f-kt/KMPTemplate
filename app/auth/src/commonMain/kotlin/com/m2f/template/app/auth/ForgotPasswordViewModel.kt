@@ -3,6 +3,7 @@ package com.m2f.template.app.auth
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.ForgotPasswordRequest
+import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
 
@@ -26,8 +27,8 @@ class ForgotPasswordViewModel(
 
         // Local email validation
         val emailError = when {
-            current.email.isBlank() -> "Email must not be blank"
-            !current.email.contains("@") || !current.email.contains(".") -> "Email format is invalid"
+            current.email.isBlank() -> StringKey.VALIDATION_EMAIL_BLANK
+            !current.email.contains("@") || !current.email.contains(".") -> StringKey.VALIDATION_EMAIL_INVALID
             else -> null
         }
 
@@ -41,7 +42,8 @@ class ForgotPasswordViewModel(
         sdk.forgotPassword(ForgotPasswordRequest(current.email.trim()))
             .fold(
                 ifLeft = { error ->
-                    sendMutation(ForgotPasswordMutation.SetServerError(error.message))
+                    val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                    sendMutation(ForgotPasswordMutation.SetServerError(key))
                 },
                 ifRight = {
                     sendMutation(ForgotPasswordMutation.SetEmailSent)
