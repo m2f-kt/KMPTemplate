@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 14 (Group Admin UI)
-Plan: 2 of 4 in current phase (COMPLETE)
-Status: Plan 02 complete -- Admin module + role-gated Dashboard
-Last activity: 2026-02-19 -- Completed 14-02-PLAN.md (Admin Module & Role-Gated Dashboard)
+Plan: 3 of 4 in current phase (COMPLETE)
+Status: Plan 03 complete -- AdminPanel ViewModel + Screen + Tests
+Last activity: 2026-02-19 -- Completed 14-03-PLAN.md (AdminPanel ViewModel + Screen + Tests)
 
-Progress: [██████████░░░░░░░░░░] 50% (2/4 plans)
+Progress: [███████████████░░░░░] 75% (3/4 plans)
 
 ## v1.0 Performance (archived)
 
@@ -38,7 +38,7 @@ Progress: [████████████████████] 100% (3
 | Phase 12 P04 | 22min | 2 tasks | 14 files |
 | Phase 12 P07 | 9min | 1 task | 1 file |
 | 13. Group Server & SDK | 4/4 | ~25min | ~6min |
-| 14. Group Admin UI | 2/4 | ~17min | ~8min |
+| 14. Group Admin UI | 3/4 | ~29min | ~10min |
 
 ## Accumulated Context
 
@@ -79,6 +79,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 14: Silent failure on membership load (ifLeft no-op) -- user may not be in any group
 - Phase 14: AdminPanelRoute/RegisterMemberRoute defined early in Routes.kt for compilation -- Plans 03/04 add handlers
 - Phase 14: StateFlow conflation in admin membership test -- sync fakes conflate SetLoading and SetMembership
+- Phase 14: AdminPanelViewModel uses Approach B (no init dispatch) -- groupId from route dispatched via LaunchedEffect in composable
+- Phase 14: BadgeVariant.Error for error badges, BadgeVariant.Accent for member count (no Danger/Info variants exist in design system)
+- Phase 14: StateFlow conflation pattern in admin panel tests -- assert only final settled state per intent dispatch with sync fakes
 
 ### Roadmap Evolution
 
@@ -93,5 +96,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 14-02-PLAN.md (Admin Module & Role-Gated Dashboard)
-Resume file: .planning/phases/14-group-admin-ui/14-02-SUMMARY.md
+Stopped at: Completed 14-03-PLAN.md (AdminPanel ViewModel + Screen + Tests)
+Resume file: .planning/phases/14-group-admin-ui/14-03-SUMMARY.md
