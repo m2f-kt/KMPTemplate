@@ -49,3 +49,34 @@ class Ai {
         }
     }
 }
+
+@Serializable
+@Resource("/api/groups")
+class Groups {
+    @Serializable @Resource("create")
+    class Create(val parent: Groups = Groups())
+
+    @Serializable @Resource("{groupId}")
+    class ById(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("{groupId}/update")
+    class Update(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("{groupId}/delete")
+    class Delete(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("list")
+    class ListAll(val parent: Groups = Groups())
+
+    @Serializable @Resource("{groupId}/members")
+    class Members(val parent: Groups = Groups(), val groupId: String, val cursor: String? = null, val limit: Int = 20)
+
+    @Serializable @Resource("{groupId}/members/add")
+    class AddMember(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("{groupId}/members/{userId}/remove")
+    class RemoveMember(val parent: Groups = Groups(), val groupId: String, val userId: String)
+
+    @Serializable @Resource("{groupId}/members/register")
+    class RegisterMember(val parent: Groups = Groups(), val groupId: String)
+}

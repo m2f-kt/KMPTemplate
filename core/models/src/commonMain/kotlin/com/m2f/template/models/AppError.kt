@@ -134,6 +134,33 @@ sealed class AppError {
     }
 
     @Serializable
+    sealed class Group : AppError() {
+        @Serializable
+        data class NotFound(
+            override val code: String = "GROUP_NOT_FOUND",
+            override val message: String = "Group not found"
+        ) : Group()
+
+        @Serializable
+        data class Forbidden(
+            override val code: String = "GROUP_FORBIDDEN",
+            override val message: String = "You do not have permission to access this group"
+        ) : Group()
+
+        @Serializable
+        data class AlreadyExists(
+            override val code: String = "GROUP_ALREADY_EXISTS",
+            override val message: String = "A group with this slug already exists"
+        ) : Group()
+
+        @Serializable
+        data class MemberAlreadyExists(
+            override val code: String = "GROUP_MEMBER_ALREADY_EXISTS",
+            override val message: String = "User is already a member of this group"
+        ) : Group()
+    }
+
+    @Serializable
     sealed class AI : AppError() {
         @Serializable
         data class AgentFailed(
