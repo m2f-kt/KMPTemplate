@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ======================== App-level ======================== -->
+    <string name="app_name">terminal</string>
+
+    <!-- ======================== Login Screen ======================== -->
+    <string name="login_terminal_label">terminal</string>
+    <string name="login_command">$ authenticate --user</string>
+    <string name="login_title">Bienvenido de nuevo</string>
+    <string name="login_subtitle">Inicia sesión en tu espacio de trabajo</string>
+    <string name="login_form_title">$ authenticate</string>
+    <string name="login_form_subtitle">// ingresa tus credenciales para continuar</string>
+    <string name="login_email_label">usuario</string>
+    <string name="login_email_placeholder">ingresa_usuario</string>
+    <string name="login_password_label">contraseña</string>
+    <string name="login_remember_me">--remember-me</string>
+    <string name="login_forgot_password">$ reset_password</string>
+    <string name="login_button">$ login()</string>
+    <string name="login_button_loading">$ autenticando...</string>
+    <string name="login_or_separator">o</string>
+    <string name="login_google">Google</string>
+    <string name="login_apple">Apple</string>
+    <string name="login_signup_prompt">// ¿usuario nuevo?</string>
+    <string name="login_signup_link">$ create_account()</string>
+
+    <!-- Login Brand Panel -->
+    <string name="login_brand_prompt">&gt;</string>
+    <string name="login_brand_status">$ uptime: 99.98%  |  latency: 12ms  |  nodes: 42</string>
+    <string name="login_brand_quote_1">// la mejor forma de predecir el futuro</string>
+    <string name="login_brand_quote_2">// es construirlo.</string>
+    <string name="login_brand_quote_author">— alan_kay</string>
+    <string name="login_brand_version">v2.4.1</string>
+    <string name="login_brand_status_operational">todos_los_sistemas_operativos</string>
+
+    <!-- ======================== Register Screen ======================== -->
+    <string name="register_command">$ create_account --new</string>
+    <string name="register_title">Crea tu cuenta</string>
+    <string name="register_subtitle">Inicializa tu espacio de trabajo</string>
+    <string name="register_form_title">$ create_account</string>
+    <string name="register_form_subtitle">// inicializa tu espacio de trabajo</string>
+    <string name="register_first_name_label">nombre</string>
+    <string name="register_first_name_placeholder">Juan</string>
+    <string name="register_last_name_label">apellido</string>
+    <string name="register_last_name_placeholder">García</string>
+    <string name="register_email_label">correo</string>
+    <string name="register_email_placeholder">usuario@ejemplo.com</string>
+    <string name="register_password_label">contraseña</string>
+    <string name="register_password_placeholder">mín. 8 caracteres</string>
+    <string name="register_confirm_password_label">confirmar_contraseña</string>
+    <string name="register_confirm_password_placeholder">vuelve a ingresar la contraseña</string>
+    <string name="register_terms_text">Acepto los términos y condiciones</string>
+    <string name="register_button">$ register()</string>
+    <string name="register_button_loading">$ registrando...</string>
+    <string name="register_login_prompt">// ¿ya tienes una cuenta?</string>
+    <string name="register_login_link">$ login()</string>
+
+    <!-- Register Brand Panel -->
+    <string name="register_brand_tagline_1">Construye.</string>
+    <string name="register_brand_tagline_2">Despliega.</string>
+    <string name="register_brand_tagline_3">Escala.</string>
+    <string name="register_brand_feature_fast_title">Ultra rápido</string>
+    <string name="register_brand_feature_fast_desc">Tiempos de respuesta sub-milisegundo con despliegue global en el borde.</string>
+    <string name="register_brand_feature_secure_title">Seguro por defecto</string>
+    <string name="register_brand_feature_secure_desc">Seguridad de nivel empresarial con arquitectura de confianza cero.</string>
+    <string name="register_brand_feature_scale_title">Escala global</string>
+    <string name="register_brand_feature_scale_desc">Despliega en 42 regiones con conmutación automática por error.</string>
+
+    <!-- ======================== Forgot Password Screen ======================== -->
+    <string name="forgot_command">$ reset_password</string>
+    <string name="forgot_title">$ reset_password</string>
+    <string name="forgot_subtitle">// ingresa tu correo para recibir un enlace de restablecimiento</string>
+    <string name="forgot_email_label">correo</string>
+    <string name="forgot_email_placeholder">usuario@ejemplo.com</string>
+    <string name="forgot_button">$ send_reset_link()</string>
+    <string name="forgot_button_loading">$ enviando...</string>
+    <string name="forgot_success_message">Enlace de restablecimiento enviado. Revisa tu bandeja de entrada.</string>
+    <string name="forgot_back_arrow">&lt;-</string>
+    <string name="forgot_login_link">volver al inicio de sesión</string>
+
+    <!-- ======================== Dashboard Screen ======================== -->
+    <string name="dashboard_system_overview">$ system_overview</string>
+    <string name="dashboard_nodes_active">[4 nodos activos]</string>
+    <string name="dashboard_active_processes">procesos_activos</string>
+    <string name="dashboard_deployment_status">estado_despliegue</string>
+    <string name="dashboard_deployment_subtitle">// progreso del pipeline</string>
+    <string name="dashboard_deployment_build">Build</string>
+    <string name="dashboard_deployment_tests">Tests</string>
+    <string name="dashboard_deployment_deploy">Deploy</string>
+    <string name="dashboard_recent_activity">actividad_reciente</string>
+    <string name="dashboard_under_construction">// en construcción</string>
+    <string name="dashboard_status_pending">estado: pendiente</string>
+    <string name="dashboard_logout">$ logout</string>
+
+    <!-- Dashboard Table Headers -->
+    <string name="dashboard_table_pid">PID</string>
+    <string name="dashboard_table_name">NOMBRE</string>
+    <string name="dashboard_table_cpu">CPU</string>
+    <string name="dashboard_table_memory">MEMORIA</string>
+    <string name="dashboard_table_status">ESTADO</string>
+
+    <!-- ======================== Dashboard Sidebar ======================== -->
+    <string name="nav_dashboard">panel</string>
+    <string name="nav_processes">procesos</string>
+    <string name="nav_logs">registros</string>
+    <string name="nav_deployments">despliegues</string>
+    <string name="nav_admin">admin</string>
+    <string name="nav_settings">ajustes</string>
+
+    <!-- ======================== Profile Screen ======================== -->
+    <string name="profile_command">$ user_profile</string>
+    <string name="profile_account_info">info_cuenta</string>
+    <string name="profile_account_info_subtitle">// datos personales</string>
+    <string name="profile_name_label">nombre</string>
+    <string name="profile_email_label">correo</string>
+    <string name="profile_user_id_label">id_usuario</string>
+    <string name="profile_tier_label">nivel</string>
+    <string name="profile_edit_button">&gt; editar perfil</string>
+    <string name="profile_edit_title">editar_perfil</string>
+    <string name="profile_edit_subtitle">// modificar nombre y correo</string>
+    <string name="profile_edit_name_placeholder">Ingresa tu nombre</string>
+    <string name="profile_edit_email_placeholder">Ingresa tu correo</string>
+    <string name="profile_save_button">&gt; guardar</string>
+    <string name="profile_cancel_button">cancelar</string>
+    <string name="profile_save_success">Perfil actualizado exitosamente.</string>
+    <string name="profile_save_success_title">guardado</string>
+    <string name="profile_error_title">error</string>
+    <string name="profile_back">&lt; atrás</string>
+    <string name="profile_logout">$ logout</string>
+
+    <!-- ======================== Admin Panel Screen ======================== -->
+    <string name="admin_title">&gt; panel_admin</string>
+    <string name="admin_back">&lt;-</string>
+    <string name="admin_loading">// cargando...</string>
+    <string name="admin_error_title">error</string>
+    <string name="admin_error_description">// no se pudo cargar el panel de administración</string>
+    <string name="admin_member_count">%1$d miembros</string>
+    <string name="admin_slug_prefix">slug: %1$s</string>
+    <string name="admin_load_more">cargar_más</string>
+    <string name="admin_register_member_button">+ registrar_miembro</string>
+
+    <!-- Admin Table Headers -->
+    <string name="admin_table_name">NOMBRE</string>
+    <string name="admin_table_email">CORREO</string>
+    <string name="admin_table_role">ROL</string>
+    <string name="admin_table_joined">INGRESO</string>
+
+    <!-- ======================== Register Member Screen ======================== -->
+    <string name="register_member_title">&gt; registrar_miembro</string>
+    <string name="register_member_back">&lt;-</string>
+    <string name="register_member_first_name_label">nombre</string>
+    <string name="register_member_first_name_placeholder">Juan</string>
+    <string name="register_member_last_name_label">apellido</string>
+    <string name="register_member_last_name_placeholder">García</string>
+    <string name="register_member_email_label">correo</string>
+    <string name="register_member_email_placeholder">usuario@ejemplo.com</string>
+    <string name="register_member_password_label">contraseña</string>
+    <string name="register_member_password_placeholder">mín. 8 caracteres</string>
+    <string name="register_member_role_label">rol</string>
+    <string name="register_member_role_member">Miembro</string>
+    <string name="register_member_role_admin">Admin</string>
+    <string name="register_member_button">registrar</string>
+    <string name="register_member_button_loading">$ registrando...</string>
+
+    <!-- ======================== Common / Shared ======================== -->
+    <string name="common_loading">// cargando...</string>
+    <string name="common_error">error</string>
+    <string name="common_retry">reintentar</string>
+    <string name="common_back">&lt; atrás</string>
+    <string name="common_or">o</string>
+    <string name="common_brand_prompt">&gt;_</string>
+    <string name="common_brand_name">terminal</string>
+
+    <!-- ======================== Locale Selector ======================== -->
+    <string name="locale_label">Idioma</string>
+    <string name="locale_english">English</string>
+    <string name="locale_spanish">Español</string>
+
+    <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
+
+    <!-- Auth errors -->
+    <string name="error_auth_invalid_credentials">El correo o la contraseña son incorrectos</string>
+    <string name="error_auth_token_expired">El token de autenticación ha expirado</string>
+    <string name="error_auth_token_invalid">El token de autenticación no es válido</string>
+    <string name="error_auth_unauthorized">Se requiere autenticación</string>
+    <string name="error_auth_user_already_exists">Ya existe un usuario con este correo</string>
+
+    <!-- Validation errors (from AppError) -->
+    <string name="error_validation_invalid_field">La validación del campo falló</string>
+    <string name="error_validation_invalid_input">Uno o más campos tienen errores de validación</string>
+    <string name="error_validation_missing_field">El campo requerido no está presente</string>
+
+    <!-- User errors -->
+    <string name="error_user_not_found">Usuario no encontrado</string>
+    <string name="error_user_forbidden">No tienes permiso para acceder a este recurso</string>
+
+    <!-- Server errors -->
+    <string name="error_server_internal_error">Ocurrió un error inesperado</string>
+    <string name="error_server_service_unavailable">El servicio no está disponible temporalmente</string>
+
+    <!-- Client errors -->
+    <string name="error_client_network_error">La conexión de red falló</string>
+    <string name="error_client_timeout">La solicitud expiró</string>
+    <string name="error_client_unknown_error">Ocurrió un error desconocido</string>
+
+    <!-- Group errors -->
+    <string name="error_group_not_found">Grupo no encontrado</string>
+    <string name="error_group_forbidden">No tienes permiso para acceder a este grupo</string>
+    <string name="error_group_already_exists">Ya existe un grupo con este slug</string>
+    <string name="error_group_member_already_exists">El usuario ya es miembro de este grupo</string>
+
+    <!-- AI errors -->
+    <string name="error_ai_agent_failed">La ejecución del agente falló</string>
+    <string name="error_ai_agent_not_found">El agente solicitado no fue encontrado</string>
+    <string name="error_ai_conversation_not_found">Conversación no encontrada o no pertenece a este usuario</string>
+    <string name="error_ai_provider_unavailable">El proveedor de IA no está disponible o no está configurado</string>
+
+    <!-- Validation messages (from ValidationSupport.kt) -->
+    <string name="error_validation_email_blank">El correo no puede estar vacío</string>
+    <string name="error_validation_email_invalid">El formato del correo no es válido</string>
+    <string name="error_validation_password_too_short">La contraseña debe tener al menos %1$d caracteres</string>
+    <string name="error_validation_password_blank">La contraseña no puede estar vacía</string>
+    <string name="error_validation_name_blank">El nombre no puede estar vacío</string>
+    <string name="error_validation_name_length">El nombre debe tener entre %1$d y %2$d caracteres</string>
+    <string name="error_validation_field_required">%1$s no puede estar vacío</string>
+    <string name="error_validation_passwords_mismatch">Las contraseñas no coinciden</string>
+    <string name="error_validation_terms_not_accepted">Debes aceptar los términos</string>
+
+    <!-- Generic fallback -->
+    <string name="error_generic">Ocurrió un error inesperado</string>
+
+</resources>

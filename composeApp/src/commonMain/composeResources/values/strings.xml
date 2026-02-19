@@ -171,6 +171,11 @@
     <string name="common_brand_prompt">&gt;_</string>
     <string name="common_brand_name">terminal</string>
 
+    <!-- ======================== Locale Selector ======================== -->
+    <string name="locale_label">Language</string>
+    <string name="locale_english">English</string>
+    <string name="locale_spanish">Español</string>
+
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 
     <!-- Auth errors -->
