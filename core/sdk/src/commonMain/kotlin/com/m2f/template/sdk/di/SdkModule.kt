@@ -4,6 +4,8 @@ import com.m2f.template.sdk.AuthInterceptor
 import com.m2f.template.sdk.Sdk
 import com.m2f.template.sdk.api.AuthApi
 import com.m2f.template.sdk.api.AuthApiImpl
+import com.m2f.template.sdk.api.GroupApi
+import com.m2f.template.sdk.api.GroupApiImpl
 import com.m2f.template.sdk.api.UserApi
 import com.m2f.template.sdk.api.UserApiImpl
 import com.m2f.template.sdk.createApiClient
@@ -31,5 +33,6 @@ val sdkModule = module {
     }
     single<AuthApi> { AuthApiImpl(client = get(), tokenStorage = get()) }
     single<UserApi> { UserApiImpl(client = get()) }
-    single { Sdk(authApi = get(), userApi = get()) }
+    single<GroupApi> { GroupApiImpl(client = get()) }
+    single { Sdk(authApi = get(), userApi = get(), groupApi = get()) }
 }

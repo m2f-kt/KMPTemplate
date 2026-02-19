@@ -1,6 +1,7 @@
 package com.m2f.template.sdk
 
 import com.m2f.template.sdk.api.AuthApi
+import com.m2f.template.sdk.api.GroupApi
 import com.m2f.template.sdk.api.UserApi
 
 /**
@@ -12,4 +13,5 @@ import com.m2f.template.sdk.api.UserApi
 class Sdk(
     private val authApi: AuthApi,
     private val userApi: UserApi,
-) : AuthApi by authApi, UserApi by userApi
+    private val groupApi: GroupApi,
+) : AuthApi by authApi, UserApi by userApi, GroupApi by groupApi
