@@ -126,7 +126,12 @@ Plans:
   2. Admin can register new users directly into their group from the admin panel
   3. Admin sees different dashboard content than regular users (admin panel sections visible only to admin role)
   4. Navigation is role-gated -- admin routes appear only for admin users, regular users never see admin navigation items
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 14-01-PLAN.md -- Memberships endpoint (server + SDK + DTO + fake)
+- [ ] 14-02-PLAN.md -- app:admin module + role-gated Dashboard
+- [ ] 14-03-PLAN.md -- AdminPanel ViewModel + Screen + Tests
+- [ ] 14-04-PLAN.md -- RegisterMember ViewModel + Screen + Tests
 
 ### Phase 15: Localization
 **Goal**: The template demonstrates a complete localization system -- shared string keys between server and client, platform resource files, and runtime locale switching
@@ -162,5 +167,5 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 11.1. Fake SDK facade & fixes | 2/2 | Complete    | 2026-02-18 | - |
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
 | 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
-| 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
+| 14. Group Admin UI | v1.1 | 0/4 | Planned | - |
 | 15. Localization | v1.1 | 0/0 | Not started | - |
