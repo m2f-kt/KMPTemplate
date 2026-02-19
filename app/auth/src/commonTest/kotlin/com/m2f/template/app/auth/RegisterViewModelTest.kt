@@ -6,6 +6,7 @@ import com.m2f.template.core.testing.fakes.fakeSdk
 import com.m2f.template.core.testing.test
 import com.m2f.template.models.AppError
 import com.m2f.template.models.dto.AuthResponse
+import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
 
 class RegisterViewModelTest : ViewModelTest() {
@@ -46,11 +47,11 @@ class RegisterViewModelTest : ViewModelTest() {
             model(
                 RegisterModel(
                     fieldErrors = mapOf(
-                        "firstName" to "Name must not be blank",
-                        "lastName" to "Name must not be blank",
-                        "email" to "Email must not be blank",
-                        "password" to "Password must be at least 8 characters",
-                        "terms" to "You must accept the terms",
+                        "firstName" to StringKey.VALIDATION_NAME_BLANK,
+                        "lastName" to StringKey.VALIDATION_NAME_BLANK,
+                        "email" to StringKey.VALIDATION_EMAIL_BLANK,
+                        "password" to StringKey.VALIDATION_PASSWORD_TOO_SHORT,
+                        "terms" to StringKey.VALIDATION_TERMS_NOT_ACCEPTED,
                     ),
                 ),
             )
@@ -81,7 +82,7 @@ class RegisterViewModelTest : ViewModelTest() {
             intent(RegisterIntent.SubmitRegisterClicked)
             // Note: isLoading=true intermediate state is conflated by StateFlow because
             // the fake SDK returns synchronously, so SetServerError follows immediately.
-            model(RegisterModel(firstName = "John", lastName = "Doe", email = "john@test.com", password = "password123", confirmPassword = "password123", termsAccepted = true, serverError = "A user with this email already exists"))
+            model(RegisterModel(firstName = "John", lastName = "Doe", email = "john@test.com", password = "password123", confirmPassword = "password123", termsAccepted = true, serverError = StringKey.AUTH_USER_ALREADY_EXISTS))
         }
     }
 }

@@ -5,6 +5,7 @@ import com.m2f.template.core.testing.ViewModelTest
 import com.m2f.template.core.testing.fakes.fakeSdk
 import com.m2f.template.core.testing.test
 import com.m2f.template.models.AppError
+import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
 
 class ForgotPasswordViewModelTest : ViewModelTest() {
@@ -33,7 +34,7 @@ class ForgotPasswordViewModelTest : ViewModelTest() {
         val viewModel = ForgotPasswordViewModel(sdk)
         viewModel.test {
             intent(ForgotPasswordIntent.SubmitForgotPasswordClicked)
-            model(ForgotPasswordModel(emailError = "Email must not be blank"))
+            model(ForgotPasswordModel(emailError = StringKey.VALIDATION_EMAIL_BLANK))
         }
     }
 }

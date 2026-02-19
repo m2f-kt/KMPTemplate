@@ -41,6 +41,34 @@ import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.components.input.TerminalPasswordInput
 import com.m2f.template.designsystem.components.selection.TerminalCheckbox
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.auth.generated.resources.Res
+import template.app.auth.generated.resources.common_brand_name
+import template.app.auth.generated.resources.common_brand_prompt
+import template.app.auth.generated.resources.common_or
+import template.app.auth.generated.resources.login_brand_prompt
+import template.app.auth.generated.resources.login_brand_quote_1
+import template.app.auth.generated.resources.login_brand_quote_2
+import template.app.auth.generated.resources.login_brand_quote_author
+import template.app.auth.generated.resources.login_brand_status
+import template.app.auth.generated.resources.login_brand_status_operational
+import template.app.auth.generated.resources.login_brand_version
+import template.app.auth.generated.resources.login_button
+import template.app.auth.generated.resources.login_button_loading
+import template.app.auth.generated.resources.login_command
+import template.app.auth.generated.resources.login_email_label
+import template.app.auth.generated.resources.login_email_placeholder
+import template.app.auth.generated.resources.login_forgot_password
+import template.app.auth.generated.resources.login_form_subtitle
+import template.app.auth.generated.resources.login_form_title
+import template.app.auth.generated.resources.login_google
+import template.app.auth.generated.resources.login_apple
+import template.app.auth.generated.resources.login_password_label
+import template.app.auth.generated.resources.login_remember_me
+import template.app.auth.generated.resources.login_signup_link
+import template.app.auth.generated.resources.login_signup_prompt
+import template.app.auth.generated.resources.login_title
+import template.app.auth.generated.resources.login_subtitle
 
 /**
  * Login screen composable with responsive desktop/mobile layouts.
@@ -172,12 +200,12 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalText(
-                text = ">",
+                text = stringResource(Res.string.login_brand_prompt),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
             TerminalText(
-                text = "terminal",
+                text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontSize = 20.sp, fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
@@ -187,7 +215,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
             // Status line
             TerminalText(
-                text = "$ uptime: 99.98%  |  latency: 12ms  |  nodes: 42",
+                text = stringResource(Res.string.login_brand_status),
                 style = typography.xs,
                 color = colors.textDim,
             )
@@ -234,17 +262,17 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
             // Quote block
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 TerminalText(
-                    text = "// the best way to predict the future",
+                    text = stringResource(Res.string.login_brand_quote_1),
                     style = typography.md,
                     color = colors.textDim,
                 )
                 TerminalText(
-                    text = "// is to build it.",
+                    text = stringResource(Res.string.login_brand_quote_2),
                     style = typography.md,
                     color = colors.textDim,
                 )
                 TerminalText(
-                    text = "\u2014 alan_kay",
+                    text = stringResource(Res.string.login_brand_quote_author),
                     style = typography.sm.copy(fontWeight = FontWeight.Medium),
                     color = colors.accent,
                 )
@@ -258,7 +286,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalText(
-                text = "v2.4.1",
+                text = stringResource(Res.string.login_brand_version),
                 style = typography.xs,
                 color = colors.textDim,
             )
@@ -271,7 +299,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
                     drawCircle(color = colors.success)
                 }
                 TerminalText(
-                    text = "all_systems_operational",
+                    text = stringResource(Res.string.login_brand_status_operational),
                     style = typography.xs,
                     color = colors.textDim,
                 )
@@ -311,19 +339,19 @@ private fun LoginMobileLayout(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalText(
-                text = ">_",
+                text = stringResource(Res.string.common_brand_prompt),
                 style = typography.md.copy(fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
             TerminalText(
-                text = "terminal",
+                text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
         TerminalText(
-            text = "$ authenticate --user",
+            text = stringResource(Res.string.login_command),
             style = typography.xs,
             color = colors.textDim,
         )
@@ -332,13 +360,13 @@ private fun LoginMobileLayout(
 
         // Title block
         TerminalText(
-            text = "Welcome back",
+            text = stringResource(Res.string.login_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
         )
         Spacer(modifier = Modifier.height(4.dp))
         TerminalText(
-            text = "Sign in to your workspace",
+            text = stringResource(Res.string.login_subtitle),
             style = typography.sm,
             color = colors.textDim,
         )
@@ -404,12 +432,12 @@ private fun LoginFormContent(
         // Both layouts call this, so we show the form-level header
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             TerminalText(
-                text = "$ authenticate",
+                text = stringResource(Res.string.login_form_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
             TerminalText(
-                text = "// enter your credentials to continue",
+                text = stringResource(Res.string.login_form_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
             )
@@ -418,7 +446,7 @@ private fun LoginFormContent(
         // Server error alert
         if (state.serverError != null) {
             TerminalAlert(
-                message = state.serverError,
+                message = resolveStringKey(state.serverError),
                 variant = AlertVariant.Error,
             )
         }
@@ -427,20 +455,20 @@ private fun LoginFormContent(
         TerminalInput(
             value = state.email,
             onValueChange = onEmailChange,
-            label = "username",
-            placeholder = "enter_username",
+            label = stringResource(Res.string.login_email_label),
+            placeholder = stringResource(Res.string.login_email_placeholder),
             isError = state.emailError != null,
-            errorMessage = state.emailError,
+            errorMessage = state.emailError?.let { resolveStringKey(it) },
         )
 
         // Password input
         TerminalPasswordInput(
             value = state.password,
             onValueChange = onPasswordChange,
-            label = "password",
+            label = stringResource(Res.string.login_password_label),
             placeholder = "\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022",
             isError = state.passwordError != null,
-            errorMessage = state.passwordError,
+            errorMessage = state.passwordError?.let { resolveStringKey(it) },
         )
 
         // Options row: remember me + forgot password
@@ -452,11 +480,11 @@ private fun LoginFormContent(
             TerminalCheckbox(
                 checked = state.rememberMe,
                 onCheckedChange = onRememberMeChange,
-                label = "--remember-me",
+                label = stringResource(Res.string.login_remember_me),
             )
 
             BasicText(
-                text = "$ reset_password",
+                text = stringResource(Res.string.login_forgot_password),
                 modifier = Modifier.clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
@@ -468,7 +496,7 @@ private fun LoginFormContent(
 
         // Login button
         TerminalButton(
-            text = if (state.isLoading) "$ authenticating..." else "$ login()",
+            text = if (state.isLoading) stringResource(Res.string.login_button_loading) else stringResource(Res.string.login_button),
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.Default,
@@ -483,7 +511,7 @@ private fun LoginFormContent(
         ) {
             TerminalDivider(modifier = Modifier.weight(1f))
             TerminalText(
-                text = "or",
+                text = stringResource(Res.string.common_or),
                 style = typography.xs,
                 color = colors.textDim,
             )
@@ -502,12 +530,12 @@ private fun LoginFormContent(
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
         ) {
             TerminalText(
-                text = "// new user?",
+                text = stringResource(Res.string.login_signup_prompt),
                 style = typography.sm,
                 color = colors.textDim,
             )
             BasicText(
-                text = "$ create_account()",
+                text = stringResource(Res.string.login_signup_link),
                 modifier = Modifier.clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() },
@@ -537,14 +565,14 @@ internal fun SocialButtonsRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = "Google",
+            text = stringResource(Res.string.login_google),
             onClick = onGoogleClick,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Secondary,
         )
         if (showAppleSignIn()) {
             TerminalButton(
-                text = "Apple",
+                text = stringResource(Res.string.login_apple),
                 onClick = onAppleClick,
                 modifier = Modifier.weight(1f),
                 variant = ButtonVariant.Secondary,

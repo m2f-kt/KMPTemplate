@@ -6,6 +6,7 @@ import com.m2f.template.core.testing.fakes.fakeSdk
 import com.m2f.template.core.testing.test
 import com.m2f.template.models.AppError
 import com.m2f.template.models.dto.AuthResponse
+import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
 
 class LoginViewModelTest : ViewModelTest() {
@@ -37,7 +38,7 @@ class LoginViewModelTest : ViewModelTest() {
         val viewModel = LoginViewModel(sdk)
         viewModel.test {
             intent(LoginIntent.SubmitLoginClicked)
-            model(LoginModel(emailError = "Email must not be blank", passwordError = "Password must not be blank"))
+            model(LoginModel(emailError = StringKey.VALIDATION_EMAIL_BLANK, passwordError = StringKey.VALIDATION_PASSWORD_BLANK))
         }
     }
 
@@ -59,7 +60,7 @@ class LoginViewModelTest : ViewModelTest() {
             intent(LoginIntent.SubmitLoginClicked)
             // Note: isLoading=true intermediate state is conflated by StateFlow because
             // the fake SDK returns synchronously, so SetServerError follows immediately.
-            model(LoginModel(email = "user@test.com", password = "password123", serverError = "Email or password is incorrect"))
+            model(LoginModel(email = "user@test.com", password = "password123", serverError = StringKey.AUTH_INVALID_CREDENTIALS))
         }
     }
 }

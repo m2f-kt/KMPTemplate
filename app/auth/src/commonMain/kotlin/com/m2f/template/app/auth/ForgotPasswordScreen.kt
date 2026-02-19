@@ -28,6 +28,19 @@ import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.auth.generated.resources.Res
+import template.app.auth.generated.resources.common_brand_name
+import template.app.auth.generated.resources.common_brand_prompt
+import template.app.auth.generated.resources.forgot_back_arrow
+import template.app.auth.generated.resources.forgot_button
+import template.app.auth.generated.resources.forgot_button_loading
+import template.app.auth.generated.resources.forgot_email_label
+import template.app.auth.generated.resources.forgot_email_placeholder
+import template.app.auth.generated.resources.forgot_login_link
+import template.app.auth.generated.resources.forgot_subtitle
+import template.app.auth.generated.resources.forgot_success_message
+import template.app.auth.generated.resources.forgot_title
 
 /**
  * Forgot password screen with centered card layout.
@@ -64,12 +77,12 @@ fun ForgotPasswordScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 TerminalText(
-                    text = ">_",
+                    text = stringResource(Res.string.common_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
                 TerminalText(
-                    text = "terminal",
+                    text = stringResource(Res.string.common_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.Medium),
                     color = colors.text,
                 )
@@ -77,14 +90,14 @@ fun ForgotPasswordScreen(
 
             // Title
             TerminalText(
-                text = "$ reset_password",
+                text = stringResource(Res.string.forgot_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
 
             // Description
             TerminalText(
-                text = "// enter your email to receive a reset link",
+                text = stringResource(Res.string.forgot_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
             )
@@ -110,7 +123,7 @@ fun ForgotPasswordScreen(
                     // Success alert
                     if (state.emailSent) {
                         TerminalAlert(
-                            message = "Reset link sent. Check your inbox.",
+                            message = stringResource(Res.string.forgot_success_message),
                             variant = AlertVariant.Success,
                         )
                     }
@@ -118,7 +131,7 @@ fun ForgotPasswordScreen(
                     // Server error alert
                     if (state.serverError != null) {
                         TerminalAlert(
-                            message = state.serverError,
+                            message = resolveStringKey(state.serverError),
                             variant = AlertVariant.Error,
                         )
                     }
@@ -128,15 +141,15 @@ fun ForgotPasswordScreen(
                         TerminalInput(
                             value = state.email,
                             onValueChange = onEmailChange,
-                            label = "email",
-                            placeholder = "user@example.com",
+                            label = stringResource(Res.string.forgot_email_label),
+                            placeholder = stringResource(Res.string.forgot_email_placeholder),
                             isError = state.emailError != null,
-                            errorMessage = state.emailError,
+                            errorMessage = state.emailError?.let { resolveStringKey(it) },
                         )
 
                         // Submit button
                         TerminalButton(
-                            text = if (state.isLoading) "$ sending..." else "$ send_reset_link()",
+                            text = if (state.isLoading) stringResource(Res.string.forgot_button_loading) else stringResource(Res.string.forgot_button),
                             onClick = onSubmit,
                             modifier = Modifier.fillMaxWidth(),
                             variant = ButtonVariant.Default,
@@ -151,12 +164,12 @@ fun ForgotPasswordScreen(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 TerminalText(
-                    text = "<-",
+                    text = stringResource(Res.string.forgot_back_arrow),
                     style = typography.sm.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
                 BasicText(
-                    text = "back to login",
+                    text = stringResource(Res.string.forgot_login_link),
                     modifier = Modifier.clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() },

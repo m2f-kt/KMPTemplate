@@ -37,6 +37,41 @@ import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.components.input.TerminalPasswordInput
 import com.m2f.template.designsystem.components.selection.TerminalCheckbox
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.auth.generated.resources.Res
+import template.app.auth.generated.resources.common_brand_name
+import template.app.auth.generated.resources.common_brand_prompt
+import template.app.auth.generated.resources.common_or
+import template.app.auth.generated.resources.login_brand_prompt
+import template.app.auth.generated.resources.register_brand_feature_fast_desc
+import template.app.auth.generated.resources.register_brand_feature_fast_title
+import template.app.auth.generated.resources.register_brand_feature_scale_desc
+import template.app.auth.generated.resources.register_brand_feature_scale_title
+import template.app.auth.generated.resources.register_brand_feature_secure_desc
+import template.app.auth.generated.resources.register_brand_feature_secure_title
+import template.app.auth.generated.resources.register_brand_tagline_1
+import template.app.auth.generated.resources.register_brand_tagline_2
+import template.app.auth.generated.resources.register_brand_tagline_3
+import template.app.auth.generated.resources.register_button
+import template.app.auth.generated.resources.register_button_loading
+import template.app.auth.generated.resources.register_command
+import template.app.auth.generated.resources.register_confirm_password_label
+import template.app.auth.generated.resources.register_confirm_password_placeholder
+import template.app.auth.generated.resources.register_email_label
+import template.app.auth.generated.resources.register_email_placeholder
+import template.app.auth.generated.resources.register_first_name_label
+import template.app.auth.generated.resources.register_first_name_placeholder
+import template.app.auth.generated.resources.register_form_subtitle
+import template.app.auth.generated.resources.register_form_title
+import template.app.auth.generated.resources.register_last_name_label
+import template.app.auth.generated.resources.register_last_name_placeholder
+import template.app.auth.generated.resources.register_login_link
+import template.app.auth.generated.resources.register_login_prompt
+import template.app.auth.generated.resources.register_password_label
+import template.app.auth.generated.resources.register_password_placeholder
+import template.app.auth.generated.resources.register_subtitle
+import template.app.auth.generated.resources.register_terms_text
+import template.app.auth.generated.resources.register_title
 
 /**
  * Register screen composable with responsive desktop/mobile layouts.
@@ -179,12 +214,12 @@ private fun RegisterBrandPanel(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalText(
-                text = ">",
+                text = stringResource(Res.string.login_brand_prompt),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
             TerminalText(
-                text = "terminal",
+                text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontSize = 20.sp, fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
@@ -195,17 +230,17 @@ private fun RegisterBrandPanel(modifier: Modifier = Modifier) {
             // Tagline
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 TerminalText(
-                    text = "Build.",
+                    text = stringResource(Res.string.register_brand_tagline_1),
                     style = typography.xxl.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
                     color = colors.text,
                 )
                 TerminalText(
-                    text = "Deploy.",
+                    text = stringResource(Res.string.register_brand_tagline_2),
                     style = typography.xxl.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
                     color = colors.text,
                 )
                 TerminalText(
-                    text = "Scale.",
+                    text = stringResource(Res.string.register_brand_tagline_3),
                     style = typography.xxl.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
@@ -215,18 +250,18 @@ private fun RegisterBrandPanel(modifier: Modifier = Modifier) {
             Column(verticalArrangement = Arrangement.spacedBy(20.dp)) {
                 FeatureBullet(
                     icon = "\u26A1",
-                    title = "Lightning fast",
-                    description = "Sub-millisecond response times with global edge deployment.",
+                    title = stringResource(Res.string.register_brand_feature_fast_title),
+                    description = stringResource(Res.string.register_brand_feature_fast_desc),
                 )
                 FeatureBullet(
                     icon = "\u26E8",
-                    title = "Secure by default",
-                    description = "Enterprise-grade security with zero-trust architecture.",
+                    title = stringResource(Res.string.register_brand_feature_secure_title),
+                    description = stringResource(Res.string.register_brand_feature_secure_desc),
                 )
                 FeatureBullet(
                     icon = "\u2316",
-                    title = "Global scale",
-                    description = "Deploy to 42 regions with automatic failover.",
+                    title = stringResource(Res.string.register_brand_feature_scale_title),
+                    description = stringResource(Res.string.register_brand_feature_scale_desc),
                 )
             }
         }
@@ -299,19 +334,19 @@ private fun RegisterMobileLayout(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalText(
-                text = ">_",
+                text = stringResource(Res.string.common_brand_prompt),
                 style = typography.md.copy(fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
             TerminalText(
-                text = "terminal",
+                text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
         TerminalText(
-            text = "$ create_account --new",
+            text = stringResource(Res.string.register_command),
             style = typography.xs,
             color = colors.textDim,
         )
@@ -320,13 +355,13 @@ private fun RegisterMobileLayout(
 
         // Title block
         TerminalText(
-            text = "Create your account",
+            text = stringResource(Res.string.register_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
         )
         Spacer(modifier = Modifier.height(4.dp))
         TerminalText(
-            text = "Initialize your workspace",
+            text = stringResource(Res.string.register_subtitle),
             style = typography.sm,
             color = colors.textDim,
         )
@@ -402,12 +437,12 @@ private fun RegisterFormContent(
         // Title block
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             TerminalText(
-                text = "$ create_account",
+                text = stringResource(Res.string.register_form_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
             TerminalText(
-                text = "// initialize your workspace",
+                text = stringResource(Res.string.register_form_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
             )
@@ -416,7 +451,7 @@ private fun RegisterFormContent(
         // Server error alert
         if (state.serverError != null) {
             TerminalAlert(
-                message = state.serverError,
+                message = resolveStringKey(state.serverError),
                 variant = AlertVariant.Error,
             )
         }
@@ -457,7 +492,7 @@ private fun RegisterFormContent(
         ) {
             TerminalDivider(modifier = Modifier.weight(1f))
             TerminalText(
-                text = "or",
+                text = stringResource(Res.string.common_or),
                 style = typography.xs,
                 color = colors.textDim,
             )
@@ -505,19 +540,19 @@ private fun RegisterFormFields(
                 value = state.firstName,
                 onValueChange = onFirstNameChange,
                 modifier = Modifier.weight(1f),
-                label = "first_name",
-                placeholder = "John",
+                label = stringResource(Res.string.register_first_name_label),
+                placeholder = stringResource(Res.string.register_first_name_placeholder),
                 isError = firstNameError != null,
-                errorMessage = firstNameError,
+                errorMessage = firstNameError?.let { resolveStringKey(it) },
             )
             TerminalInput(
                 value = state.lastName,
                 onValueChange = onLastNameChange,
                 modifier = Modifier.weight(1f),
-                label = "last_name",
-                placeholder = "Doe",
+                label = stringResource(Res.string.register_last_name_label),
+                placeholder = stringResource(Res.string.register_last_name_placeholder),
                 isError = lastNameError != null,
-                errorMessage = lastNameError,
+                errorMessage = lastNameError?.let { resolveStringKey(it) },
             )
         }
 
@@ -525,30 +560,30 @@ private fun RegisterFormFields(
         TerminalInput(
             value = state.email,
             onValueChange = onEmailChange,
-            label = "email",
-            placeholder = "user@example.com",
+            label = stringResource(Res.string.register_email_label),
+            placeholder = stringResource(Res.string.register_email_placeholder),
             isError = emailError != null,
-            errorMessage = emailError,
+            errorMessage = emailError?.let { resolveStringKey(it) },
         )
 
         // Password
         TerminalPasswordInput(
             value = state.password,
             onValueChange = onPasswordChange,
-            label = "password",
-            placeholder = "min. 8 characters",
+            label = stringResource(Res.string.register_password_label),
+            placeholder = stringResource(Res.string.register_password_placeholder),
             isError = passwordError != null,
-            errorMessage = passwordError,
+            errorMessage = passwordError?.let { resolveStringKey(it) },
         )
 
         // Confirm password
         TerminalPasswordInput(
             value = state.confirmPassword,
             onValueChange = onConfirmPasswordChange,
-            label = "confirm_password",
-            placeholder = "re-enter password",
+            label = stringResource(Res.string.register_confirm_password_label),
+            placeholder = stringResource(Res.string.register_confirm_password_placeholder),
             isError = confirmPasswordError != null,
-            errorMessage = confirmPasswordError,
+            errorMessage = confirmPasswordError?.let { resolveStringKey(it) },
         )
 
         // Terms checkbox
@@ -556,14 +591,14 @@ private fun RegisterFormFields(
             TerminalCheckbox(
                 checked = state.termsAccepted,
                 onCheckedChange = onTermsAcceptedChange,
-                label = "I accept the terms and conditions",
+                label = stringResource(Res.string.register_terms_text),
             )
             if (termsError != null) {
                 val colors = TerminalTheme.colors
                 val typography = TerminalTheme.typography
                 Spacer(modifier = Modifier.height(4.dp))
                 BasicText(
-                    text = termsError,
+                    text = resolveStringKey(termsError),
                     style = typography.xs.copy(color = colors.error),
                 )
             }
@@ -571,7 +606,7 @@ private fun RegisterFormFields(
 
         // Register button
         TerminalButton(
-            text = if (state.isLoading) "$ registering..." else "$ register()",
+            text = if (state.isLoading) stringResource(Res.string.register_button_loading) else stringResource(Res.string.register_button),
             onClick = onRegisterClick,
             modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.Default,
@@ -590,12 +625,12 @@ private fun LoginLinkRow(onLogin: () -> Unit) {
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
     ) {
         TerminalText(
-            text = "// already have an account?",
+            text = stringResource(Res.string.register_login_prompt),
             style = typography.sm,
             color = colors.textDim,
         )
         BasicText(
-            text = "$ login()",
+            text = stringResource(Res.string.register_login_link),
             modifier = Modifier.clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
