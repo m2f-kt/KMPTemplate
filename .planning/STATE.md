@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 12 -- ViewModel Migration (MVI pattern)
+**Current focus:** Phase 13 -- Group Server & SDK
 
 ## Current Position
 
@@ -83,6 +83,6 @@ Decisions are logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-02-18
-Stopped at: Completed 12-07-PLAN.md (ProfileViewModelTest DSL gap closure -- Phase 12 fully complete)
-Resume file: .planning/phases/12-viewmodel-migration/12-07-SUMMARY.md
+Last session: 2026-02-19
+Stopped at: Phase 13 context gathered
+Resume file: .planning/phases/13-group-server-sdk/13-CONTEXT.md
