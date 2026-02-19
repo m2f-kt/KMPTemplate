@@ -27,6 +27,10 @@ class DashboardViewModel(
                 is DashboardIntent.NavItemSelected -> {
                     sendMutation(DashboardMutation.SetNavItem(intent.item))
                 }
+                is DashboardIntent.LogoutClicked -> {
+                    sdk.logout()
+                    sendEvent(DashboardEvent.NavigateToLogin)
+                }
             }
         }
     }

@@ -76,6 +76,7 @@ kotlin {
             implementation(libs.koin.compose.viewmodel.navigation)
             implementation(projects.shared)
             implementation(projects.core.models)
+            implementation(projects.core.mvi)
             implementation(projects.core.sdk)
             implementation(projects.app.designsystem)
             implementation(projects.app.auth)

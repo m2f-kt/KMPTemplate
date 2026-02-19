@@ -32,4 +32,14 @@ class DashboardViewModelTest : ViewModelTest() {
             model(DashboardModel(selectedNavItem = "processes"))
         }
     }
+
+    @Test
+    fun `LogoutClicked emits NavigateToLogin event`() {
+        val sdk = fakeSdk()
+        val viewModel = DashboardViewModel(sdk)
+        viewModel.test {
+            intent(DashboardIntent.LogoutClicked)
+            event(DashboardEvent.NavigateToLogin)
+        }
+    }
 }

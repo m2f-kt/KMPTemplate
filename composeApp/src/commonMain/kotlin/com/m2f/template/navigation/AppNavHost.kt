@@ -27,6 +27,7 @@ import com.m2f.template.app.auth.RegisterIntent
 import com.m2f.template.app.auth.RegisterScreen
 import com.m2f.template.app.auth.RegisterViewModel
 import com.m2f.template.app.auth.checkOAuthCallback
+import com.m2f.template.app.dashboard.DashboardEvent
 import com.m2f.template.app.dashboard.DashboardIntent
 import com.m2f.template.app.dashboard.DashboardScreen
 import com.m2f.template.app.dashboard.DashboardViewModel
@@ -174,12 +175,19 @@ fun AppNavHost() {
                     state = dashboardState,
                     onNavItemSelected = { dashboardViewModel.take(DashboardIntent.NavItemSelected(it)) },
                     onProfileClick = { navController.navigate(ProfileRoute) },
-                    onLogout = {
-                        navController.navigate(LoginRoute) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
+                    onLogout = { dashboardViewModel.take(DashboardIntent.LogoutClicked) },
                 )
+                LaunchedEffect(Unit) {
+                    dashboardViewModel.event.collect { event ->
+                        when (event) {
+                            is DashboardEvent.NavigateToLogin -> {
+                                navController.navigate(LoginRoute) {
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }
+                        }
+                    }
+                }
             }
 
             composable<ProfileRoute> {
