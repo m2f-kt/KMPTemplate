@@ -34,12 +34,15 @@ import com.m2f.template.designsystem.theme.TerminalTheme
 /**
  * Desktop sidebar navigation for the dashboard.
  *
- * Shows brand logo, 5 navigation items (dashboard, processes, logs, deployments, settings),
+ * Shows brand logo, navigation items (dashboard, processes, logs, deployments, settings,
+ * and conditionally "admin" for users with admin/owner group role),
  * and a bottom user row with email and logout link.
  *
  * @param selectedItem The currently selected navigation item key.
  * @param userName The logged-in user's email or display name.
+ * @param isAdmin Whether the current user has admin/owner role in a group.
  * @param onNavItemSelected Callback when a nav item is clicked.
+ * @param onAdminClick Callback when the admin nav item is clicked.
  * @param onProfileClick Callback when the user row is clicked.
  * @param onLogout Callback when the logout action is triggered.
  * @param modifier Modifier for the sidebar root.
@@ -48,7 +51,9 @@ import com.m2f.template.designsystem.theme.TerminalTheme
 fun DashboardSidebar(
     selectedItem: String,
     userName: String,
+    isAdmin: Boolean,
     onNavItemSelected: (String) -> Unit,
+    onAdminClick: () -> Unit,
     onProfileClick: () -> Unit,
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
@@ -97,20 +102,21 @@ fun DashboardSidebar(
             Spacer(modifier = Modifier.height(32.dp))
 
             // Nav items
-            val navItems = listOf(
-                "dashboard" to "dashboard",
-                "processes" to "processes",
-                "logs" to "logs",
-                "deployments" to "deployments",
-                "settings" to "settings",
-            )
+            val navItems = buildList {
+                add("dashboard" to "dashboard")
+                add("processes" to "processes")
+                add("logs" to "logs")
+                add("deployments" to "deployments")
+                if (isAdmin) add("admin" to "admin")
+                add("settings" to "settings")
+            }
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 navItems.forEach { (key, label) ->
                     SidebarNavItem(
                         label = label,
                         isSelected = selectedItem == key,
-                        onClick = { onNavItemSelected(key) },
+                        onClick = { if (key == "admin") onAdminClick() else onNavItemSelected(key) },
                     )
                 }
             }

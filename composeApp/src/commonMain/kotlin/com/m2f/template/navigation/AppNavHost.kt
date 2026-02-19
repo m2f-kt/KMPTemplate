@@ -176,6 +176,7 @@ fun AppNavHost() {
                     onNavItemSelected = { dashboardViewModel.take(DashboardIntent.NavItemSelected(it)) },
                     onProfileClick = { navController.navigate(ProfileRoute) },
                     onLogout = { dashboardViewModel.take(DashboardIntent.LogoutClicked) },
+                    onAdminClick = { dashboardViewModel.take(DashboardIntent.AdminPanelClicked) },
                 )
                 LaunchedEffect(Unit) {
                     dashboardViewModel.event.collect { event ->
@@ -184,6 +185,9 @@ fun AppNavHost() {
                                 navController.navigate(LoginRoute) {
                                     popUpTo(0) { inclusive = true }
                                 }
+                            }
+                            is DashboardEvent.NavigateToAdmin -> {
+                                navController.navigate(AdminPanelRoute(groupId = event.groupId))
                             }
                         }
                     }
@@ -225,6 +229,10 @@ fun AppNavHost() {
                     onSubmit = { viewModel.take(ForgotPasswordIntent.SubmitForgotPasswordClicked) },
                     onBackToLogin = { navController.popBackStack() },
                 )
+            }
+
+            composable<AdminPanelRoute> {
+                // Placeholder — Plan 03 will add the admin panel composable
             }
         }
     }

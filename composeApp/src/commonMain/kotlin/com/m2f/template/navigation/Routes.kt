@@ -26,3 +26,15 @@ data class OAuthCallbackRoute(
     val accessToken: String,
     val refreshToken: String,
 )
+
+/**
+ * Route for the group admin panel.
+ */
+@Serializable
+data class AdminPanelRoute(val groupId: String)
+
+/**
+ * Route for the register-member form.
+ */
+@Serializable
+data class RegisterMemberRoute(val groupId: String)

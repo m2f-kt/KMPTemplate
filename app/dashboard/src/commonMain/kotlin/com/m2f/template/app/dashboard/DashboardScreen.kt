@@ -60,6 +60,7 @@ fun DashboardScreen(
     onNavItemSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     onLogout: () -> Unit,
+    onAdminClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -74,6 +75,7 @@ fun DashboardScreen(
                 onNavItemSelected = onNavItemSelected,
                 onProfileClick = onProfileClick,
                 onLogout = onLogout,
+                onAdminClick = onAdminClick,
             )
         } else {
             // Mobile layout
@@ -81,6 +83,7 @@ fun DashboardScreen(
                 state = state,
                 onTabSelected = onNavItemSelected,
                 onProfileClick = onProfileClick,
+                onAdminClick = onAdminClick,
             )
         }
     }
@@ -94,12 +97,15 @@ private fun DesktopDashboard(
     onNavItemSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
     onLogout: () -> Unit,
+    onAdminClick: () -> Unit,
 ) {
     Row(modifier = Modifier.fillMaxSize()) {
         DashboardSidebar(
             selectedItem = state.selectedNavItem,
             userName = state.userName,
+            isAdmin = state.isAdmin,
             onNavItemSelected = onNavItemSelected,
+            onAdminClick = onAdminClick,
             onProfileClick = onProfileClick,
             onLogout = onLogout,
         )
@@ -231,6 +237,7 @@ private fun MobileDashboard(
     state: DashboardModel,
     onTabSelected: (String) -> Unit,
     onProfileClick: () -> Unit,
+    onAdminClick: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -330,7 +337,9 @@ private fun MobileDashboard(
         // Bottom nav bar (always visible)
         DashboardBottomNav(
             selectedTab = state.selectedNavItem,
+            isAdmin = state.isAdmin,
             onTabSelected = onTabSelected,
+            onAdminClick = onAdminClick,
         )
     }
 }

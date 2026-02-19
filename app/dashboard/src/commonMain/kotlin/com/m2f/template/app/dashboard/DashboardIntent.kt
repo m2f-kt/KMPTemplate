@@ -4,4 +4,5 @@ sealed interface DashboardIntent {
     data object LoadDashboard : DashboardIntent
     data class NavItemSelected(val item: String) : DashboardIntent
     data object LogoutClicked : DashboardIntent
+    data object AdminPanelClicked : DashboardIntent
 }

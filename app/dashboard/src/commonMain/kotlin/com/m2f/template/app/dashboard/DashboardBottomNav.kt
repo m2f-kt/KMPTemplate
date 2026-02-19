@@ -25,27 +25,32 @@ import com.m2f.template.designsystem.theme.rememberTerminalRipple
 /**
  * Mobile bottom navigation bar for the dashboard.
  *
- * Displays 4 tabs (Home, Processes, Logs, Settings) in a 64dp tall bar
+ * Displays tabs (Home, Processes, Logs, conditionally Admin, Settings) in a 64dp tall bar
  * with a top border. Active tab uses accent color, inactive uses textDim.
  *
  * @param selectedTab The currently selected tab key.
+ * @param isAdmin Whether the current user has admin/owner role in a group.
  * @param onTabSelected Callback when a tab is clicked.
+ * @param onAdminClick Callback when the admin tab is clicked.
  * @param modifier Modifier for the bottom nav root.
  */
 @Composable
 fun DashboardBottomNav(
     selectedTab: String,
+    isAdmin: Boolean,
     onTabSelected: (String) -> Unit,
+    onAdminClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
 
-    val tabs = listOf(
-        BottomTab("dashboard", "~", "home"),
-        BottomTab("processes", "#", "procs"),
-        BottomTab("logs", "$", "logs"),
-        BottomTab("settings", "%", "config"),
-    )
+    val tabs = buildList {
+        add(BottomTab("dashboard", "~", "home"))
+        add(BottomTab("processes", "#", "procs"))
+        add(BottomTab("logs", "$", "logs"))
+        if (isAdmin) add(BottomTab("admin", "@", "admin"))
+        add(BottomTab("settings", "%", "config"))
+    }
 
     Row(
         modifier = modifier
@@ -69,7 +74,7 @@ fun DashboardBottomNav(
             BottomNavTab(
                 tab = tab,
                 isSelected = selectedTab == tab.key,
-                onClick = { onTabSelected(tab.key) },
+                onClick = { if (tab.key == "admin") onAdminClick() else onTabSelected(tab.key) },
             )
         }
     }
