@@ -31,6 +31,10 @@ import com.m2f.template.app.dashboard.DashboardEvent
 import com.m2f.template.app.dashboard.DashboardIntent
 import com.m2f.template.app.dashboard.DashboardScreen
 import com.m2f.template.app.dashboard.DashboardViewModel
+import com.m2f.template.app.admin.AdminPanelEvent
+import com.m2f.template.app.admin.AdminPanelIntent
+import com.m2f.template.app.admin.AdminPanelScreen
+import com.m2f.template.app.admin.AdminPanelViewModel
 import com.m2f.template.app.profile.ProfileEvent
 import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
@@ -231,8 +235,30 @@ fun AppNavHost() {
                 )
             }
 
-            composable<AdminPanelRoute> {
-                // Placeholder — Plan 03 will add the admin panel composable
+            composable<AdminPanelRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<AdminPanelRoute>()
+                val viewModel = koinViewModel<AdminPanelViewModel>()
+                val state by viewModel.model.collectAsStateWithLifecycle()
+
+                LaunchedEffect(Unit) {
+                    viewModel.take(AdminPanelIntent.LoadAdminPanel(route.groupId))
+                }
+
+                AdminPanelScreen(
+                    state = state,
+                    onLoadMore = { viewModel.take(AdminPanelIntent.LoadMoreMembers) },
+                    onRegisterMember = { viewModel.take(AdminPanelIntent.RegisterMemberClicked) },
+                    onBack = { navController.popBackStack() },
+                )
+                LaunchedEffect(Unit) {
+                    viewModel.event.collect { event ->
+                        when (event) {
+                            is AdminPanelEvent.NavigateToRegisterMember -> {
+                                navController.navigate(RegisterMemberRoute(groupId = event.groupId))
+                            }
+                        }
+                    }
+                }
             }
         }
     }
