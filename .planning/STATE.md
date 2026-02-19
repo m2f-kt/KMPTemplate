@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 15 (Localization)
-Plan: 5 of 5 in current phase
-Status: Plan 02 complete -- auth module localized (01, 02, 03, 04 done; 05 remaining)
-Last activity: 2026-02-19 -- Completed 15-02-PLAN.md (Auth Module Localization)
+Phase: 15 (Localization) -- COMPLETE
+Plan: 5 of 5 in current phase (all done)
+Status: Phase 15 complete -- all 5 plans executed (01, 02, 03, 04, 05 done)
+Last activity: 2026-02-19 -- Completed 15-05-PLAN.md (Runtime Locale Switching)
 
-Progress: [████████████████░░░░] 80% (4/5 plans -- plans 01, 02, 03, 04 done)
+Progress: [████████████████████] 100% (5/5 plans -- all plans done)
 
 ## v1.0 Performance (archived)
 
@@ -42,6 +42,8 @@ Progress: [████████████████████] 100% (3
 | 15. Localization P01 | 3 tasks | 4min | 3 files |
 | 15. Localization P04 | 2 tasks | 2min | 5 files |
 | 15. Localization P03 | 2 tasks | 11min | 15 files |
+
+| 15. Localization P05 | 2 tasks | 4min | 11 files |
 
 ## Accumulated Context
 
@@ -98,6 +100,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 15: Feature modules use StringKey.code for error display (resolveStringKey inaccessible from feature modules)
 - Phase 15: Dashboard module unchanged in Plan 03 — no error fields, no hardcoded error strings
 - Phase 15: UI text left hardcoded in feature screens — Res.string inaccessible without architectural change, deferred to Plan 05
+- Phase 15: java.util.Locale for Android/JVM locale switching (avoids AppCompat dependency, Compose Resources respects JVM default locale)
+- Phase 15: LocaleSelector lives in composeApp, injected into ProfileScreen via composable slot — profile module stays dependency-free
+- Phase 15: Locale change handled directly in composable (no ViewModel intent) — simple synchronous preference write + platform call
+- Phase 15: WASM locale stored in memory only — page reload required for full Compose Resources locale switch
 
 ### Roadmap Evolution
 
@@ -112,5 +118,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 15-03-PLAN.md (Feature Module StringKey Migration)
-Resume file: .planning/phases/15-localization/15-03-SUMMARY.md
+Stopped at: Completed 15-05-PLAN.md (Runtime Locale Switching) -- Phase 15 COMPLETE
+Resume file: .planning/phases/15-localization/15-05-SUMMARY.md
