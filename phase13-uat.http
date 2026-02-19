@@ -1,0 +1,255 @@
+### Phase 13 UAT: Group Server & SDK
+### Server must be running on localhost:8080
+### Requires: a registered Admin user and a regular User
+
+### ============================================================
+### SETUP: Register an admin user (or login with existing one)
+### ============================================================
+
+### Login as Admin (adjust credentials to your admin account)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ignis.fatue@gmail.com",
+  "password": "Mm.12345"
+}
+
+> {%
+    client.global.set("adminToken", response.body.accessToken);
+    client.global.set("adminRefreshToken", response.body.refreshToken);
+%}
+
+### Register a regular test user
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "email": "uat-phase13-user@test.com",
+  "password": "TestPass123!",
+  "firstName": "UAT",
+  "lastName": "User"
+}
+
+> {%
+    client.global.set("userToken", response.body.accessToken);
+%}
+
+### Login as the regular user (if already registered)
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "uat-phase13-user@test.com",
+  "password": "TestPass123!"
+}
+
+> {%
+    client.global.set("userToken", response.body.accessToken);
+%}
+
+### ============================================================
+### TEST 3: Group CRUD via API
+### ============================================================
+
+### 3a. Create a group (Admin+ required) — expect 201 Created
+POST http://localhost:8080/api/groups/create
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "UAT Test Group",
+  "slug": "uat-test-group",
+  "description": "Created during Phase 13 UAT"
+}
+
+> {%
+    client.global.set("groupId", response.body.id);
+%}
+
+### 3b. Get group by ID — expect 200 with name, slug, description, timestamps
+GET http://localhost:8080/api/groups/{{groupId}}
+Authorization: Bearer {{adminToken}}
+
+### 3c. Update group — expect 200 with updated name
+POST http://localhost:8080/api/groups/{{groupId}}/update
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "UAT Test Group (Updated)",
+  "description": "Updated during Phase 13 UAT"
+}
+
+### 3d. Verify update — GET again, check name is "UAT Test Group (Updated)"
+GET http://localhost:8080/api/groups/{{groupId}}
+Authorization: Bearer {{adminToken}}
+
+### 3e. Delete group — expect 200 with "Group deleted" message
+POST http://localhost:8080/api/groups/{{groupId}}/delete
+Authorization: Bearer {{adminToken}}
+
+### 3f. Verify delete — GET should return 404/error
+GET http://localhost:8080/api/groups/{{groupId}}
+Authorization: Bearer {{adminToken}}
+
+### ============================================================
+### TEST 4: RBAC Enforcement
+### ============================================================
+
+### Create a fresh group for RBAC tests
+POST http://localhost:8080/api/groups/create
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "RBAC Test Group",
+  "slug": "rbac-test-group",
+  "description": "For RBAC verification"
+}
+
+> {%
+    client.global.set("rbacGroupId", response.body.id);
+%}
+
+### 4a. Regular User cannot create groups — expect 403 Forbidden
+POST http://localhost:8080/api/groups/create
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Should Fail",
+  "slug": "should-fail",
+  "description": "Regular user should not be able to create"
+}
+
+### 4b. Regular User (not a member) cannot access group — expect 403
+GET http://localhost:8080/api/groups/{{rbacGroupId}}
+Authorization: Bearer {{userToken}}
+
+### 4c. Add user as MEMBER to the RBAC group
+### First, get user ID from /api/users/me
+GET http://localhost:8080/api/users/me
+Authorization: Bearer {{userToken}}
+
+> {%
+    client.global.set("testUserId", response.body.id);
+%}
+
+### Add the regular user as MEMBER
+POST http://localhost:8080/api/groups/{{rbacGroupId}}/members/add
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "userId": "{{testUserId}}",
+  "role": "MEMBER"
+}
+
+### 4d. Member CAN read group — expect 200
+GET http://localhost:8080/api/groups/{{rbacGroupId}}
+Authorization: Bearer {{userToken}}
+
+### 4e. Member CANNOT update group — expect 403
+POST http://localhost:8080/api/groups/{{rbacGroupId}}/update
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Should Not Update"
+}
+
+### 4f. Member CANNOT delete group — expect 403
+POST http://localhost:8080/api/groups/{{rbacGroupId}}/delete
+Authorization: Bearer {{userToken}}
+
+### ============================================================
+### TEST 5: Cross-Group Data Isolation
+### ============================================================
+
+### Create a second group (user will NOT be a member)
+POST http://localhost:8080/api/groups/create
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Isolated Group",
+  "slug": "isolated-group",
+  "description": "User should not be able to access this"
+}
+
+> {%
+    client.global.set("isolatedGroupId", response.body.id);
+%}
+
+### 5a. User in RBAC group cannot access Isolated group — expect 403
+GET http://localhost:8080/api/groups/{{isolatedGroupId}}
+Authorization: Bearer {{userToken}}
+
+### 5b. Admin (owner of both) CAN access Isolated group — expect 200
+GET http://localhost:8080/api/groups/{{isolatedGroupId}}
+Authorization: Bearer {{adminToken}}
+
+### ============================================================
+### TEST: Member Management
+### ============================================================
+
+### List members of RBAC group (admin is owner + test user is member)
+GET http://localhost:8080/api/groups/{{rbacGroupId}}/members
+Authorization: Bearer {{adminToken}}
+
+### Remove the test user from RBAC group
+POST http://localhost:8080/api/groups/{{rbacGroupId}}/members/{{testUserId}}/remove
+Authorization: Bearer {{adminToken}}
+
+### Verify removal — user can no longer access group (403)
+GET http://localhost:8080/api/groups/{{rbacGroupId}}
+Authorization: Bearer {{userToken}}
+
+### ============================================================
+### TEST: Register Member (create new user directly into group)
+### ============================================================
+
+### Register a brand new user into the RBAC group
+POST http://localhost:8080/api/groups/{{rbacGroupId}}/members/register
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "email": "uat-registered-member@test.com",
+  "password": "TestPass123!",
+  "firstName": "Registered",
+  "lastName": "Member",
+  "role": "MEMBER"
+}
+
+### ============================================================
+### TEST: Duplicate Slug Rejection
+### ============================================================
+
+### Try to create a group with the same slug — expect error
+POST http://localhost:8080/api/groups/create
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Duplicate Slug",
+  "slug": "rbac-test-group",
+  "description": "Should fail — slug already exists"
+}
+
+### ============================================================
+### CLEANUP: Delete test groups
+### ============================================================
+
+### Delete RBAC test group
+POST http://localhost:8080/api/groups/{{rbacGroupId}}/delete
+Authorization: Bearer {{adminToken}}
+
+### Delete Isolated group
+POST http://localhost:8080/api/groups/{{isolatedGroupId}}/delete
+Authorization: Bearer {{adminToken}}
+
+### Logout admin
+POST http://localhost:8080/api/auth/logout
+Authorization: Bearer {{adminToken}}
