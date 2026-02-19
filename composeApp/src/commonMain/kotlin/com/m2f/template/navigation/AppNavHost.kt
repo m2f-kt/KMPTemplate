@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
@@ -43,8 +45,11 @@ import com.m2f.template.app.profile.ProfileEvent
 import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
 import com.m2f.template.app.profile.ProfileViewModel
+import com.m2f.template.localization.LocaleSelector
+import com.m2f.template.localization.setAppLocale
 import com.m2f.template.sdk.AuthInterceptor
 import com.m2f.template.sdk.defaultBaseUrl
+import com.m2f.template.storage.PreferencesStorage
 import com.m2f.template.storage.TokenStorage
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -205,6 +210,8 @@ fun AppNavHost() {
             composable<ProfileRoute> {
                 val viewModel = koinViewModel<ProfileViewModel>()
                 val state by viewModel.model.collectAsStateWithLifecycle()
+                val preferencesStorage = koinInject<PreferencesStorage>()
+                var currentLocale by remember { mutableStateOf(preferencesStorage.language) }
                 ProfileScreen(
                     state = state,
                     onStartEditing = { viewModel.take(ProfileIntent.StartEditing) },
@@ -214,6 +221,16 @@ fun AppNavHost() {
                     onSaveProfile = { viewModel.take(ProfileIntent.SaveProfileClicked) },
                     onLogout = { viewModel.take(ProfileIntent.LogoutClicked) },
                     onBack = { navController.popBackStack() },
+                    localeSelector = {
+                        LocaleSelector(
+                            currentLocale = currentLocale,
+                            onLocaleChanged = { locale ->
+                                preferencesStorage.language = locale
+                                setAppLocale(locale)
+                                currentLocale = locale
+                            },
+                        )
+                    },
                 )
                 LaunchedEffect(Unit) {
                     viewModel.event.collect { event ->

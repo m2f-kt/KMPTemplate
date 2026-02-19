@@ -73,6 +73,7 @@ fun ProfileScreen(
     onLogout: () -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
 
@@ -98,6 +99,7 @@ fun ProfileScreen(
                     onSaveProfile = onSaveProfile,
                     onLogout = onLogout,
                     onBack = onBack,
+                    localeSelector = localeSelector,
                 )
             }
             else -> {
@@ -110,6 +112,7 @@ fun ProfileScreen(
                     onSaveProfile = onSaveProfile,
                     onLogout = onLogout,
                     onBack = onBack,
+                    localeSelector = localeSelector,
                 )
             }
         }
@@ -128,6 +131,7 @@ private fun DesktopProfile(
     onSaveProfile: () -> Unit,
     onLogout: () -> Unit,
     onBack: () -> Unit,
+    localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -172,6 +176,10 @@ private fun DesktopProfile(
                 ProfileInfoCard(state = state, onStartEditing = onStartEditing)
             }
 
+            if (localeSelector != null) {
+                localeSelector()
+            }
+
             TierContent(state = state)
         }
     }
@@ -189,6 +197,7 @@ private fun MobileProfile(
     onSaveProfile: () -> Unit,
     onLogout: () -> Unit,
     onBack: () -> Unit,
+    localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -245,6 +254,10 @@ private fun MobileProfile(
                 )
             } else {
                 ProfileInfoCard(state = state, onStartEditing = onStartEditing)
+            }
+
+            if (localeSelector != null) {
+                localeSelector()
             }
 
             TierContent(state = state)
