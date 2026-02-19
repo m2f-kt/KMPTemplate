@@ -161,6 +161,6 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
 | 11.1. Fake SDK facade & fixes | 2/2 | Complete    | 2026-02-18 | - |
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
-| 13. Group Server & SDK | v1.1 | 0/0 | Not started | - |
+| 13. Group Server & SDK | 1/4 | In Progress|  | - |
 | 14. Group Admin UI | v1.1 | 0/0 | Not started | - |
 | 15. Localization | v1.1 | 0/0 | Not started | - |
