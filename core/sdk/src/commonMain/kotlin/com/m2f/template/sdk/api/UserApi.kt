@@ -2,6 +2,7 @@ package com.m2f.template.sdk.api
 
 import arrow.core.Either
 import com.m2f.template.models.AppError
+import com.m2f.template.models.dto.MembershipSummary
 import com.m2f.template.models.dto.UpdateProfileRequest
 import com.m2f.template.models.dto.UserResponse
 
@@ -15,4 +16,5 @@ interface UserApi {
     suspend fun getProfile(): Either<AppError, UserResponse>
     suspend fun updateProfile(request: UpdateProfileRequest): Either<AppError, UserResponse>
     suspend fun getUserById(id: String): Either<AppError, UserResponse>
+    suspend fun getMyMemberships(): Either<AppError, List<MembershipSummary>>
 }

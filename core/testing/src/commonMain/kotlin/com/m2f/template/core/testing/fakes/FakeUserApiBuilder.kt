@@ -3,6 +3,7 @@ package com.m2f.template.core.testing.fakes
 import arrow.core.Either
 import com.m2f.template.core.testing.FakeSDKDsl
 import com.m2f.template.models.AppError
+import com.m2f.template.models.dto.MembershipSummary
 import com.m2f.template.models.dto.UpdateProfileRequest
 import com.m2f.template.models.dto.UserResponse
 import com.m2f.template.sdk.api.UserApi
@@ -32,6 +33,9 @@ class FakeUserApiBuilder {
     private var _getUserById: suspend (String) -> Either<AppError, UserResponse> =
         { Either.Left(AppError.Client.Unknown()) }
 
+    private var _getMyMemberships: suspend () -> Either<AppError, List<MembershipSummary>> =
+        { Either.Left(AppError.Client.Unknown()) }
+
     fun getProfile(behavior: suspend () -> Either<AppError, UserResponse>) {
         _getProfile = behavior
     }
@@ -44,6 +48,10 @@ class FakeUserApiBuilder {
         _getUserById = behavior
     }
 
+    fun getMyMemberships(behavior: suspend () -> Either<AppError, List<MembershipSummary>>) {
+        _getMyMemberships = behavior
+    }
+
     internal fun build(): UserApi = object : UserApi {
         override suspend fun getProfile(): Either<AppError, UserResponse> =
             _getProfile()
@@ -53,6 +61,9 @@ class FakeUserApiBuilder {
 
         override suspend fun getUserById(id: String): Either<AppError, UserResponse> =
             _getUserById(id)
+
+        override suspend fun getMyMemberships(): Either<AppError, List<MembershipSummary>> =
+            _getMyMemberships()
     }
 }
 
