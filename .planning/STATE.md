@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 14 COMPLETE -- Group Admin UI
+**Current focus:** Phase 15 -- Localization
 
 ## Current Position
 
-Phase: 14 (Group Admin UI)
-Plan: 4 of 4 in current phase (COMPLETE)
-Status: Phase 14 complete -- all 4 plans delivered
-Last activity: 2026-02-19 -- Completed 14-04-PLAN.md (Register Member Form)
+Phase: 15 (Localization)
+Plan: 1 of 5 in current phase
+Status: Plan 01 complete -- localization foundation delivered
+Last activity: 2026-02-19 -- Completed 15-01-PLAN.md (Localization Foundation)
 
-Progress: [████████████████████] 100% (4/4 plans)
+Progress: [████░░░░░░░░░░░░░░░░] 20% (1/5 plans)
 
 ## v1.0 Performance (archived)
 
@@ -39,6 +39,7 @@ Progress: [████████████████████] 100% (3
 | Phase 12 P07 | 9min | 1 task | 1 file |
 | 13. Group Server & SDK | 4/4 | ~25min | ~6min |
 | 14. Group Admin UI | 4/4 | ~34min | ~9min |
+| 15. Localization P01 | 3 tasks | 4min | 3 files |
 
 ## Accumulated Context
 
@@ -85,6 +86,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 14: Arrow zipOrAccumulate with withError field remapping for multi-field form validation (reusing validateName for firstName/lastName)
 - Phase 14: TerminalBadge Success/Default variants for role selector toggle UI
 - Phase 14: Field error clearing in reduce by map key removal on field change mutation
+- Phase 15: resolveStringKey function name chosen over stringResource to avoid collision with org.jetbrains.compose.resources.stringResource
+- Phase 15: StringKey enum entries use identical code strings for direct AppError.code mapping via fromCode()
+- Phase 15: Error string resources use error_ prefix + lowercased code as naming convention
+- Phase 15: StringKey is @Serializable for potential wire usage (server-sent error keys)
 
 ### Roadmap Evolution
 
@@ -99,5 +104,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 14-04-PLAN.md (Register Member Form) -- Phase 14 complete
-Resume file: .planning/phases/14-group-admin-ui/14-04-SUMMARY.md
+Stopped at: Completed 15-01-PLAN.md (Localization Foundation)
+Resume file: .planning/phases/15-localization/15-01-SUMMARY.md
