@@ -12,6 +12,9 @@ import com.m2f.server.ai.registerAiMigrations
 import com.m2f.server.ai.routes.aiRoutes
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.routes.authRoutes
+import com.m2f.server.groups.registerGroupMigrations
+import com.m2f.server.groups.routes.groupRoutes
+import com.m2f.server.groups.service.GroupService
 import com.m2f.server.auth.routes.oauthRoutes
 import com.m2f.server.auth.routes.userRoutes
 import com.m2f.server.auth.service.AuthService
@@ -48,6 +51,7 @@ fun main() = SuspendApp {
     resourceScope {
         config {
             registerAuthMigrations()
+            registerGroupMigrations()
             registerAiMigrations()
             val database = startDatabase()
             startServer(Netty) {
@@ -101,6 +105,8 @@ fun Application.module() {
         authRoutes(authService, passwordResetService)
         oauthRoutes(oauthService, config.env.oauth)
         userRoutes(userService)
+        val groupService: GroupService by inject()
+        groupRoutes(groupService)
         val assistantAgentService: AssistantAgentService by inject()
         val chatAgentService: ChatAgentService by inject()
         aiRoutes(

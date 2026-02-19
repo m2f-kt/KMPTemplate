@@ -51,6 +51,7 @@ include("core:storage")
 
 // Server feature modules
 include("server:auth")
+include("server:groups")
 include("server:ai")
 
 // App feature modules
