@@ -80,6 +80,7 @@ kotlin {
             implementation(projects.core.sdk)
             implementation(projects.app.designsystem)
             implementation(projects.app.auth)
+            implementation(projects.app.admin)
             implementation(projects.app.dashboard)
             implementation(projects.app.profile)
         }
