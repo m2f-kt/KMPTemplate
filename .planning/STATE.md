@@ -11,10 +11,10 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 Phase: 15 (Localization)
 Plan: 4 of 5 in current phase
-Status: Plan 04 complete -- server-side i18n with locale-aware error responses
-Last activity: 2026-02-19 -- Completed 15-04-PLAN.md (Server-Side i18n)
+Status: Plan 03 complete -- feature module StringKey migration (01, 03, 04 done; 02, 05 remaining)
+Last activity: 2026-02-19 -- Completed 15-03-PLAN.md (Feature Module StringKey Migration)
 
-Progress: [████████████████░░░░] 80% (4/5 plans)
+Progress: [████████████████░░░░] 80% (4/5 plans -- plans 01, 03, 04 + partial 02 done)
 
 ## v1.0 Performance (archived)
 
@@ -41,6 +41,7 @@ Progress: [████████████████████] 100% (3
 | 14. Group Admin UI | 4/4 | ~34min | ~9min |
 | 15. Localization P01 | 3 tasks | 4min | 3 files |
 | 15. Localization P04 | 2 tasks | 2min | 5 files |
+| 15. Localization P03 | 2 tasks | 11min | 15 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 15: ServerStrings keys match AppError.code values exactly for direct lookup
 - Phase 15: preferredLanguage() takes first 2 chars of Accept-Language for ISO 639-1 extraction
 - Phase 15: Validation errors use ServerStrings for base message but keep field-level detail in formattedErrors
+- Phase 15: Feature modules use StringKey.code for error display (resolveStringKey inaccessible from feature modules)
+- Phase 15: Dashboard module unchanged in Plan 03 — no error fields, no hardcoded error strings
+- Phase 15: UI text left hardcoded in feature screens — Res.string inaccessible without architectural change, deferred to Plan 05
 
 ### Roadmap Evolution
 
@@ -108,5 +112,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 15-04-PLAN.md (Server-Side i18n)
-Resume file: .planning/phases/15-localization/15-04-SUMMARY.md
+Stopped at: Completed 15-03-PLAN.md (Feature Module StringKey Migration)
+Resume file: .planning/phases/15-localization/15-03-SUMMARY.md
