@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 15 (Localization)
-Plan: 1 of 5 in current phase
-Status: Plan 01 complete -- localization foundation delivered
-Last activity: 2026-02-19 -- Completed 15-01-PLAN.md (Localization Foundation)
+Plan: 4 of 5 in current phase
+Status: Plan 04 complete -- server-side i18n with locale-aware error responses
+Last activity: 2026-02-19 -- Completed 15-04-PLAN.md (Server-Side i18n)
 
-Progress: [████░░░░░░░░░░░░░░░░] 20% (1/5 plans)
+Progress: [████████████████░░░░] 80% (4/5 plans)
 
 ## v1.0 Performance (archived)
 
@@ -40,6 +40,7 @@ Progress: [████████████████████] 100% (3
 | 13. Group Server & SDK | 4/4 | ~25min | ~6min |
 | 14. Group Admin UI | 4/4 | ~34min | ~9min |
 | 15. Localization P01 | 3 tasks | 4min | 3 files |
+| 15. Localization P04 | 2 tasks | 2min | 5 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 15: StringKey enum entries use identical code strings for direct AppError.code mapping via fromCode()
 - Phase 15: Error string resources use error_ prefix + lowercased code as naming convention
 - Phase 15: StringKey is @Serializable for potential wire usage (server-sent error keys)
+- Phase 15: ServerStrings keys match AppError.code values exactly for direct lookup
+- Phase 15: preferredLanguage() takes first 2 chars of Accept-Language for ISO 639-1 extraction
+- Phase 15: Validation errors use ServerStrings for base message but keep field-level detail in formattedErrors
 
 ### Roadmap Evolution
 
@@ -104,5 +108,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 15-01-PLAN.md (Localization Foundation)
-Resume file: .planning/phases/15-localization/15-01-SUMMARY.md
+Stopped at: Completed 15-04-PLAN.md (Server-Side i18n)
+Resume file: .planning/phases/15-localization/15-04-SUMMARY.md
