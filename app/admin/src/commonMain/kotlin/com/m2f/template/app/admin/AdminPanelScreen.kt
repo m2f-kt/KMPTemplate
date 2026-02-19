@@ -25,6 +25,21 @@ import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.GroupRole
+import org.jetbrains.compose.resources.stringResource
+import template.app.admin.generated.resources.Res
+import template.app.admin.generated.resources.admin_back
+import template.app.admin.generated.resources.admin_error_description
+import template.app.admin.generated.resources.admin_error_title
+import template.app.admin.generated.resources.admin_load_more
+import template.app.admin.generated.resources.admin_loading
+import template.app.admin.generated.resources.admin_member_count
+import template.app.admin.generated.resources.admin_register_member_button
+import template.app.admin.generated.resources.admin_slug_prefix
+import template.app.admin.generated.resources.admin_table_email
+import template.app.admin.generated.resources.admin_table_joined
+import template.app.admin.generated.resources.admin_table_name
+import template.app.admin.generated.resources.admin_table_role
+import template.app.admin.generated.resources.admin_title
 
 /**
  * Stateless admin panel screen displaying group info and a paginated member table.
@@ -62,11 +77,11 @@ fun AdminPanelScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             TerminalButton(
-                text = "<-",
+                text = stringResource(Res.string.admin_back),
                 onClick = onBack,
             )
             TerminalText(
-                text = "> admin_panel",
+                text = stringResource(Res.string.admin_title),
                 style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
@@ -75,7 +90,7 @@ fun AdminPanelScreen(
         // Loading state (initial load)
         if (state.isLoading && state.members.isEmpty()) {
             TerminalText(
-                text = "// loading...",
+                text = stringResource(Res.string.admin_loading),
                 style = typography.md,
                 color = colors.textMuted,
             )
@@ -85,12 +100,12 @@ fun AdminPanelScreen(
         // Error state (no data loaded)
         if (state.error != null && state.members.isEmpty()) {
             TerminalCard(
-                title = "error",
-                description = "// failed to load admin panel",
+                title = stringResource(Res.string.admin_error_title),
+                description = stringResource(Res.string.admin_error_description),
                 variant = CardVariant.Default,
             ) {
                 TerminalBadge(
-                    text = "error: ${state.error.code}",
+                    text = "error: ${resolveStringKey(state.error)}",
                     variant = BadgeVariant.Error,
                 )
             }
@@ -101,7 +116,7 @@ fun AdminPanelScreen(
         if (state.groupName.isNotBlank()) {
             TerminalCard(
                 title = state.groupName,
-                description = "slug: ${state.groupSlug}",
+                description = stringResource(Res.string.admin_slug_prefix, state.groupSlug),
                 variant = CardVariant.Default,
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -113,7 +128,7 @@ fun AdminPanelScreen(
                         )
                     }
                     TerminalBadge(
-                        text = "${state.memberCount} members",
+                        text = stringResource(Res.string.admin_member_count, state.memberCount),
                         variant = BadgeVariant.Accent,
                     )
                 }
@@ -123,7 +138,12 @@ fun AdminPanelScreen(
         // Members table
         if (state.members.isNotEmpty()) {
             TerminalTable(
-                headers = listOf("NAME", "EMAIL", "ROLE", "JOINED"),
+                headers = listOf(
+                    stringResource(Res.string.admin_table_name),
+                    stringResource(Res.string.admin_table_email),
+                    stringResource(Res.string.admin_table_role),
+                    stringResource(Res.string.admin_table_joined),
+                ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 state.members.forEachIndexed { index, member ->
@@ -152,13 +172,13 @@ fun AdminPanelScreen(
         if (state.hasMoreMembers) {
             if (state.isLoadingMore) {
                 TerminalText(
-                    text = "// loading...",
+                    text = stringResource(Res.string.admin_loading),
                     style = typography.sm,
                     color = colors.textMuted,
                 )
             } else {
                 TerminalButton(
-                    text = "load_more",
+                    text = stringResource(Res.string.admin_load_more),
                     onClick = onLoadMore,
                 )
             }
@@ -166,7 +186,7 @@ fun AdminPanelScreen(
 
         // Register member button
         TerminalButton(
-            text = "+ register_member",
+            text = stringResource(Res.string.admin_register_member_button),
             onClick = onRegisterMember,
         )
 

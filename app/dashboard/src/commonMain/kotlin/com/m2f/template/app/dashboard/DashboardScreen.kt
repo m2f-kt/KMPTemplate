@@ -36,6 +36,26 @@ import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.dashboard.generated.resources.Res
+import template.app.dashboard.generated.resources.common_brand_name
+import template.app.dashboard.generated.resources.common_brand_prompt
+import template.app.dashboard.generated.resources.dashboard_active_processes
+import template.app.dashboard.generated.resources.dashboard_deployment_build
+import template.app.dashboard.generated.resources.dashboard_deployment_deploy
+import template.app.dashboard.generated.resources.dashboard_deployment_status
+import template.app.dashboard.generated.resources.dashboard_deployment_subtitle
+import template.app.dashboard.generated.resources.dashboard_deployment_tests
+import template.app.dashboard.generated.resources.dashboard_nodes_active
+import template.app.dashboard.generated.resources.dashboard_recent_activity
+import template.app.dashboard.generated.resources.dashboard_status_pending
+import template.app.dashboard.generated.resources.dashboard_system_overview
+import template.app.dashboard.generated.resources.dashboard_table_cpu
+import template.app.dashboard.generated.resources.dashboard_table_memory
+import template.app.dashboard.generated.resources.dashboard_table_name
+import template.app.dashboard.generated.resources.dashboard_table_pid
+import template.app.dashboard.generated.resources.dashboard_table_status
+import template.app.dashboard.generated.resources.dashboard_under_construction
 
 /**
  * Responsive dashboard screen with desktop sidebar and mobile bottom nav layouts.
@@ -196,7 +216,7 @@ private fun DesktopHeader(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TerminalText(
-            text = "$ system_overview",
+            text = stringResource(Res.string.dashboard_system_overview),
             style = typography.xxl.copy(fontWeight = FontWeight.Bold),
             color = colors.text,
         )
@@ -262,12 +282,12 @@ private fun MobileDashboard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     TerminalText(
-                        text = ">_",
+                        text = stringResource(Res.string.common_brand_prompt),
                         style = typography.md.copy(fontWeight = FontWeight.Bold),
                         color = colors.accent,
                     )
                     TerminalText(
-                        text = "terminal",
+                        text = stringResource(Res.string.common_brand_name),
                         style = typography.md.copy(fontWeight = FontWeight.SemiBold),
                         color = colors.text,
                     )
@@ -295,13 +315,13 @@ private fun MobileDashboard(
                     // Title block
                     Column {
                         TerminalText(
-                            text = "$ system_overview",
+                            text = stringResource(Res.string.dashboard_system_overview),
                             style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                             color = colors.text,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         TerminalText(
-                            text = "[4 nodes active]",
+                            text = stringResource(Res.string.dashboard_nodes_active),
                             style = typography.xs,
                             color = colors.textDim,
                         )
@@ -366,7 +386,7 @@ private fun MobileMetricsGrid(metrics: List<DashboardMockData.MetricItem>) {
 
 @Composable
 private fun MobileProcessList(processes: List<DashboardMockData.ProcessItem>) {
-    TerminalList(title = "active_processes", count = processes.size) {
+    TerminalList(title = stringResource(Res.string.dashboard_active_processes), count = processes.size) {
         processes.forEachIndexed { index, process ->
             TerminalListItem(
                 text = process.name,
@@ -406,7 +426,7 @@ private fun PlaceholderContent(
         )
         TerminalCard(
             title = title.removePrefix("> "),
-            description = "// under construction",
+            description = stringResource(Res.string.dashboard_under_construction),
             variant = CardVariant.Default,
         ) {
             Column(
@@ -414,7 +434,7 @@ private fun PlaceholderContent(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 TerminalBadge(
-                    text = "status: pending",
+                    text = stringResource(Res.string.dashboard_status_pending),
                     variant = BadgeVariant.Warning,
                     icon = "\u25D0",
                 )
@@ -435,7 +455,7 @@ private fun MobilePlaceholderContent(title: String) {
     )
     TerminalCard(
         title = title.removePrefix("> "),
-        description = "// under construction",
+        description = stringResource(Res.string.dashboard_under_construction),
         variant = CardVariant.Default,
     ) {
         Column(
@@ -443,7 +463,7 @@ private fun MobilePlaceholderContent(title: String) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             TerminalBadge(
-                text = "status: pending",
+                text = stringResource(Res.string.dashboard_status_pending),
                 variant = BadgeVariant.Warning,
                 icon = "\u25D0",
             )
@@ -505,13 +525,19 @@ private fun ProcessTable(processes: List<DashboardMockData.ProcessItem>) {
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         TerminalText(
-            text = "active_processes",
+            text = stringResource(Res.string.dashboard_active_processes),
             style = typography.md.copy(fontWeight = FontWeight.Medium),
             color = colors.text,
         )
 
         TerminalTable(
-            headers = listOf("PID", "NAME", "CPU", "MEMORY", "STATUS"),
+            headers = listOf(
+                stringResource(Res.string.dashboard_table_pid),
+                stringResource(Res.string.dashboard_table_name),
+                stringResource(Res.string.dashboard_table_cpu),
+                stringResource(Res.string.dashboard_table_memory),
+                stringResource(Res.string.dashboard_table_status),
+            ),
             modifier = Modifier.fillMaxWidth(),
         ) {
             processes.forEachIndexed { index, process ->
@@ -537,22 +563,22 @@ private fun ProcessTable(processes: List<DashboardMockData.ProcessItem>) {
 @Composable
 private fun DeploymentCard(deployment: DashboardMockData.DeploymentStatus) {
     TerminalCard(
-        title = "deployment_status",
-        description = "// pipeline progress",
+        title = stringResource(Res.string.dashboard_deployment_status),
+        description = stringResource(Res.string.dashboard_deployment_subtitle),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
             TerminalProgress(
                 progress = deployment.build,
-                label = "Build",
+                label = stringResource(Res.string.dashboard_deployment_build),
             )
             TerminalProgress(
                 progress = deployment.tests,
-                label = "Tests",
+                label = stringResource(Res.string.dashboard_deployment_tests),
             )
             TerminalProgress(
                 progress = deployment.deploy,
-                label = "Deploy",
+                label = stringResource(Res.string.dashboard_deployment_deploy),
             )
         }
     }
@@ -560,7 +586,7 @@ private fun DeploymentCard(deployment: DashboardMockData.DeploymentStatus) {
 
 @Composable
 private fun ActivityList(activities: List<DashboardMockData.ActivityItem>) {
-    TerminalList(title = "recent_activity", count = activities.size) {
+    TerminalList(title = stringResource(Res.string.dashboard_recent_activity), count = activities.size) {
         activities.forEachIndexed { index, activity ->
             TerminalListItem(
                 text = activity.title,

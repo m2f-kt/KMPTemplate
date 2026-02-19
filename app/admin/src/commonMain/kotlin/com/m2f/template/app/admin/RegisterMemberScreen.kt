@@ -23,6 +23,23 @@ import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.components.input.TerminalPasswordInput
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.GroupRole
+import org.jetbrains.compose.resources.stringResource
+import template.app.admin.generated.resources.Res
+import template.app.admin.generated.resources.register_member_back
+import template.app.admin.generated.resources.register_member_button
+import template.app.admin.generated.resources.register_member_button_loading
+import template.app.admin.generated.resources.register_member_email_label
+import template.app.admin.generated.resources.register_member_email_placeholder
+import template.app.admin.generated.resources.register_member_first_name_label
+import template.app.admin.generated.resources.register_member_first_name_placeholder
+import template.app.admin.generated.resources.register_member_last_name_label
+import template.app.admin.generated.resources.register_member_last_name_placeholder
+import template.app.admin.generated.resources.register_member_password_label
+import template.app.admin.generated.resources.register_member_password_placeholder
+import template.app.admin.generated.resources.register_member_role_admin
+import template.app.admin.generated.resources.register_member_role_label
+import template.app.admin.generated.resources.register_member_role_member
+import template.app.admin.generated.resources.register_member_title
 
 /**
  * Stateless register-member form screen.
@@ -69,11 +86,11 @@ fun RegisterMemberScreen(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             TerminalButton(
-                text = "<-",
+                text = stringResource(Res.string.register_member_back),
                 onClick = onBack,
             )
             TerminalText(
-                text = "> register_member",
+                text = stringResource(Res.string.register_member_title),
                 style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
@@ -84,10 +101,10 @@ fun RegisterMemberScreen(
         TerminalInput(
             value = state.firstName,
             onValueChange = onFirstNameChange,
-            label = "first_name",
-            placeholder = "John",
+            label = stringResource(Res.string.register_member_first_name_label),
+            placeholder = stringResource(Res.string.register_member_first_name_placeholder),
             isError = firstNameError != null,
-            errorMessage = firstNameError?.code,
+            errorMessage = firstNameError?.let { resolveStringKey(it) },
         )
 
         // Last Name
@@ -95,10 +112,10 @@ fun RegisterMemberScreen(
         TerminalInput(
             value = state.lastName,
             onValueChange = onLastNameChange,
-            label = "last_name",
-            placeholder = "Doe",
+            label = stringResource(Res.string.register_member_last_name_label),
+            placeholder = stringResource(Res.string.register_member_last_name_placeholder),
             isError = lastNameError != null,
-            errorMessage = lastNameError?.code,
+            errorMessage = lastNameError?.let { resolveStringKey(it) },
         )
 
         // Email
@@ -106,10 +123,10 @@ fun RegisterMemberScreen(
         TerminalInput(
             value = state.email,
             onValueChange = onEmailChange,
-            label = "email",
-            placeholder = "user@example.com",
+            label = stringResource(Res.string.register_member_email_label),
+            placeholder = stringResource(Res.string.register_member_email_placeholder),
             isError = emailError != null,
-            errorMessage = emailError?.code,
+            errorMessage = emailError?.let { resolveStringKey(it) },
         )
 
         // Password
@@ -117,22 +134,22 @@ fun RegisterMemberScreen(
         TerminalPasswordInput(
             value = state.password,
             onValueChange = onPasswordChange,
-            label = "password",
-            placeholder = "min. 8 characters",
+            label = stringResource(Res.string.register_member_password_label),
+            placeholder = stringResource(Res.string.register_member_password_placeholder),
             isError = passwordError != null,
-            errorMessage = passwordError?.code,
+            errorMessage = passwordError?.let { resolveStringKey(it) },
         )
 
         // Role selector
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             TerminalText(
-                text = "role",
+                text = stringResource(Res.string.register_member_role_label),
                 style = typography.sm.copy(fontWeight = FontWeight.Medium),
                 color = colors.textMuted,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 TerminalBadge(
-                    text = "Member",
+                    text = stringResource(Res.string.register_member_role_member),
                     variant = if (state.role is GroupRole.Member) BadgeVariant.Success else BadgeVariant.Default,
                     modifier = Modifier.clickable(
                         indication = null,
@@ -140,7 +157,7 @@ fun RegisterMemberScreen(
                     ) { onRoleChange(GroupRole.Member) },
                 )
                 TerminalBadge(
-                    text = "Admin",
+                    text = stringResource(Res.string.register_member_role_admin),
                     variant = if (state.role is GroupRole.Admin) BadgeVariant.Success else BadgeVariant.Default,
                     modifier = Modifier.clickable(
                         indication = null,
@@ -153,14 +170,14 @@ fun RegisterMemberScreen(
         // Server error
         if (state.serverError != null) {
             TerminalBadge(
-                text = state.serverError.code,
+                text = resolveStringKey(state.serverError),
                 variant = BadgeVariant.Error,
             )
         }
 
         // Submit button
         TerminalButton(
-            text = if (state.isLoading) "$ registering..." else "register",
+            text = if (state.isLoading) stringResource(Res.string.register_member_button_loading) else stringResource(Res.string.register_member_button),
             onClick = onSubmit,
             modifier = Modifier.fillMaxWidth(),
             enabled = !state.isLoading,

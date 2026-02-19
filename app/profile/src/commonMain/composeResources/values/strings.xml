@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ======================== Profile Screen ======================== -->
+    <string name="profile_command">$ user_profile</string>
+    <string name="profile_account_info">account_info</string>
+    <string name="profile_account_info_subtitle">// personal details</string>
+    <string name="profile_name_label">name</string>
+    <string name="profile_email_label">email</string>
+    <string name="profile_user_id_label">user_id</string>
+    <string name="profile_tier_label">tier</string>
+    <string name="profile_edit_button">&gt; edit profile</string>
+    <string name="profile_edit_title">edit_profile</string>
+    <string name="profile_edit_subtitle">// modify name and email</string>
+    <string name="profile_edit_name_placeholder">Enter your name</string>
+    <string name="profile_edit_email_placeholder">Enter your email</string>
+    <string name="profile_save_button">&gt; save</string>
+    <string name="profile_cancel_button">cancel</string>
+    <string name="profile_save_success">Profile updated successfully.</string>
+    <string name="profile_save_success_title">saved</string>
+    <string name="profile_error_title">error</string>
+    <string name="profile_back">&lt; back</string>
+    <string name="profile_logout">$ logout</string>
+
+    <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
+
+    <!-- Auth errors -->
+    <string name="error_auth_invalid_credentials">Email or password is incorrect</string>
+    <string name="error_auth_token_expired">Authentication token has expired</string>
+    <string name="error_auth_token_invalid">Authentication token is invalid</string>
+    <string name="error_auth_unauthorized">Authentication required</string>
+    <string name="error_auth_user_already_exists">A user with this email already exists</string>
+
+    <!-- Validation errors (from AppError) -->
+    <string name="error_validation_invalid_field">Field validation failed</string>
+    <string name="error_validation_invalid_input">One or more fields have validation errors</string>
+    <string name="error_validation_missing_field">Required field is missing</string>
+
+    <!-- User errors -->
+    <string name="error_user_not_found">User not found</string>
+    <string name="error_user_forbidden">You do not have permission to access this resource</string>
+
+    <!-- Server errors -->
+    <string name="error_server_internal_error">An unexpected error occurred</string>
+    <string name="error_server_service_unavailable">Service is temporarily unavailable</string>
+
+    <!-- Client errors -->
+    <string name="error_client_network_error">Network connection failed</string>
+    <string name="error_client_timeout">Request timed out</string>
+    <string name="error_client_unknown_error">An unknown error occurred</string>
+
+    <!-- Group errors -->
+    <string name="error_group_not_found">Group not found</string>
+    <string name="error_group_forbidden">You do not have permission to access this group</string>
+    <string name="error_group_already_exists">A group with this slug already exists</string>
+    <string name="error_group_member_already_exists">User is already a member of this group</string>
+
+    <!-- AI errors -->
+    <string name="error_ai_agent_failed">Agent execution failed</string>
+    <string name="error_ai_agent_not_found">The requested agent was not found</string>
+    <string name="error_ai_conversation_not_found">Conversation not found or does not belong to this user</string>
+    <string name="error_ai_provider_unavailable">AI provider is not available or not configured</string>
+
+    <!-- Validation messages (from ValidationSupport.kt) -->
+    <string name="error_validation_email_blank">Email must not be blank</string>
+    <string name="error_validation_email_invalid">Email format is invalid</string>
+    <string name="error_validation_password_too_short">Password must be at least 8 characters</string>
+    <string name="error_validation_password_blank">Password must not be blank</string>
+    <string name="error_validation_name_blank">Name must not be blank</string>
+    <string name="error_validation_name_length">Name must be between 2 and 100 characters</string>
+    <string name="error_validation_field_required">This field must not be blank</string>
+    <string name="error_validation_passwords_mismatch">Passwords do not match</string>
+    <string name="error_validation_terms_not_accepted">You must accept the terms</string>
+
+    <!-- Generic fallback -->
+    <string name="error_generic">An unexpected error occurred</string>
+
+</resources>

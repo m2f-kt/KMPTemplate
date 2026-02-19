@@ -30,6 +30,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.dashboard.generated.resources.Res
+import template.app.dashboard.generated.resources.common_brand_name
+import template.app.dashboard.generated.resources.common_brand_prompt
+import template.app.dashboard.generated.resources.dashboard_logout
+import template.app.dashboard.generated.resources.nav_admin
+import template.app.dashboard.generated.resources.nav_dashboard
+import template.app.dashboard.generated.resources.nav_deployments
+import template.app.dashboard.generated.resources.nav_logs
+import template.app.dashboard.generated.resources.nav_processes
+import template.app.dashboard.generated.resources.nav_settings
 
 /**
  * Desktop sidebar navigation for the dashboard.
@@ -88,12 +99,12 @@ fun DashboardSidebar(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TerminalText(
-                    text = ">_",
+                    text = stringResource(Res.string.common_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
                 TerminalText(
-                    text = "terminal",
+                    text = stringResource(Res.string.common_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.SemiBold),
                     color = colors.text,
                 )
@@ -103,12 +114,12 @@ fun DashboardSidebar(
 
             // Nav items
             val navItems = buildList {
-                add("dashboard" to "dashboard")
-                add("processes" to "processes")
-                add("logs" to "logs")
-                add("deployments" to "deployments")
-                if (isAdmin) add("admin" to "admin")
-                add("settings" to "settings")
+                add("dashboard" to stringResource(Res.string.nav_dashboard))
+                add("processes" to stringResource(Res.string.nav_processes))
+                add("logs" to stringResource(Res.string.nav_logs))
+                add("deployments" to stringResource(Res.string.nav_deployments))
+                if (isAdmin) add("admin" to stringResource(Res.string.nav_admin))
+                add("settings" to stringResource(Res.string.nav_settings))
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
@@ -168,7 +179,7 @@ fun DashboardSidebar(
                         maxLines = 1,
                     )
                     TerminalText(
-                        text = "$ logout",
+                        text = stringResource(Res.string.dashboard_logout),
                         style = typography.xs,
                         color = colors.textDim,
                         modifier = Modifier.clickable(onClick = onLogout),

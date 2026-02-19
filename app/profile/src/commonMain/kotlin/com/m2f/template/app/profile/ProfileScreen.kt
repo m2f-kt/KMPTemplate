@@ -42,6 +42,27 @@ import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.UserTier
+import org.jetbrains.compose.resources.stringResource
+import template.app.profile.generated.resources.Res
+import template.app.profile.generated.resources.profile_account_info
+import template.app.profile.generated.resources.profile_account_info_subtitle
+import template.app.profile.generated.resources.profile_back
+import template.app.profile.generated.resources.profile_cancel_button
+import template.app.profile.generated.resources.profile_command
+import template.app.profile.generated.resources.profile_edit_button
+import template.app.profile.generated.resources.profile_edit_email_placeholder
+import template.app.profile.generated.resources.profile_edit_name_placeholder
+import template.app.profile.generated.resources.profile_edit_subtitle
+import template.app.profile.generated.resources.profile_edit_title
+import template.app.profile.generated.resources.profile_email_label
+import template.app.profile.generated.resources.profile_error_title
+import template.app.profile.generated.resources.profile_logout
+import template.app.profile.generated.resources.profile_name_label
+import template.app.profile.generated.resources.profile_save_button
+import template.app.profile.generated.resources.profile_save_success
+import template.app.profile.generated.resources.profile_save_success_title
+import template.app.profile.generated.resources.profile_tier_label
+import template.app.profile.generated.resources.profile_user_id_label
 
 /**
  * Responsive profile screen with tier-aware content.
@@ -156,7 +177,7 @@ private fun DesktopProfile(
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             TerminalText(
-                text = "< back",
+                text = stringResource(Res.string.profile_back),
                 style = typography.sm,
                 color = colors.textMuted,
                 modifier = Modifier.clickable(onClick = onBack),
@@ -214,13 +235,13 @@ private fun MobileProfile(
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             TerminalText(
-                text = "< back",
+                text = stringResource(Res.string.profile_back),
                 style = typography.sm,
                 color = colors.textMuted,
                 modifier = Modifier.clickable(onClick = onBack),
             )
             TerminalText(
-                text = "$ logout",
+                text = stringResource(Res.string.profile_logout),
                 style = typography.sm,
                 color = colors.textDim,
                 modifier = Modifier.clickable(onClick = onLogout),
@@ -274,7 +295,7 @@ private fun ProfileHeader(state: ProfileModel) {
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         TerminalText(
-            text = "$ user_profile",
+            text = stringResource(Res.string.profile_command),
             style = typography.xxl.copy(fontWeight = FontWeight.Bold),
             color = colors.text,
         )
@@ -296,39 +317,39 @@ private fun ProfileInfoCard(
 
     if (state.saveSuccess) {
         TerminalAlert(
-            message = "Profile updated successfully.",
+            message = stringResource(Res.string.profile_save_success),
             variant = AlertVariant.Success,
-            title = "saved",
+            title = stringResource(Res.string.profile_save_success_title),
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
 
     if (state.serverError != null) {
         TerminalAlert(
-            message = state.serverError.code,
+            message = resolveStringKey(state.serverError),
             variant = AlertVariant.Error,
-            title = "error",
+            title = stringResource(Res.string.profile_error_title),
         )
         Spacer(modifier = Modifier.height(8.dp))
     }
 
     TerminalCard(
-        title = "account_info",
-        description = "// personal details",
+        title = stringResource(Res.string.profile_account_info),
+        description = stringResource(Res.string.profile_account_info_subtitle),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            InfoRow(label = "name", value = state.name)
-            InfoRow(label = "email", value = state.email)
-            InfoRow(label = "user_id", value = state.userId)
-            InfoRow(label = "tier", value = state.tier.displayName)
+            InfoRow(label = stringResource(Res.string.profile_name_label), value = state.name)
+            InfoRow(label = stringResource(Res.string.profile_email_label), value = state.email)
+            InfoRow(label = stringResource(Res.string.profile_user_id_label), value = state.userId)
+            InfoRow(label = stringResource(Res.string.profile_tier_label), value = state.tier.displayName)
 
             Spacer(modifier = Modifier.height(4.dp))
 
             TerminalButton(
-                text = "> edit profile",
+                text = stringResource(Res.string.profile_edit_button),
                 onClick = onStartEditing,
                 variant = ButtonVariant.Secondary,
             )
@@ -368,8 +389,8 @@ private fun EditProfileSection(
     onCancelEditing: () -> Unit,
 ) {
     TerminalCard(
-        title = "edit_profile",
-        description = "// modify name and email",
+        title = stringResource(Res.string.profile_edit_title),
+        description = stringResource(Res.string.profile_edit_subtitle),
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -377,40 +398,40 @@ private fun EditProfileSection(
         ) {
             if (state.serverError != null) {
                 TerminalAlert(
-                    message = state.serverError.code,
+                    message = resolveStringKey(state.serverError),
                     variant = AlertVariant.Error,
-                    title = "error",
+                    title = stringResource(Res.string.profile_error_title),
                 )
             }
 
             TerminalInput(
                 value = state.editName,
                 onValueChange = onEditNameChange,
-                label = "name",
-                placeholder = "Enter your name",
+                label = stringResource(Res.string.profile_name_label),
+                placeholder = stringResource(Res.string.profile_edit_name_placeholder),
                 isError = state.fieldErrors.containsKey("name"),
-                errorMessage = state.fieldErrors["name"]?.code,
+                errorMessage = state.fieldErrors["name"]?.let { resolveStringKey(it) },
             )
 
             TerminalInput(
                 value = state.editEmail,
                 onValueChange = onEditEmailChange,
-                label = "email",
-                placeholder = "Enter your email",
+                label = stringResource(Res.string.profile_email_label),
+                placeholder = stringResource(Res.string.profile_edit_email_placeholder),
                 isError = state.fieldErrors.containsKey("email"),
-                errorMessage = state.fieldErrors["email"]?.code,
+                errorMessage = state.fieldErrors["email"]?.let { resolveStringKey(it) },
             )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TerminalButton(
-                    text = "> save",
+                    text = stringResource(Res.string.profile_save_button),
                     onClick = onSaveProfile,
                     variant = ButtonVariant.Default,
                 )
                 TerminalButton(
-                    text = "cancel",
+                    text = stringResource(Res.string.profile_cancel_button),
                     onClick = onCancelEditing,
                     variant = ButtonVariant.Ghost,
                 )
