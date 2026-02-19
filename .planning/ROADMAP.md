@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** -- Phases 1-9 (shipped 2026-02-17)
-- 🚧 **v1.1 Architecture** -- Phases 10-15 (in progress)
+- ✅ **v1.1 Architecture** -- Phases 10-15 (completed 2026-02-19)
 
 ## Phases
 
@@ -25,7 +25,7 @@ Full details: milestones/v1.0-ROADMAP.md
 
 </details>
 
-### 🚧 v1.1 Architecture (In Progress)
+### ✅ v1.1 Architecture (Completed 2026-02-19)
 
 **Milestone Goal:** Add architectural patterns and domain capabilities: MVI ViewModel layer, group-based user management with admin panel, full testing infrastructure, and localization system.
 
@@ -35,7 +35,7 @@ Full details: milestones/v1.0-ROADMAP.md
 - [x] **Phase 12: ViewModel Migration** - Migrate all 5 existing ViewModels to MVI pattern with tests (completed 2026-02-18)
 - [x] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests (completed 2026-02-19)
 - [x] **Phase 14: Group Admin UI** - Admin panel with group management screens and role-gated navigation (completed 2026-02-19)
-- [ ] **Phase 15: Localization** - StringKey enum, resource files, server i18n, client string loading, runtime locale switching
+- [x] **Phase 15: Localization** - StringKey enum, resource files, server i18n, client string loading, runtime locale switching
 
 ## Phase Details
 
@@ -150,8 +150,8 @@ Plans:
 - [x] 15-03-PLAN.md — Feature module localization: Profile/Dashboard/AdminPanel/RegisterMember
 - [x] 15-04-PLAN.md — Server i18n: ServerStrings + Accept-Language + Spanish locale
 - [x] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
-- [ ] 15-06-PLAN.md — Gap closure: Profile module screen localization (per-module strings + resolveStringKey)
-- [ ] 15-07-PLAN.md — Gap closure: Admin + Dashboard module screen localization (per-module strings + resolveStringKey)
+- [x] 15-06-PLAN.md — Gap closure: Profile module screen localization (per-module strings + resolveStringKey)
+- [x] 15-07-PLAN.md — Gap closure: Admin + Dashboard module screen localization (per-module strings + resolveStringKey)
 
 ## Progress
 
@@ -176,4 +176,4 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
 | 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
 | 14. Group Admin UI | v1.1 | 4/4 | Complete | 2026-02-19 |
-| 15. Localization | v1.1 | 0/5 | Planned | - |
+| 15. Localization | v1.1 | 7/7 | Complete | 2026-02-19 |
