@@ -3,7 +3,9 @@ package com.m2f.server.groups.errors
 import com.m2f.core.config.server.DomainError
 import com.m2f.core.config.server.forbidden
 import com.m2f.core.config.server.notFound
+import com.m2f.core.config.server.preferredLanguage
 import com.m2f.core.config.server.unprocessable
+import com.m2f.core.config.server.localization.ServerStrings
 import com.m2f.template.models.AppError
 import io.ktor.server.routing.RoutingContext
 
@@ -15,7 +17,9 @@ data class GroupNotFound(
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.notFound(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.notFound(error.code, message)
     }
 }
 
@@ -27,7 +31,9 @@ data class GroupForbidden(
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.forbidden(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.forbidden(error.code, message)
     }
 }
 
@@ -39,7 +45,9 @@ data class GroupAlreadyExists(
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
     }
 }
 
@@ -51,7 +59,9 @@ data class MemberAlreadyInGroup(
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
     }
 }
 
@@ -65,7 +75,9 @@ data class MemberNotInGroup(
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.notFound(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.notFound(error.code, message)
     }
 }
 
@@ -79,6 +91,8 @@ data class CannotRemoveOwner(
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.forbidden(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.forbidden(error.code, message)
     }
 }

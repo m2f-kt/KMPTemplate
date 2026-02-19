@@ -1,6 +1,7 @@
 package com.m2f.core.config.server
 
 import arrow.core.NonEmptyList
+import com.m2f.core.config.server.localization.ServerStrings
 import com.m2f.template.models.AppError
 import com.m2f.template.models.FieldError
 import io.ktor.server.routing.RoutingContext
@@ -19,7 +20,9 @@ data class UnexpectedError(val message: String = "An Unexpected error has occurr
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unexpected(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unexpected(error.code, message)
     }
 }
 
@@ -32,7 +35,9 @@ data class MappingError(val message: String) : DomainError {
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
     }
 }
 
@@ -51,7 +56,9 @@ data class IncorrectInput(val errors: NonEmptyList<InvalidField>) : ValidationEr
             field.errors.map { error -> "${field.field}: $error" }
         }
         val appError = toAppError()
-        routingContext.unprocessable(appError.code, appError.message, formattedErrors)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(appError.code, locale)
+        routingContext.unprocessable(appError.code, message, formattedErrors)
     }
 }
 
@@ -61,7 +68,9 @@ data class MissingParameter(val name: String) : ValidationError {
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(error.code, "Missing $name parameter in request")
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
     }
 }
 
@@ -74,10 +83,9 @@ data class InvalidParameter(val name: String, val value: String, val expectedTyp
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(
-            error.code,
-            "Invalid $name parameter: '$value' cannot be converted to $expectedType"
-        )
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
     }
 }
 
@@ -90,7 +98,9 @@ data object InvalidContent : ValidationError {
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unprocessable(error.code, "Invalid content received can not be converted")
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
     }
 }
 
@@ -100,6 +110,8 @@ data class Unauthorized(val message: String = "Authentication required") : Domai
     context(routingContext: RoutingContext)
     override suspend fun respond() {
         val error = toAppError()
-        routingContext.unauthorized(error.code, error.message)
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unauthorized(error.code, message)
     }
 }

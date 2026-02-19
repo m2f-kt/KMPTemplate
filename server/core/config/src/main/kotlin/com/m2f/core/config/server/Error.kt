@@ -25,6 +25,15 @@ import io.ktor.websocket.send
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
+fun RoutingContext.preferredLanguage(): String =
+    call.request.headers["Accept-Language"]
+        ?.split(",")
+        ?.firstOrNull()
+        ?.trim()
+        ?.take(2)
+        ?.lowercase()
+        ?: "en"
+
 context(context: RoutingContext)
 suspend inline fun <reified A : Any> conduit(
     status: HttpStatusCode = HttpStatusCode.OK,
