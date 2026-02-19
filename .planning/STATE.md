@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-02-17)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 13 complete -- ready for Phase 14
+**Current focus:** Phase 14 in progress -- Group Admin UI
 
 ## Current Position
 
-Phase: 13 (Group Server & SDK)
-Plan: 4 of 4 in current phase (COMPLETE)
-Status: Phase 13 fully complete -- all 4 plans executed, 16 integration tests pass
-Last activity: 2026-02-19 -- Completed 13-04-PLAN.md (Integration tests)
+Phase: 14 (Group Admin UI)
+Plan: 1 of 4 in current phase (COMPLETE)
+Status: Plan 01 complete -- MembershipSummary endpoint + SDK method
+Last activity: 2026-02-19 -- Completed 14-01-PLAN.md (My Memberships Endpoint)
 
-Progress: [████████████████████] 100% (17/17 plans)
+Progress: [█████████████████░░░] 25% (1/4 plans)
 
 ## v1.0 Performance (archived)
 
@@ -38,6 +38,7 @@ Progress: [████████████████████] 100% (3
 | Phase 12 P04 | 22min | 2 tasks | 14 files |
 | Phase 12 P07 | 9min | 1 task | 1 file |
 | 13. Group Server & SDK | 4/4 | ~25min | ~6min |
+| 14. Group Admin UI | 1/4 | 2min | 2min |
 
 ## Accumulated Context
 
@@ -71,6 +72,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 12]: SharingStarted.Eagerly for init-dispatching ViewModels: WhileSubscribed loses mutations emitted before first subscriber; use Eagerly + eager model/event access in init block
 - [Phase 12]: turbineScope testing for init-dispatch VMs: MviViewModel.test{} DSL incompatible with init { take() }; use UnconfinedTestDispatcher + turbineScope { testIn(backgroundScope) } directly
 - [Phase 12-07]: SharingStarted.Eagerly VMs (ProfileViewModel) auto-dispatch init intents in DSL tests; do NOT use explicit intent(LoadProfile) -- it causes duplicate coroutine interference. WhileSubscribed VMs (DashboardViewModel) still need explicit intent().
+- Phase 14: MembershipSummary on UserApi (not GroupApi) -- endpoint is /api/users/me/memberships, user-scoped data
+- Phase 14: getMyMemberships route in GroupRoutes.kt despite being user-scoped -- needs GroupService access
+- Phase 14: getMyMemberships has no Raise<DomainError> context -- empty list is valid result
 
 ### Roadmap Evolution
 
@@ -85,5 +89,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Phase 13 complete, ready for verification/transition
-Resume file: .planning/phases/13-group-server-sdk/13-04-SUMMARY.md
+Stopped at: Completed 14-01-PLAN.md (My Memberships Endpoint)
+Resume file: .planning/phases/14-group-admin-ui/14-01-SUMMARY.md
