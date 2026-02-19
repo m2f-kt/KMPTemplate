@@ -110,7 +110,12 @@ Plans:
   2. Users belong to one group and can only access their own group's data -- cross-group requests return 403
   3. GroupApi SDK functions return Either<ClientError, T> using shared @Resource route definitions
   4. Server integration tests verify auth flow, group CRUD, RBAC enforcement, and cross-group isolation using Ktor testApplication
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 13-01-PLAN.md -- Shared models: GroupRole, DTOs, @Resource routes, AppError.Group
+- [ ] 13-02-PLAN.md -- Server groups module: tables, repos, service, routes, migrations, DI
+- [ ] 13-03-PLAN.md -- SDK GroupApi interface, implementation, Sdk facade, testing fakes
+- [ ] 13-04-PLAN.md -- Integration tests: CRUD, RBAC, cross-group isolation via Testcontainers
 
 ### Phase 14: Group Admin UI
 **Goal**: Admins have a dedicated panel to manage their group -- view members, register users, and access admin-specific dashboard content
