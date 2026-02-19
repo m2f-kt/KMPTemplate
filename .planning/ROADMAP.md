@@ -143,13 +143,15 @@ Plans:
   3. Server returns localized error messages based on the Accept-Language header
   4. User can switch locale at runtime and all UI strings update without app restart
   5. A bridge function maps StringKey values to Compose Res.strings accessors for type-safe string resolution
-**Plans**: 5 plans
+**Plans**: 7 plans
 Plans:
-- [ ] 15-01-PLAN.md — Foundation: StringKey enum + English strings.xml + bridge function
-- [ ] 15-02-PLAN.md — Auth module localization: Login/Register/ForgotPassword ViewModels + screens + tests
-- [ ] 15-03-PLAN.md — Feature module localization: Profile/Dashboard/AdminPanel/RegisterMember
-- [ ] 15-04-PLAN.md — Server i18n: ServerStrings + Accept-Language + Spanish locale
-- [ ] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
+- [x] 15-01-PLAN.md — Foundation: StringKey enum + English strings.xml + bridge function
+- [x] 15-02-PLAN.md — Auth module localization: Login/Register/ForgotPassword ViewModels + screens + tests
+- [x] 15-03-PLAN.md — Feature module localization: Profile/Dashboard/AdminPanel/RegisterMember
+- [x] 15-04-PLAN.md — Server i18n: ServerStrings + Accept-Language + Spanish locale
+- [x] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
+- [ ] 15-06-PLAN.md — Gap closure: Profile module screen localization (per-module strings + resolveStringKey)
+- [ ] 15-07-PLAN.md — Gap closure: Admin + Dashboard module screen localization (per-module strings + resolveStringKey)
 
 ## Progress
 
