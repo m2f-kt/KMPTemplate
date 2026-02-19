@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 12-viewmodel-migration
 source: [12-01-SUMMARY.md, 12-02-SUMMARY.md, 12-03-SUMMARY.md, 12-04-SUMMARY.md, 12-05-SUMMARY.md, 12-06-SUMMARY.md, 12-07-SUMMARY.md]
 started: 2026-02-18T22:45:00Z
@@ -65,18 +65,24 @@ skipped: 0
   reason: "User reported: After logging out, login error displays correctly but web app auto-refreshed and was logged back in. Storage not cleaned on logout."
   severity: major
   test: 2
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Dashboard logout callback (AppNavHost lines 177-181) navigates to LoginRoute WITHOUT calling sdk.logout(), so tokens remain in WASM localStorage. AppNavHost LaunchedEffect (lines 50-62) detects tokens on recomposition and auto-navigates back to Dashboard."
+  artifacts:
+    - path: "composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt"
+      issue: "Dashboard onLogout callback doesn't call sdk.logout() — just navigates directly"
+  missing:
+    - "Dashboard logout must call sdk.logout() to clear tokens before navigating"
   debug_session: ""
 - truth: "After logout, app stays on login screen and does not auto-navigate back to dashboard"
   status: failed
   reason: "User reported: Navigation to login happens but app refreshes randomly and navigates back to dashboard after successful logout. Only WASM target. Token possibly not cleaned."
   severity: major
   test: 7
-  root_cause: ""
-  artifacts: []
-  missing: []
+  root_cause: "Same root cause as test 2 — Dashboard logout path bypasses sdk.logout(). Profile logout path (via ProfileViewModel) IS correct but if user logged out from Dashboard previously, tokens persist."
+  artifacts:
+    - path: "composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt"
+      issue: "Dashboard onLogout skips SDK logout; AppNavHost auto-login check finds stale tokens"
+  missing:
+    - "Consistent logout flow: all logout paths must call sdk.logout() before navigation"
   debug_session: ""
   reason: "User reported: App can't run — composeApp build fails because core:mvi is missing from composeApp dependencies"
   severity: blocker
