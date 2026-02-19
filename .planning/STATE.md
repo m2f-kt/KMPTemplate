@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 14 (Group Admin UI)
-Plan: 1 of 4 in current phase (COMPLETE)
-Status: Plan 01 complete -- MembershipSummary endpoint + SDK method
-Last activity: 2026-02-19 -- Completed 14-01-PLAN.md (My Memberships Endpoint)
+Plan: 2 of 4 in current phase (COMPLETE)
+Status: Plan 02 complete -- Admin module + role-gated Dashboard
+Last activity: 2026-02-19 -- Completed 14-02-PLAN.md (Admin Module & Role-Gated Dashboard)
 
-Progress: [█████████████████░░░] 25% (1/4 plans)
+Progress: [██████████░░░░░░░░░░] 50% (2/4 plans)
 
 ## v1.0 Performance (archived)
 
@@ -38,7 +38,7 @@ Progress: [████████████████████] 100% (3
 | Phase 12 P04 | 22min | 2 tasks | 14 files |
 | Phase 12 P07 | 9min | 1 task | 1 file |
 | 13. Group Server & SDK | 4/4 | ~25min | ~6min |
-| 14. Group Admin UI | 1/4 | 2min | 2min |
+| 14. Group Admin UI | 2/4 | ~17min | ~8min |
 
 ## Accumulated Context
 
@@ -75,6 +75,10 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 14: MembershipSummary on UserApi (not GroupApi) -- endpoint is /api/users/me/memberships, user-scoped data
 - Phase 14: getMyMemberships route in GroupRoutes.kt despite being user-scoped -- needs GroupService access
 - Phase 14: getMyMemberships has no Raise<DomainError> context -- empty list is valid result
+- Phase 14: AdminPanelClicked as separate intent rather than overloading NavItemSelected("admin") -- cleaner separation
+- Phase 14: Silent failure on membership load (ifLeft no-op) -- user may not be in any group
+- Phase 14: AdminPanelRoute/RegisterMemberRoute defined early in Routes.kt for compilation -- Plans 03/04 add handlers
+- Phase 14: StateFlow conflation in admin membership test -- sync fakes conflate SetLoading and SetMembership
 
 ### Roadmap Evolution
 
@@ -89,5 +93,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-19
-Stopped at: Completed 14-01-PLAN.md (My Memberships Endpoint)
-Resume file: .planning/phases/14-group-admin-ui/14-01-SUMMARY.md
+Stopped at: Completed 14-02-PLAN.md (Admin Module & Role-Gated Dashboard)
+Resume file: .planning/phases/14-group-admin-ui/14-02-SUMMARY.md
