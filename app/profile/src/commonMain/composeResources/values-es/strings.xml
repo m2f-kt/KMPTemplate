@@ -2,25 +2,25 @@
 <resources>
 
     <!-- ======================== Profile Screen ======================== -->
-    <string name="profile_command">$ user_profile</string>
-    <string name="profile_account_info">info_cuenta</string>
+    <string name="profile_command">$ Perfil de Usuario</string>
+    <string name="profile_account_info">Información de Cuenta</string>
     <string name="profile_account_info_subtitle">// datos personales</string>
-    <string name="profile_name_label">nombre</string>
-    <string name="profile_email_label">correo</string>
-    <string name="profile_user_id_label">id_usuario</string>
-    <string name="profile_tier_label">nivel</string>
+    <string name="profile_name_label">Nombre</string>
+    <string name="profile_email_label">Correo Electrónico</string>
+    <string name="profile_user_id_label">ID de Usuario</string>
+    <string name="profile_tier_label">Nivel</string>
     <string name="profile_edit_button">&gt; editar perfil</string>
-    <string name="profile_edit_title">editar_perfil</string>
+    <string name="profile_edit_title">Editar Perfil</string>
     <string name="profile_edit_subtitle">// modificar nombre y correo</string>
     <string name="profile_edit_name_placeholder">Ingresa tu nombre</string>
     <string name="profile_edit_email_placeholder">Ingresa tu correo</string>
     <string name="profile_save_button">&gt; guardar</string>
-    <string name="profile_cancel_button">cancelar</string>
+    <string name="profile_cancel_button">Cancelar</string>
     <string name="profile_save_success">Perfil actualizado exitosamente.</string>
     <string name="profile_save_success_title">guardado</string>
     <string name="profile_error_title">error</string>
     <string name="profile_back">&lt; atrás</string>
-    <string name="profile_logout">$ logout</string>
+    <string name="profile_logout">$ Cerrar Sesión</string>
 
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 

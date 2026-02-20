@@ -2,25 +2,25 @@
 <resources>
 
     <!-- ======================== Profile Screen ======================== -->
-    <string name="profile_command">$ user_profile</string>
-    <string name="profile_account_info">account_info</string>
+    <string name="profile_command">$ User Profile</string>
+    <string name="profile_account_info">Account Info</string>
     <string name="profile_account_info_subtitle">// personal details</string>
-    <string name="profile_name_label">name</string>
-    <string name="profile_email_label">email</string>
-    <string name="profile_user_id_label">user_id</string>
-    <string name="profile_tier_label">tier</string>
+    <string name="profile_name_label">Name</string>
+    <string name="profile_email_label">Email</string>
+    <string name="profile_user_id_label">User ID</string>
+    <string name="profile_tier_label">Tier</string>
     <string name="profile_edit_button">&gt; edit profile</string>
-    <string name="profile_edit_title">edit_profile</string>
+    <string name="profile_edit_title">Edit Profile</string>
     <string name="profile_edit_subtitle">// modify name and email</string>
     <string name="profile_edit_name_placeholder">Enter your name</string>
     <string name="profile_edit_email_placeholder">Enter your email</string>
     <string name="profile_save_button">&gt; save</string>
-    <string name="profile_cancel_button">cancel</string>
+    <string name="profile_cancel_button">Cancel</string>
     <string name="profile_save_success">Profile updated successfully.</string>
     <string name="profile_save_success_title">saved</string>
     <string name="profile_error_title">error</string>
     <string name="profile_back">&lt; back</string>
-    <string name="profile_logout">$ logout</string>
+    <string name="profile_logout">$ Logout</string>
 
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 

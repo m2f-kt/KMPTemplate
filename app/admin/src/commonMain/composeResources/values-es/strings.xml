@@ -2,15 +2,15 @@
 <resources>
 
     <!-- ======================== Admin Panel Screen ======================== -->
-    <string name="admin_title">&gt; panel_admin</string>
+    <string name="admin_title">&gt; Panel de Administración</string>
     <string name="admin_back">&lt;-</string>
     <string name="admin_loading">// cargando...</string>
     <string name="admin_error_title">error</string>
     <string name="admin_error_description">// no se pudo cargar el panel de administración</string>
     <string name="admin_member_count">%1$d miembros</string>
     <string name="admin_slug_prefix">slug: %1$s</string>
-    <string name="admin_load_more">cargar_más</string>
-    <string name="admin_register_member_button">+ registrar_miembro</string>
+    <string name="admin_load_more">Cargar Más</string>
+    <string name="admin_register_member_button">+ Registrar Miembro</string>
 
     <!-- Admin Table Headers -->
     <string name="admin_table_name">NOMBRE</string>
@@ -19,21 +19,21 @@
     <string name="admin_table_joined">INGRESO</string>
 
     <!-- ======================== Register Member Screen ======================== -->
-    <string name="register_member_title">&gt; registrar_miembro</string>
+    <string name="register_member_title">&gt; Registrar Miembro</string>
     <string name="register_member_back">&lt;-</string>
-    <string name="register_member_first_name_label">nombre</string>
+    <string name="register_member_first_name_label">Nombre</string>
     <string name="register_member_first_name_placeholder">Juan</string>
-    <string name="register_member_last_name_label">apellido</string>
+    <string name="register_member_last_name_label">Apellido</string>
     <string name="register_member_last_name_placeholder">García</string>
-    <string name="register_member_email_label">correo</string>
+    <string name="register_member_email_label">Correo Electrónico</string>
     <string name="register_member_email_placeholder">usuario@ejemplo.com</string>
-    <string name="register_member_password_label">contraseña</string>
+    <string name="register_member_password_label">Contraseña</string>
     <string name="register_member_password_placeholder">mín. 8 caracteres</string>
-    <string name="register_member_role_label">rol</string>
+    <string name="register_member_role_label">Rol</string>
     <string name="register_member_role_member">Miembro</string>
     <string name="register_member_role_admin">Admin</string>
-    <string name="register_member_button">registrar</string>
-    <string name="register_member_button_loading">$ registrando...</string>
+    <string name="register_member_button">Registrar</string>
+    <string name="register_member_button_loading">$ Registrando...</string>
 
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 

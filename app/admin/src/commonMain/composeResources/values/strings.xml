@@ -2,15 +2,15 @@
 <resources>
 
     <!-- ======================== Admin Panel Screen ======================== -->
-    <string name="admin_title">&gt; admin_panel</string>
+    <string name="admin_title">&gt; Admin Panel</string>
     <string name="admin_back">&lt;-</string>
     <string name="admin_loading">// loading...</string>
     <string name="admin_error_title">error</string>
     <string name="admin_error_description">// failed to load admin panel</string>
     <string name="admin_member_count">%1$d members</string>
     <string name="admin_slug_prefix">slug: %1$s</string>
-    <string name="admin_load_more">load_more</string>
-    <string name="admin_register_member_button">+ register_member</string>
+    <string name="admin_load_more">Load More</string>
+    <string name="admin_register_member_button">+ Register Member</string>
 
     <!-- Admin Table Headers -->
     <string name="admin_table_name">NAME</string>
@@ -19,21 +19,21 @@
     <string name="admin_table_joined">JOINED</string>
 
     <!-- ======================== Register Member Screen ======================== -->
-    <string name="register_member_title">&gt; register_member</string>
+    <string name="register_member_title">&gt; Register Member</string>
     <string name="register_member_back">&lt;-</string>
-    <string name="register_member_first_name_label">first_name</string>
+    <string name="register_member_first_name_label">First Name</string>
     <string name="register_member_first_name_placeholder">John</string>
-    <string name="register_member_last_name_label">last_name</string>
+    <string name="register_member_last_name_label">Last Name</string>
     <string name="register_member_last_name_placeholder">Doe</string>
-    <string name="register_member_email_label">email</string>
+    <string name="register_member_email_label">Email</string>
     <string name="register_member_email_placeholder">user@example.com</string>
-    <string name="register_member_password_label">password</string>
+    <string name="register_member_password_label">Password</string>
     <string name="register_member_password_placeholder">min. 8 characters</string>
-    <string name="register_member_role_label">role</string>
+    <string name="register_member_role_label">Role</string>
     <string name="register_member_role_member">Member</string>
     <string name="register_member_role_admin">Admin</string>
-    <string name="register_member_button">register</string>
-    <string name="register_member_button_loading">$ registering...</string>
+    <string name="register_member_button">Register</string>
+    <string name="register_member_button_loading">$ Registering...</string>
 
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 
