@@ -12,5 +12,7 @@ actual fun setAppLocale(languageTag: String) {
     // Runtime override requires page reload — this is a known limitation.
 }
 
+private fun browserLanguage(): String = js("navigator.language").toString().take(2)
+
 actual fun getAppLocale(): String =
-    overrideLocale ?: js("navigator.language").toString().take(2)
+    overrideLocale ?: browserLanguage()
