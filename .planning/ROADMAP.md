@@ -152,6 +152,10 @@ Plans:
 - [x] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
 - [x] 15-06-PLAN.md — Gap closure: Profile module screen localization (per-module strings + resolveStringKey)
 - [x] 15-07-PLAN.md — Gap closure: Admin + Dashboard module screen localization (per-module strings + resolveStringKey)
+- [ ] 15-08-PLAN.md — Gap closure: Fix string resource XML values (raw keys → human-readable EN/ES)
+- [ ] 15-09-PLAN.md — Gap closure: Wire composables with stringResource() + add new string keys
+- [ ] 15-10-PLAN.md — Gap closure: Reactive locale switching (CompositionLocal + auth Spanish strings)
+- [ ] 15-11-PLAN.md — Gap closure: Platform fixes (WASM js(), Android cleartext, Accept-Language, CORS)
 
 ## Progress
 
@@ -176,4 +180,4 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
 | 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
 | 14. Group Admin UI | v1.1 | 4/4 | Complete | 2026-02-19 |
-| 15. Localization | v1.1 | 7/7 | Complete | 2026-02-19 |
+| 15. Localization | v1.1 | 7/11 | UAT Gap Closure | 2026-02-20 |
