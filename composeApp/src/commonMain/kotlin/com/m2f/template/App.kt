@@ -1,10 +1,14 @@
 package com.m2f.template
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.di.allAppModules
+import com.m2f.template.localization.LocalAppLocale
 import com.m2f.template.localization.setAppLocale
 import com.m2f.template.navigation.AppNavHost
 import com.m2f.template.storage.PreferencesStorage
@@ -17,14 +21,19 @@ fun App() {
         modules(allAppModules)
     }) {
         val preferencesStorage = koinInject<PreferencesStorage>()
-        val storedLocale = remember { preferencesStorage.language }
+        val currentLocale by preferencesStorage.observeLanguage()
+            .collectAsState(initial = preferencesStorage.language)
 
-        LaunchedEffect(Unit) {
-            setAppLocale(storedLocale)
+        LaunchedEffect(currentLocale) {
+            setAppLocale(currentLocale)
         }
 
-        TerminalTheme {
-            AppNavHost()
+        CompositionLocalProvider(LocalAppLocale provides currentLocale) {
+            key(currentLocale) {
+                TerminalTheme {
+                    AppNavHost()
+                }
+            }
         }
     }
 }
