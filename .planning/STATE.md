@@ -10,11 +10,11 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 ## Current Position
 
 Phase: 15 (Localization) -- Gap Closure in progress
-Plan: 8 of 11 in current phase
-Status: Executing gap closure plans (01-05 core done, 06-07 done, 08 done)
-Last activity: 2026-02-20 -- Completed 15-08-PLAN.md (Fix String Resource Values)
+Plan: 11 of 11 in current phase
+Status: Executing gap closure plans (01-05 core done, 06-07 done, 08-11 done)
+Last activity: 2026-02-20 -- Completed 15-11-PLAN.md (Platform Fixes)
 
-Progress: [██████████████░░░░░░] 73% (8/11 plans)
+Progress: [████████████████████] 100% (11/11 plans)
 
 ## v1.0 Performance (archived)
 
@@ -45,6 +45,7 @@ Progress: [████████████████████] 100% (3
 
 | 15. Localization P05 | 2 tasks | 4min | 11 files |
 | 15. Localization P08 | 2 tasks | 1min | 6 files |
+| Phase 15-localization P11 | 2min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -105,6 +106,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - Phase 15: LocaleSelector lives in composeApp, injected into ProfileScreen via composable slot — profile module stays dependency-free
 - Phase 15: Locale change handled directly in composable (no ViewModel intent) — simple synchronous preference write + platform call
 - Phase 15: WASM locale stored in memory only — page reload required for full Compose Resources locale switch
+- [Phase 15-localization]: PreferencesStorage.language as locale source for Accept-Language header (core:sdk depends on core:storage)
 
 ### Roadmap Evolution
 
@@ -119,5 +121,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 15-08-PLAN.md (Fix String Resource Values)
-Resume file: .planning/phases/15-localization/15-08-SUMMARY.md
+Stopped at: Completed 15-11-PLAN.md (Platform Fixes - WASM, Android cleartext, Accept-Language)
+Resume file: .planning/phases/15-localization/15-11-SUMMARY.md
