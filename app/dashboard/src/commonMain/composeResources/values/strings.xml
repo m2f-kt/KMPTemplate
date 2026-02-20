@@ -2,18 +2,18 @@
 <resources>
 
     <!-- ======================== Dashboard Screen ======================== -->
-    <string name="dashboard_system_overview">$ system_overview</string>
+    <string name="dashboard_system_overview">$ System Overview</string>
     <string name="dashboard_nodes_active">[4 nodes active]</string>
-    <string name="dashboard_active_processes">active_processes</string>
-    <string name="dashboard_deployment_status">deployment_status</string>
+    <string name="dashboard_active_processes">Active Processes</string>
+    <string name="dashboard_deployment_status">Deployment Status</string>
     <string name="dashboard_deployment_subtitle">// pipeline progress</string>
     <string name="dashboard_deployment_build">Build</string>
     <string name="dashboard_deployment_tests">Tests</string>
     <string name="dashboard_deployment_deploy">Deploy</string>
-    <string name="dashboard_recent_activity">recent_activity</string>
+    <string name="dashboard_recent_activity">Recent Activity</string>
     <string name="dashboard_under_construction">// under construction</string>
     <string name="dashboard_status_pending">status: pending</string>
-    <string name="dashboard_logout">$ logout</string>
+    <string name="dashboard_logout">$ Logout</string>
 
     <!-- Dashboard Table Headers -->
     <string name="dashboard_table_pid">PID</string>
@@ -23,12 +23,12 @@
     <string name="dashboard_table_status">STATUS</string>
 
     <!-- ======================== Dashboard Sidebar ======================== -->
-    <string name="nav_dashboard">dashboard</string>
-    <string name="nav_processes">processes</string>
-    <string name="nav_logs">logs</string>
-    <string name="nav_deployments">deployments</string>
-    <string name="nav_admin">admin</string>
-    <string name="nav_settings">settings</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_processes">Processes</string>
+    <string name="nav_logs">Logs</string>
+    <string name="nav_deployments">Deployments</string>
+    <string name="nav_admin">Admin</string>
+    <string name="nav_settings">Settings</string>
 
     <!-- ======================== Common / Shared ======================== -->
     <string name="common_brand_prompt">&gt;_</string>

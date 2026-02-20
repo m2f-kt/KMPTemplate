@@ -2,18 +2,18 @@
 <resources>
 
     <!-- ======================== Dashboard Screen ======================== -->
-    <string name="dashboard_system_overview">$ system_overview</string>
+    <string name="dashboard_system_overview">$ Resumen del Sistema</string>
     <string name="dashboard_nodes_active">[4 nodos activos]</string>
-    <string name="dashboard_active_processes">procesos_activos</string>
-    <string name="dashboard_deployment_status">estado_despliegue</string>
+    <string name="dashboard_active_processes">Procesos Activos</string>
+    <string name="dashboard_deployment_status">Estado de Despliegue</string>
     <string name="dashboard_deployment_subtitle">// progreso del pipeline</string>
-    <string name="dashboard_deployment_build">Build</string>
-    <string name="dashboard_deployment_tests">Tests</string>
-    <string name="dashboard_deployment_deploy">Deploy</string>
-    <string name="dashboard_recent_activity">actividad_reciente</string>
+    <string name="dashboard_deployment_build">Compilación</string>
+    <string name="dashboard_deployment_tests">Pruebas</string>
+    <string name="dashboard_deployment_deploy">Despliegue</string>
+    <string name="dashboard_recent_activity">Actividad Reciente</string>
     <string name="dashboard_under_construction">// en construcción</string>
     <string name="dashboard_status_pending">estado: pendiente</string>
-    <string name="dashboard_logout">$ logout</string>
+    <string name="dashboard_logout">$ Cerrar Sesión</string>
 
     <!-- Dashboard Table Headers -->
     <string name="dashboard_table_pid">PID</string>
@@ -23,12 +23,12 @@
     <string name="dashboard_table_status">ESTADO</string>
 
     <!-- ======================== Dashboard Sidebar ======================== -->
-    <string name="nav_dashboard">panel</string>
-    <string name="nav_processes">procesos</string>
-    <string name="nav_logs">registros</string>
-    <string name="nav_deployments">despliegues</string>
-    <string name="nav_admin">admin</string>
-    <string name="nav_settings">ajustes</string>
+    <string name="nav_dashboard">Panel</string>
+    <string name="nav_processes">Procesos</string>
+    <string name="nav_logs">Registros</string>
+    <string name="nav_deployments">Despliegues</string>
+    <string name="nav_admin">Admin</string>
+    <string name="nav_settings">Ajustes</string>
 
     <!-- ======================== Common / Shared ======================== -->
     <string name="common_brand_prompt">&gt;_</string>
