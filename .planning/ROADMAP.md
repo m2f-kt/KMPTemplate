@@ -152,9 +152,9 @@ Plans:
 - [x] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
 - [x] 15-06-PLAN.md — Gap closure: Profile module screen localization (per-module strings + resolveStringKey)
 - [x] 15-07-PLAN.md — Gap closure: Admin + Dashboard module screen localization (per-module strings + resolveStringKey)
-- [ ] 15-08-PLAN.md — Gap closure: Fix string resource XML values (raw keys → human-readable EN/ES)
-- [ ] 15-09-PLAN.md — Gap closure: Wire composables with stringResource() + add new string keys
-- [ ] 15-10-PLAN.md — Gap closure: Reactive locale switching (CompositionLocal + auth Spanish strings)
+- [x] 15-08-PLAN.md — Gap closure: Fix string resource XML values (raw keys → human-readable EN/ES)
+- [x] 15-09-PLAN.md — Gap closure: Wire composables with stringResource() + add new string keys
+- [x] 15-10-PLAN.md — Gap closure: Reactive locale switching (CompositionLocal + auth Spanish strings)
 - [x] 15-11-PLAN.md — Gap closure: Platform fixes (WASM js(), Android cleartext, Accept-Language, CORS)
 
 ## Progress
