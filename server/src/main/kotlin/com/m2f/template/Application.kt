@@ -89,6 +89,7 @@ fun Application.module() {
         // Headers used by API (Content-Type for JSON, Authorization for Bearer tokens)
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
+        allowHeader(HttpHeaders.AcceptLanguage)
         // Allow credentials (needed for auth flows)
         allowCredentials = true
     }

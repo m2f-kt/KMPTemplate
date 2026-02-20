@@ -10,6 +10,7 @@ import com.m2f.template.sdk.api.UserApi
 import com.m2f.template.sdk.api.UserApiImpl
 import com.m2f.template.sdk.createApiClient
 import com.m2f.template.sdk.defaultBaseUrl
+import com.m2f.template.storage.PreferencesStorage
 import org.koin.dsl.module
 
 /**
@@ -26,9 +27,11 @@ val sdkModule = module {
         AuthInterceptor(tokenStorage = get())
     }
     single {
+        val storage: PreferencesStorage = get()
         createApiClient(
             authInterceptor = get(),
             baseUrl = defaultBaseUrl(),
+            localeProvider = { storage.language },
         )
     }
     single<AuthApi> { AuthApiImpl(client = get(), tokenStorage = get()) }

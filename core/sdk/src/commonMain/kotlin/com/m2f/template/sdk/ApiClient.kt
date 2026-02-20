@@ -6,7 +6,9 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.resources.Resources
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.header
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
@@ -23,10 +25,12 @@ import kotlinx.serialization.json.Json
  *
  * @param authInterceptor The interceptor that attaches bearer tokens and handles 401 refresh+retry.
  * @param baseUrl The base URL for all API requests (e.g., "http://localhost:8080").
+ * @param localeProvider Lambda returning current locale tag (e.g., "en", "es") for Accept-Language header.
  */
 fun createApiClient(
     authInterceptor: AuthInterceptor,
     baseUrl: String = defaultBaseUrl(),
+    localeProvider: () -> String = { "en" },
 ): HttpClient {
     val client = HttpClient(platformEngine()) {
         expectSuccess = false
@@ -47,6 +51,7 @@ fun createApiClient(
         defaultRequest {
             url(baseUrl)
             contentType(ContentType.Application.Json)
+            header(HttpHeaders.AcceptLanguage, localeProvider())
         }
     }
     authInterceptor.install(client)
