@@ -26,6 +26,70 @@ import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.profile.generated.resources.Res
+import template.app.profile.generated.resources.tier_poweradmin_access_admin_col
+import template.app.profile.generated.resources.tier_poweradmin_access_delete_col
+import template.app.profile.generated.resources.tier_poweradmin_access_desc
+import template.app.profile.generated.resources.tier_poweradmin_access_read_col
+import template.app.profile.generated.resources.tier_poweradmin_access_resource_col
+import template.app.profile.generated.resources.tier_poweradmin_access_title
+import template.app.profile.generated.resources.tier_poweradmin_access_write_col
+import template.app.profile.generated.resources.tier_poweradmin_btn_logout_all
+import template.app.profile.generated.resources.tier_poweradmin_btn_purge
+import template.app.profile.generated.resources.tier_poweradmin_btn_reset
+import template.app.profile.generated.resources.tier_poweradmin_danger_alert_message
+import template.app.profile.generated.resources.tier_poweradmin_danger_alert_title
+import template.app.profile.generated.resources.tier_poweradmin_danger_desc
+import template.app.profile.generated.resources.tier_poweradmin_danger_force_logout
+import template.app.profile.generated.resources.tier_poweradmin_danger_force_logout_sub
+import template.app.profile.generated.resources.tier_poweradmin_danger_purge_cache
+import template.app.profile.generated.resources.tier_poweradmin_danger_purge_cache_sub
+import template.app.profile.generated.resources.tier_poweradmin_danger_reset_rate
+import template.app.profile.generated.resources.tier_poweradmin_danger_reset_rate_sub
+import template.app.profile.generated.resources.tier_poweradmin_danger_title
+import template.app.profile.generated.resources.tier_poweradmin_directory_desc
+import template.app.profile.generated.resources.tier_poweradmin_directory_title
+import template.app.profile.generated.resources.tier_poweradmin_identity_access_level
+import template.app.profile.generated.resources.tier_poweradmin_identity_admin_id
+import template.app.profile.generated.resources.tier_poweradmin_identity_desc
+import template.app.profile.generated.resources.tier_poweradmin_identity_last_login_ip
+import template.app.profile.generated.resources.tier_poweradmin_identity_mfa_status
+import template.app.profile.generated.resources.tier_poweradmin_identity_role
+import template.app.profile.generated.resources.tier_poweradmin_identity_session_expires
+import template.app.profile.generated.resources.tier_poweradmin_identity_title
+import template.app.profile.generated.resources.tier_poweradmin_res_audit_logs
+import template.app.profile.generated.resources.tier_poweradmin_res_billing
+import template.app.profile.generated.resources.tier_poweradmin_res_infra
+import template.app.profile.generated.resources.tier_poweradmin_res_system_config
+import template.app.profile.generated.resources.tier_poweradmin_res_users
+import template.app.profile.generated.resources.tier_poweradmin_stats_avg_latency
+import template.app.profile.generated.resources.tier_poweradmin_stats_desc
+import template.app.profile.generated.resources.tier_poweradmin_stats_error_rate
+import template.app.profile.generated.resources.tier_poweradmin_stats_health_label
+import template.app.profile.generated.resources.tier_poweradmin_stats_requests_today
+import template.app.profile.generated.resources.tier_poweradmin_stats_title
+import template.app.profile.generated.resources.tier_poweradmin_stats_total_users
+import template.app.profile.generated.resources.tier_poweradmin_stats_uptime
+import template.app.profile.generated.resources.tier_poweradmin_status_api_gateway
+import template.app.profile.generated.resources.tier_poweradmin_status_api_gateway_sub
+import template.app.profile.generated.resources.tier_poweradmin_status_cache
+import template.app.profile.generated.resources.tier_poweradmin_status_cache_sub
+import template.app.profile.generated.resources.tier_poweradmin_status_db
+import template.app.profile.generated.resources.tier_poweradmin_status_db_sub
+import template.app.profile.generated.resources.tier_poweradmin_status_desc
+import template.app.profile.generated.resources.tier_poweradmin_status_healthy
+import template.app.profile.generated.resources.tier_poweradmin_status_storage
+import template.app.profile.generated.resources.tier_poweradmin_status_storage_sub
+import template.app.profile.generated.resources.tier_poweradmin_status_title
+import template.app.profile.generated.resources.tier_poweradmin_status_warning
+import template.app.profile.generated.resources.tier_poweradmin_status_worker
+import template.app.profile.generated.resources.tier_poweradmin_status_worker_sub
+import template.app.profile.generated.resources.tier_poweradmin_table_email
+import template.app.profile.generated.resources.tier_poweradmin_table_id
+import template.app.profile.generated.resources.tier_poweradmin_table_name
+import template.app.profile.generated.resources.tier_poweradmin_table_status
+import template.app.profile.generated.resources.tier_poweradmin_table_tier
 
 /**
  * PowerAdmin tier profile content showing platform stats, user directory,
@@ -50,23 +114,23 @@ fun PowerAdminTierContent(
     ) {
         // Platform stats
         TerminalCard(
-            title = "platform_stats",
-            description = "// real-time metrics",
+            title = stringResource(Res.string.tier_poweradmin_stats_title),
+            description = stringResource(Res.string.tier_poweradmin_stats_desc),
             variant = CardVariant.Highlighted,
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                PlatformStatRow(label = "uptime", value = "99.99%")
-                PlatformStatRow(label = "total_users", value = "12,847")
-                PlatformStatRow(label = "requests_today", value = "2.4M")
-                PlatformStatRow(label = "avg_latency", value = "23ms")
-                PlatformStatRow(label = "error_rate", value = "0.002%")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_uptime), value = "99.99%")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_total_users), value = "12,847")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_requests_today), value = "2.4M")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_avg_latency), value = "23ms")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_error_rate), value = "0.002%")
 
                 TerminalProgress(
                     progress = 0.9999f,
-                    label = "System health",
+                    label = stringResource(Res.string.tier_poweradmin_stats_health_label),
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -74,11 +138,17 @@ fun PowerAdminTierContent(
 
         // User directory
         TerminalCard(
-            title = "user_directory",
-            description = "// all platform users",
+            title = stringResource(Res.string.tier_poweradmin_directory_title),
+            description = stringResource(Res.string.tier_poweradmin_directory_desc),
         ) {
             TerminalTable(
-                headers = listOf("ID", "NAME", "EMAIL", "TIER", "STATUS"),
+                headers = listOf(
+                    stringResource(Res.string.tier_poweradmin_table_id),
+                    stringResource(Res.string.tier_poweradmin_table_name),
+                    stringResource(Res.string.tier_poweradmin_table_email),
+                    stringResource(Res.string.tier_poweradmin_table_tier),
+                    stringResource(Res.string.tier_poweradmin_table_status),
+                ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 TerminalTableRow(showBottomBorder = true) {
@@ -141,61 +211,67 @@ fun PowerAdminTierContent(
 
         // Admin identity card
         TerminalCard(
-            title = "admin_identity",
-            description = "// your admin credentials",
+            title = stringResource(Res.string.tier_poweradmin_identity_title),
+            description = stringResource(Res.string.tier_poweradmin_identity_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                PlatformStatRow(label = "admin_id", value = state.userId.take(8) + "...")
-                PlatformStatRow(label = "role", value = "power_admin")
-                PlatformStatRow(label = "mfa_status", value = "enabled")
-                PlatformStatRow(label = "session_expires", value = "23h 45m")
-                PlatformStatRow(label = "last_login_ip", value = "192.168.1.xxx")
-                PlatformStatRow(label = "access_level", value = "FULL")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_identity_admin_id), value = state.userId.take(8) + "...")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_identity_role), value = "power_admin")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_identity_mfa_status), value = "enabled")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_identity_session_expires), value = "23h 45m")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_identity_last_login_ip), value = "192.168.1.xxx")
+                PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_identity_access_level), value = "FULL")
             }
         }
 
         // Access matrix
         TerminalCard(
-            title = "access_matrix",
-            description = "// system permissions",
+            title = stringResource(Res.string.tier_poweradmin_access_title),
+            description = stringResource(Res.string.tier_poweradmin_access_desc),
         ) {
             TerminalTable(
-                headers = listOf("RESOURCE", "READ", "WRITE", "DELETE", "ADMIN"),
+                headers = listOf(
+                    stringResource(Res.string.tier_poweradmin_access_resource_col),
+                    stringResource(Res.string.tier_poweradmin_access_read_col),
+                    stringResource(Res.string.tier_poweradmin_access_write_col),
+                    stringResource(Res.string.tier_poweradmin_access_delete_col),
+                    stringResource(Res.string.tier_poweradmin_access_admin_col),
+                ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Users")
+                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_users))
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                 }
                 TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Billing")
+                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_billing))
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                 }
                 TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Infrastructure")
+                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_infra))
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                 }
                 TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Audit logs")
+                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_audit_logs))
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2717")
                     TerminalTableCell(text = "\u2713")
                 }
                 TerminalTableRow(showBottomBorder = false) {
-                    TerminalTableCell(text = "System config")
+                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_system_config))
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
                     TerminalTableCell(text = "\u2713")
@@ -206,43 +282,43 @@ fun PowerAdminTierContent(
 
         // System status
         TerminalCard(
-            title = "system_status",
-            description = "// service health",
+            title = stringResource(Res.string.tier_poweradmin_status_title),
+            description = stringResource(Res.string.tier_poweradmin_status_desc),
         ) {
             TerminalList {
                 TerminalListItem(
-                    text = "API Gateway",
-                    subtitle = "// latency: 12ms | throughput: 847 req/s",
+                    text = stringResource(Res.string.tier_poweradmin_status_api_gateway),
+                    subtitle = stringResource(Res.string.tier_poweradmin_status_api_gateway_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "healthy", variant = BadgeVariant.Success)
+                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
                 TerminalListItem(
-                    text = "Database Primary",
-                    subtitle = "// connections: 42/100 | replication: sync",
+                    text = stringResource(Res.string.tier_poweradmin_status_db),
+                    subtitle = stringResource(Res.string.tier_poweradmin_status_db_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "healthy", variant = BadgeVariant.Success)
+                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
                 TerminalListItem(
-                    text = "Cache Layer",
-                    subtitle = "// hit rate: 94.2% | memory: 2.1GB/4GB",
+                    text = stringResource(Res.string.tier_poweradmin_status_cache),
+                    subtitle = stringResource(Res.string.tier_poweradmin_status_cache_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "healthy", variant = BadgeVariant.Success)
+                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
                 TerminalListItem(
-                    text = "Worker Queue",
-                    subtitle = "// pending: 23 | processing: 4 | failed: 0",
+                    text = stringResource(Res.string.tier_poweradmin_status_worker),
+                    subtitle = stringResource(Res.string.tier_poweradmin_status_worker_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "healthy", variant = BadgeVariant.Success)
+                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
                 TerminalListItem(
-                    text = "Storage Service",
-                    subtitle = "// usage: 847GB/2TB | iops: 1.2k",
+                    text = stringResource(Res.string.tier_poweradmin_status_storage),
+                    subtitle = stringResource(Res.string.tier_poweradmin_status_storage_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "warning", variant = BadgeVariant.Warning)
+                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_warning), variant = BadgeVariant.Warning)
                     },
                 )
             }
@@ -250,14 +326,14 @@ fun PowerAdminTierContent(
 
         // Danger zone
         TerminalAlert(
-            message = "Destructive actions below. These operations cannot be undone.",
+            message = stringResource(Res.string.tier_poweradmin_danger_alert_message),
             variant = AlertVariant.Error,
-            title = "danger_zone",
+            title = stringResource(Res.string.tier_poweradmin_danger_alert_title),
         )
 
         TerminalCard(
-            title = "destructive_actions",
-            description = "// irreversible operations",
+            title = stringResource(Res.string.tier_poweradmin_danger_title),
+            description = stringResource(Res.string.tier_poweradmin_danger_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -269,18 +345,18 @@ fun PowerAdminTierContent(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         TerminalText(
-                            text = "Purge all cache",
+                            text = stringResource(Res.string.tier_poweradmin_danger_purge_cache),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
                         TerminalText(
-                            text = "// clear all cached data across nodes",
+                            text = stringResource(Res.string.tier_poweradmin_danger_purge_cache_sub),
                             style = typography.xs,
                             color = colors.textMuted,
                         )
                     }
                     TerminalButton(
-                        text = "purge",
+                        text = stringResource(Res.string.tier_poweradmin_btn_purge),
                         onClick = { /* Static demo */ },
                         variant = ButtonVariant.Destructive,
                     )
@@ -292,18 +368,18 @@ fun PowerAdminTierContent(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         TerminalText(
-                            text = "Reset rate limits",
+                            text = stringResource(Res.string.tier_poweradmin_danger_reset_rate),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
                         TerminalText(
-                            text = "// reset all user rate limit counters",
+                            text = stringResource(Res.string.tier_poweradmin_danger_reset_rate_sub),
                             style = typography.xs,
                             color = colors.textMuted,
                         )
                     }
                     TerminalButton(
-                        text = "reset",
+                        text = stringResource(Res.string.tier_poweradmin_btn_reset),
                         onClick = { /* Static demo */ },
                         variant = ButtonVariant.Destructive,
                     )
@@ -315,18 +391,18 @@ fun PowerAdminTierContent(
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
                         TerminalText(
-                            text = "Force logout all users",
+                            text = stringResource(Res.string.tier_poweradmin_danger_force_logout),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
                         TerminalText(
-                            text = "// invalidate all active sessions",
+                            text = stringResource(Res.string.tier_poweradmin_danger_force_logout_sub),
                             style = typography.xs,
                             color = colors.textMuted,
                         )
                     }
                     TerminalButton(
-                        text = "logout all",
+                        text = stringResource(Res.string.tier_poweradmin_btn_logout_all),
                         onClick = { /* Static demo */ },
                         variant = ButtonVariant.Destructive,
                     )

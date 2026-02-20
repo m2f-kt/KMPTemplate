@@ -25,6 +25,37 @@ import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.profile.generated.resources.Res
+import template.app.profile.generated.resources.tier_free_alert_message
+import template.app.profile.generated.resources.tier_free_alert_title
+import template.app.profile.generated.resources.tier_free_api_calls
+import template.app.profile.generated.resources.tier_free_api_calls_value
+import template.app.profile.generated.resources.tier_free_locked_api_keys
+import template.app.profile.generated.resources.tier_free_locked_api_keys_sub
+import template.app.profile.generated.resources.tier_free_locked_badge
+import template.app.profile.generated.resources.tier_free_locked_features
+import template.app.profile.generated.resources.tier_free_locked_priority_support
+import template.app.profile.generated.resources.tier_free_locked_priority_support_sub
+import template.app.profile.generated.resources.tier_free_locked_team_access
+import template.app.profile.generated.resources.tier_free_locked_team_access_sub
+import template.app.profile.generated.resources.tier_free_locked_webhooks
+import template.app.profile.generated.resources.tier_free_locked_webhooks_sub
+import template.app.profile.generated.resources.tier_free_pref_email_notifications
+import template.app.profile.generated.resources.tier_free_pref_email_notifications_val
+import template.app.profile.generated.resources.tier_free_pref_language
+import template.app.profile.generated.resources.tier_free_pref_language_val
+import template.app.profile.generated.resources.tier_free_pref_theme
+import template.app.profile.generated.resources.tier_free_pref_theme_val
+import template.app.profile.generated.resources.tier_free_preferences_desc
+import template.app.profile.generated.resources.tier_free_preferences_title
+import template.app.profile.generated.resources.tier_free_storage
+import template.app.profile.generated.resources.tier_free_storage_value
+import template.app.profile.generated.resources.tier_free_upgrade_button
+import template.app.profile.generated.resources.tier_free_upgrade_description
+import template.app.profile.generated.resources.tier_free_upgrade_title
+import template.app.profile.generated.resources.tier_free_usage_desc
+import template.app.profile.generated.resources.tier_free_usage_title
 
 /**
  * Free tier profile content showing usage limits, preferences, locked features, and upgrade CTA.
@@ -48,15 +79,15 @@ fun FreeTierContent(
     ) {
         // Warning alert
         TerminalAlert(
-            message = "You are on the free tier. Some features are restricted.",
+            message = stringResource(Res.string.tier_free_alert_message),
             variant = AlertVariant.Warning,
-            title = "free_tier",
+            title = stringResource(Res.string.tier_free_alert_title),
         )
 
         // Usage limits card
         TerminalCard(
-            title = "usage_limits",
-            description = "// current period",
+            title = stringResource(Res.string.tier_free_usage_title),
+            description = stringResource(Res.string.tier_free_usage_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -68,12 +99,12 @@ fun FreeTierContent(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         TerminalText(
-                            text = "API calls",
+                            text = stringResource(Res.string.tier_free_api_calls),
                             style = typography.sm,
                             color = colors.textMuted,
                         )
                         TerminalText(
-                            text = "847 / 1,000",
+                            text = stringResource(Res.string.tier_free_api_calls_value),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
@@ -90,12 +121,12 @@ fun FreeTierContent(
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         TerminalText(
-                            text = "Storage",
+                            text = stringResource(Res.string.tier_free_storage),
                             style = typography.sm,
                             color = colors.textMuted,
                         )
                         TerminalText(
-                            text = "234 MB / 500 MB",
+                            text = stringResource(Res.string.tier_free_storage_value),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
@@ -110,16 +141,25 @@ fun FreeTierContent(
 
         // Preferences section
         TerminalCard(
-            title = "preferences",
-            description = "// notification settings",
+            title = stringResource(Res.string.tier_free_preferences_title),
+            description = stringResource(Res.string.tier_free_preferences_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                PreferenceRow(label = "email_notifications", value = "enabled")
-                PreferenceRow(label = "theme", value = "system")
-                PreferenceRow(label = "language", value = "en-US")
+                PreferenceRow(
+                    label = stringResource(Res.string.tier_free_pref_email_notifications),
+                    value = stringResource(Res.string.tier_free_pref_email_notifications_val),
+                )
+                PreferenceRow(
+                    label = stringResource(Res.string.tier_free_pref_theme),
+                    value = stringResource(Res.string.tier_free_pref_theme_val),
+                )
+                PreferenceRow(
+                    label = stringResource(Res.string.tier_free_pref_language),
+                    value = stringResource(Res.string.tier_free_pref_language_val),
+                )
             }
         }
 
@@ -129,38 +169,38 @@ fun FreeTierContent(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             TerminalText(
-                text = "locked_features",
+                text = stringResource(Res.string.tier_free_locked_features),
                 style = typography.md.copy(fontWeight = FontWeight.Medium),
                 color = colors.textMuted,
             )
 
             TerminalList {
                 TerminalListItem(
-                    text = "Team access",
-                    subtitle = "// requires paid tier",
+                    text = stringResource(Res.string.tier_free_locked_team_access),
+                    subtitle = stringResource(Res.string.tier_free_locked_team_access_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "locked", variant = BadgeVariant.Default)
+                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
                 TerminalListItem(
-                    text = "Webhook configuration",
-                    subtitle = "// requires premium tier",
+                    text = stringResource(Res.string.tier_free_locked_webhooks),
+                    subtitle = stringResource(Res.string.tier_free_locked_webhooks_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "locked", variant = BadgeVariant.Default)
+                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
                 TerminalListItem(
-                    text = "API key management",
-                    subtitle = "// requires premium tier",
+                    text = stringResource(Res.string.tier_free_locked_api_keys),
+                    subtitle = stringResource(Res.string.tier_free_locked_api_keys_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "locked", variant = BadgeVariant.Default)
+                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
                 TerminalListItem(
-                    text = "Priority support",
-                    subtitle = "// requires premium tier",
+                    text = stringResource(Res.string.tier_free_locked_priority_support),
+                    subtitle = stringResource(Res.string.tier_free_locked_priority_support_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "locked", variant = BadgeVariant.Default)
+                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
             }
@@ -168,7 +208,7 @@ fun FreeTierContent(
 
         // Upgrade CTA
         TerminalCard(
-            title = "upgrade_plan",
+            title = stringResource(Res.string.tier_free_upgrade_title),
             variant = CardVariant.Accent,
         ) {
             Column(
@@ -176,12 +216,12 @@ fun FreeTierContent(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TerminalText(
-                    text = "Unlock team access, webhooks, API keys, and priority support.",
+                    text = stringResource(Res.string.tier_free_upgrade_description),
                     style = typography.sm,
                     color = colors.textMuted,
                 )
                 TerminalButton(
-                    text = "> upgrade to paid",
+                    text = stringResource(Res.string.tier_free_upgrade_button),
                     onClick = { /* Static demo */ },
                     variant = ButtonVariant.Default,
                 )

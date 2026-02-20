@@ -34,6 +34,25 @@
     <string name="common_brand_prompt">&gt;_</string>
     <string name="common_brand_name">terminal</string>
 
+    <!-- ======================== Bottom Navigation ======================== -->
+    <string name="bottom_nav_home">inicio</string>
+    <string name="bottom_nav_processes">procs</string>
+    <string name="bottom_nav_logs">registros</string>
+    <string name="bottom_nav_admin">admin</string>
+    <string name="bottom_nav_settings">config</string>
+
+    <!-- ======================== Metric Labels ======================== -->
+    <string name="metric_uptime">DISPONIBILIDAD</string>
+    <string name="metric_requests">SOLICITUDES</string>
+    <string name="metric_avg_latency">LATENCIA PROM.</string>
+    <string name="metric_error_rate">TASA DE ERROR</string>
+
+    <!-- ======================== Activity Titles ======================== -->
+    <string name="activity_deploy">despliegue_v2.4.1</string>
+    <string name="activity_memory_alert">alerta_memoria_alta</string>
+    <string name="activity_ssl_renewed">cert_ssl_renovado</string>
+    <string name="activity_auto_scaling">auto_escalado_activo</string>
+
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 
     <!-- Auth errors -->

@@ -22,6 +22,36 @@ import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.profile.generated.resources.Res
+import template.app.profile.generated.resources.tier_paid_analytics_desc
+import template.app.profile.generated.resources.tier_paid_analytics_title
+import template.app.profile.generated.resources.tier_paid_avg_response_time
+import template.app.profile.generated.resources.tier_paid_error_rate
+import template.app.profile.generated.resources.tier_paid_export_analytics
+import template.app.profile.generated.resources.tier_paid_export_analytics_sub
+import template.app.profile.generated.resources.tier_paid_export_audit_log
+import template.app.profile.generated.resources.tier_paid_export_audit_log_sub
+import template.app.profile.generated.resources.tier_paid_export_available
+import template.app.profile.generated.resources.tier_paid_export_desc
+import template.app.profile.generated.resources.tier_paid_export_locked
+import template.app.profile.generated.resources.tier_paid_export_team_data
+import template.app.profile.generated.resources.tier_paid_export_team_data_sub
+import template.app.profile.generated.resources.tier_paid_export_title
+import template.app.profile.generated.resources.tier_paid_seats_used
+import template.app.profile.generated.resources.tier_paid_status_active
+import template.app.profile.generated.resources.tier_paid_status_pending
+import template.app.profile.generated.resources.tier_paid_table_email
+import template.app.profile.generated.resources.tier_paid_table_name
+import template.app.profile.generated.resources.tier_paid_table_role
+import template.app.profile.generated.resources.tier_paid_table_status
+import template.app.profile.generated.resources.tier_paid_team_desc
+import template.app.profile.generated.resources.tier_paid_team_title
+import template.app.profile.generated.resources.tier_paid_total_requests
+import template.app.profile.generated.resources.tier_paid_upgrade_description
+import template.app.profile.generated.resources.tier_paid_upgrade_title
+import template.app.profile.generated.resources.tier_paid_uptime
+import template.app.profile.generated.resources.tier_paid_uptime_label
 
 /**
  * Paid tier profile content showing account info, team access, analytics preview, and export options.
@@ -45,15 +75,20 @@ fun PaidTierContent(
     ) {
         // Team access section
         TerminalCard(
-            title = "team_access",
-            description = "// members and roles",
+            title = stringResource(Res.string.tier_paid_team_title),
+            description = stringResource(Res.string.tier_paid_team_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TerminalTable(
-                    headers = listOf("NAME", "EMAIL", "ROLE", "STATUS"),
+                    headers = listOf(
+                        stringResource(Res.string.tier_paid_table_name),
+                        stringResource(Res.string.tier_paid_table_email),
+                        stringResource(Res.string.tier_paid_table_role),
+                        stringResource(Res.string.tier_paid_table_status),
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     TerminalTableRow(showBottomBorder = true) {
@@ -61,7 +96,7 @@ fun PaidTierContent(
                         TerminalTableCell(text = state.email, secondary = true)
                         TerminalTableCell(text = "owner")
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = "active", variant = BadgeVariant.Success)
+                            TerminalBadge(text = stringResource(Res.string.tier_paid_status_active), variant = BadgeVariant.Success)
                         }
                     }
                     TerminalTableRow(showBottomBorder = true) {
@@ -69,7 +104,7 @@ fun PaidTierContent(
                         TerminalTableCell(text = "alex@team.dev", secondary = true)
                         TerminalTableCell(text = "editor")
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = "active", variant = BadgeVariant.Success)
+                            TerminalBadge(text = stringResource(Res.string.tier_paid_status_active), variant = BadgeVariant.Success)
                         }
                     }
                     TerminalTableRow(showBottomBorder = false) {
@@ -77,7 +112,7 @@ fun PaidTierContent(
                         TerminalTableCell(text = "sam@team.dev", secondary = true)
                         TerminalTableCell(text = "viewer")
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = "pending", variant = BadgeVariant.Warning)
+                            TerminalBadge(text = stringResource(Res.string.tier_paid_status_pending), variant = BadgeVariant.Warning)
                         }
                     }
                 }
@@ -87,7 +122,7 @@ fun PaidTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TerminalText(
-                        text = "seats_used",
+                        text = stringResource(Res.string.tier_paid_seats_used),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
@@ -102,21 +137,21 @@ fun PaidTierContent(
 
         // Analytics preview
         TerminalCard(
-            title = "analytics_preview",
-            description = "// last 30 days",
+            title = stringResource(Res.string.tier_paid_analytics_title),
+            description = stringResource(Res.string.tier_paid_analytics_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                AnalyticRow(label = "total_requests", value = "12,847")
-                AnalyticRow(label = "avg_response_time", value = "142ms")
-                AnalyticRow(label = "error_rate", value = "0.12%")
-                AnalyticRow(label = "uptime", value = "99.97%")
+                AnalyticRow(label = stringResource(Res.string.tier_paid_total_requests), value = "12,847")
+                AnalyticRow(label = stringResource(Res.string.tier_paid_avg_response_time), value = "142ms")
+                AnalyticRow(label = stringResource(Res.string.tier_paid_error_rate), value = "0.12%")
+                AnalyticRow(label = stringResource(Res.string.tier_paid_uptime), value = "99.97%")
 
                 TerminalProgress(
                     progress = 0.9997f,
-                    label = "Uptime",
+                    label = stringResource(Res.string.tier_paid_uptime_label),
                     modifier = Modifier.fillMaxWidth(),
                 )
             }
@@ -124,29 +159,29 @@ fun PaidTierContent(
 
         // Export options
         TerminalCard(
-            title = "data_export",
-            description = "// download your data",
+            title = stringResource(Res.string.tier_paid_export_title),
+            description = stringResource(Res.string.tier_paid_export_desc),
         ) {
             TerminalList {
                 TerminalListItem(
-                    text = "Export team data",
-                    subtitle = "// CSV format",
+                    text = stringResource(Res.string.tier_paid_export_team_data),
+                    subtitle = stringResource(Res.string.tier_paid_export_team_data_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "available", variant = BadgeVariant.Accent)
+                        TerminalBadge(text = stringResource(Res.string.tier_paid_export_available), variant = BadgeVariant.Accent)
                     },
                 )
                 TerminalListItem(
-                    text = "Export analytics",
-                    subtitle = "// JSON format",
+                    text = stringResource(Res.string.tier_paid_export_analytics),
+                    subtitle = stringResource(Res.string.tier_paid_export_analytics_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "available", variant = BadgeVariant.Accent)
+                        TerminalBadge(text = stringResource(Res.string.tier_paid_export_available), variant = BadgeVariant.Accent)
                     },
                 )
                 TerminalListItem(
-                    text = "Export audit log",
-                    subtitle = "// requires premium",
+                    text = stringResource(Res.string.tier_paid_export_audit_log),
+                    subtitle = stringResource(Res.string.tier_paid_export_audit_log_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "locked", variant = BadgeVariant.Default)
+                        TerminalBadge(text = stringResource(Res.string.tier_paid_export_locked), variant = BadgeVariant.Default)
                     },
                 )
             }
@@ -154,7 +189,7 @@ fun PaidTierContent(
 
         // Premium upgrade info
         TerminalCard(
-            title = "upgrade_to_premium",
+            title = stringResource(Res.string.tier_paid_upgrade_title),
             variant = CardVariant.Accent,
         ) {
             Column(
@@ -162,7 +197,7 @@ fun PaidTierContent(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TerminalText(
-                    text = "Unlock webhooks, API keys, priority support, and full audit log.",
+                    text = stringResource(Res.string.tier_paid_upgrade_description),
                     style = typography.sm,
                     color = colors.textMuted,
                 )

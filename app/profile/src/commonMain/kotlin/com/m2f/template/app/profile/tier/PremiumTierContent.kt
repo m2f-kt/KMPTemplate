@@ -23,6 +23,37 @@ import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.profile.generated.resources.Res
+import template.app.profile.generated.resources.tier_premium_active_badge
+import template.app.profile.generated.resources.tier_premium_alert_message
+import template.app.profile.generated.resources.tier_premium_alert_title
+import template.app.profile.generated.resources.tier_premium_api_keys_desc
+import template.app.profile.generated.resources.tier_premium_api_keys_title
+import template.app.profile.generated.resources.tier_premium_feature_api_keys
+import template.app.profile.generated.resources.tier_premium_feature_priority_support
+import template.app.profile.generated.resources.tier_premium_feature_team_access
+import template.app.profile.generated.resources.tier_premium_feature_unlimited_api
+import template.app.profile.generated.resources.tier_premium_feature_webhooks
+import template.app.profile.generated.resources.tier_premium_features_title
+import template.app.profile.generated.resources.tier_premium_response_time
+import template.app.profile.generated.resources.tier_premium_response_time_val
+import template.app.profile.generated.resources.tier_premium_status_active
+import template.app.profile.generated.resources.tier_premium_status_paused
+import template.app.profile.generated.resources.tier_premium_support_channel
+import template.app.profile.generated.resources.tier_premium_support_channel_val
+import template.app.profile.generated.resources.tier_premium_support_title
+import template.app.profile.generated.resources.tier_premium_table_created
+import template.app.profile.generated.resources.tier_premium_table_endpoint
+import template.app.profile.generated.resources.tier_premium_table_events
+import template.app.profile.generated.resources.tier_premium_table_key
+import template.app.profile.generated.resources.tier_premium_table_last_used
+import template.app.profile.generated.resources.tier_premium_table_name
+import template.app.profile.generated.resources.tier_premium_table_status
+import template.app.profile.generated.resources.tier_premium_tickets_open
+import template.app.profile.generated.resources.tier_premium_tickets_open_val
+import template.app.profile.generated.resources.tier_premium_webhook_desc
+import template.app.profile.generated.resources.tier_premium_webhook_title
 
 /**
  * Premium tier profile content showing full features, webhook configuration,
@@ -47,43 +78,47 @@ fun PremiumTierContent(
     ) {
         // Premium success alert
         TerminalAlert(
-            message = "All premium features are active. Thank you for your support.",
+            message = stringResource(Res.string.tier_premium_alert_message),
             variant = AlertVariant.Success,
-            title = "premium_active",
+            title = stringResource(Res.string.tier_premium_alert_title),
         )
 
         // Webhook configuration
         TerminalCard(
-            title = "webhook_configuration",
-            description = "// event notifications",
+            title = stringResource(Res.string.tier_premium_webhook_title),
+            description = stringResource(Res.string.tier_premium_webhook_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TerminalTable(
-                    headers = listOf("ENDPOINT", "EVENTS", "STATUS"),
+                    headers = listOf(
+                        stringResource(Res.string.tier_premium_table_endpoint),
+                        stringResource(Res.string.tier_premium_table_events),
+                        stringResource(Res.string.tier_premium_table_status),
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     TerminalTableRow(showBottomBorder = true) {
                         TerminalTableCell(text = "https://api.example.com/hooks/deploy")
                         TerminalTableCell(text = "deploy.success, deploy.fail", secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = "active", variant = BadgeVariant.Success)
+                            TerminalBadge(text = stringResource(Res.string.tier_premium_status_active), variant = BadgeVariant.Success)
                         }
                     }
                     TerminalTableRow(showBottomBorder = true) {
                         TerminalTableCell(text = "https://api.example.com/hooks/alerts")
                         TerminalTableCell(text = "alert.critical, alert.warning", secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = "active", variant = BadgeVariant.Success)
+                            TerminalBadge(text = stringResource(Res.string.tier_premium_status_active), variant = BadgeVariant.Success)
                         }
                     }
                     TerminalTableRow(showBottomBorder = false) {
                         TerminalTableCell(text = "https://slack.example.com/webhook")
                         TerminalTableCell(text = "all", secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = "paused", variant = BadgeVariant.Warning)
+                            TerminalBadge(text = stringResource(Res.string.tier_premium_status_paused), variant = BadgeVariant.Warning)
                         }
                     }
                 }
@@ -92,15 +127,20 @@ fun PremiumTierContent(
 
         // API keys
         TerminalCard(
-            title = "api_keys",
-            description = "// manage access tokens",
+            title = stringResource(Res.string.tier_premium_api_keys_title),
+            description = stringResource(Res.string.tier_premium_api_keys_desc),
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TerminalTable(
-                    headers = listOf("NAME", "KEY", "CREATED", "LAST USED"),
+                    headers = listOf(
+                        stringResource(Res.string.tier_premium_table_name),
+                        stringResource(Res.string.tier_premium_table_key),
+                        stringResource(Res.string.tier_premium_table_created),
+                        stringResource(Res.string.tier_premium_table_last_used),
+                    ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     TerminalTableRow(showBottomBorder = true) {
@@ -127,7 +167,7 @@ fun PremiumTierContent(
 
         // Priority support card
         TerminalCard(
-            title = "priority_support",
+            title = stringResource(Res.string.tier_premium_support_title),
             variant = CardVariant.Highlighted,
         ) {
             Column(
@@ -139,12 +179,12 @@ fun PremiumTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TerminalText(
-                        text = "response_time",
+                        text = stringResource(Res.string.tier_premium_response_time),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
                     TerminalText(
-                        text = "< 4 hours",
+                        text = stringResource(Res.string.tier_premium_response_time_val),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.accent,
                     )
@@ -154,12 +194,12 @@ fun PremiumTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TerminalText(
-                        text = "support_channel",
+                        text = stringResource(Res.string.tier_premium_support_channel),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
                     TerminalText(
-                        text = "email + chat",
+                        text = stringResource(Res.string.tier_premium_support_channel_val),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.text,
                     )
@@ -169,12 +209,12 @@ fun PremiumTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     TerminalText(
-                        text = "tickets_open",
+                        text = stringResource(Res.string.tier_premium_tickets_open),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
                     TerminalText(
-                        text = "0",
+                        text = stringResource(Res.string.tier_premium_tickets_open_val),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.success,
                     )
@@ -183,35 +223,35 @@ fun PremiumTierContent(
         }
 
         // Full feature list
-        TerminalList(title = "active_features") {
+        TerminalList(title = stringResource(Res.string.tier_premium_features_title)) {
             TerminalListItem(
-                text = "Unlimited API calls",
+                text = stringResource(Res.string.tier_premium_feature_unlimited_api),
                 trailingContent = { color ->
-                    TerminalBadge(text = "\u2713 active", variant = BadgeVariant.Success)
+                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
             TerminalListItem(
-                text = "Team access (unlimited seats)",
+                text = stringResource(Res.string.tier_premium_feature_team_access),
                 trailingContent = { color ->
-                    TerminalBadge(text = "\u2713 active", variant = BadgeVariant.Success)
+                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
             TerminalListItem(
-                text = "Webhook integrations",
+                text = stringResource(Res.string.tier_premium_feature_webhooks),
                 trailingContent = { color ->
-                    TerminalBadge(text = "\u2713 active", variant = BadgeVariant.Success)
+                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
             TerminalListItem(
-                text = "API key management",
+                text = stringResource(Res.string.tier_premium_feature_api_keys),
                 trailingContent = { color ->
-                    TerminalBadge(text = "\u2713 active", variant = BadgeVariant.Success)
+                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
             TerminalListItem(
-                text = "Priority support",
+                text = stringResource(Res.string.tier_premium_feature_priority_support),
                 trailingContent = { color ->
-                    TerminalBadge(text = "\u2713 active", variant = BadgeVariant.Success)
+                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
         }

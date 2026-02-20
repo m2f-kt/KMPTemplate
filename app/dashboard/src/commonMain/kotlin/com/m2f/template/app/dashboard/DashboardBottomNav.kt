@@ -21,6 +21,13 @@ import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.designsystem.theme.rememberTerminalRipple
+import org.jetbrains.compose.resources.stringResource
+import template.app.dashboard.generated.resources.Res
+import template.app.dashboard.generated.resources.bottom_nav_admin
+import template.app.dashboard.generated.resources.bottom_nav_home
+import template.app.dashboard.generated.resources.bottom_nav_logs
+import template.app.dashboard.generated.resources.bottom_nav_processes
+import template.app.dashboard.generated.resources.bottom_nav_settings
 
 /**
  * Mobile bottom navigation bar for the dashboard.
@@ -45,11 +52,11 @@ fun DashboardBottomNav(
     val colors = TerminalTheme.colors
 
     val tabs = buildList {
-        add(BottomTab("dashboard", "~", "home"))
-        add(BottomTab("processes", "#", "procs"))
-        add(BottomTab("logs", "$", "logs"))
-        if (isAdmin) add(BottomTab("admin", "@", "admin"))
-        add(BottomTab("settings", "%", "config"))
+        add(BottomTab("dashboard", "~", stringResource(Res.string.bottom_nav_home)))
+        add(BottomTab("processes", "#", stringResource(Res.string.bottom_nav_processes)))
+        add(BottomTab("logs", "$", stringResource(Res.string.bottom_nav_logs)))
+        if (isAdmin) add(BottomTab("admin", "@", stringResource(Res.string.bottom_nav_admin)))
+        add(BottomTab("settings", "%", stringResource(Res.string.bottom_nav_settings)))
     }
 
     Row(

@@ -56,6 +56,14 @@ import template.app.dashboard.generated.resources.dashboard_table_name
 import template.app.dashboard.generated.resources.dashboard_table_pid
 import template.app.dashboard.generated.resources.dashboard_table_status
 import template.app.dashboard.generated.resources.dashboard_under_construction
+import template.app.dashboard.generated.resources.metric_avg_latency
+import template.app.dashboard.generated.resources.metric_error_rate
+import template.app.dashboard.generated.resources.metric_requests
+import template.app.dashboard.generated.resources.metric_uptime
+import template.app.dashboard.generated.resources.activity_auto_scaling
+import template.app.dashboard.generated.resources.activity_deploy
+import template.app.dashboard.generated.resources.activity_memory_alert
+import template.app.dashboard.generated.resources.activity_ssl_renewed
 
 /**
  * Responsive dashboard screen with desktop sidebar and mobile bottom nav layouts.
@@ -499,7 +507,7 @@ private fun MetricCard(
     val variant = if (metric.isHighlighted) CardVariant.Highlighted else CardVariant.Default
 
     TerminalCard(
-        title = metric.label,
+        title = stringResource(metric.labelRes),
         variant = variant,
         modifier = modifier,
     ) {
@@ -589,7 +597,7 @@ private fun ActivityList(activities: List<DashboardMockData.ActivityItem>) {
     TerminalList(title = stringResource(Res.string.dashboard_recent_activity), count = activities.size) {
         activities.forEachIndexed { index, activity ->
             TerminalListItem(
-                text = activity.title,
+                text = stringResource(activity.titleRes),
                 subtitle = "${activity.location} \u2022 ${activity.time}",
                 leadingContent = { iconColor ->
                     ActivityIcon(icon = activity.icon, color = iconColor)
