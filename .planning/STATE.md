@@ -11,8 +11,8 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 Phase: 15 (Localization) -- Gap Closure in progress
 Plan: 11 of 11 in current phase
-Status: Executing gap closure plans (01-05 core done, 06-07 done, 08-11 done, 09 gap closure done)
-Last activity: 2026-02-20 -- Completed 15-09-PLAN.md (Wire Composable Strings)
+Status: Executing gap closure plans (01-05 core done, 06-07 done, 08-11 done, 09 gap closure done, 10 gap closure done)
+Last activity: 2026-02-20 -- Completed 15-10-PLAN.md (Reactive Locale Switching)
 
 Progress: [████████████████████] 100% (11/11 plans)
 
@@ -47,6 +47,7 @@ Progress: [████████████████████] 100% (3
 | 15. Localization P08 | 2 tasks | 1min | 6 files |
 | Phase 15-localization P11 | 2min | 2 tasks | 6 files |
 | Phase 15-localization P09 | ~15min | 2 tasks | 13 files |
+| Phase 15-localization P10 | 2min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 15-localization]: PreferencesStorage.language as locale source for Accept-Language header (core:sdk depends on core:storage)
 
 - [Phase 15-localization]: DashboardMockData uses StringResource fields (labelRes/titleRes) for non-composable static data, resolved at render sites
+- [Phase 15-localization]: key(currentLocale) forces full UI tree recomposition for reactive locale switching
+- [Phase 15-localization]: ProfileRoute reads locale from CompositionLocal, writes only to PreferencesStorage
 
 ### Roadmap Evolution
 
@@ -124,5 +127,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-20
-Stopped at: Completed 15-09-PLAN.md (Wire Composable Strings to stringResource)
-Resume file: .planning/phases/15-localization/15-09-SUMMARY.md
+Stopped at: Completed 15-10-PLAN.md (Reactive Locale Switching)
+Resume file: .planning/phases/15-localization/15-10-SUMMARY.md
