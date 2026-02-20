@@ -75,4 +75,65 @@
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>
 
+    <!-- ======================== Profile Sidebar ======================== -->
+
+    <!-- Brand -->
+    <string name="sidebar_brand_prompt">&gt;_</string>
+    <string name="sidebar_brand_name">profile</string>
+    <string name="sidebar_logout">$ logout</string>
+
+    <!-- Nav: Free tier -->
+    <string name="sidebar_nav_free_profile">Profile</string>
+    <string name="sidebar_nav_free_preferences">Preferences</string>
+    <string name="sidebar_nav_free_billing">Billing</string>
+
+    <!-- Nav: Paid tier -->
+    <string name="sidebar_nav_paid_profile">Profile</string>
+    <string name="sidebar_nav_paid_preferences">Preferences</string>
+    <string name="sidebar_nav_paid_team_access">Team Access</string>
+    <string name="sidebar_nav_paid_analytics">Analytics</string>
+    <string name="sidebar_nav_paid_billing">Billing</string>
+    <string name="sidebar_nav_paid_export">Export</string>
+
+    <!-- Nav: Premium tier -->
+    <string name="sidebar_nav_premium_profile">Profile</string>
+    <string name="sidebar_nav_premium_preferences">Preferences</string>
+    <string name="sidebar_nav_premium_team_access">Team Access</string>
+    <string name="sidebar_nav_premium_webhooks">Webhooks</string>
+    <string name="sidebar_nav_premium_api_keys">API Keys</string>
+    <string name="sidebar_nav_premium_billing">Billing</string>
+    <string name="sidebar_nav_premium_priority_support">Priority Support</string>
+
+    <!-- Nav: Admin tier -->
+    <string name="sidebar_nav_admin_profile">Profile</string>
+    <string name="sidebar_nav_admin_user_management">User Management</string>
+    <string name="sidebar_nav_admin_groups">Groups</string>
+    <string name="sidebar_nav_admin_permissions">Permissions</string>
+    <string name="sidebar_nav_admin_analytics">Analytics</string>
+    <string name="sidebar_nav_admin_audit_log">Audit Log</string>
+    <string name="sidebar_nav_admin_org_settings">Org Settings</string>
+    <string name="sidebar_nav_admin_admin_tools">Admin Tools</string>
+    <string name="sidebar_nav_admin_reports">Reports</string>
+
+    <!-- Nav: PowerAdmin tier -->
+    <string name="sidebar_nav_poweradmin_user_directory">User Directory</string>
+    <string name="sidebar_nav_poweradmin_admin_identity">Admin Identity</string>
+    <string name="sidebar_nav_poweradmin_access_matrix">Access Matrix</string>
+    <string name="sidebar_nav_poweradmin_platform_analytics">Platform Analytics</string>
+    <string name="sidebar_nav_poweradmin_monitoring">Monitoring</string>
+    <string name="sidebar_nav_poweradmin_alerts">Alerts</string>
+    <string name="sidebar_nav_poweradmin_system_status">System Status</string>
+    <string name="sidebar_nav_poweradmin_configuration">Configuration</string>
+    <string name="sidebar_nav_poweradmin_maintenance">Maintenance</string>
+    <string name="sidebar_nav_poweradmin_system_logs">System Logs</string>
+    <string name="sidebar_nav_poweradmin_danger_zone">Danger Zone</string>
+
+    <!-- Sidebar footer -->
+    <string name="sidebar_footer_free_title">&gt; upgrade available</string>
+    <string name="sidebar_footer_free_subtitle">// unlock team access, webhooks, and more</string>
+    <string name="sidebar_footer_paid_title">&gt; premium available</string>
+    <string name="sidebar_footer_paid_subtitle">// get priority support, API keys, webhooks</string>
+    <string name="sidebar_footer_premium_title">✓ premium active</string>
+    <string name="sidebar_footer_premium_subtitle">// all features unlocked</string>
+
 </resources>

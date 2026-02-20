@@ -33,6 +33,53 @@ import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.UserTier
+import org.jetbrains.compose.resources.stringResource
+import template.app.profile.generated.resources.Res
+import template.app.profile.generated.resources.sidebar_brand_name
+import template.app.profile.generated.resources.sidebar_brand_prompt
+import template.app.profile.generated.resources.sidebar_logout
+import template.app.profile.generated.resources.sidebar_nav_free_profile
+import template.app.profile.generated.resources.sidebar_nav_free_preferences
+import template.app.profile.generated.resources.sidebar_nav_free_billing
+import template.app.profile.generated.resources.sidebar_nav_paid_profile
+import template.app.profile.generated.resources.sidebar_nav_paid_preferences
+import template.app.profile.generated.resources.sidebar_nav_paid_team_access
+import template.app.profile.generated.resources.sidebar_nav_paid_analytics
+import template.app.profile.generated.resources.sidebar_nav_paid_billing
+import template.app.profile.generated.resources.sidebar_nav_paid_export
+import template.app.profile.generated.resources.sidebar_nav_premium_profile
+import template.app.profile.generated.resources.sidebar_nav_premium_preferences
+import template.app.profile.generated.resources.sidebar_nav_premium_team_access
+import template.app.profile.generated.resources.sidebar_nav_premium_webhooks
+import template.app.profile.generated.resources.sidebar_nav_premium_api_keys
+import template.app.profile.generated.resources.sidebar_nav_premium_billing
+import template.app.profile.generated.resources.sidebar_nav_premium_priority_support
+import template.app.profile.generated.resources.sidebar_nav_admin_profile
+import template.app.profile.generated.resources.sidebar_nav_admin_user_management
+import template.app.profile.generated.resources.sidebar_nav_admin_groups
+import template.app.profile.generated.resources.sidebar_nav_admin_permissions
+import template.app.profile.generated.resources.sidebar_nav_admin_analytics
+import template.app.profile.generated.resources.sidebar_nav_admin_audit_log
+import template.app.profile.generated.resources.sidebar_nav_admin_org_settings
+import template.app.profile.generated.resources.sidebar_nav_admin_admin_tools
+import template.app.profile.generated.resources.sidebar_nav_admin_reports
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_user_directory
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_admin_identity
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_access_matrix
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_platform_analytics
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_monitoring
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_alerts
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_system_status
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_configuration
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_maintenance
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_system_logs
+import template.app.profile.generated.resources.sidebar_nav_poweradmin_danger_zone
+import template.app.profile.generated.resources.sidebar_footer_free_title
+import template.app.profile.generated.resources.sidebar_footer_free_subtitle
+import template.app.profile.generated.resources.sidebar_footer_paid_title
+import template.app.profile.generated.resources.sidebar_footer_paid_subtitle
+import template.app.profile.generated.resources.sidebar_footer_premium_title
+import template.app.profile.generated.resources.sidebar_footer_premium_subtitle
 
 /**
  * Profile sidebar navigation showing tier-appropriate nav items.
@@ -93,12 +140,12 @@ fun ProfileSidebar(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 TerminalText(
-                    text = ">_",
+                    text = stringResource(Res.string.sidebar_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
                 TerminalText(
-                    text = "profile",
+                    text = stringResource(Res.string.sidebar_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.SemiBold),
                     color = colors.text,
                 )
@@ -160,7 +207,7 @@ fun ProfileSidebar(
                         maxLines = 1,
                     )
                     TerminalText(
-                        text = "$ logout",
+                        text = stringResource(Res.string.sidebar_logout),
                         style = typography.xs,
                         color = colors.textDim,
                         modifier = Modifier.clickable(onClick = onLogout),
@@ -179,55 +226,55 @@ private fun TierNavItems(
 ) {
     val navItems = when (tier) {
         is UserTier.Free -> listOf(
-            "profile" to "profile",
-            "preferences" to "preferences",
-            "billing" to "billing",
+            "profile" to stringResource(Res.string.sidebar_nav_free_profile),
+            "preferences" to stringResource(Res.string.sidebar_nav_free_preferences),
+            "billing" to stringResource(Res.string.sidebar_nav_free_billing),
         )
         is UserTier.Paid -> listOf(
-            "profile" to "profile",
-            "preferences" to "preferences",
-            "team" to "team access",
-            "analytics" to "analytics",
-            "billing" to "billing",
-            "export" to "export",
+            "profile" to stringResource(Res.string.sidebar_nav_paid_profile),
+            "preferences" to stringResource(Res.string.sidebar_nav_paid_preferences),
+            "team" to stringResource(Res.string.sidebar_nav_paid_team_access),
+            "analytics" to stringResource(Res.string.sidebar_nav_paid_analytics),
+            "billing" to stringResource(Res.string.sidebar_nav_paid_billing),
+            "export" to stringResource(Res.string.sidebar_nav_paid_export),
         )
         is UserTier.Premium -> listOf(
-            "profile" to "profile",
-            "preferences" to "preferences",
-            "team" to "team access",
-            "webhooks" to "webhooks",
-            "api-keys" to "API keys",
-            "billing" to "billing",
-            "support" to "priority support",
+            "profile" to stringResource(Res.string.sidebar_nav_premium_profile),
+            "preferences" to stringResource(Res.string.sidebar_nav_premium_preferences),
+            "team" to stringResource(Res.string.sidebar_nav_premium_team_access),
+            "webhooks" to stringResource(Res.string.sidebar_nav_premium_webhooks),
+            "api-keys" to stringResource(Res.string.sidebar_nav_premium_api_keys),
+            "billing" to stringResource(Res.string.sidebar_nav_premium_billing),
+            "support" to stringResource(Res.string.sidebar_nav_premium_priority_support),
         )
         is UserTier.Admin -> {
             // Management section + Tools section
             listOf(
-                "profile" to "profile",
-                "users" to "user management",
-                "groups" to "groups",
-                "permissions" to "permissions",
-                "analytics" to "analytics",
-                "audit" to "audit log",
-                "settings" to "org settings",
-                "tools" to "admin tools",
-                "reports" to "reports",
+                "profile" to stringResource(Res.string.sidebar_nav_admin_profile),
+                "users" to stringResource(Res.string.sidebar_nav_admin_user_management),
+                "groups" to stringResource(Res.string.sidebar_nav_admin_groups),
+                "permissions" to stringResource(Res.string.sidebar_nav_admin_permissions),
+                "analytics" to stringResource(Res.string.sidebar_nav_admin_analytics),
+                "audit" to stringResource(Res.string.sidebar_nav_admin_audit_log),
+                "settings" to stringResource(Res.string.sidebar_nav_admin_org_settings),
+                "tools" to stringResource(Res.string.sidebar_nav_admin_admin_tools),
+                "reports" to stringResource(Res.string.sidebar_nav_admin_reports),
             )
         }
         is UserTier.PowerAdmin -> {
             // CRM section + System section
             listOf(
-                "directory" to "user directory",
-                "identity" to "admin identity",
-                "access" to "access matrix",
-                "analytics" to "platform analytics",
-                "monitoring" to "monitoring",
-                "alerts" to "alerts",
-                "system" to "system status",
-                "config" to "configuration",
-                "maintenance" to "maintenance",
-                "logs" to "system logs",
-                "danger" to "danger zone",
+                "directory" to stringResource(Res.string.sidebar_nav_poweradmin_user_directory),
+                "identity" to stringResource(Res.string.sidebar_nav_poweradmin_admin_identity),
+                "access" to stringResource(Res.string.sidebar_nav_poweradmin_access_matrix),
+                "analytics" to stringResource(Res.string.sidebar_nav_poweradmin_platform_analytics),
+                "monitoring" to stringResource(Res.string.sidebar_nav_poweradmin_monitoring),
+                "alerts" to stringResource(Res.string.sidebar_nav_poweradmin_alerts),
+                "system" to stringResource(Res.string.sidebar_nav_poweradmin_system_status),
+                "config" to stringResource(Res.string.sidebar_nav_poweradmin_configuration),
+                "maintenance" to stringResource(Res.string.sidebar_nav_poweradmin_maintenance),
+                "logs" to stringResource(Res.string.sidebar_nav_poweradmin_system_logs),
+                "danger" to stringResource(Res.string.sidebar_nav_poweradmin_danger_zone),
             )
         }
     }
@@ -261,12 +308,12 @@ private fun TierFooterContent(tier: UserTier) {
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     TerminalText(
-                        text = "> upgrade available",
+                        text = stringResource(Res.string.sidebar_footer_free_title),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.accent,
                     )
                     TerminalText(
-                        text = "// unlock team access, webhooks, and more",
+                        text = stringResource(Res.string.sidebar_footer_free_subtitle),
                         style = typography.xs,
                         color = colors.textMuted,
                     )
@@ -283,12 +330,12 @@ private fun TierFooterContent(tier: UserTier) {
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     TerminalText(
-                        text = "> premium available",
+                        text = stringResource(Res.string.sidebar_footer_paid_title),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.accent,
                     )
                     TerminalText(
-                        text = "// get priority support, API keys, webhooks",
+                        text = stringResource(Res.string.sidebar_footer_paid_subtitle),
                         style = typography.xs,
                         color = colors.textMuted,
                     )
@@ -305,12 +352,12 @@ private fun TierFooterContent(tier: UserTier) {
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     TerminalText(
-                        text = "\u2713 premium active",
+                        text = stringResource(Res.string.sidebar_footer_premium_title),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.success,
                     )
                     TerminalText(
-                        text = "// all features unlocked",
+                        text = stringResource(Res.string.sidebar_footer_premium_subtitle),
                         style = typography.xs,
                         color = colors.textMuted,
                     )
