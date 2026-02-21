@@ -1,1290 +1,1085 @@
 # Architecture Research
 
-**Domain:** KMP Full-Stack Template -- MVI ViewModel, Group Management, Testing, Localization
-**Researched:** 2026-02-17
+**Domain:** KMP Full-Stack Template v1.2 — pgvector RAG, S3 File Uploads, Multi-Agent AI, Email Invitations, Developer Onboarding
+**Researched:** 2026-02-21
 **Confidence:** HIGH
 
 ## System Overview
 
-### Current Module Graph
+### Current Module Graph (Post v1.1)
 
 ```
                            settings.gradle.kts
                                   |
         +-----------+-------------+-------------+-----------+
         |           |             |             |           |
-   core:models  core:sdk    core:storage     shared    composeApp
+   core:models  core:sdk    core:storage   core:mvi    core:testing
         |           |             |             |           |
-        |     (depends on         |        (api: models,   |
-        |      models,storage)    |         sdk, kermit,   |
-        |           |             |          koin-core)     |
-        +-----+-----+------+-----+             |           |
-              |             |                   |           |
-         app:auth     app:dashboard        app:profile  app:designsystem
-              |             |                   |           |
-              +------+------+------+------+-----+-----------+
+        |     (depends on         |        (MviViewModel   (fakes,
+        |      models,storage)    |         base class)    test DSL)
+        |           |             |             |           |
+        +-----+-----+------+-----+------+------+-----------+
+              |             |            |
+         app:auth     app:dashboard  app:profile  app:admin  app:designsystem
+              |             |            |            |           |
+              +------+------+------+-----+------+----+-----------+
                      |
                   composeApp  (navigation host, DI root)
 
         server
           |
-    +-----+-----+----------+
-    |           |          |
-server:auth  server:ai  server:core
-    |           |      +---+---+-------+
-    |           |      |       |       |
-    |           |   config  database  security
-    +-----+-----+------+------+-------+
+    +-----+-----+----------+----------+
+    |           |          |          |
+server:auth  server:ai  server:groups  server:core
+    |           |          |         +---+---+-------+
+    |           |          |         |       |       |
+    |           |          |      config  database  security
+    +-----+-----+----+-----+--------+------+-------+
           |
        Application.kt (routes, DI, startup)
 ```
 
-### Proposed New Modules
+### Proposed New & Modified Modules for v1.2
 
 ```
-                      NEW MODULES
-                          |
-    +----------+----------+----------+----------+
-    |          |          |          |          |
-core:viewmodel core:l10n core:testing server:groups
-    |          |          |          |
-    |    (string keys,   (test    (GroupsTable,
-    | MVI base class,   DSL,      GroupMembersTable,
-    | Koin integration) fakes)    routes, service)
-    |          |          |          |
-    |          |          |     app:admin
-    |          |          |     (admin panel UI)
-    +-----+----+----------+----------+
+                    NEW MODULES                           MODIFIED MODULES
+                        |                                       |
+    +----------+--------+--------+               +------+------+------+------+
+    |          |                 |               |      |      |      |      |
+server:files  server:email  (server:ai    server:ai  server:auth  server:groups
+    |          |             extensions)      |      |      |      |
+  (S3 upload, (SMTP send,   [integrated   (RAG,    (avatar (invite
+  presigned   templating,    into          multi-   URL     members
+  URLs,       queue)         server:ai)    agent,   col)    via email)
+  avatar                                   struct
+  mgmt)                                    output)
+    |          |                 |               |      |      |
+    +----------+---------+------+         core:models  core:sdk  core:testing
+                         |                (new DTOs)   (FileApi, (new fakes)
+                   docker-compose                      InviteApi)
+                   (pgvector, MinIO,
+                    MailHog)
 ```
 
 ### Updated settings.gradle.kts Additions
 
 ```kotlin
-// New core modules
-include("core:viewmodel")
-include("core:l10n")
-include("core:testing")
+// New server modules
+include("server:files")
+include("server:email")
 
-// New server feature module
-include("server:groups")
-
-// New app feature module
-include("app:admin")
+// Existing modules — no settings change needed, just code changes:
+// server:ai, server:auth, server:groups, core:models, core:sdk, core:testing
+// app:profile, app:designsystem, app:admin
 ```
+
+## Component Inventory
+
+### New Modules
+
+| Module | Type | Purpose | Key Dependencies |
+|--------|------|---------|------------------|
+| `server:files` | Server (JVM) | S3 file operations: upload, presigned URLs, avatar management | `aws.sdk.kotlin:s3`, `server:core:config`, `server:core:database` |
+| `server:email` | Server (JVM) | SMTP email sending with HTML templates, send queue | Jakarta Mail, `server:core:config` |
+
+### Modified Modules
+
+| Module | Changes | Scope of Change |
+|--------|---------|-----------------|
+| `server:ai` | Add RAG pipeline (pgvector embeddings, document ingestion, retrieval), structured output support, multi-agent orchestration via Koog subgraphs | Major — new services, new tables, new tools |
+| `server:auth` | Add `avatarUrl` column to UsersTable, expose in UserResponse | Minor — 1 migration, 1 column, DTO update |
+| `server:groups` | Add email invitation flow (invite tokens table, invite endpoint, accept endpoint) | Medium — new table, new service methods, new routes |
+| `core:models` | Add DTOs: `FileUploadResponse`, `PresignedUrlResponse`, `InviteRequest`, `InviteResponse`, `DocumentChunk`, `RagQueryRequest/Response`, new `ApiRoutes` for files/invites | Medium — new files, additive only |
+| `core:sdk` | Add `FileApi`, `InviteApi` interfaces + implementations | Medium — new API classes, SDK facade additions |
+| `core:testing` | Add fakes: `FakeFileApi`, `FakeInviteApi`, `FakeEmailService` | Minor — new fake classes |
+| `app:profile` | Avatar upload UI (image picker → presigned URL → S3 upload → update profile) | Medium — new UI flow |
+| `app:designsystem` | `TerminalAvatar` component: support loading actual profile images (not just initials) | Minor — conditional image rendering |
+| `app:admin` | Group invite management UI | Minor — new screen/tab |
+| `docker-compose.yml` | Add MinIO (S3-compatible), MailHog (SMTP mock), change Postgres image to pgvector | Medium — infrastructure |
+| `server:core:config` | Add `Env.S3`, `Env.Email`, `Env.Embedding` config sections | Minor — new data classes |
+| `server:core:database` | Add custom `VectorColumnType` for Exposed R2DBC pgvector support | Minor — 1 utility class |
 
 ## Recommended Architecture
 
-### 1. MVI ViewModel Base Class -- `core:viewmodel`
+### 1. S3 File Uploads — `server:files`
 
-**Module:** New `core:viewmodel` KMP library module
-**Package:** `com.m2f.template.viewmodel`
+**Module:** New `server:files` server module
+**Package:** `com.m2f.server.files`
 
-The existing ViewModels (LoginViewModel, ProfileViewModel, DashboardViewModel) follow an informal MVI-like pattern: they hold a `MutableStateFlow<State>`, expose `val state: StateFlow<State>`, and handle user actions via method calls. The key missing piece is a formalized base class that standardizes this pattern and provides testability hooks.
+**Architecture: Presigned URL Pattern (server-mediated, client-direct-upload)**
 
-**Why a new module, not inline in `shared`:**
-- The `shared` module currently only re-exports `core:models`, `core:sdk`, and `kermit`. Adding ViewModel infrastructure there would break the separation of concerns.
-- `core:viewmodel` can depend on `lifecycle-viewmodel-compose` and `kotlinx-coroutines` without polluting `core:models` or `core:sdk`.
-- App feature modules (`app:auth`, `app:dashboard`, etc.) already depend on `lifecycle-viewmodel-compose`; having a shared base avoids duplication.
+The server never receives file bytes. Instead:
+1. Client requests a presigned upload URL from the server
+2. Server generates a presigned PUT URL with S3 SDK, stores pending upload metadata
+3. Client uploads directly to S3 (MinIO in dev) using the presigned URL
+4. Client confirms upload completion to server
+5. Server validates the object exists in S3, updates database references
 
-**Base class design:**
+**Why presigned URLs instead of multipart upload through server:**
+- Eliminates server as a bottleneck for large files
+- Reduces server memory pressure (no buffering file bytes)
+- Works identically with MinIO (dev) and real S3 (prod)
+- AWS SDK for Kotlin is JVM-only — fine for server, but clients need plain HTTP PUT
 
-```kotlin
-package com.m2f.template.viewmodel
-
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-
-/**
- * Base MVI ViewModel providing unidirectional data flow.
- *
- * @param S The immutable state type (data class).
- * @param I The intent/action sealed interface.
- * @param E The one-shot effect type (navigation, toast, etc.).
- */
-abstract class MviViewModel<S, I, E>(initialState: S) : ViewModel() {
-
-    private val _state = MutableStateFlow(initialState)
-    val state: StateFlow<S> = _state.asStateFlow()
-
-    private val _effects = Channel<E>(Channel.BUFFERED)
-    val effects = _effects.receiveAsFlow()
-
-    protected val currentState: S get() = _state.value
-
-    fun dispatch(intent: I) {
-        viewModelScope.launch { handleIntent(intent) }
-    }
-
-    protected abstract suspend fun handleIntent(intent: I)
-
-    protected fun setState(reducer: S.() -> S) {
-        _state.update(reducer)
-    }
-
-    protected suspend fun sendEffect(effect: E) {
-        _effects.send(effect)
-    }
-}
-```
-
-**Key design decisions:**
-- **`Channel<E>` for effects, not `SharedFlow`:** Effects (navigation, snackbar) are one-shot events that must be consumed exactly once. Channel guarantees delivery even if no collector is active at emit time (buffered). This avoids the well-known "event consumed twice" bug with `SharedFlow(replay=1)` and the "event lost" bug with `SharedFlow(replay=0)`.
-- **`dispatch(intent)` instead of individual methods:** Standardizes the entry point, makes the intent contract explicit via a sealed interface, and enables intent logging/debugging.
-- **`setState(reducer)` wrapping `update`:** Keeps the `MutableStateFlow` private to the base class, preventing subclasses from accidentally replacing the flow.
-- **Extends `androidx.lifecycle.ViewModel`:** This is what the project already uses (via `org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose` version 2.9.6). No need for a custom lifecycle-aware base.
-- **No external MVI library (Orbit, MVIKotlin):** The base class is ~30 lines. Adding Orbit or MVIKotlin would add transitive dependencies and API surface for minimal gain. The project already uses coroutines and StateFlow; the base class just standardizes the pattern.
-
-**Integration with Koin -- zero changes needed:**
-
-Koin's `viewModelOf(::MyViewModel)` and `koinViewModel<MyViewModel>()` work with any `ViewModel` subclass. The existing pattern in `AppModule.kt` continues to work:
+**Key classes:**
 
 ```kotlin
-// Existing pattern -- still works
-val appModule = module {
-    viewModelOf(::LoginViewModel)  // LoginViewModel extends MviViewModel extends ViewModel
-}
-
-// In composable -- still works
-val viewModel = koinViewModel<LoginViewModel>()
-val state by viewModel.state.collectAsStateWithLifecycle()
-```
-
-**Integration with Navigation Compose 2.9.2 -- zero changes needed:**
-
-The existing `AppNavHost.kt` pattern of `koinViewModel<T>()` inside `composable<Route>` blocks continues to work. The MVI base class does not impose any navigation opinion. Effects are consumed via `LaunchedEffect`:
-
-```kotlin
-composable<LoginRoute> {
-    val viewModel = koinViewModel<LoginViewModel>()
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    // Consume one-shot effects for navigation
-    LaunchedEffect(Unit) {
-        viewModel.effects.collect { effect ->
-            when (effect) {
-                is LoginEffect.NavigateToDashboard -> {
-                    navController.navigate(DashboardRoute) {
-                        popUpTo<LoginRoute> { inclusive = true }
-                    }
-                }
-            }
-        }
-    }
-
-    LoginScreen(
-        state = state,
-        onEmailChange = { viewModel.dispatch(LoginIntent.EmailChanged(it)) },
-        onLoginClick = { viewModel.dispatch(LoginIntent.Submit) },
-    )
-}
-```
-
-**Migration path for existing ViewModels:**
-
-Existing ViewModels do NOT need to migrate immediately. They can be migrated incrementally. New ViewModels should use `MviViewModel`. Example migration of LoginViewModel:
-
-```kotlin
-// BEFORE (existing pattern in app:auth):
-class LoginViewModel(private val authApi: AuthApi) : ViewModel() {
-    private val _state = MutableStateFlow(LoginState())
-    val state = _state.asStateFlow()
-    fun onEmailChange(email: String) { _state.update { it.copy(email = email) } }
-    fun login() { viewModelScope.launch { ... } }
-}
-
-// AFTER (MVI pattern):
-class LoginViewModel(private val authApi: AuthApi) :
-    MviViewModel<LoginState, LoginIntent, LoginEffect>(LoginState()) {
-
-    override suspend fun handleIntent(intent: LoginIntent) = when (intent) {
-        is LoginIntent.EmailChanged -> setState { copy(email = intent.email, emailError = null) }
-        is LoginIntent.PasswordChanged -> setState { copy(password = intent.password) }
-        is LoginIntent.RememberMeChanged -> setState { copy(rememberMe = intent.checked) }
-        is LoginIntent.Submit -> performLogin()
-    }
-
-    private suspend fun performLogin() {
-        val current = currentState
-        // ... validation logic ...
-        setState { copy(isLoading = true, serverError = null) }
-        authApi.login(LoginRequest(current.email.trim(), current.password), rememberMe = current.rememberMe)
-            .fold(
-                ifLeft = { error -> setState { copy(serverError = error.message, isLoading = false) } },
-                ifRight = { sendEffect(LoginEffect.NavigateToDashboard) },
-            )
-    }
-}
-
-sealed interface LoginIntent {
-    data class EmailChanged(val email: String) : LoginIntent
-    data class PasswordChanged(val password: String) : LoginIntent
-    data class RememberMeChanged(val checked: Boolean) : LoginIntent
-    data object Submit : LoginIntent
-}
-
-sealed interface LoginEffect {
-    data object NavigateToDashboard : LoginEffect
-}
-```
-
-**Build file (`core/viewmodel/build.gradle.kts`):**
-
-```kotlin
-plugins {
-    id("kmp-library-convention")
-    id("com.android.library")
-}
-
-kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-        }
-    }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    jvm()
-
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs { browser() }
-
-    sourceSets {
-        commonMain.dependencies {
-            api(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.kotlinx.coroutines)
-        }
-    }
-}
-
-android {
-    namespace = "com.m2f.template.viewmodel"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
-}
-```
-
-### 2. Group Management -- `server:groups` + `core:models` + `core:sdk` + `app:admin`
-
-**Database schema (new tables in `server:groups`):**
-
-```sql
--- groups table
-CREATE TABLE groups (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name        VARCHAR(100) NOT NULL,
-    description VARCHAR(500),
-    owner_id    UUID NOT NULL REFERENCES users(id),
-    created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- group_members table (join table with role)
-CREATE TABLE group_members (
-    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    group_id    UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
-    user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role        VARCHAR(20) NOT NULL DEFAULT 'MEMBER',
-    joined_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(group_id, user_id)
-);
-```
-
-**Exposed table definitions:**
-
-```kotlin
-// server:groups/tables/GroupsTable.kt
-@OptIn(ExperimentalUuidApi::class)
-object GroupsTable : Table("groups") {
-    val id = uuid("id").autoGenerate()
-    val name = varchar("name", 100)
-    val description = varchar("description", 500).nullable()
-    val ownerId = uuid("owner_id").references(UsersTable.id)
-    val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
-    val updatedAt = datetime("updated_at").defaultExpression(CurrentDateTime)
-    override val primaryKey = PrimaryKey(id)
-}
-
-// server:groups/tables/GroupMembersTable.kt
-@OptIn(ExperimentalUuidApi::class)
-object GroupMembersTable : Table("group_members") {
-    val id = uuid("id").autoGenerate()
-    val groupId = uuid("group_id").references(GroupsTable.id)
-    val userId = uuid("user_id").references(UsersTable.id)
-    val role = varchar("role", 20).default("MEMBER")
-    val joinedAt = datetime("joined_at").defaultExpression(CurrentDateTime)
-    override val primaryKey = PrimaryKey(id)
-    init { uniqueIndex(groupId, userId) }
-}
-```
-
-**Why `server:groups` as a new feature module (not in `server:auth`):**
-- Groups are a distinct domain concept. Auth handles identity; groups handle organization.
-- Follows the existing pattern: `server:auth` owns users/roles/tokens, `server:ai` owns agents/conversations. `server:groups` owns groups/membership.
-- Has its own Koin module (`groupsModule`), migration registration (`registerGroupsMigrations()`), and route installation.
-- The `server:groups` module CAN reference `UsersTable` from `server:auth` for foreign key definitions (both are implementation dependencies of the `server` root module).
-
-**Note on cross-module table references:** `server:groups` needs to reference `UsersTable.id` for foreign keys. Two approaches:
-1. **Direct dependency:** `server:groups` depends on `server:auth` (simplest, but creates coupling).
-2. **Shared table interface:** Extract `UsersTable` to `server:core:database` (cleaner, but more refactoring).
-
-**Recommendation:** Option 1 (direct dependency) for now. The coupling is only at the table definition level, and `server:groups` genuinely needs to know about users. This mirrors how `server:ai` depends on `server:auth` tables for conversation ownership.
-
-**Shared models (additions to `core:models`):**
-
-```kotlin
-// core:models - new file: dto/GroupDtos.kt
-@Serializable
-data class GroupResponse(
-    val id: String,
-    val name: String,
-    val description: String?,
-    val ownerId: String,
-    val memberCount: Int,
-)
-
-@Serializable
-data class CreateGroupRequest(val name: String, val description: String? = null)
-
-@Serializable
-data class GroupMemberResponse(
-    val userId: String,
-    val userName: String,
-    val role: String, // OWNER, ADMIN, MEMBER
-    val joinedAt: String,
-)
-
-@Serializable
-data class AddMemberRequest(val userId: String, val role: String = "MEMBER")
-
-// core:models - new file: routes/GroupRoutes.kt
-@Serializable
-@Resource("/api/groups")
-class Groups {
-    @Serializable @Resource("create")
-    class Create(val parent: Groups = Groups())
-
-    @Serializable @Resource("{id}")
-    class ById(val parent: Groups = Groups(), val id: String)
-
-    @Serializable @Resource("{id}/members")
-    class Members(val parent: Groups = Groups(), val id: String)
-
-    @Serializable @Resource("{id}/members/{userId}")
-    class Member(val parent: Groups = Groups(), val id: String, val userId: String)
-}
-```
-
-**SDK functions (additions to `core:sdk`):**
-
-```kotlin
-// core:sdk - new file: api/GroupApi.kt
-class GroupApi(private val client: HttpClient) {
-    suspend fun createGroup(request: CreateGroupRequest): Either<AppError, GroupResponse> =
-        apiCall { client.post(Groups.Create()) {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        } }
-
-    suspend fun getGroup(id: String): Either<AppError, GroupResponse> =
-        apiCall { client.get(Groups.ById(id = id)) }
-
-    suspend fun getMembers(groupId: String): Either<AppError, List<GroupMemberResponse>> =
-        apiCall { client.get(Groups.Members(id = groupId)) }
-
-    suspend fun addMember(groupId: String, request: AddMemberRequest): Either<AppError, Unit> =
-        apiCall { client.post(Groups.Members(id = groupId)) {
-            contentType(ContentType.Application.Json)
-            setBody(request)
-        } }
-
-    suspend fun removeMember(groupId: String, userId: String): Either<AppError, Unit> =
-        apiCall { client.delete(Groups.Member(id = groupId, userId = userId)) }
-}
-```
-
-**Koin registration in `SdkModule.kt`:**
-
-```kotlin
-// Addition to existing sdkModule
-single { GroupApi(client = get()) }
-```
-
-**RBAC integration -- how groups hook into existing auth:**
-
-The existing `withRole(UserRole.PowerAdmin)` pattern guards admin-only routes via JWT claims. Group management introduces a second authorization dimension: group-level roles. The approach:
-
-1. **Route-level:** `authenticate { }` for JWT auth (existing). `withRole(UserRole.Admin)` for platform-wide admin routes (listing all groups, etc.).
-2. **Service-level:** Group-specific permission checks (is this user an admin OF THIS GROUP?) happen in `GroupService` using `Raise<DomainError>`. This requires a DB lookup and cannot be done at the route level.
-3. **No new Ktor plugin.** The existing `RoleAuthorizationPlugin` handles platform-level roles from JWT claims. Group-level roles are a different concern handled in the service layer.
-
-```kotlin
-// server:groups/routes/GroupRoutes.kt
-fun Route.groupRoutes(groupService: GroupService) {
-    authenticate {
-        // Any authenticated user can create a group
-        post<Groups.Create> {
-            conduitAuth { userId ->
-                val request = getModel<CreateGroupRequest>()
-                groupService.createGroup(userId, request)
-            }
-        }
-
-        // Group members can view their group
-        get<Groups.ById> { resource ->
-            conduitAuth { userId ->
-                groupService.getGroup(userId, resource.id)
-            }
-        }
-
-        // Group admins/owners can add members
-        post<Groups.Members> { resource ->
-            conduitAuth { userId ->
-                val request = getModel<AddMemberRequest>()
-                groupService.addMember(userId, resource.id, request)
-            }
-        }
-
-        // Platform Admin: list ALL groups
-        withRole(UserRole.Admin) {
-            get<Groups> {
-                conduitAuth { _ ->
-                    groupService.listAllGroups()
-                }
-            }
-        }
-    }
-}
-```
-
-**Service-layer authorization pattern:**
-
-```kotlin
-// server:groups/service/GroupService.kt
-class GroupService(
-    private val groupRepository: GroupRepository,
-    private val memberRepository: GroupMemberRepository,
+// server:files/service/FileService.kt
+class FileService(
+    private val s3Client: S3Client,
+    private val fileRepository: FileRepository,
+    private val config: Env.S3,
 ) {
     context(raise: Raise<DomainError>)
-    suspend fun addMember(callerId: String, groupId: String, request: AddMemberRequest) {
-        val group = groupRepository.findById(Uuid.parse(groupId))
-        raise.ensure(group != null) { GroupNotFound() }
+    suspend fun generateUploadUrl(
+        userId: Uuid,
+        fileName: String,
+        contentType: String,
+        purpose: FilePurpose, // AVATAR, DOCUMENT, ATTACHMENT
+    ): PresignedUrlResponse
 
-        val callerMembership = memberRepository.findMembership(groupId, callerId)
-        raise.ensure(callerMembership != null) { NotGroupMember() }
-        raise.ensure(callerMembership.role in setOf("OWNER", "ADMIN")) {
-            InsufficientGroupRole()
+    context(raise: Raise<DomainError>)
+    suspend fun confirmUpload(userId: Uuid, fileId: Uuid): FileUploadResponse
+
+    context(raise: Raise<DomainError>)
+    suspend fun generateDownloadUrl(fileId: Uuid): PresignedUrlResponse
+
+    context(raise: Raise<DomainError>)
+    suspend fun deleteFile(userId: Uuid, fileId: Uuid)
+}
+
+// server:files/tables/FilesTable.kt
+object FilesTable : Table("files") {
+    val id = uuid("id").autoGenerate()
+    val ownerId = uuid("owner_id")  // references UsersTable.id
+    val s3Key = varchar("s3_key", 500)
+    val fileName = varchar("file_name", 255)
+    val contentType = varchar("content_type", 100)
+    val sizeBytes = long("size_bytes").nullable()
+    val purpose = varchar("purpose", 50)  // AVATAR, DOCUMENT, ATTACHMENT
+    val status = varchar("status", 20).default("PENDING")  // PENDING, CONFIRMED, DELETED
+    val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
+    override val primaryKey = PrimaryKey(id)
+}
+```
+
+**S3 key structure:** `{purpose}/{userId}/{fileId}/{fileName}` — e.g., `avatars/550e8400.../abc123.../profile.jpg`
+
+**Koin wiring:**
+
+```kotlin
+val filesModule = module {
+    single { S3Client { region = get<Env.S3>().region; /* credentials */ } }
+    single { FileRepository(db = get()) }
+    single { FileService(s3Client = get(), fileRepository = get(), config = get()) }
+}
+```
+
+**Avatar integration with `server:auth`:**
+
+When a user uploads an avatar via `server:files`, the `FileService.confirmUpload()` for `AVATAR` purpose also updates the `UsersTable.avatarUrl` column. This cross-module call goes through a defined interface:
+
+```kotlin
+// server:core:config/service/UserProfileUpdater.kt (interface in shared core)
+interface UserProfileUpdater {
+    suspend fun updateAvatarUrl(userId: Uuid, url: String?)
+}
+
+// server:auth implements it
+class UserRepository(...) : UserProfileUpdater {
+    override suspend fun updateAvatarUrl(userId: Uuid, url: String?) { ... }
+}
+
+// server:files uses it via Koin injection
+class FileService(
+    private val userProfileUpdater: UserProfileUpdater,
+    // ...
+)
+```
+
+This avoids `server:files` depending directly on `server:auth`.
+
+### 2. pgvector RAG Pipeline — `server:ai` Extension
+
+**Module:** Modifications to existing `server:ai`
+**Package:** `com.m2f.server.ai.rag`
+
+**Architecture: Custom VectorStorage backed by pgvector**
+
+Koog's RAG system uses `VectorStorage` and `RankedDocumentStorage` interfaces. We implement a custom `PgVectorStorage` that stores embeddings in PostgreSQL with pgvector, giving us persistent, queryable vector storage without an external vector database.
+
+**Custom Exposed Column Type:**
+
+```kotlin
+// server:core:database/columns/VectorColumnType.kt
+class VectorColumnType(private val dimensions: Int) : ColumnType<FloatArray>() {
+    override fun sqlType(): String = "vector($dimensions)"
+
+    override fun valueFromDB(value: Any): FloatArray = when (value) {
+        is FloatArray -> value
+        is io.r2dbc.postgresql.codec.Vector -> value.vector  // R2DBC 1.0.3+ native codec
+        is String -> parseVectorString(value)
+        else -> error("Unexpected vector value: $value")
+    }
+
+    override fun notNullValueToDB(value: FloatArray): Any = value
+
+    private fun parseVectorString(s: String): FloatArray =
+        s.removeSurrounding("[", "]").split(",").map { it.trim().toFloat() }.toFloatArray()
+}
+
+fun Table.vector(name: String, dimensions: Int): Column<FloatArray> =
+    registerColumn(name, VectorColumnType(dimensions))
+```
+
+**Key insight:** R2DBC PostgreSQL driver 1.0.3+ (project uses 1.0.7.RELEASE) has native vector type support via `io.r2dbc.postgresql.codec.Vector`. No additional `pgvector-java` library needed. The custom column type bridges Exposed's type system to R2DBC's native codec.
+
+**Embeddings table:**
+
+```kotlin
+// server:ai/tables/EmbeddingsTable.kt
+object EmbeddingsTable : Table("embeddings") {
+    val id = uuid("id").autoGenerate()
+    val documentId = varchar("document_id", 255)     // source document reference
+    val chunkIndex = integer("chunk_index")           // position within document
+    val content = text("content")                     // raw text chunk
+    val embedding = vector("embedding", 768)          // embedding vector (dimension depends on model)
+    val metadata = text("metadata").nullable()         // JSON metadata
+    val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
+    override val primaryKey = PrimaryKey(id)
+}
+
+// HNSW index for fast approximate nearest neighbor search
+// Migration SQL: CREATE INDEX ON embeddings USING hnsw (embedding vector_cosine_ops)
+```
+
+**PgVectorStorage implementation:**
+
+```kotlin
+// server:ai/rag/PgVectorStorage.kt
+class PgVectorStorage(
+    private val db: R2dbcDatabase,
+    private val embedder: LLMEmbedder,
+) : VectorStorage {
+
+    suspend fun store(documentId: String, chunks: List<TextChunk>) {
+        val embeddings = chunks.map { embedder.embed(it.text) }
+        suspendTransaction(db = db) {
+            chunks.forEachIndexed { index, chunk ->
+                EmbeddingsTable.insert {
+                    it[EmbeddingsTable.documentId] = documentId
+                    it[chunkIndex] = index
+                    it[content] = chunk.text
+                    it[embedding] = embeddings[index]
+                    it[metadata] = chunk.metadata?.let { Json.encodeToString(it) }
+                }
+            }
         }
+    }
 
-        val existing = memberRepository.findMembership(groupId, request.userId)
-        raise.ensure(existing == null) { AlreadyGroupMember() }
-
-        memberRepository.addMember(groupId, request.userId, request.role)
+    suspend fun similaritySearch(queryEmbedding: FloatArray, limit: Int): List<ScoredChunk> {
+        return suspendTransaction(db = db) {
+            // Raw SQL for pgvector cosine distance operator
+            exec(
+                """SELECT id, document_id, chunk_index, content, metadata,
+                   1 - (embedding <=> ?::vector) as similarity
+                   FROM embeddings
+                   ORDER BY embedding <=> ?::vector
+                   LIMIT ?""",
+                args = listOf(queryEmbedding, queryEmbedding, limit)
+            ) { rs -> /* map ResultSet to ScoredChunk */ }
+        }
     }
 }
 ```
 
-**New `AppError` subtypes (additions to `core:models/AppError.kt`):**
+**RAG as a Koog Tool:**
+
+The RAG pipeline is exposed as a `@Tool` that AI agents can invoke during conversation:
 
 ```kotlin
+// server:ai/tools/RagTool.kt
+class RagTools(private val ragService: RagService) : ToolSet {
+    @Tool
+    @LLMDescription("Search the knowledge base for relevant information")
+    suspend fun searchKnowledge(
+        @LLMDescription("The search query") query: String,
+        @LLMDescription("Maximum number of results") maxResults: Int = 5,
+    ): String {
+        val results = ragService.query(query, maxResults)
+        return results.joinToString("\n\n") { "[Source: ${it.documentId}]\n${it.content}" }
+    }
+}
+```
+
+**Document ingestion pipeline:**
+
+```
+[File uploaded to S3 with purpose=DOCUMENT]
+    |
+    v [FileService.confirmUpload() emits event]
+    |
+    v [DocumentIngestionService listens]
+    |
+    v [Download file from S3]
+    |
+    v [Split into chunks (TextSplitter — simple overlap chunking)]
+    |
+    v [Generate embeddings via LLMEmbedder (Google/Ollama)]
+    |
+    v [Store in EmbeddingsTable via PgVectorStorage]
+    |
+    v [Document ready for RAG queries]
+```
+
+**Embedding model configuration:**
+
+```kotlin
+// Addition to Env.kt
+data class Embedding(
+    val enabled: Boolean,
+    val provider: String,       // "google" or "ollama"
+    val model: String,          // "text-embedding-004" or "nomic-embed-text"
+    val dimensions: Int,        // 768 for Google, 768 for nomic
+    val chunkSize: Int,         // 512 tokens
+    val chunkOverlap: Int,      // 50 tokens
+) {
+    companion object {
+        operator fun invoke(env: String): Embedding = Embedding(
+            enabled = System.getenv("EMBEDDING_ENABLED")?.toBooleanStrictOrNull() ?: false,
+            provider = System.getenv("EMBEDDING_PROVIDER") ?: "google",
+            model = System.getenv("EMBEDDING_MODEL") ?: "text-embedding-004",
+            dimensions = System.getenv("EMBEDDING_DIMENSIONS")?.toIntOrNull() ?: 768,
+            chunkSize = System.getenv("EMBEDDING_CHUNK_SIZE")?.toIntOrNull() ?: 512,
+            chunkOverlap = System.getenv("EMBEDDING_CHUNK_OVERLAP")?.toIntOrNull() ?: 50,
+        )
+    }
+}
+```
+
+### 3. Multi-Agent AI Orchestration — `server:ai` Extension
+
+**Architecture: Koog Subgraph Composition**
+
+The existing `server:ai` has two agents: `ChatAgentService` (conversational) and `AssistantAgentService` (ReAct tool-using). Multi-agent orchestration composes these via Koog's strategy graph system.
+
+**Pattern: Coordinator Agent with Specialist Subgraphs**
+
+```kotlin
+// server:ai/agents/OrchestratorAgent.kt
+class OrchestratorAgentService(
+    private val chatAgent: ChatAgentService,
+    private val assistantAgent: AssistantAgentService,
+    private val ragService: RagService,
+    private val config: Env.Ai,
+) {
+    suspend fun orchestrate(userId: Uuid, conversationId: Uuid, message: String): Flow<String> {
+        // The orchestrator uses structured output to decide which agent to delegate to
+        val routing = routeMessage(message)
+
+        return when (routing.agentType) {
+            AgentType.CHAT -> chatAgent.streamResponse(userId, conversationId, message)
+            AgentType.ASSISTANT -> assistantAgent.executeWithTools(userId, conversationId, message)
+            AgentType.RAG -> ragEnhancedResponse(userId, conversationId, message)
+        }
+    }
+
+    private suspend fun routeMessage(message: String): RoutingDecision {
+        // Uses Koog structured output to classify the message
+        return promptExecutor.executeStructured<RoutingDecision>(
+            prompt = routingPrompt(message)
+        )
+    }
+}
+
 @Serializable
-sealed class Group : AppError() {
-    @Serializable
-    data class NotFound(
-        override val code: String = "GROUP_NOT_FOUND",
-        override val message: String = "Group not found"
-    ) : Group()
+@LLMDescription("Decision about which agent should handle the user's message")
+data class RoutingDecision(
+    @LLMDescription("The type of agent best suited for this message")
+    val agentType: AgentType,
+    @LLMDescription("Brief reasoning for the routing decision")
+    val reasoning: String,
+)
 
-    @Serializable
-    data class NotMember(
-        override val code: String = "GROUP_NOT_MEMBER",
-        override val message: String = "You are not a member of this group"
-    ) : Group()
-
-    @Serializable
-    data class InsufficientRole(
-        override val code: String = "GROUP_INSUFFICIENT_ROLE",
-        override val message: String = "You do not have the required role in this group"
-    ) : Group()
-
-    @Serializable
-    data class AlreadyMember(
-        override val code: String = "GROUP_ALREADY_MEMBER",
-        override val message: String = "User is already a member of this group"
-    ) : Group()
+@Serializable
+enum class AgentType {
+    @LLMDescription("General conversation, greetings, casual talk")
+    CHAT,
+    @LLMDescription("Tasks requiring tools: calculations, data lookup, actions")
+    ASSISTANT,
+    @LLMDescription("Questions about documents, knowledge base queries")
+    RAG,
 }
 ```
 
-**New server-side DomainError types (following `server:auth/errors/AuthErrors.kt` pattern):**
+**Koog Structured Output integration:**
+
+Three levels of structured output available in Koog:
 
 ```kotlin
-// server:groups/errors/GroupErrors.kt
-data class GroupNotFound(val detail: String = "Group not found") : DomainError {
-    override fun toAppError(): AppError = AppError.Group.NotFound()
-    context(routingContext: RoutingContext)
-    override suspend fun respond() {
-        val error = toAppError()
-        routingContext.notFound(error.code, error.message)
-    }
+// Level 1: Prompt executor level (standalone, no agent context)
+val result = promptExecutor.executeStructured<RoutingDecision>(prompt)
+
+// Level 2: Agent session level (within an agent's execution)
+agent.run {
+    val decision = requestLLMStructured<RoutingDecision>(prompt)
 }
 
-data class NotGroupMember(val detail: String = "Not a group member") : DomainError {
-    override fun toAppError(): AppError = AppError.Group.NotMember()
-    context(routingContext: RoutingContext)
-    override suspend fun respond() {
-        val error = toAppError()
-        routingContext.forbidden(error.code, error.message)
-    }
-}
-
-data class InsufficientGroupRole(val detail: String = "Insufficient group role") : DomainError {
-    override fun toAppError(): AppError = AppError.Group.InsufficientRole()
-    context(routingContext: RoutingContext)
-    override suspend fun respond() {
-        val error = toAppError()
-        routingContext.forbidden(error.code, error.message)
-    }
-}
-
-data class AlreadyGroupMember(val detail: String = "Already a member") : DomainError {
-    override fun toAppError(): AppError = AppError.Group.AlreadyMember()
-    context(routingContext: RoutingContext)
-    override suspend fun respond() {
-        val error = toAppError()
-        routingContext.unprocessable(error.code, error.message)
-    }
-}
+// Level 3: Strategy graph node level (within custom strategy)
+val node = nodeLLMRequestStructured<RoutingDecision>(nodeName = "router")
 ```
 
-**Admin panel -- `app:admin` feature module:**
+The orchestrator uses Level 1 for routing decisions (lightweight, no full agent context needed).
 
-New `app:admin` module provides admin UI (user listing, group management). Depends on `core:sdk`, `core:viewmodel`, `app:designsystem`. Only accessible to users with `UserRole.Admin` or higher, gated in navigation:
+**Integration with existing WebSocket streaming:**
+
+The existing `/api/ai/chat/ws` WebSocket endpoint is modified to route through the orchestrator instead of directly to `ChatAgentService`:
 
 ```kotlin
-// In AppNavHost.kt
-composable<AdminRoute> {
-    val viewModel = koinViewModel<AdminViewModel>()
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    AdminScreen(state = state, onDispatch = viewModel::dispatch)
-}
-```
+// Modified: server:ai/routes/AiRoutes.kt
+fun Route.aiRoutes(orchestratorService: OrchestratorAgentService) {
+    webSocket("/api/ai/chat/ws") {
+        getAuth { auth ->
+            for (frame in incoming) {
+                val message = (frame as? Frame.Text)?.readText() ?: continue
+                val parsed = Json.decodeFromString<WsMessage>(message)
 
-Navigation guard in the dashboard or profile screen checks the user's role before showing the admin link.
-
-### 3. Testing Infrastructure -- `core:testing`
-
-**Module:** New `core:testing` KMP library module (commonMain + jvmMain)
-**Purpose:** Shared test utilities, fakes, DSLs. Published as a regular library so that test source sets in other modules can use `testImplementation(projects.core.testing)`.
-
-**Why a dedicated module:**
-- Currently there are only 2 test files in the entire project, both trivial placeholders (`ComposeAppCommonTest`, `SharedCommonTest`).
-- Test utilities (fake implementations, DSLs) would be duplicated across `app:auth/commonTest`, `server:auth/test`, etc. without a shared module.
-- `core:testing` provides `testImplementation` dependencies for any module that needs them.
-
-**Module structure:**
-
-```
-core/testing/
-  src/
-    commonMain/kotlin/com/m2f/template/testing/
-      fakes/
-        FakeTokenStorage.kt       -- in-memory TokenStorage
-        FakeAuthApi.kt            -- programmable AuthApi returning Either values
-        FakeUserApi.kt            -- programmable UserApi
-        FakeGroupApi.kt           -- programmable GroupApi
-      viewmodel/
-        ViewModelTestDsl.kt       -- DSL for testing MviViewModel
-      assertions/
-        EitherAssertions.kt       -- kotest matchers for Either<AppError, T>
-        StateFlowAssertions.kt    -- kotest matchers for StateFlow values
-    jvmMain/kotlin/com/m2f/template/testing/
-      server/
-        TestServerHelpers.kt      -- Ktor testApplication wrappers
-        TestDatabaseHelpers.kt    -- Testcontainers PostgreSQL setup
-        TestAuthHelpers.kt        -- JWT token generation for test requests
-```
-
-**Interface extraction for testability (modification to `core:sdk`):**
-
-The existing `AuthApi`, `UserApi`, and new `GroupApi` are concrete classes. To create test fakes without mocking libraries, extract interfaces:
-
-```kotlin
-// core:sdk - modified AuthApi.kt
-interface AuthApiContract {
-    suspend fun register(request: RegisterRequest): Either<AppError, AuthResponse>
-    suspend fun login(request: LoginRequest, rememberMe: Boolean = true): Either<AppError, AuthResponse>
-    suspend fun refresh(request: RefreshTokenRequest): Either<AppError, AuthResponse>
-    suspend fun forgotPassword(request: ForgotPasswordRequest): Either<AppError, Unit>
-    suspend fun resetPassword(request: ResetPasswordRequest): Either<AppError, Unit>
-    suspend fun logout(): Either<AppError, Unit>
-}
-
-class AuthApi(
-    private val client: HttpClient,
-    private val tokenStorage: TokenStorage,
-) : AuthApiContract {
-    // ... existing implementation unchanged
-}
-```
-
-ViewModels change their constructor parameter type from `AuthApi` to `AuthApiContract`. Koin binds the concrete class to the interface:
-
-```kotlin
-// sdkModule
-single<AuthApiContract> { AuthApi(client = get(), tokenStorage = get()) }
-```
-
-**Why interfaces, not mocking libraries:**
-- MockK has incomplete KMP support (no WASM, limited iOS).
-- Mockito is JVM-only.
-- Hand-written fakes are portable across all KMP targets, explicit about behavior, and test contract compliance rather than interaction details.
-
-**ViewModel test DSL design:**
-
-```kotlin
-package com.m2f.template.testing.viewmodel
-
-import app.cash.turbine.test
-import com.m2f.template.viewmodel.MviViewModel
-import kotlinx.coroutines.test.runTest
-
-/**
- * DSL for testing MviViewModel subclasses.
- *
- * Usage:
- * ```
- * @Test
- * fun `login dispatches loading then success`() = testViewModel(
- *     viewModel = LoginViewModel(fakeAuthApi)
- * ) {
- *     dispatch(LoginIntent.EmailChanged("user@test.com"))
- *     expectState { email shouldBe "user@test.com" }
- *
- *     dispatch(LoginIntent.Submit)
- *     expectState { isLoading shouldBe true }
- *     expectState { isLoading shouldBe false }
- *
- *     expectEffect<LoginEffect.NavigateToDashboard>()
- * }
- * ```
- */
-fun <S, I, E> testViewModel(
-    viewModel: MviViewModel<S, I, E>,
-    block: suspend ViewModelTestScope<S, I, E>.() -> Unit,
-) = runTest {
-    ViewModelTestScope(viewModel).block()
-}
-
-class ViewModelTestScope<S, I, E>(private val viewModel: MviViewModel<S, I, E>) {
-    fun dispatch(intent: I) = viewModel.dispatch(intent)
-
-    suspend fun expectState(assertion: S.() -> Unit) {
-        viewModel.state.test {
-            awaitItem().assertion()
-            cancelAndConsumeRemainingEvents()
+                orchestratorService.orchestrate(auth.userId, parsed.conversationId, parsed.content)
+                    .collect { chunk -> send(Frame.Text(chunk)) }
+            }
         }
     }
-
-    suspend inline fun <reified T : E> expectEffect() {
-        viewModel.effects.test {
-            val effect = awaitItem()
-            check(effect is T) { "Expected ${T::class.simpleName}, got $effect" }
-            cancelAndConsumeRemainingEvents()
-        }
-    }
-
-    fun currentState(): S = viewModel.state.value
 }
 ```
 
-**Fake implementation pattern:**
+### 4. Email Service — `server:email`
+
+**Module:** New `server:email` server module
+**Package:** `com.m2f.server.email`
+
+**Architecture: Template-based SMTP with async send queue**
 
 ```kotlin
-// core:testing - FakeAuthApi.kt
-class FakeAuthApi(
-    var loginResult: Either<AppError, AuthResponse> = AuthResponse(
-        accessToken = "test-access-token",
-        refreshToken = "test-refresh-token",
-    ).right(),
-    var logoutResult: Either<AppError, Unit> = Unit.right(),
-    // ... other defaults
-) : AuthApiContract {
-    val loginCalls = mutableListOf<LoginRequest>()
-
-    override suspend fun login(request: LoginRequest, rememberMe: Boolean): Either<AppError, AuthResponse> {
-        loginCalls.add(request)
-        return loginResult
-    }
-
-    override suspend fun logout(): Either<AppError, Unit> = logoutResult
-    // ... other methods
-}
-```
-
-**Ktor server test helpers (JVM-only, in jvmMain):**
-
-```kotlin
-// Wraps ktor testApplication with standard server config
-fun testApp(
-    additionalModules: List<Module> = emptyList(),
-    block: suspend ApplicationTestBuilder.() -> Unit,
-) = testApplication {
-    application {
-        install(ContentNegotiation) { json() }
-        install(Resources)
-        install(Koin) {
-            modules(testKoinModules + additionalModules)
+// server:email/service/EmailService.kt
+class EmailService(
+    private val config: Env.Email,
+    private val templateEngine: EmailTemplateEngine,
+) {
+    suspend fun send(email: EmailMessage) {
+        val session = Session.getInstance(smtpProperties())
+        val message = MimeMessage(session).apply {
+            setFrom(InternetAddress(config.fromAddress, config.fromName))
+            setRecipient(Message.RecipientType.TO, InternetAddress(email.to))
+            subject = email.subject
+            setContent(email.htmlBody, "text/html; charset=utf-8")
         }
-    }
-    block()
-}
-
-// JWT token generation for authenticated test requests
-fun testJwtToken(
-    userId: String = "00000000-0000-0000-0000-000000000001",
-    role: UserRole = UserRole.User,
-    secret: String = "test-secret",
-): String = JWT.create()
-    .withSubject(userId)
-    .withClaim("role", role.value)
-    .withExpiresAt(Date(System.currentTimeMillis() + 3600000))
-    .sign(Algorithm.HMAC256(secret))
-```
-
-**Build file (`core/testing/build.gradle.kts`):**
-
-```kotlin
-plugins {
-    id("kmp-library-convention")
-    id("com.android.library")
-}
-
-kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-        }
-    }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    jvm()
-
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs { browser() }
-
-    sourceSets {
-        commonMain.dependencies {
-            // Published as main so consumers use testImplementation(projects.core.testing)
-            api(libs.kotlinx.coroutines)
-            api(libs.kotest.assertionsCore)
-            api(libs.kotest.arrow)
-            api(libs.arrow.core)
-            api(libs.turbine)
-            implementation(projects.core.models)
-            implementation(projects.core.sdk)
-            implementation(projects.core.viewmodel)
-            implementation(projects.core.storage)
-        }
-        jvmMain.dependencies {
-            implementation(libs.ktor.server.test.host)
-            implementation(libs.testcontainers)
-            implementation(libs.testcontainers.postgresql)
-            implementation(libs.koin.test)
+        // Jakarta Mail send is blocking — wrap in IO dispatcher
+        withContext(Dispatchers.IO) {
+            Transport.send(message)
         }
     }
 }
 
-android {
-    namespace = "com.m2f.template.testing"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+// server:email/templates/EmailTemplateEngine.kt
+class EmailTemplateEngine {
+    fun renderInvite(inviterName: String, groupName: String, acceptUrl: String): String {
+        return """
+            <html><body>
+            <h2>You've been invited!</h2>
+            <p>$inviterName invited you to join <strong>$groupName</strong>.</p>
+            <a href="$acceptUrl" style="...">Accept Invitation</a>
+            </body></html>
+        """.trimIndent()
     }
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
+
+    fun renderPasswordReset(resetUrl: String): String { /* ... */ }
+    fun renderWelcome(userName: String): String { /* ... */ }
 }
 ```
 
-**Required addition to `libs.versions.toml`:**
+**Why Jakarta Mail (not a Ktor email library):**
+- Jakarta Mail is the standard Java email API, battle-tested, well-documented
+- No Ktor-specific email library exists with meaningful adoption
+- Works perfectly with MailHog in dev (SMTP on port 1025, no auth)
+- Production: any SMTP provider (SendGrid, SES, Mailgun) via standard SMTP
 
-```toml
-# Under [versions]
-turbine = "1.2.0"
-
-# Under [libraries]
-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
-```
-
-### 4. Localization -- `core:l10n` + `composeResources`
-
-**Module:** New `core:l10n` KMP library module (pure Kotlin, no Compose dependency)
-**Package:** `com.m2f.template.l10n`
-
-**Two-layer localization architecture:**
-
-```
-Layer 1: core:l10n (pure Kotlin, no Compose dependency)
-  - StringKey enum mapping all localizable strings
-  - Default English values (for server-side fallback)
-  - Key-to-string resolution function
-
-Layer 2: composeResources in composeApp (Compose-dependent)
-  - strings.xml files with translations per locale
-  - stringResource(Res.strings.xxx) for UI rendering
-  - Bridge function: StringKey -> Res.strings accessor
-```
-
-**Why this two-layer approach:**
-- `core:l10n` has NO Compose dependency -- it can be used by `server:auth`, `server:groups`, and any JVM-only code for error message resolution.
-- Client UI uses Compose Multiplatform's built-in `stringResource()` for automatic locale detection and qualifier-based resolution (verified: Compose Multiplatform 1.10+ supports `composeResources/values-{lang}/strings.xml` with auto-generated `Res.strings` accessors).
-- The `StringKey` enum ensures server error codes and client string keys never drift apart.
-- Adding a new localizable string is explicit: (1) add to `StringKey` enum, (2) add to `strings.xml` files, (3) update bridge.
-
-**Why centralized strings in `composeApp`, not per feature module:**
-- String keys can collide across modules when each module has its own `composeResources`.
-- Server error messages must reference the same keys used for client display.
-- Translators need a single file to work with, not strings scattered across 5+ modules.
-- Feature modules receive strings as parameters from composables in the navigation host.
-
-**Layer 1: `core:l10n` module:**
+**Email config:**
 
 ```kotlin
-package com.m2f.template.l10n
-
-/**
- * Exhaustive catalog of all localizable strings in the application.
- * Each entry maps to a <string name="..."> in strings.xml and a server-side English default.
- *
- * Naming convention: DOMAIN_SPECIFIC_KEY
- * - AUTH_* for authentication-related strings
- * - VALIDATION_* for field validation messages
- * - GROUP_* for group management strings
- * - UI_* for general UI labels
- */
-enum class StringKey(val code: String, val defaultEn: String) {
-    // Auth errors (match existing AppError.code values)
-    AUTH_INVALID_CREDENTIALS("auth_invalid_credentials", "Email or password is incorrect"),
-    AUTH_TOKEN_EXPIRED("auth_token_expired", "Authentication token has expired"),
-    AUTH_UNAUTHORIZED("auth_unauthorized", "Authentication required"),
-    AUTH_USER_ALREADY_EXISTS("auth_user_already_exists", "A user with this email already exists"),
-
-    // Validation messages
-    VALIDATION_EMAIL_BLANK("validation_email_blank", "Email must not be blank"),
-    VALIDATION_EMAIL_FORMAT("validation_email_format", "Email format is invalid"),
-    VALIDATION_PASSWORD_LENGTH("validation_password_length", "Password must be at least 8 characters"),
-    VALIDATION_NAME_BLANK("validation_name_blank", "Name must not be blank"),
-    VALIDATION_NAME_LENGTH("validation_name_length", "Name must be between 2 and 100 characters"),
-
-    // Group errors
-    GROUP_NOT_FOUND("group_not_found", "Group not found"),
-    GROUP_NOT_MEMBER("group_not_member", "You are not a member of this group"),
-    GROUP_INSUFFICIENT_ROLE("group_insufficient_role", "You do not have the required role in this group"),
-    GROUP_ALREADY_MEMBER("group_already_member", "User is already a member of this group"),
-
-    // UI labels
-    UI_LOGIN_TITLE("ui_login_title", "Sign In"),
-    UI_REGISTER_TITLE("ui_register_title", "Create Account"),
-    UI_DASHBOARD_TITLE("ui_dashboard_title", "Dashboard"),
-    UI_PROFILE_TITLE("ui_profile_title", "Profile"),
-    UI_ADMIN_TITLE("ui_admin_title", "Admin Panel"),
-    UI_GROUPS_TITLE("ui_groups_title", "Groups"),
-    // ... exhaustive list grows with features
-}
-
-/**
- * Server-side string resolution (English fallback).
- * Returns the default English string for a given key.
- * Future: accept a locale parameter for server-side i18n.
- */
-fun resolveString(key: StringKey): String = key.defaultEn
-
-/**
- * Look up a StringKey by its code string (e.g., from AppError.code).
- * Returns null if no matching key exists.
- */
-fun StringKey.Companion.fromCode(code: String): StringKey? =
-    entries.find { it.code == code }
-```
-
-**Layer 2: Compose resources structure:**
-
-```
-composeApp/src/commonMain/composeResources/
-  values/
-    strings.xml           -- English (default)
-  values-es/
-    strings.xml           -- Spanish
-  values-fr/
-    strings.xml           -- French
-  drawable/
-    compose-multiplatform.xml  -- existing
-```
-
-Example `values/strings.xml`:
-```xml
-<resources>
-    <!-- Auth errors -->
-    <string name="auth_invalid_credentials">Email or password is incorrect</string>
-    <string name="auth_token_expired">Authentication token has expired</string>
-    <string name="auth_unauthorized">Authentication required</string>
-    <string name="auth_user_already_exists">A user with this email already exists</string>
-
-    <!-- Validation -->
-    <string name="validation_email_blank">Email must not be blank</string>
-    <string name="validation_email_format">Email format is invalid</string>
-
-    <!-- Group errors -->
-    <string name="group_not_found">Group not found</string>
-    <string name="group_not_member">You are not a member of this group</string>
-
-    <!-- UI labels -->
-    <string name="ui_login_title">Sign In</string>
-    <string name="ui_register_title">Create Account</string>
-    <string name="ui_dashboard_title">Dashboard</string>
-    <string name="ui_profile_title">Profile</string>
-    <string name="ui_admin_title">Admin Panel</string>
-    <string name="ui_groups_title">Groups</string>
-</resources>
-```
-
-**Bridge function in composeApp:**
-
-```kotlin
-// composeApp/src/commonMain/kotlin/com/m2f/template/l10n/StringResources.kt
-package com.m2f.template.l10n
-
-import androidx.compose.runtime.Composable
-import com.m2f.template.l10n.StringKey
-import org.jetbrains.compose.resources.stringResource
-import template.composeapp.generated.resources.Res
-import template.composeapp.generated.resources.*
-
-/**
- * Resolves a [StringKey] to a localized string using Compose Multiplatform resources.
- * Falls back to the key's English default if the resource is not found.
- */
-@Composable
-fun localizedString(key: StringKey): String = when (key) {
-    StringKey.AUTH_INVALID_CREDENTIALS -> stringResource(Res.strings.auth_invalid_credentials)
-    StringKey.AUTH_TOKEN_EXPIRED -> stringResource(Res.strings.auth_token_expired)
-    StringKey.AUTH_UNAUTHORIZED -> stringResource(Res.strings.auth_unauthorized)
-    StringKey.AUTH_USER_ALREADY_EXISTS -> stringResource(Res.strings.auth_user_already_exists)
-    StringKey.VALIDATION_EMAIL_BLANK -> stringResource(Res.strings.validation_email_blank)
-    StringKey.VALIDATION_EMAIL_FORMAT -> stringResource(Res.strings.validation_email_format)
-    StringKey.VALIDATION_PASSWORD_LENGTH -> stringResource(Res.strings.validation_password_length)
-    StringKey.VALIDATION_NAME_BLANK -> stringResource(Res.strings.validation_name_blank)
-    StringKey.VALIDATION_NAME_LENGTH -> stringResource(Res.strings.validation_name_length)
-    StringKey.GROUP_NOT_FOUND -> stringResource(Res.strings.group_not_found)
-    StringKey.GROUP_NOT_MEMBER -> stringResource(Res.strings.group_not_member)
-    StringKey.GROUP_INSUFFICIENT_ROLE -> stringResource(Res.strings.group_insufficient_role)
-    StringKey.GROUP_ALREADY_MEMBER -> stringResource(Res.strings.group_already_member)
-    StringKey.UI_LOGIN_TITLE -> stringResource(Res.strings.ui_login_title)
-    StringKey.UI_REGISTER_TITLE -> stringResource(Res.strings.ui_register_title)
-    StringKey.UI_DASHBOARD_TITLE -> stringResource(Res.strings.ui_dashboard_title)
-    StringKey.UI_PROFILE_TITLE -> stringResource(Res.strings.ui_profile_title)
-    StringKey.UI_ADMIN_TITLE -> stringResource(Res.strings.ui_admin_title)
-    StringKey.UI_GROUPS_TITLE -> stringResource(Res.strings.ui_groups_title)
-}
-```
-
-**Build file (`core/l10n/build.gradle.kts`):**
-
-```kotlin
-plugins {
-    id("kmp-library-convention")
-    id("com.android.library")
-}
-
-kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-        }
+data class Email(
+    val enabled: Boolean,
+    val smtpHost: String,
+    val smtpPort: Int,
+    val smtpUser: String?,
+    val smtpPassword: String?,
+    val fromAddress: String,
+    val fromName: String,
+    val useTls: Boolean,
+) {
+    companion object {
+        operator fun invoke(env: String): Email = Email(
+            enabled = System.getenv("EMAIL_ENABLED")?.toBooleanStrictOrNull() ?: false,
+            smtpHost = System.getenv("SMTP_HOST") ?: "localhost",
+            smtpPort = System.getenv("SMTP_PORT")?.toIntOrNull() ?: 1025,
+            smtpUser = System.getenv("SMTP_USER"),
+            smtpPassword = System.getenv("SMTP_PASSWORD"),
+            fromAddress = System.getenv("EMAIL_FROM_ADDRESS") ?: "noreply@template.local",
+            fromName = System.getenv("EMAIL_FROM_NAME") ?: "Template App",
+            useTls = System.getenv("EMAIL_USE_TLS")?.toBooleanStrictOrNull() ?: false,
+        )
     }
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-    jvm()
+}
+```
 
-    @OptIn(org.jetbrains.kotlin.gradle.ExperimentalWasmDsl::class)
-    wasmJs { browser() }
+### 5. Email Invitations — `server:groups` Extension
 
-    sourceSets {
-        commonMain.dependencies {
-            // Pure Kotlin -- no Compose, no Arrow, no Ktor
+**Module:** Modifications to existing `server:groups`
+**Package:** `com.m2f.server.groups.invites`
+
+**Architecture: Token-based invite with email delivery**
+
+```kotlin
+// server:groups/tables/GroupInvitesTable.kt
+object GroupInvitesTable : Table("group_invites") {
+    val id = uuid("id").autoGenerate()
+    val groupId = uuid("group_id").references(GroupsTable.id)
+    val invitedEmail = varchar("invited_email", 255)
+    val invitedByUserId = uuid("invited_by_user_id")
+    val token = varchar("token", 64).uniqueIndex()  // secure random token
+    val status = varchar("status", 20).default("PENDING")  // PENDING, ACCEPTED, EXPIRED, REVOKED
+    val expiresAt = datetime("expires_at")
+    val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
+    override val primaryKey = PrimaryKey(id)
+}
+```
+
+**Invite flow:**
+
+```
+[Group Admin] POST /api/groups/{id}/invites { email: "user@example.com" }
+    |
+    v [GroupInviteService.createInvite()]
+    |   - Validates caller is group ADMIN/OWNER
+    |   - Generates secure random token (64 chars)
+    |   - Inserts into group_invites table (status=PENDING, expires in 7 days)
+    |   - Calls EmailService.send() with invite template
+    |
+    v [Email sent to user@example.com with accept link]
+    |   Link: https://app.example.com/invite/accept?token={token}
+    |
+    v [Recipient clicks link]
+    |
+    v POST /api/invites/accept { token: "abc123..." }
+    |
+    v [GroupInviteService.acceptInvite()]
+        - Validates token exists, not expired, status=PENDING
+        - If user is authenticated: add to group_members
+        - If user not registered: redirect to registration with invite context
+        - Updates invite status to ACCEPTED
+```
+
+**Cross-module dependency: `server:groups` → `server:email`**
+
+The invite service needs to send emails. This is wired via Koin injection:
+
+```kotlin
+// server:groups/service/GroupInviteService.kt
+class GroupInviteService(
+    private val inviteRepository: GroupInviteRepository,
+    private val memberRepository: GroupMemberRepository,
+    private val emailService: EmailService,  // from server:email module
+    private val config: Configuration,
+)
+```
+
+`server:groups` declares a dependency on `server:email` in its `build.gradle.kts`.
+
+### 6. Avatar URL Migration — `server:auth` Extension
+
+**Scope:** Minimal — one migration, one column, DTO update
+
+```kotlin
+// server:auth/migrations/V6_AddAvatarUrl.kt
+class V6AddAvatarUrl : Migration {
+    override val version = 6
+    override val description = "Add avatar_url column to users table"
+
+    override suspend fun migrate(db: R2dbcDatabase) {
+        suspendTransaction(db = db) {
+            exec("ALTER TABLE users ADD COLUMN avatar_url VARCHAR(500)")
         }
     }
 }
+```
 
-android {
-    namespace = "com.m2f.template.l10n"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+**UsersTable modification:**
+
+```kotlin
+// Add to existing UsersTable
+val avatarUrl = varchar("avatar_url", 500).nullable()
+```
+
+**UserResponse DTO modification in `core:models`:**
+
+```kotlin
+// Modified: core:models/dto/UserResponse.kt
+@Serializable
+data class UserResponse(
+    val id: String,
+    val email: String,
+    val name: String,
+    val role: String,
+    val avatarUrl: String?,  // NEW — nullable, null if no avatar uploaded
+)
+```
+
+### 7. Docker Infrastructure Changes
+
+**Modified `docker-compose.yml`:**
+
+```yaml
+services:
+  postgres:
+    image: pgvector/pgvector:pg15          # Changed from postgres:15-alpine
+    environment:
+      POSTGRES_DB: template_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d  # For CREATE EXTENSION vector
+
+  minio:                                    # NEW — S3-compatible storage
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    ports:
+      - "9000:9000"   # S3 API
+      - "9001:9001"   # Web console
+    volumes:
+      - minio_data:/data
+
+  mailhog:                                  # NEW — SMTP mock with web UI
+    image: mailhog/mailhog:latest
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI for viewing sent emails
+
+volumes:
+  postgres_data:
+  minio_data:
+```
+
+**Init script for pgvector:**
+
+```sql
+-- docker/init-scripts/01-extensions.sql
+CREATE EXTENSION IF NOT EXISTS vector;
+```
+
+## Architectural Patterns
+
+### Pattern 1: Presigned URL Upload (File Uploads)
+
+**What:** Server generates time-limited signed URLs for direct client-to-S3 uploads
+**When to use:** Any file upload (avatars, documents for RAG, attachments)
+**Trade-offs:**
+- ✅ Server never handles file bytes — lower memory, higher throughput
+- ✅ Works with any S3-compatible store (AWS S3, MinIO, R2, etc.)
+- ❌ Two-step process (get URL, then upload) adds client complexity
+- ❌ Need upload confirmation step to track state
+
+**Example:**
+
+```kotlin
+// Client flow (in SDK)
+suspend fun uploadAvatar(imageBytes: ByteArray, fileName: String): Either<AppError, FileUploadResponse> = either {
+    // Step 1: Get presigned URL from server
+    val presigned = fileApi.requestUploadUrl(
+        UploadUrlRequest(fileName = fileName, contentType = "image/jpeg", purpose = "AVATAR")
+    ).bind()
+
+    // Step 2: Upload directly to S3/MinIO
+    httpClient.put(presigned.uploadUrl) {
+        setBody(imageBytes)
+        contentType(ContentType.Image.JPEG)
     }
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
+
+    // Step 3: Confirm upload with server
+    fileApi.confirmUpload(presigned.fileId).bind()
 }
 ```
 
-## Component Responsibilities
+### Pattern 2: Custom Exposed ColumnType for pgvector
 
-| Component | Responsibility | Communicates With |
-|-----------|---------------|-------------------|
-| `core:viewmodel` | MVI base class (`MviViewModel<S,I,E>`) with StateFlow state, Channel effects | Used by all `app:*` feature modules as base class |
-| `core:l10n` | String key registry (`StringKey` enum), server-side string resolution | Used by `server:*` for error messages; `composeApp` for bridge function |
-| `core:testing` | Test fakes (FakeAuthApi etc), ViewModel test DSL, kotest matchers, Ktor test helpers | `testImplementation` dependency for all modules |
-| `core:models` (modified) | Add `GroupDtos`, `GroupRoutes`, `AppError.Group` sealed class | Already central; additions follow existing patterns exactly |
-| `core:sdk` (modified) | Add `GroupApi`, extract interfaces (`AuthApiContract`, etc.) for testability | Already central; interface extraction is backward-compatible |
-| `server:groups` | GroupsTable, GroupMembersTable, GroupRepository, GroupMemberRepository, GroupService, groupRoutes | Depends on `server:core:*`, `server:auth` (for UsersTable FK), `core:models` |
-| `app:admin` | Admin panel UI (user list, group CRUD, member management) | Depends on `core:sdk`, `core:viewmodel`, `app:designsystem` |
+**What:** Bridge between Exposed's type system and R2DBC's native pgvector codec
+**When to use:** Storing and querying vector embeddings in PostgreSQL
+**Trade-offs:**
+- ✅ Leverages R2DBC 1.0.3+ native Vector codec — no extra dependencies
+- ✅ Works within Exposed's migration and query framework
+- ❌ Similarity search requires raw SQL (Exposed DSL doesn't support `<=>` operator)
+- ❌ Custom column type needs maintenance if Exposed changes internals
+
+**Example:**
+
+```kotlin
+// Table definition — clean DSL
+object EmbeddingsTable : Table("embeddings") {
+    val embedding = vector("embedding", 768)  // custom column type
+    // ...
+}
+
+// Insert — standard Exposed
+EmbeddingsTable.insert {
+    it[embedding] = floatArrayOf(0.1f, 0.2f, ...)
+}
+
+// Similarity search — raw SQL (pgvector operators not in Exposed DSL)
+exec("SELECT * FROM embeddings ORDER BY embedding <=> $1::vector LIMIT $2")
+```
+
+### Pattern 3: Service Interface for Cross-Module Communication
+
+**What:** Modules communicate via interfaces defined in shared core, not direct dependencies
+**When to use:** When Module A needs to call Module B but shouldn't depend on B's internals
+**Trade-offs:**
+- ✅ Modules remain loosely coupled — can be tested independently
+- ✅ Interface in shared core is a stable contract
+- ❌ Extra indirection (interface + implementation + Koin binding)
+
+**Example:**
+
+```kotlin
+// In server:core:config (shared)
+interface UserProfileUpdater {
+    suspend fun updateAvatarUrl(userId: Uuid, url: String?)
+}
+
+// In server:auth (implements)
+class UserRepository(...) : UserProfileUpdater { ... }
+
+// In server:files (consumes via Koin)
+class FileService(private val userProfileUpdater: UserProfileUpdater, ...)
+
+// Koin wiring in ServerModule
+single<UserProfileUpdater> { get<UserRepository>() }
+```
+
+### Pattern 4: Coordinator-Delegator Multi-Agent
+
+**What:** A lightweight orchestrator uses structured output to route messages to specialist agents
+**When to use:** When different user intents require different agent capabilities (chat vs tools vs RAG)
+**Trade-offs:**
+- ✅ Each agent stays focused and simple
+- ✅ Routing logic is explicit and testable (structured output)
+- ✅ New agents can be added without modifying existing ones
+- ❌ Extra LLM call for routing adds latency (~200-500ms)
+- ❌ Routing errors cascade (wrong agent = poor response)
 
 ## Data Flow
 
-### MVI Unidirectional Data Flow (Client)
+### File Upload Pipeline (Avatar Example)
 
 ```
-User Interaction (tap, type, etc.)
-      |
-      v
-  [Intent]  -- sealed interface, dispatched to ViewModel via dispatch()
-      |
-      v
-  [handleIntent()]  -- ViewModel processes intent (suspend)
-      |
-      +--> [setState(reducer)]  -- atomic update to MutableStateFlow
-      |           |
-      |           v
-      |    [state: StateFlow<S>]
-      |           |
-      |           v
-      |    [collectAsStateWithLifecycle()] in Composable
-      |           |
-      |           v
-      |    Compose UI recomposes
-      |
-      +--> [sendEffect(effect)]  -- one-shot event via Channel
-                  |
-                  v
-           [effects: Flow<E>]
-                  |
-                  v
-           LaunchedEffect { effects.collect { when(it) { ... } } }
-                  |
-                  v
-           Navigation / Toast / Dialog / etc.
+[Mobile/Web Client]
+    |
+    v dispatch(ProfileIntent.UploadAvatar(imageBytes))
+    |
+    v [ProfileViewModel.handleIntent()]
+    |
+    v fileApi.requestUploadUrl(UploadUrlRequest(
+    |     fileName="avatar.jpg", contentType="image/jpeg", purpose="AVATAR"))
+    |
+    v HTTP POST /api/files/upload-url
+    |    |
+    |    v [FileService.generateUploadUrl()]
+    |    |    - Generates S3 key: avatars/{userId}/{fileId}/avatar.jpg
+    |    |    - Creates presigned PUT URL (expires 15 min)
+    |    |    - Inserts FilesTable row (status=PENDING)
+    |    v Returns PresignedUrlResponse { fileId, uploadUrl, expiresAt }
+    |
+    v HTTP PUT {uploadUrl} (direct to MinIO/S3)
+    |    - Client sends raw image bytes with Content-Type header
+    |    - No server involvement — direct S3 upload
+    |
+    v fileApi.confirmUpload(fileId)
+    |
+    v HTTP POST /api/files/{fileId}/confirm
+    |    |
+    |    v [FileService.confirmUpload()]
+    |    |    - Validates object exists in S3 (HeadObject)
+    |    |    - Updates FilesTable status → CONFIRMED, records sizeBytes
+    |    |    - If purpose=AVATAR: calls UserProfileUpdater.updateAvatarUrl()
+    |    |    - Generates presigned GET URL for the avatar
+    |    v Returns FileUploadResponse { fileId, url, fileName }
+    |
+    v setState { copy(avatarUrl = response.url, isUploading = false) }
 ```
 
-### Group Management Request Flow (Full Stack)
+### RAG Query Pipeline
 
 ```
-[Admin UI] -- dispatch(GroupIntent.AddMember(groupId, userId))
+[User asks question in chat]
     |
-    v GroupAdminViewModel.handleIntent()
+    v WebSocket message to /api/ai/chat/ws
     |
-    v groupApi.addMember(groupId, AddMemberRequest(userId))
-    |    |
-    |    v apiCall { client.post(Groups.Members(id = groupId)) { setBody(request) } }
-    |    |
-    |    v HTTP POST /api/groups/{id}/members  (type-safe @Resource)
-    |    |
-    |    v [Ktor authenticate { }]  -- JWT validation (existing)
-    |    |
-    |    v [conduitAuth { userId -> }]  -- extracts userId from JWT (existing)
-    |    |
-    |    v [GroupService.addMember(callerId, groupId, request)]
-    |         |
-    |         v context(raise: Raise<DomainError>)
-    |         v  -- validates caller is group ADMIN/OWNER (DB lookup)
-    |         v  -- validates target user is not already a member
-    |         v  -- inserts into group_members table
+    v [OrchestratorAgentService.orchestrate()]
     |
-    v Either<AppError, Unit>
+    v [routeMessage() — structured output classification]
+    |    Returns: RoutingDecision(agentType=RAG, reasoning="...")
     |
-    +--> Right: setState { copy(members = members + newMember) }
-    +--> Left:  setState { copy(error = it.message) }
+    v [ragEnhancedResponse()]
+    |    |
+    |    v [RagService.query(userMessage, maxResults=5)]
+    |    |    |
+    |    |    v [LLMEmbedder.embed(userMessage)] → query vector
+    |    |    |
+    |    |    v [PgVectorStorage.similaritySearch(queryVector, limit=5)]
+    |    |    |    |
+    |    |    |    v SQL: SELECT content, 1-(embedding <=> query) as score
+    |    |    |         FROM embeddings ORDER BY embedding <=> query LIMIT 5
+    |    |    |
+    |    |    v Returns List<ScoredChunk> (content + similarity score)
+    |    |
+    |    v [Build augmented prompt]:
+    |    |    "Context from knowledge base:\n{chunks}\n\nUser question: {message}"
+    |    |
+    |    v [ChatAgentService.streamResponse(augmentedPrompt)]
+    |    |
+    |    v Streaming response chunks via WebSocket
+    |
+    v [Client receives streamed response]
 ```
 
-### Localization Resolution Flow (Client)
+### Email Invitation Flow
 
 ```
-[Composable UI]
+[Group Admin in app:admin]
     |
-    v stringResource(Res.strings.ui_login_title)
-    |    |
-    |    v [Compose Multiplatform Resource Library]
-    |    |
-    |    v Detects device locale (e.g., "es")
-    |    |
-    |    v Searches composeResources/values-es/strings.xml
-    |    |
-    |    +--> Found: returns Spanish string "Iniciar Sesion"
-    |    +--> Not found: falls back to values/strings.xml (English "Sign In")
+    v dispatch(InviteIntent.SendInvite(groupId, email))
     |
-    v Returns resolved string to Composable Text()
+    v inviteApi.createInvite(groupId, InviteRequest(email))
+    |
+    v HTTP POST /api/groups/{groupId}/invites
+    |    |
+    |    v [GroupInviteService.createInvite()]
+    |    |    - context(raise: Raise<DomainError>)
+    |    |    - Validates caller is group ADMIN/OWNER
+    |    |    - Generates secure token: SecureRandom.getInstanceStrong().nextBytes(32).toHex()
+    |    |    - Inserts GroupInvitesTable (status=PENDING, expiresAt=now+7days)
+    |    |    - Calls EmailService.send(
+    |    |        to = email,
+    |    |        subject = "Invitation to join {groupName}",
+    |    |        htmlBody = templateEngine.renderInvite(inviterName, groupName, acceptUrl)
+    |    |      )
+    |    v Returns InviteResponse { inviteId, email, status, expiresAt }
+    |
+    v setState { copy(pendingInvites = pendingInvites + newInvite) }
+
+--- Later, recipient clicks email link ---
+
+[Recipient browser] → https://app.example.com/invite/accept?token={token}
+    |
+    v [Deep link / web route resolves to AcceptInviteScreen]
+    |
+    v inviteApi.acceptInvite(AcceptInviteRequest(token))
+    |
+    v HTTP POST /api/invites/accept
+    |    |
+    |    v [GroupInviteService.acceptInvite()]
+    |         - Finds invite by token
+    |         - Validates: status=PENDING, not expired
+    |         - If user authenticated: adds to group_members, sets status=ACCEPTED
+    |         - If user not registered: returns NeedRegistration error with invite context
+    |
+    v Either<AppError, AcceptInviteResponse>
+         - Right: Navigate to group page
+         - Left(NeedRegistration): Navigate to register with inviteToken param
 ```
 
-### Localization Resolution Flow (Server)
+### Multi-Agent Orchestration Flow
 
 ```
-[Server error handler -- DomainError.respond()]
+[User WebSocket message]
     |
-    v DomainError.toAppError() --> AppError with code field
+    v [OrchestratorAgentService.orchestrate(userId, convId, message)]
     |
-    v ErrorResponse(code = appError.code, message = appError.message)
+    v [ROUTING PHASE — single LLM call with structured output]
+    |    Prompt: "Classify this user message into one of: CHAT, ASSISTANT, RAG"
+    |    Output: RoutingDecision { agentType, reasoning }
     |
-    v JSON response: {"code": "GROUP_NOT_FOUND", "message": "Group not found"}
-    |
-    v [Client receives ErrorResponse]
-    |
-    v [SDK mapHttpError() creates AppError.Client.ServerMapped(code, message)]
-    |
-    v [ViewModel can use code to look up localized string if needed]:
-    v   StringKey.fromCode(error.code)?.let { localizedString(it) } ?: error.message
+    +-------+-------+
+    |       |       |
+    v       v       v
+   CHAT  ASSISTANT  RAG
+    |       |       |
+    v       v       v
+  [Chat   [ReAct  [RAG-enhanced
+   Agent]  Agent   Chat]
+    |    with       |
+    |    Tools]     v
+    |       |    [Embed query]
+    |       |       |
+    |       v    [pgvector search]
+    |    [Tool      |
+    |    execution] [Augment prompt]
+    |       |       |
+    v       v       v
+  [Streaming response via WebSocket]
 ```
 
-## Modifications to Existing Modules (Explicit)
+## Scaling Considerations
 
-| Existing Module | Change | Impact |
-|-----------------|--------|--------|
-| `core:models/AppError.kt` | Add `sealed class Group : AppError()` with 4 subtypes | Additive only -- existing code unaffected |
-| `core:models` | Add `dto/GroupDtos.kt`, `routes/GroupRoutes.kt` | Additive only -- new files |
-| `core:sdk/api/AuthApi.kt` | Extract `AuthApiContract` interface, class implements it | Backward-compatible (class still exists, just adds interface) |
-| `core:sdk/api/UserApi.kt` | Extract `UserApiContract` interface | Same approach |
-| `core:sdk/di/SdkModule.kt` | Add `single { GroupApi(client = get()) }`, bind interfaces | 3-4 lines |
-| `server/Application.kt` | Add `registerGroupsMigrations()`, `groupRoutes(groupService)` | ~6 lines |
-| `server/di/ServerModule.kt` | Add `includes(groupsModule)` | 1 line |
-| `composeApp/di/AppModule.kt` | Register admin ViewModels, import new allAppModules | ~5 lines |
-| `composeApp/navigation/Routes.kt` | Add `AdminRoute`, `GroupDetailRoute` | ~4 lines |
-| `composeApp/navigation/AppNavHost.kt` | Add composable blocks for admin/group screens | ~40 lines |
-| `composeApp/build.gradle.kts` | Add `implementation(projects.app.admin)`, `implementation(projects.core.viewmodel)` | 2 lines |
-| `settings.gradle.kts` | Include 5 new modules | 5 lines |
-| `libs.versions.toml` | Add turbine version and library entry | 2 lines |
+| Scale | Architecture Adjustments |
+|-------|--------------------------|
+| 0-1k users | Monolith as-is. MinIO for S3. MailHog for email. Single Postgres with pgvector. All agents share one LLM connection. |
+| 1k-10k users | Move S3 to real AWS S3 / Cloudflare R2. Move email to SendGrid/SES. Add connection pooling for Postgres. Consider background job queue for document ingestion. |
+| 10k-100k users | Separate embedding generation into background worker. Add Redis for presigned URL caching. Consider dedicated vector DB (Qdrant/Weaviate) if pgvector becomes bottleneck. Rate-limit LLM calls per user. |
+| 100k+ users | S3 with CloudFront CDN for file delivery. Dedicated embedding service. Async email queue (SQS/RabbitMQ). Read replicas for Postgres. Shard embeddings by tenant/group. |
+
+### Scaling Priorities
+
+1. **First bottleneck: LLM API rate limits** — The multi-agent orchestrator makes 1+ LLM calls per message (routing + response). At scale, implement per-user rate limiting and request queuing.
+2. **Second bottleneck: Embedding generation** — Document ingestion is CPU/API-intensive. Move to async background processing early. Don't block the upload confirmation on embedding completion.
+3. **Third bottleneck: S3 presigned URL generation** — Each file access generates a presigned URL. Cache these with short TTL (5 min) to reduce S3 SDK calls.
+
+## Anti-Patterns
+
+### Anti-Pattern 1: Server-Side File Proxying
+
+**What people do:** Client uploads file to server via multipart form, server buffers in memory, then forwards to S3.
+**Why it's wrong:** Server becomes a bottleneck. For a 10MB image, the server must hold 10MB in memory per concurrent upload. Under load, this causes OOM crashes.
+**Do this instead:** Presigned URL pattern. Server generates a signed URL, client uploads directly to S3. Server never touches file bytes.
+
+### Anti-Pattern 2: Synchronous Embedding on Upload
+
+**What people do:** When a document is uploaded, immediately generate embeddings before returning the upload response.
+**Why it's wrong:** Embedding generation can take 5-30 seconds for large documents. The upload API times out, and the client gets no feedback.
+**Do this instead:** Confirm the upload immediately. Trigger embedding generation asynchronously. Provide a document status endpoint (`PROCESSING` → `READY` → `ERROR`) for the client to poll or subscribe to.
+
+### Anti-Pattern 3: Storing Embeddings in Application Memory
+
+**What people do:** Use Koog's `InMemoryVectorStorage` for RAG in production.
+**Why it's wrong:** Embeddings are lost on server restart. Cannot scale horizontally (each instance has different data). Memory usage grows unbounded with document count.
+**Do this instead:** Use `PgVectorStorage` backed by PostgreSQL pgvector. Persistent, queryable, shared across server instances, backed up with the database.
+
+### Anti-Pattern 4: Direct Module Dependencies for Cross-Cutting Concerns
+
+**What people do:** `server:files` directly depends on `server:auth` to update the user's avatar URL.
+**Why it's wrong:** Creates circular dependency risk. Makes `server:files` untestable without `server:auth`. Tight coupling between unrelated domains.
+**Do this instead:** Define a `UserProfileUpdater` interface in `server:core:config`. `server:auth` implements it, `server:files` consumes it. Koin wires the binding.
+
+### Anti-Pattern 5: Single Monolithic Agent
+
+**What people do:** One giant AI agent with all tools (RAG search, user management, file operations) in a single tool set.
+**Why it's wrong:** Large tool sets confuse LLMs — they make worse tool selection decisions. Prompt becomes enormous. Different tasks need different system prompts and temperatures.
+**Do this instead:** Coordinator-delegator pattern. A lightweight router classifies intent, then delegates to specialist agents that each have focused tool sets and optimized prompts.
+
+### Anti-Pattern 6: Exposing S3 Keys/URLs in Database without Presigned Access
+
+**What people do:** Store permanent public S3 URLs in the database and serve them directly to clients.
+**Why it's wrong:** Public URLs bypass access control. Anyone with the URL can access the file. Cannot revoke access. S3 bucket must be public.
+**Do this instead:** Store S3 keys (not URLs) in the database. Generate time-limited presigned GET URLs on demand. Bucket stays private. URLs expire automatically.
+
+## Integration Points
+
+### External Services
+
+| Service | Integration Pattern | Notes |
+|---------|---------------------|-------|
+| MinIO / AWS S3 | `aws.sdk.kotlin:s3` (JVM-only) via `S3Client` | Use MinIO in dev (port 9000), real S3 in prod. Same API. |
+| MailHog / SMTP | Jakarta Mail `Transport.send()` | MailHog in dev (port 1025, no auth), SendGrid/SES in prod via SMTP. Web UI at :8025 for dev. |
+| pgvector | R2DBC native codec + raw SQL for similarity ops | Requires `pgvector/pgvector:pg15` Docker image. HNSW index for performance. |
+| Google AI (Embeddings) | Koog `LLMEmbedder` wrapping `GoogleLLMClient` | Same API key as existing AI config. Model: `text-embedding-004`. |
+| Google AI (Structured Output) | Koog `executeStructured<T>()` | Uses existing Gemini model. Requires `@Serializable` + `@LLMDescription` DTOs. |
+
+### Internal Module Boundaries
+
+| Boundary | Communication | Notes |
+|----------|---------------|-------|
+| `server:files` → `server:auth` | Via `UserProfileUpdater` interface (Koin) | No direct dependency. Interface in `server:core:config`. |
+| `server:groups` → `server:email` | Direct dependency (Koin injection) | `GroupInviteService` calls `EmailService.send()`. |
+| `server:ai` → `server:files` | Via `DocumentStore` interface (Koin) | RAG ingestion triggers on file upload confirmation for DOCUMENT purpose. |
+| `server:ai` → `server:core:database` | Uses `VectorColumnType` from shared database utils | Custom column type is a shared utility, not a module dependency. |
+| `core:sdk` → `core:models` | DTOs and route definitions | Existing pattern — unchanged. |
+| `app:profile` → `core:sdk` | `FileApi` for presigned URLs, `UserApi` for profile updates | New API class follows existing pattern. |
+| `app:admin` → `core:sdk` | `InviteApi` for group invitations | New API class follows existing pattern. |
+| `app:designsystem` → (none) | `TerminalAvatar` accepts optional `imageUrl: String?` | No new dependency — just a parameter addition. |
 
 ## Build Order (Respecting Dependencies)
 
 ```
-Phase 1: Foundation (no inter-dependencies)
-  1a. core:l10n          -- zero dependencies, pure Kotlin
-  1b. core:viewmodel     -- depends on lifecycle-viewmodel-compose (already in catalog)
-  These can be built in parallel.
+Phase 1: Infrastructure Foundation (no inter-dependencies)
+  1a. docker-compose.yml changes (pgvector, MinIO, MailHog)
+  1b. server:core:config — add Env.S3, Env.Email, Env.Embedding
+  1c. server:core:database — add VectorColumnType utility
+  1d. core:models — add new DTOs (FileUploadResponse, InviteRequest, etc.)
+  These can all be built in parallel.
 
-Phase 2: Model & SDK changes (depends on Phase 1 only for viewmodel)
-  2a. core:models changes -- add group DTOs, routes, AppError.Group
-  2b. core:sdk changes    -- add GroupApi, extract AuthApiContract/UserApiContract/GroupApiContract
-  2a and 2b are sequential (2b depends on 2a for GroupDtos).
+Phase 2: Core Services (depends on Phase 1)
+  2a. server:files — S3 service, repository, routes, migrations, Koin module
+  2b. server:email — EmailService, EmailTemplateEngine, Koin module
+  2c. server:auth migration — V6_AddAvatarUrl, UsersTable.avatarUrl column
+  2a, 2b, 2c can be built in parallel.
 
-Phase 3: Testing infrastructure (depends on Phases 1 + 2)
-  3.  core:testing        -- depends on core:viewmodel, core:models, core:sdk (for interface fakes)
+Phase 3: Integration Features (depends on Phases 1 + 2)
+  3a. server:groups invites — GroupInvitesTable, GroupInviteService, invite routes
+       (depends on server:email from 2b)
+  3b. server:ai RAG — EmbeddingsTable, PgVectorStorage, RagService, RagTools
+       (depends on VectorColumnType from 1c, Env.Embedding from 1b)
+  3c. server:ai structured output — RoutingDecision DTOs, executeStructured integration
+  3a and 3b can be built in parallel. 3c can parallel with 3b.
 
-Phase 4: Server groups (depends on Phase 2 for core:models)
-  4.  server:groups       -- tables, repository, service, routes, migrations, Koin module
-  4 can run in parallel with Phase 3.
+Phase 4: Multi-Agent Orchestration (depends on Phase 3)
+  4.  server:ai orchestrator — OrchestratorAgentService, routing logic, WebSocket update
+      (depends on RAG from 3b, structured output from 3c)
 
-Phase 5: Client features (depends on Phases 1-4)
-  5a. app:admin           -- depends on core:viewmodel, core:sdk (with GroupApi)
-  5b. Migrate existing VMs -- LoginViewModel, ProfileViewModel to MviViewModel (incremental)
-  5c. Localization files  -- strings.xml in composeApp, wire up bridge function
+Phase 5: SDK & Client (depends on Phases 2-4)
+  5a. core:sdk — add FileApi, InviteApi, update Sdk facade
+  5b. core:testing — add FakeFileApi, FakeInviteApi fakes
+  5c. app:profile — avatar upload flow (image picker → presigned URL → S3)
+  5d. app:designsystem — TerminalAvatar image support
+  5e. app:admin — invite management UI
+  5a before 5b-5e. 5c, 5d, 5e can be parallel after 5a.
 
-Phase 6: Integration + Wiring
-  6.  Wire new modules in Application.kt, AppNavHost.kt, settings.gradle.kts
-  6.  Write tests using core:testing DSL
+Phase 6: Wiring & Developer Onboarding
+  6a. Wire all new modules in Application.kt, ServerModule.kt, settings.gradle.kts
+  6b. Environment variable documentation (.env.example)
+  6c. Developer setup guide (docker-compose up, MinIO bucket creation, etc.)
+  6d. Integration tests using core:testing
 ```
 
 **Phase ordering rationale:**
-- Phase 1 first because core:viewmodel and core:l10n are leaf dependencies with no external requirements.
-- Phase 2 before 3 because core:testing needs the interfaces extracted in 2b.
-- Phase 3 before 5 because feature development should have test infrastructure ready.
-- Phase 4 is independent of client work and can run in parallel with Phase 3.
-- Phase 5 last because it consumes everything: core:viewmodel for base class, core:sdk for GroupApi, core:testing for tests.
+- Phase 1 first because infrastructure (Docker, config, column types, DTOs) has zero runtime dependencies and unblocks everything else.
+- Phase 2 builds the two new modules (files, email) which are consumed by Phase 3 features.
+- Phase 3 builds features that compose Phase 2 services (invites need email, RAG needs vector storage).
+- Phase 4 is the capstone AI feature that composes all Phase 3 AI work (RAG + structured output → orchestrator).
+- Phase 5 is client-side work that consumes the server APIs built in Phases 2-4.
+- Phase 6 is wiring and documentation — done last because it touches cross-cutting concerns.
 
-## Anti-Patterns
-
-### Anti-Pattern 1: SharedFlow for One-Shot Events
-
-**What people do:** Use `MutableSharedFlow(replay=1)` or `MutableStateFlow<Event?>` for navigation events.
-**Why it's wrong:** SharedFlow with replay re-emits events on configuration change / recomposition. StateFlow requires manual null-resetting after consumption, creating race conditions.
-**Do this instead:** Use `Channel<E>(Channel.BUFFERED)` converted to Flow via `receiveAsFlow()`. Each event is consumed exactly once. The MviViewModel base class provides this via `sendEffect()` / `effects`.
-
-### Anti-Pattern 2: Route-Level Database Lookups for Group Authorization
-
-**What people do:** Create a Ktor route-scoped plugin that queries the database to check group membership (similar to `RoleAuthorizationPlugin`).
-**Why it's wrong:** The existing `RoleAuthorizationPlugin` works because it reads from JWT claims (stateless, no DB). Group membership requires a DB lookup. Adding DB access to route plugins creates tight coupling, makes unit testing harder, and can cause unexpected coroutine context issues with `AuthenticationChecked` hooks.
-**Do this instead:** Use `withRole()` for platform-level role checks (from JWT claims). Use service-layer checks with `Raise<DomainError>` for resource-specific authorization (group membership, ownership).
-
-### Anti-Pattern 3: Scattering Strings Across Feature Module composeResources
-
-**What people do:** Each `app:auth`, `app:dashboard`, `app:profile` has its own `composeResources/values/strings.xml`.
-**Why it's wrong:** String key collisions across modules. Server error messages cannot reference the same keys. No single inventory for translators. Compose resource generation creates separate `Res` classes per module, making cross-module string sharing awkward.
-**Do this instead:** Centralize strings in `composeApp/src/commonMain/composeResources/` and use `core:l10n` `StringKey` enum as the canonical registry. Feature modules receive localized strings as parameters from composables in the navigation host.
-
-### Anti-Pattern 4: Testing ViewModels with Mocking Libraries
-
-**What people do:** Use MockK or Mockito to mock AuthApi, UserApi in ViewModel tests.
-**Why it's wrong:** MockK has incomplete multiplatform support (no WASM, limited iOS). Mockito is JVM-only. Mocks verify implementation details (call order, argument matchers) rather than behavior.
-**Do this instead:** Extract interfaces from SDK API classes, create hand-written fakes in `core:testing`. Fakes are portable across all KMP targets, predictable, and test behavior not interactions.
-
-### Anti-Pattern 5: Making core:l10n Depend on Compose
-
-**What people do:** Put the `localizedString()` composable function in `core:l10n` so it can be used everywhere.
-**Why it's wrong:** This would make `core:l10n` depend on Compose runtime, which means server modules cannot use it. The whole point of a separate `core:l10n` is that it's pure Kotlin.
-**Do this instead:** `core:l10n` contains only the `StringKey` enum and `resolveString()`. The Compose bridge function lives in `composeApp` where it has access to `Res.strings`.
-
-## Integration Points
-
-### New Module Dependencies on Existing Modules
-
-| New Module | Depends On | What It Uses |
-|------------|-----------|--------------|
-| `core:viewmodel` | `lifecycle-viewmodel-compose` 2.9.6, `kotlinx-coroutines` 1.10.2 | ViewModel base class, StateFlow, Channel |
-| `core:l10n` | (none -- pure Kotlin) | String key enum and resolution function only |
-| `core:testing` | `core:models`, `core:sdk`, `core:viewmodel`, `core:storage`, `kotest` 6.1.3, `turbine` 1.2.0, `arrow-core` 2.2.1.1 | Types for fakes, assertion helpers |
-| `server:groups` | `server:core:config`, `server:core:database`, `server:auth` (for UsersTable), `core:models` | DomainError, conduit helpers, Exposed R2DBC, DTOs |
-| `app:admin` | `core:sdk`, `core:viewmodel`, `app:designsystem`, `core:models` | GroupApi, MviViewModel, UI components, DTOs |
-
-### Internal Boundaries
-
-| Boundary | Communication | Notes |
-|----------|---------------|-------|
-| `core:viewmodel` -> `app:*` | Inheritance (MviViewModel base class) | Feature VMs extend MviViewModel. Base class has zero framework opinion. |
-| `core:l10n` -> `server:*` | Function call (`resolveString(key)`) | Server uses English defaults. No Compose dependency. |
-| `core:l10n` -> `composeApp` | Bridge function in composeApp maps StringKey -> Res.strings | Bridge lives in composeApp, not in core:l10n. |
-| `core:testing` -> `**/test` | `testImplementation` dependency | Fakes, DSL, assertions. No production code depends on core:testing. |
-| `server:groups` -> `server:auth` | Table reference (UsersTable.id for FK) | One-directional. server:auth does not know about server:groups. |
-| `server:groups` -> `server/Application.kt` | Route installation, migration registration | Same pattern as server:auth and server:ai. |
-| `app:admin` -> `composeApp` | Navigation route + composable block | Admin screens wired in AppNavHost.kt like existing screens. |
+**Critical dependency chains:**
+- `VectorColumnType` (1c) → `EmbeddingsTable` (3b) → `PgVectorStorage` (3b) → `RagService` (3b) → `OrchestratorAgent` (4)
+- `EmailService` (2b) → `GroupInviteService` (3a) → `InviteApi` (5a) → `app:admin` invite UI (5e)
+- `FileService` (2a) → `FileApi` (5a) → `app:profile` avatar upload (5c)
+- `UsersTable.avatarUrl` (2c) → `UserResponse.avatarUrl` (1d) → `TerminalAvatar` image support (5d)
 
 ## Sources
 
-- [Kotlin Multiplatform Common ViewModel](https://kotlinlang.org/docs/multiplatform/compose-viewmodel.html) -- HIGH confidence, verified current
-- [Compose Multiplatform Localizing Strings](https://kotlinlang.org/docs/multiplatform/compose-localize-strings.html) -- HIGH confidence, verified structure
-- [Compose Multiplatform Resources Overview](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources.html) -- HIGH confidence, verified current
-- [Koin for Compose Multiplatform](https://insert-koin.io/docs/reference/koin-compose/compose/) -- HIGH confidence
-- [Koin Compose ViewModel + Navigation](https://insert-koin.io/docs/reference/koin-compose/navigation3/) -- HIGH confidence
-- [JetBrains Exposed GitHub](https://github.com/JetBrains/Exposed) -- HIGH confidence (confirmed R2DBC uses DSL only, no DAO)
-- [Orbit MVI](https://orbit-mvi.org/) -- MEDIUM confidence (evaluated and decided against; external dependency not justified for ~30 lines of base class)
-- [MVIKotlin](https://arkivanov.github.io/MVIKotlin/) -- MEDIUM confidence (evaluated; more suited for Decompose-based projects, not Koin+Navigation Compose)
-- [Compose Multiplatform Resources Setup](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-setup.html) -- HIGH confidence
-- [Koin 4.1 Release](https://blog.kotzilla.io/koin-4.1-is-here) -- MEDIUM confidence (features verified against project's Koin 4.1.1)
+- R2DBC PostgreSQL 1.0.3+ vector codec — HIGH confidence (verified from pgvector-java compatibility docs, project uses r2dbc-postgresql 1.0.7.RELEASE)
+- Koog RAG: `LLMEmbedder`, `RankedDocumentStorage`, `VectorStorage` interfaces — HIGH confidence (verified via Context7 Koog docs)
+- Koog structured output: `executeStructured<T>()`, `@LLMDescription`, `StructureFixingParser` — HIGH confidence (verified via Context7 Koog docs)
+- Koog multi-agent: subgraphs, custom strategy graphs — MEDIUM confidence (API exists in Koog 0.6.2, but complex composition patterns are less documented)
+- AWS SDK for Kotlin S3: `aws.sdk.kotlin:s3:1.6.22` — HIGH confidence (JVM-only, verified in project's libs.versions.toml)
+- Jakarta Mail — HIGH confidence (standard Java email API, well-documented, successor to javax.mail)
+- pgvector Docker image: `pgvector/pgvector:pg15` — HIGH confidence (official pgvector Docker Hub)
+- MinIO S3 compatibility — HIGH confidence (widely used S3-compatible dev replacement)
+- MailHog — HIGH confidence (standard dev SMTP mock, ports 1025/8025)
+- Exposed custom column types — MEDIUM confidence (pattern works but requires maintenance with Exposed version upgrades)
 
 ---
-*Architecture research for: KMP Full-Stack Template v2 -- MVI, Groups, Testing, Localization*
-*Researched: 2026-02-17*
+*Architecture research for: KMP Full-Stack Template v1.2 — pgvector RAG, S3 File Uploads, Multi-Agent AI, Email Invitations*
+*Researched: 2026-02-21*

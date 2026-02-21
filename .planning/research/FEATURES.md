@@ -1,20 +1,23 @@
 # Feature Research
 
-**Domain:** KMP Full-Stack Template -- Milestone 2 (MVI ViewModel, Groups/Admin, Testing, Localization)
-**Researched:** 2026-02-17
-**Confidence:** HIGH (codebase-verified patterns, official docs corroborated)
+**Domain:** KMP Full-Stack Template — Milestone v1.2 (Advanced AI, File Uploads, Email Invites, Dev Onboarding, Tech Debt)
+**Researched:** 2026-02-21
+**Confidence:** HIGH (codebase-verified infrastructure, Koog docs corroborated, pgvector docs verified)
 
-## Context: What Already Exists
+## Context: What Already Exists (v1.0 + v1.1)
 
-Before defining new features, here is what Milestone 1 delivered that we build upon:
+Before defining new features, here is the infrastructure we build upon:
 
-- **ViewModels:** 5 existing ViewModels (`LoginViewModel`, `RegisterViewModel`, `ForgotPasswordViewModel`, `ProfileViewModel`, `DashboardViewModel`) all using `androidx.lifecycle.ViewModel` + `MutableStateFlow` + `viewModelScope.launch`. No formal MVI contract -- each ViewModel has ad-hoc methods (`onXChange`, `login`, `register`, etc.).
-- **SDK:** `AuthApi` and `UserApi` returning `Either<AppError, T>` via `apiCall` wrapper. Arrow `Raise` DSL on server.
-- **RBAC:** `UserRole` sealed class (User/Admin/PowerAdmin) with `RoleAuthorizationPlugin` for server-side route protection. `withRole()` extension on `Route`. Roles stored in separate `RolesTable` with FK from `UsersTable`.
-- **State classes:** Data classes (`LoginState`, `RegisterState`, etc.) with flat fields. No sealed Intent/Mutation/Event hierarchy.
-- **Tests:** Only placeholder tests (`assertEquals(3, 1+2)`) in `commonTest`. Zero real test coverage. `testing-server` bundle declared in version catalog but unused.
-- **Localization:** Zero. Only fonts in `composeResources`. No `values/strings.xml`.
-- **Groups:** Zero. No group concept anywhere. Users are flat -- no organizational grouping.
+- **AI Infrastructure:** `ChatAgentService` (streaming + persistence via `ExposedPersistenceStorage`), `AssistantAgentService` (ReAct strategy with `UserTools`), custom `ChatStreamingStrategy`, WebSocket streaming endpoint. Google Gemini via **Koog 0.6.2**.
+- **Auth:** JWT access/refresh tokens, `UserRole` sealed class (User/Admin/PowerAdmin), `RoleAuthorizationPlugin`, password reset (dev-mode console logging only — no real email).
+- **Groups:** Full RBAC (Owner > Admin > Member), `GroupService` with CRUD, `RegisterMemberRequest` creates user + assigns group. Group-scoped roles via `GroupMembershipsTable`.
+- **MVI ViewModels:** `MviViewModel` base class with Intent/Model/Mutation/Event, all ViewModels migrated. Test DSL with Turbine.
+- **SDK:** `Sdk` facade delegates to `AuthApi`, `UserApi`, `GroupApi`. Returns `Either<AppError, T>` via Arrow.
+- **Design System:** `TerminalAvatar` (initials only — no image support), responsive dashboard, terminal theme.
+- **Localization:** `composeResources/values/strings.xml` with `StringKey` enum, English + Spanish.
+- **Database:** PostgreSQL with R2DBC via Exposed 1.0.0. `UsersTable` has: id, email, passwordHash, name, roleId, createdAt, updatedAt. **No avatarUrl column. No vector columns.**
+- **Config:** `Env.kt` has `Http`, `Auth`, `OAuth`, `Ai`, `ServerConfig`. **No S3 config. No SMTP config.**
+- **Version Catalog:** Ktor 3.4.0, Exposed 1.0.0, Koog 0.6.2, Arrow 2.2.1.1, Koin 4.1.1, Kotlin 2.3.10. **No AWS SDK, no pgvector, no email libs.**
 
 ---
 
@@ -22,434 +25,506 @@ Before defining new features, here is what Milestone 1 delivered that we build u
 
 ### Table Stakes (Users Expect These)
 
-Features that make this milestone feel complete. Without them, the new capability areas feel half-baked.
+Features that make v1.2 feel complete. Without them, the new capability areas are half-baked.
 
-#### 1. MVI ViewModel Foundation
-
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| **Base MVI ViewModel abstract class** | The 5 existing ViewModels all duplicate flow/state boilerplate. A template must provide the reusable foundation, not leave users to reinvent it per screen. | MEDIUM | Based on the AiraloViewModel reference: `MutableSharedFlow<Intent>` for intake, `StateFlow<Model>` for state, `SharedFlow<Event>` for one-shots. `take(intent)` public entry point, `reduce(model, mutation): Model` pure function, `sendMutation()`/`sendEvent()` internal routing. Arrow `Either<Event, Mutation>` flow for unifying mutation vs event dispatching through one `MutableSharedFlow`. |
-| **Intent sealed interface per ViewModel** | Users expect a single entry point for all actions. Scattered `onXChange()` / `doY()` methods are the anti-pattern MVI eliminates. | LOW | Each feature ViewModel defines `sealed interface FooIntent`. The `take(intent: FooIntent)` method replaces all individual public methods. Composable sends `viewModel.take(FooIntent.EmailChanged("..."))`. |
-| **Model (state) data class** | Already exists as `LoginState`, etc. Needs to be renamed/retyped to `Model` within the MVI contract for consistency. | LOW | Keep existing data class shape. Rename convention from `XState` to `XModel` (or alias). Must remain immutable `data class`. |
-| **Mutation sealed interface** | Mutations represent state transitions the reducer applies. Without explicit mutations, `_state.update { ... }` calls are scattered everywhere with no testable contract. | LOW | `sealed interface FooMutation`. The `reduce(model, mutation): Model` function is a `when` over mutations. Pure function -- zero side effects, trivially testable. |
-| **Event sealed interface (one-shots)** | Navigation triggers, toast messages, analytics events. Currently handled via boolean flags in state (`loginSuccess`, `logoutTriggered`) which is a well-known anti-pattern (must be manually reset, races on recomposition). | LOW | `sealed interface FooEvent`. Collected via `SharedFlow` in the UI layer. Consumed exactly once. Replaces `loginSuccess: Boolean` pattern. |
-| **Migrate existing ViewModels to MVI** | 5 ViewModels exist. If the base class ships but existing VMs are not migrated, the template contradicts its own pattern. | HIGH | `LoginViewModel`, `RegisterViewModel`, `ForgotPasswordViewModel`, `ProfileViewModel`, `DashboardViewModel` all need conversion. Each gets Intent/Model/Mutation/Event sealed types and a `reduce` function. Dependencies on `AuthApi`/`UserApi` remain the same. |
-| **MVI test DSL (Turbine-based)** | The entire point of MVI is testability. If the pattern ships without a test utility, it is incomplete. Turbine is the standard for Flow assertion in Kotlin. | MEDIUM | Test DSL: `viewModel.test { take(SomeIntent); awaitModel { shouldBe expectedModel }; awaitEvent { shouldBe expectedEvent } }`. Wraps Turbine's `Flow.test {}` with `awaitItem()`. Uses kotest assertions (`shouldBe`, `assertSoftly`). Needs `kotlinx-coroutines-test` `runTest` for virtual time. Must add `app.cash.turbine:turbine` to version catalog. |
-
-**Expected MVI ViewModel skeleton (based on AiraloViewModel reference):**
-
-```kotlin
-abstract class MVIViewModel<Intent, Model, Mutation, Event>(
-    initialModel: Model
-) : ViewModel() {
-
-    private val intents = MutableSharedFlow<Intent>(extraBufferCapacity = 64)
-    private val _model = MutableStateFlow(initialModel)
-    val model: StateFlow<Model> = _model.asStateFlow()
-
-    private val _events = MutableSharedFlow<Event>(extraBufferCapacity = 64)
-    val events: SharedFlow<Event> = _events.asSharedFlow()
-
-    init {
-        viewModelScope.launch {
-            intents.collect { intent ->
-                handleIntent(intent)
-                    .collect { result ->
-                        result.fold(
-                            ifLeft = { event -> _events.emit(event) },
-                            ifRight = { mutation -> _model.update { reduce(it, mutation) } }
-                        )
-                    }
-            }
-        }
-    }
-
-    fun take(intent: Intent) {
-        intents.tryEmit(intent)
-    }
-
-    abstract fun handleIntent(intent: Intent): Flow<Either<Event, Mutation>>
-    abstract fun reduce(model: Model, mutation: Mutation): Model
-}
-```
-
-#### 2. Testing Infrastructure
+#### 1. Structured AI Output
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **ViewModel unit tests with Turbine** | MVI exists for testability. Shipping MVI without tests defeats the purpose. | MEDIUM | Each migrated ViewModel gets tests: `runTest { viewModel.model.test { take(intent); awaitItem() shouldBe ... } }`. Need `Dispatchers.setMain(testDispatcher)` in `@BeforeTest`. |
-| **Server integration tests (Ktor testApplication)** | The `testing-server` bundle exists in version catalog but is unused. Auth routes, user routes, and RBAC must have tests. | HIGH | Use `testApplication { application { module() } }`. Test: register -> login -> refresh -> logout flow. Test: RBAC enforcement (user cannot access admin routes). Test: validation errors return proper error codes. Uses H2 in-memory DB for speed (already in catalog), or Testcontainers PostgreSQL for fidelity. |
-| **SDK tests with mock HttpClient** | The SDK (`AuthApi`, `UserApi`) is the contract between client and server. Must be tested independently. | MEDIUM | Ktor `MockEngine` to simulate server responses. Test: `apiCall` maps 401 to `AppError.Auth.Unauthorized`. Test: `AuthInterceptor` refreshes on 401. Test: successful deserialization of `UserResponse`. |
-| **Test fixtures and fakes module** | Repeating fake data across test files is maintenance hell. | LOW | Shared `test-fixtures` module (or `commonTest` source set in `:core:models`): `FakeAuthApi`, `FakeUserApi`, `FakeTokenStorage`, factory functions like `aUserResponse()`, `aLoginRequest()`. |
-| **Kotest assertion conventions** | Codebase already declares `kotest-assertionsCore`, `kotest-arrow`, `kotest-arrow-fx`. Using them consistently is table stakes. | LOW | All tests use `shouldBe`, `shouldBeRight()`, `shouldBeLeft()`, `assertSoftly {}`. No mixing with JUnit `assertEquals`. Kotest Arrow assertions for `Either` results. |
+| **`executeStructured<T>()` endpoint** | The existing AI chat returns free-text. Any production AI app needs typed, parseable responses for UI rendering, form-filling, data extraction. Without structured output, the AI is a toy chat widget. | LOW | Koog has full structured output API: `@Serializable` + `@LLMDescription` annotated data classes. Three layers: PromptExecutor, Agent LLM Context, Node layer. `StructureFixingParser` handles malformed LLM output automatically. We already have Koog 0.6.2 — this is configuration, not new infrastructure. |
+| **Structured output data classes** | Users need concrete examples: a `SentimentAnalysis`, `TaskExtraction`, or `DataClassification` response type to see the pattern. | LOW | 2-3 `@Serializable` data classes with `@LLMDescription` annotations. Nested classes, enums, sealed classes all supported. The data classes live in `:core:models` (shared) so the SDK can deserialize them. |
+| **Structured output API route** | A REST endpoint that accepts a prompt + schema identifier and returns typed JSON. | LOW | `POST /api/ai/structured` with request body specifying the output type. Server calls `agent.executeStructured<T>()`. Returns typed JSON matching the data class schema. Reuses existing auth middleware. |
 
-#### 3. Groups/Admin Management
+#### 2. S3 File Uploads with Profile Images
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Group entity (server-side)** | Multi-user applications need organizational grouping. A flat user list does not scale past a toy app. The existing RBAC (User/Admin/PowerAdmin) has no scope -- Admin of what? Groups answer that question. | HIGH | New `GroupsTable`: id (UUID), name, createdBy (FK to users), createdAt, updatedAt. New `GroupMembershipsTable`: id, groupId (FK), userId (FK), role (group-scoped role: owner/admin/member), joinedAt. Migration creates tables. |
-| **Admin creates group** | An Admin or PowerAdmin creates a group and becomes its owner. | MEDIUM | `POST /api/groups` (Admin+ only). Returns `GroupResponse` with id, name, memberCount. Server-side: `GroupService.createGroup()`, `GroupRepository`. SDK: `GroupApi.createGroup()`. |
-| **Admin manages group members** | Add/remove users, change roles within a group. | HIGH | `POST /api/groups/{id}/members` (add), `DELETE /api/groups/{id}/members/{userId}` (remove), `PUT /api/groups/{id}/members/{userId}` (change role). Validation: cannot remove last owner, cannot change own role below owner if sole owner. |
-| **Admin registers users into group** | Admin can create user accounts pre-assigned to their group. The new user gets an email with credentials or activation link. | MEDIUM | `POST /api/groups/{id}/register` -- similar to normal registration but: (a) requires Admin+ caller, (b) auto-assigns group membership, (c) optionally sets initial group role. Reuses `AuthService.register()` logic with group context. |
-| **Admin dashboard view** | Admin sees different content: group list, member count, management actions. Standard user sees only their groups (read-only). | MEDIUM | Client: `AdminDashboardScreen` conditionally shown when `user.role >= Admin`. Lists groups with member counts. Links to group detail/management. Leverages existing `UserRole` sealed class for conditional rendering. |
-| **Group-scoped content visibility** | Content (dashboard data, AI conversations, etc.) can be scoped to a group. Members see group content. | HIGH | This is the deeper value: groups are not just user containers, they scope data access. `groupId` column on relevant tables. Server middleware: `withGroup(groupId)` that verifies caller membership. |
-| **Shared route definitions for groups** | Type-safe `@Resource` routes in `:core:models`, matching existing `Auth`/`Users`/`Ai` pattern. | LOW | `Groups` resource class with nested `ById`, `Members`, `Register` sub-resources. SDK: `GroupApi` class following `AuthApi`/`UserApi` pattern. |
+| **File upload endpoint** | Any real app needs file uploads. Profile images are the minimum viable use case. Without them, the `TerminalAvatar` forever shows initials. | MEDIUM | New `POST /api/files/upload` multipart endpoint. Accepts file + metadata. Stores in S3-compatible storage. Returns URL. Needs **AWS SDK for Kotlin** (`aws.sdk.kotlin:s3`) dependency. |
+| **S3-compatible storage backend** | S3 is the standard for object storage. MinIO provides local dev parity. | MEDIUM | Production: AWS S3. Development: **MinIO** in Docker Compose (already have Docker for PostgreSQL). New `Env.S3` config section: endpoint, bucket, region, accessKey, secretKey. MinIO is wire-compatible with S3 API. |
+| **Profile image upload** | `PUT /api/users/me/avatar` uploads an avatar image. Stores in S3, saves URL in user record. | MEDIUM | New `avatarUrl: String?` column in `UsersTable`. Updated `UserResponse` DTO to include `avatarUrl`. SDK `UserApi.uploadAvatar()` method. Server validates file type (JPEG/PNG/WebP), size limit (5MB), resizes to standard dimensions. |
+| **TerminalAvatar image support** | The existing `TerminalAvatar` component only renders initials. Must display actual images when `avatarUrl` is present, falling back to initials. | LOW | Extend `TerminalAvatar` composable: if `imageUrl != null`, load with `coil3` (already likely available in KMP) or Compose `AsyncImage`. Fallback to current initials rendering. Circular clip already exists. |
+| **ProfileViewModel avatar integration** | `ProfileModel` needs `avatarUrl` field. Profile screen shows avatar, allows upload. | LOW | Add `avatarUrl: String?` to `ProfileModel`. New `ProfileIntent.UploadAvatar(bytes)` intent. `handleIntent` calls `userApi.uploadAvatar()`, emits mutation with new URL. |
 
-#### 4. Localization System
+#### 3. Email Invitations
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| **Client-side string resources** | All hardcoded strings in UI composables and ViewModels must come from resource files. The template currently has zero `strings.xml` files. | MEDIUM | Use Compose Multiplatform's built-in `composeResources/values/strings.xml` system. Generated `Res.strings` accessor. `stringResource(Res.strings.login_button)` in composables. Existing hardcoded strings in auth screens ("Email must not be blank", "Password must not be blank", etc.) must migrate. |
-| **Locale-qualified resource directories** | Support at least English + one other language to prove the pattern works. | LOW | `composeResources/values/strings.xml` (English default), `composeResources/values-es/strings.xml` (Spanish example). Pattern documented so users add more languages. |
-| **Shared string key enum** | ViewModels produce validation error messages using hardcoded strings. These must reference the same keys the UI uses, from shared code. | MEDIUM | `StringKey` enum in `:core:models` (or new `:core:localization` module). ViewModels emit `StringKey.EMAIL_REQUIRED` instead of `"Email must not be blank"`. Composable maps `StringKey` to `stringResource(...)`. Non-composable contexts (ViewModel, SDK) work with keys, not resolved strings. |
-| **Server-side localized error messages** | Server currently returns hardcoded English error messages. Should return error codes and let the client localize. | MEDIUM | Server error responses already use `ErrorResponse(code, message)`. Strategy: server sends `code` (e.g., `"EMAIL_REQUIRED"`), client maps code to localized string. Server `message` becomes a fallback only. Existing `AppError` hierarchy already has `code` fields. |
-| **Locale detection and switching** | App detects system locale. Power users can override. | LOW | Compose Multiplatform handles locale detection automatically from system settings. Optional: locale override in app settings stored in `multiplatform-settings`. |
+| **SMTP email sender service** | The existing `PasswordResetService` prints reset links to console. A real app sends email. Invitations require email delivery. | MEDIUM | New `EmailService` interface with `sendEmail(to, subject, body)`. Implementation: **Jakarta Mail** (formerly JavaMail) or **Simple Java Mail** for SMTP. New `Env.Email` config: host, port, username, password, fromAddress. Dev mode: continue console logging. Production: real SMTP (SendGrid, SES, or any SMTP server). |
+| **Token-based invite link generation** | Admin invites user to group via email. Link contains a one-time token. Clicking sets password + activates account. | MEDIUM | New `InviteTokensTable`: id, token (unique), email, groupId, groupRole, createdBy, expiresAt, usedAt. `POST /api/groups/{id}/invite` generates token, sends email with link. `POST /api/auth/accept-invite` validates token, creates/activates user, adds to group. Reuses `PasswordResetService` token pattern. |
+| **Invite status tracking** | Admin sees pending invites, can resend or revoke. | LOW | `GET /api/groups/{id}/invites` lists pending invitations. `DELETE /api/groups/{id}/invites/{inviteId}` revokes. Status: pending, accepted, expired, revoked. Admin dashboard shows invite status per group. |
+| **Password reset with real email** | Existing `PasswordResetService` already generates tokens. Just needs to use `EmailService` instead of `println()`. | LOW | Swap `println(resetLink)` with `emailService.sendEmail(user.email, "Password Reset", template)`. Template is simple HTML with the reset link. Minimal effort since token logic already exists. |
+
+#### 4. Developer Onboarding
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **Setup CLI polish** | The existing CLI scaffolds the project. Needs to handle new infrastructure (MinIO, SMTP) and verify prerequisites. | LOW | Extend existing CLI: add MinIO container to Docker Compose generation, add SMTP config prompts (or default to console mode), verify `docker compose` available, health-check all services on startup. |
+| **First-run walkthrough** | New developer clones repo, runs setup, and needs guided path through the architecture. | LOW | Interactive CLI that: (1) checks prerequisites (Docker, JDK, Node), (2) starts Docker services, (3) runs DB migrations, (4) seeds sample data (admin user, sample group, sample AI conversation), (5) opens browser to dashboard. |
+| **Dev documentation** | Architecture decision records, module dependency diagram, "how to add a new feature" guide. | LOW | `docs/` directory with: `ARCHITECTURE.md` (module map), `ADDING-A-FEATURE.md` (step-by-step: model → server route → SDK method → ViewModel → screen), `AI-FEATURES.md` (how to add structured output types, RAG sources, new agents). |
+| **Tooling shortcuts** | Common dev tasks should be one command. | LOW | Gradle tasks or shell scripts: `./gradlew devUp` (start Docker + run server), `./gradlew seedData` (populate dev data), `./gradlew testAll` (all test suites). Documented in README. |
+
+#### 5. Tech Debt Cleanup
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| **Server integration tests** | v1.1 deferred comprehensive integration tests. Core auth + groups + AI flows need end-to-end coverage with real PostgreSQL. | HIGH | Testcontainers PostgreSQL (already in catalog). Test: register → login → create group → invite member → accept invite → verify RBAC. Test: AI structured output returns valid typed response. Test: file upload stores and retrieves correctly. |
+| **WASM locale persistence** | Known gap: locale selection may not persist on WASM target. | LOW | Investigate `multiplatform-settings` behavior on WASM. If broken, implement `localStorage`-based fallback for web target. |
+| **Ktor dispatcher configuration** | Server coroutine dispatchers may not be optimally configured for R2DBC + AI streaming workloads. | LOW | Review `Dispatchers.IO` usage in AI agent calls vs R2DBC suspend functions. Ensure AI streaming doesn't block the event loop. Add `CoroutineDispatcher` injection via Koin for testability. |
 
 ---
 
 ### Differentiators (Competitive Advantage)
 
-Features that elevate this template above competitors. These are not required but significantly increase perceived value.
+Features that elevate this template above competitors. Not required, but significantly increase value.
+
+#### AI Differentiators
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| **MVI test DSL as a first-class library** | No KMP template ships a ViewModel test DSL. Most show raw `runTest` + manual Flow collection. A `viewModel.test { take(...); awaitModel { ... } }` DSL is a genuine DX win that developers will adopt. | MEDIUM | Package as a reusable utility in `:core:testing` module. Works with any `MVIViewModel` subclass. Wraps Turbine + kotest. Could be extracted as a standalone library later. |
-| **Group-scoped RBAC** | Existing templates have flat RBAC (global roles). Group-scoped roles (owner/admin/member per group) is a multi-tenant pattern that real SaaS apps need. The existing `UserRole` hierarchy becomes the global tier, while group roles handle per-group permissions. | HIGH | Two-tier auth: global `UserRole` (User/Admin/PowerAdmin) for platform-level access + per-group `GroupRole` (Owner/Admin/Member) for group-level access. The `withRole()` middleware handles global; new `withGroupRole()` handles group-scoped. This is a genuine architectural differentiator. |
-| **Admin invitation flow with pre-registration** | Admin registers users into their group before the user signs up. User receives email with activation link. No other KMP template handles delegated user creation. | MEDIUM | `POST /api/groups/{id}/invite` creates a pending user record. Email contains activation token. User visits activation link, sets password, becomes active group member. Reuses `PasswordResetService` token pattern for activation. |
-| **Server integration test harness with Testcontainers** | The `testcontainers` and `testcontainers-postgresql` dependencies are already declared. Providing a working test harness that spins up real PostgreSQL in CI is a differentiator -- most templates skip this entirely or use H2 only. | MEDIUM | Abstract `IntegrationTestBase` class: spins up Testcontainers PostgreSQL, runs migrations, provides `testApplication` with real DB. Example tests prove: register -> login -> create group -> add member -> verify RBAC. |
-| **Full-stack test coverage strategy** | Demonstrating ViewModel tests + SDK tests + server integration tests + shared model tests in one template is unheard of. It proves the architecture is testable end-to-end. | HIGH | Four test layers documented and implemented: (1) `:core:models` -- serialization round-trip tests, (2) `:core:sdk` -- MockEngine tests, (3) `:app:*` -- ViewModel Turbine tests, (4) `:server` -- testApplication integration tests. Each layer has its own test utilities. |
-| **Pluralization and parameterized strings** | Beyond basic key-value localization, supporting `pluralStringResource` and `%s`/`%d` parameters shows production readiness. | LOW | `<plurals>` in strings.xml. `pluralStringResource(Res.plurals.member_count, count, count)`. Parameterized: `stringResource(Res.strings.welcome, userName)`. |
+| **RAG with pgvector** | The existing AI chat answers from its training data only. RAG lets it answer from your documents — the single most requested enterprise AI feature. No KMP template ships with a working RAG pipeline. | HIGH | **New infrastructure:** pgvector extension in PostgreSQL (Docker: `pgvector/pgvector:pg18`), new `DocumentEmbeddingsTable` with `vector(768)` column, custom `PgVectorStorage` implementing Koog's `VectorStorage` interface. **Pipeline:** document upload → chunk → embed via Koog `LLMEmbedder` (Gemini embeddings or Ollama local) → store vectors in pgvector → query with cosine distance (`<=>`) → inject top-K results into prompt context. Koog provides `RankedDocumentStorage` and `EmbeddingBasedDocumentStorage` but **no built-in pgvector adapter** — we write a custom one against Exposed. |
+| **Multi-agent AI orchestration** | The existing single-agent chat is limited. A router agent that delegates to specialist sub-agents (code helper, document analyst, task planner) demonstrates production AI architecture. | HIGH | Koog supports strategy graphs with **subgraphs** — self-contained processing units with unique names, node graphs, tool subsets, and input/output contracts. Pattern: router agent analyzes user intent → delegates to specialist subgraph → aggregates response. Each subgraph can have different tools, system prompts, and even different LLM configurations. The existing `ChatStreamingStrategy` and `AssistantAgentService` provide the foundation. |
+| **Document ingestion pipeline** | Upload PDFs/text → chunk → embed → store. The full RAG pipeline from document to queryable knowledge. | HIGH | Server endpoint: `POST /api/ai/documents`. Accepts file upload (reuses S3 infrastructure). Extracts text (Apache Tika or simple text extraction). Chunks with overlap (512 tokens, 50 token overlap). Embeds via Koog embeddings module. Stores in pgvector. Associates documents with groups for scoped RAG. |
+
+#### Infrastructure Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| **MinIO local dev environment** | Developers get S3-compatible storage locally without AWS credentials. Docker Compose brings it up alongside PostgreSQL. No other KMP template ships with integrated object storage. | LOW | Add MinIO service to `docker-compose.yml`. Default bucket created on startup. `Env.S3` config points to `localhost:9000` in dev, real S3 in production. MinIO console at `localhost:9001` for debugging. |
+| **Email templating system** | Beyond raw SMTP, HTML email templates for invitations and password resets. Branded, professional emails from a template project. | MEDIUM | Simple Kotlin string templates (no heavy template engine needed). `InviteEmailTemplate`, `PasswordResetEmailTemplate` data classes with `render(): String` method. Inline CSS for email client compatibility. |
+| **Group-scoped RAG** | Documents uploaded to a group are only searchable by group members. Multi-tenant RAG out of the box. | MEDIUM | `group_id` column on `DocumentEmbeddingsTable`. Vector search queries filter by `group_id` before cosine similarity. Group admins manage documents; members query them. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that seem like they belong in this milestone but should be deferred or avoided.
+Features that seem like they belong in v1.2 but should be deferred or avoided.
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| **Full Redux/Orbit MVI library** | Developers familiar with Redux or Orbit-MVI want their preferred framework. | Adding a third-party MVI library creates a heavy dependency and opinionated architecture that may not match the template's Arrow-based patterns. Orbit adds its own test utilities, DSL, and conventions that conflict with our Turbine + kotest approach. The reference implementation (AiraloViewModel) is lightweight and custom. | Ship the lightweight `MVIViewModel` base class. It is 40 lines of code, not a library dependency. Users who want Orbit can swap it in. |
-| **Compose UI snapshot tests** | Visual regression testing sounds valuable for a component library. | Compose Multiplatform snapshot testing tooling is immature across KMP targets. Paparazzi is Android-only. Screenshot testing for iOS/Desktop/Web has no stable solution. Adding platform-specific snapshot tests to a template creates maintenance burden. | Focus on ViewModel behavior tests (deterministic, fast, cross-platform). Document how to add Paparazzi for Android-specific snapshot testing if desired. |
-| **Server-side i18n with Accept-Language** | HTTP `Accept-Language` header for server-side localization. | Server should return error codes, not localized strings. Localizing server responses requires maintaining translation files on the server, which duplicates the client's `strings.xml` and creates sync problems. Server i18n is a different problem than client i18n. | Server returns `ErrorResponse(code = "EMAIL_REQUIRED", message = "fallback English")`. Client maps `code` to locale-appropriate string. Clean separation of concerns. |
-| **Runtime language switching without restart** | Users want to change language without restarting the app. | Compose Multiplatform's resource system uses system locale. Runtime switching requires either platform-specific locale override APIs (different on Android vs iOS vs Desktop) or wrapping every string call in a custom provider, which defeats the built-in `stringResource()` system. | Support system locale detection (automatic). Document per-platform locale override for advanced users. Most apps follow the system setting -- forcing an in-app language picker is over-engineering for a template. |
-| **Multi-tenancy with data isolation** | Groups could use schema-per-tenant or DB-per-tenant isolation. | Extreme complexity for a template. Schema-per-tenant requires dynamic data source routing, complicates migrations, and does not work well with connection pooling. For a template, shared tables with `group_id` columns is the right level of isolation. | Use `group_id` column filtering (simplest multi-tenant pattern). Server middleware validates group membership before data access. Document how to upgrade to schema isolation for high-security use cases. |
-| **Role inheritance / permission matrix** | Fine-grained permissions beyond Admin/User (e.g., `can_edit_members`, `can_view_analytics`). | Permission matrices add enormous complexity (N permissions x M roles x G groups). For a template, three fixed group roles (Owner/Admin/Member) are sufficient to demonstrate the pattern. Adding a dynamic permission system makes the template harder to understand. | Fixed `GroupRole` enum: Owner > Admin > Member. Check `withGroupRole(GroupRole.Admin)`. Document how to extend to a permission matrix if needed. |
+| **Full vector database (Pinecone/Weaviate)** | Dedicated vector DBs offer more features (metadata filtering, hybrid search). | Adds an entirely new infrastructure dependency. pgvector runs inside the PostgreSQL we already have — zero new services. For a template with <100K documents, pgvector with HNSW indexing is more than sufficient. Switching to a dedicated vector DB is an optimization, not a starting point. | Use pgvector in PostgreSQL. Add HNSW index for production performance. Document how to swap to Pinecone/Weaviate if needed. |
+| **LangChain-style agent framework** | LangChain (Python) patterns are well-known. Developers ask for equivalent in Kotlin. | We already have Koog, which is JetBrains' native Kotlin agent framework. Adding LangChain4j or building a LangChain clone creates parallel abstractions. Koog's subgraph system is the Kotlin-native equivalent of LangChain's agent chains. | Use Koog's strategy graphs and subgraphs. They are the Kotlin-idiomatic equivalent. |
+| **Real-time collaborative editing** | "Google Docs-style" editing of shared documents. | Enormous complexity (CRDTs or OT), completely orthogonal to the template's purpose. This is a product feature, not a template feature. | Shared documents are view-only. Editing is single-user. Upload/replace workflow is sufficient. |
+| **Image generation / DALL-E integration** | AI image generation is trendy. | Adds another AI service dependency, significant cost, and a completely different UI paradigm (image gallery, generation queue). Not related to the core structured-output/RAG/multi-agent story. | Defer entirely. The AI pipeline is text-in/text-out for v1.2. Image features are v2+. |
+| **Complex file management (folders, versioning)** | Once file upload exists, requests for folder hierarchy and version history follow. | File management is a product, not a template feature. Folders need tree data structures, breadcrumb navigation, move/copy operations. Versioning needs diffing, storage multiplication, rollback. | Flat file storage per user/group. Upload, list, delete. No folders, no versioning. The pattern is demonstrated; users extend it. |
+| **OAuth-based email (Gmail API)** | Send emails through Gmail API instead of SMTP. | OAuth token management for sending email is fragile (token refresh, scope management, Google's aggressive deprecation). SMTP is universally supported and simpler. | Use SMTP. Works with Gmail (app passwords), SendGrid, SES, or any provider. |
+| **Client-side vector search (on-device embeddings)** | Run embeddings locally on mobile/desktop for offline RAG. | Embedding models are 50-500MB. KMP doesn't have a mature on-device inference story. ONNX Runtime for Kotlin is experimental. This is a research project, not a template feature. | All embedding and vector search happens server-side. Client sends text, server returns results. |
 
 ---
 
 ## Feature Dependencies
 
 ```
-[MVI Base Class]
+[S3 File Upload Infrastructure]
     |
-    +--enables--> [MVI Test DSL]
-    |                 |
-    |                 +--requires--> [Turbine] (new dependency)
-    |                 +--requires--> [kotlinx-coroutines-test] (new dependency)
-    |                 +--requires--> [kotest-assertions] (already in catalog)
+    +--requires--> [AWS SDK Kotlin dependency] (NEW)
+    +--requires--> [MinIO in Docker Compose] (NEW)
+    +--requires--> [Env.S3 config section] (NEW)
     |
-    +--enables--> [Migrate Existing ViewModels to MVI]
-    |                 |
-    |                 +--requires--> [Existing AuthApi, UserApi] (already built)
-    |                 +--requires--> [Existing State classes] (already built)
-    |                 +--enables--> [ViewModel Unit Tests]
+    +--enables--> [Profile Image Upload]
+    |                 +--requires--> [avatarUrl column in UsersTable]
+    |                 +--requires--> [UserResponse DTO update]
+    |                 +--enables--> [TerminalAvatar image support]
+    |                 +--enables--> [ProfileViewModel avatar integration]
     |
-    +--enables--> [Group Management ViewModels]
+    +--enables--> [Document Upload for RAG]
+                      +--requires--> [RAG Pipeline]
 
-[Groups Entity (server)]
+[Email Infrastructure]
     |
-    +--requires--> [UsersTable, RolesTable] (already built)
-    +--requires--> [UserRole sealed class] (already built)
-    +--requires--> [withRole() RBAC middleware] (already built)
+    +--requires--> [SMTP library dependency] (NEW)
+    +--requires--> [Env.Email config section] (NEW)
     |
-    +--enables--> [Group API Routes]
-    |                 +--enables--> [GroupApi SDK class]
-    |                                   +--enables--> [Group Management ViewModels]
-    |                                                     +--enables--> [Admin Dashboard Screen]
+    +--enables--> [Email Invite Flow]
+    |                 +--requires--> [InviteTokensTable] (NEW)
+    |                 +--requires--> [Groups infrastructure] (ALREADY EXISTS)
+    |                 +--enables--> [Invite Status Tracking]
     |
-    +--enables--> [Group-scoped content]
-    +--enables--> [Admin invitation flow]
-    +--enables--> [Server integration tests for groups]
+    +--enables--> [Real Password Reset Emails]
+                      +--requires--> [PasswordResetService] (ALREADY EXISTS)
 
-[String Resources (composeResources)]
+[Structured AI Output]
     |
-    +--independent (can start anytime)
-    +--enables--> [Shared StringKey enum]
-    |                 +--enables--> [ViewModel localized errors]
-    |                 +--enables--> [Server error code mapping]
+    +--requires--> [Koog 0.6.2] (ALREADY EXISTS)
+    +--requires--> [ChatAgentService] (ALREADY EXISTS)
     |
-    +--enables--> [Locale-qualified resources]
+    +--enables--> [Structured Output Endpoint]
+    +--enables--> [Typed AI response data classes]
+    +--independent of file uploads and email
 
-[Testing Infrastructure]
+[RAG Pipeline]
     |
-    +--requires--> [MVI Base Class + Test DSL] (for ViewModel tests)
-    +--requires--> [Groups entity] (for integration test coverage)
-    +--requires--> [SDK classes] (for MockEngine tests)
+    +--requires--> [pgvector extension in PostgreSQL] (NEW)
+    +--requires--> [Koog embeddings module] (NEW dependency: koog-embeddings-llm)
+    +--requires--> [Custom PgVectorStorage adapter] (NEW)
+    +--requires--> [S3 File Upload] (for document ingestion)
     |
-    +--enables--> [Test fixtures module]
-    +--enables--> [Server integration test harness]
-    +--enables--> [SDK MockEngine tests]
-    +--enables--> [ViewModel Turbine tests]
+    +--enables--> [Document ingestion pipeline]
+    +--enables--> [RAG-augmented chat]
+    +--enables--> [Group-scoped RAG]
+
+[Multi-Agent Orchestration]
+    |
+    +--requires--> [Koog subgraphs] (ALREADY AVAILABLE in Koog 0.6.2)
+    +--requires--> [Existing ChatStreamingStrategy] (ALREADY EXISTS)
+    +--requires--> [Structured AI Output] (for typed agent responses)
+    |
+    +--optionally-uses--> [RAG Pipeline] (document-aware agent)
+    |
+    +--enables--> [Router Agent + Specialist Subgraphs]
+    +--enables--> [Agent-specific tool sets]
+
+[Developer Onboarding]
+    |
+    +--requires--> [All infrastructure in place] (S3, Email, pgvector)
+    +--runs-last--> because it documents and automates everything above
+    |
+    +--enables--> [CLI polish]
+    +--enables--> [Dev documentation]
+    +--enables--> [First-run walkthrough]
+
+[Tech Debt]
+    |
+    +--integration tests require all features to exist
+    +--can be addressed incrementally alongside features
 ```
 
 ### Dependency Notes
 
-- **MVI Base Class is the foundation:** Everything else in this milestone builds on it. Must be implemented first because ViewModel tests require it and the Group Management ViewModels will use it.
-- **Groups depends on existing RBAC:** The `UserRole` sealed class, `RolesTable`, `withRole()` middleware, and `AuthService` are all prerequisites. All exist from Milestone 1.
-- **Localization is independent:** String resources can be added at any time. However, the `StringKey` enum should exist before ViewModel migration so that migrated ViewModels emit keys instead of hardcoded strings.
-- **Testing requires everything else to exist first:** You cannot write tests for features that do not exist. The test infrastructure phase should come last (or in parallel with the features it tests).
-- **Server integration tests require Groups:** The interesting integration test scenarios involve multi-step flows (register -> create group -> invite member -> verify RBAC). Without Groups, server tests are limited to auth flow replay.
+- **S3 infrastructure is a prerequisite for both profile images AND RAG document ingestion.** Build file upload first because two major feature areas depend on it.
+- **Email infrastructure is independent of S3/AI.** Can be built in parallel. Only depends on existing Groups infrastructure.
+- **Structured AI output is the simplest AI feature** — it uses existing Koog APIs with minimal new infrastructure. Build it first among AI features to validate the pattern before tackling RAG.
+- **RAG depends on both S3 (document upload) and pgvector (vector storage).** This is the most infrastructure-heavy feature. Building S3 first and structured output first de-risks the RAG phase.
+- **Multi-agent orchestration builds on structured output** because specialist agents return typed responses. RAG is optional but valuable (one specialist agent can be document-aware).
+- **Developer onboarding must come last** because it documents and automates all the infrastructure above. Writing docs for features that don't exist yet is waste.
+- **Tech debt (integration tests) can be woven in alongside feature work** — each feature phase should include its own integration tests.
 
 ---
 
 ## MVP Definition
 
-### Launch With (v2 -- this milestone)
+### Build in v1.2 (This Milestone)
 
-- [ ] **MVI Base ViewModel class** -- the architectural foundation everything builds on
-- [ ] **MVI Test DSL** -- inseparable from MVI (pattern without tests is incomplete)
-- [ ] **Migrate all 5 existing ViewModels to MVI** -- template must not contradict itself
-- [ ] **Group entity + CRUD API** -- create, list, get, update, delete groups
-- [ ] **Group membership management** -- add/remove/change role of members
-- [ ] **Admin registration into group** -- admin creates user accounts for their group
-- [ ] **GroupApi SDK class** -- client-side access to group endpoints
-- [ ] **Admin dashboard screen** -- admin sees group management, user sees their groups
-- [ ] **composeResources/values/strings.xml** -- all hardcoded strings extracted
-- [ ] **StringKey shared enum** -- ViewModel error messages use keys, not strings
-- [ ] **Server error code mapping** -- server returns codes, client localizes
-- [ ] **ViewModel unit tests** -- at least LoginViewModel and GroupManagementViewModel tested
-- [ ] **Server integration tests** -- auth flow + group CRUD + RBAC enforcement tested
-- [ ] **SDK MockEngine tests** -- apiCall mapping + AuthInterceptor tested
+Core features that complete the template's story as a production-ready KMP starter.
 
-### Add After Validation (v2.x)
+- [ ] **Structured AI output endpoint** — lowest complexity AI feature, validates Koog structured output pattern
+- [ ] **S3 file upload infrastructure** — MinIO in Docker, `Env.S3` config, upload endpoint
+- [ ] **Profile image upload + TerminalAvatar image support** — visible, tangible improvement users see immediately
+- [ ] **SMTP email service** — replaces console-logged password resets, enables invitations
+- [ ] **Email invitation flow** — admin invites user to group via email with token link
+- [ ] **RAG pipeline with pgvector** — document upload → embed → store → query. The headline AI feature.
+- [ ] **Multi-agent orchestration** — router agent + 2-3 specialist subgraphs demonstrating the pattern
+- [ ] **Integration tests for new features** — each feature ships with tests (not deferred)
+- [ ] **CLI updates for new infrastructure** — Docker Compose includes MinIO + pgvector PostgreSQL
+- [ ] **Dev documentation** — architecture guide, "add a feature" guide, AI features guide
 
-- [ ] **Second locale (Spanish)** -- proves the localization pattern works across languages
-- [ ] **Pluralization support** -- `<plurals>` in strings.xml for member counts etc.
-- [ ] **Group invitation flow with email** -- activation token via email for invited users
-- [ ] **Group-scoped content filtering** -- dashboard data filtered by group membership
-- [ ] **Test coverage reporting** -- Kover integrated with CI, coverage thresholds set
+### Add After Validation (v1.2.x)
 
-### Future Consideration (v3+)
+- [ ] **Group-scoped RAG** — documents scoped to groups, queries filtered by membership
+- [ ] **Document ingestion pipeline** — PDF/text upload with chunking and automatic embedding
+- [ ] **Email HTML templates** — branded invitation and password reset emails
+- [ ] **Invite status dashboard** — admin UI showing pending/accepted/expired invites
+- [ ] **WASM locale persistence fix** — investigate and fix if broken
+- [ ] **Ktor dispatcher optimization** — review and optimize for concurrent AI + DB workloads
 
-- [ ] **Group-scoped RBAC middleware** -- `withGroupRole()` route extension
-- [ ] **Permission matrix** -- dynamic permissions beyond fixed Owner/Admin/Member roles
-- [ ] **Runtime locale switching** -- in-app language picker with persistence
-- [ ] **Compose UI snapshot tests** -- visual regression once tooling matures
-- [ ] **Test data seeding CLI** -- generate realistic test data for development
+### Future Consideration (v2+)
+
+- [ ] **On-device embeddings** — local vector search for offline scenarios
+- [ ] **Advanced RAG** — hybrid search (vector + keyword), re-ranking, query expansion
+- [ ] **Agent memory** — long-term memory across conversations, user preference learning
+- [ ] **File versioning** — version history for uploaded documents
+- [ ] **Real-time agent collaboration** — multiple agents working on a task simultaneously with user visibility
 
 ---
 
 ## Feature Prioritization Matrix
 
-| Feature | User Value | Implementation Cost | Priority |
-|---------|------------|---------------------|----------|
-| MVI Base ViewModel class | HIGH | MEDIUM | P1 |
-| Migrate existing ViewModels to MVI | HIGH | HIGH | P1 |
-| MVI Test DSL (Turbine) | HIGH | MEDIUM | P1 |
-| Group entity + CRUD API (server) | HIGH | HIGH | P1 |
-| Group membership management | HIGH | HIGH | P1 |
-| Admin registers users into group | HIGH | MEDIUM | P1 |
-| GroupApi SDK class | HIGH | LOW | P1 |
-| Admin dashboard screen | HIGH | MEDIUM | P1 |
-| Client string resources (strings.xml) | MEDIUM | MEDIUM | P1 |
-| StringKey shared enum | MEDIUM | LOW | P1 |
-| Server error code mapping | MEDIUM | LOW | P1 |
-| ViewModel unit tests | HIGH | MEDIUM | P1 |
-| Server integration tests | HIGH | HIGH | P1 |
-| SDK MockEngine tests | MEDIUM | MEDIUM | P1 |
-| Test fixtures module | MEDIUM | LOW | P2 |
-| Second locale (Spanish) | LOW | LOW | P2 |
-| Group invitation with email | MEDIUM | HIGH | P2 |
-| Group-scoped content | MEDIUM | HIGH | P2 |
-| Kover coverage reporting | LOW | LOW | P2 |
-| Pluralization support | LOW | LOW | P3 |
-| Group-scoped RBAC middleware | MEDIUM | MEDIUM | P3 |
+| Feature | User Value | Implementation Cost | Dependencies | Priority |
+|---------|------------|---------------------|--------------|----------|
+| Structured AI output endpoint | HIGH | LOW | Koog (exists) | P1 |
+| S3 file upload infrastructure | HIGH | MEDIUM | AWS SDK (new), MinIO (new) | P1 |
+| Profile image upload + avatar | HIGH | MEDIUM | S3 infrastructure, UsersTable migration | P1 |
+| SMTP email service | HIGH | MEDIUM | SMTP lib (new), Env.Email (new) | P1 |
+| Email invitation flow | HIGH | MEDIUM | Email service, Groups (exists) | P1 |
+| RAG pipeline with pgvector | HIGH | HIGH | pgvector (new), Koog embeddings (new), S3 | P1 |
+| Multi-agent orchestration | MEDIUM | HIGH | Structured output, Koog subgraphs | P1 |
+| Integration tests (per feature) | HIGH | MEDIUM | Each respective feature | P1 |
+| CLI polish for new infra | MEDIUM | LOW | All infrastructure decisions finalized | P1 |
+| Dev documentation | MEDIUM | LOW | All features complete | P1 |
+| Group-scoped RAG | MEDIUM | MEDIUM | RAG pipeline, Groups (exists) | P2 |
+| Document ingestion pipeline | MEDIUM | HIGH | RAG pipeline, S3, text extraction | P2 |
+| Email HTML templates | LOW | LOW | Email service | P2 |
+| Invite status dashboard UI | LOW | MEDIUM | Invite flow | P2 |
+| WASM locale persistence | LOW | LOW | Investigation needed | P2 |
+| Ktor dispatcher optimization | LOW | LOW | Profiling needed | P3 |
+| Agent memory / long-term context | MEDIUM | HIGH | Multi-agent system | P3 |
 
 **Priority key:**
-- P1: Must have for this milestone
-- P2: Should have, add if time permits
+- P1: Must have for v1.2 launch
+- P2: Should have, add when possible within milestone
 - P3: Nice to have, future milestone
 
 ---
 
 ## Detailed Feature Specifications
 
-### A. MVI ViewModel Contract -- What "Done" Looks Like
+### A. Structured AI Output — What "Done" Looks Like
 
-**The four types per ViewModel:**
+**Data class with LLM annotations:**
 
 ```kotlin
-// 1. Intent -- what the user wants to do
-sealed interface LoginIntent {
-    data class EmailChanged(val email: String) : LoginIntent
-    data class PasswordChanged(val password: String) : LoginIntent
-    data class RememberMeChanged(val checked: Boolean) : LoginIntent
-    data object Submit : LoginIntent
-}
-
-// 2. Model -- the full screen state (immutable)
-data class LoginModel(
-    val email: String = "",
-    val password: String = "",
-    val rememberMe: Boolean = false,
-    val isLoading: Boolean = false,
-    val emailError: StringKey? = null,
-    val passwordError: StringKey? = null,
-    val serverError: String? = null,
+@Serializable
+data class SentimentAnalysis(
+    @LLMDescription("The overall sentiment: POSITIVE, NEGATIVE, or NEUTRAL")
+    val sentiment: Sentiment,
+    @LLMDescription("Confidence score between 0.0 and 1.0")
+    val confidence: Double,
+    @LLMDescription("Key phrases that influenced the sentiment determination")
+    val keyPhrases: List<String>,
+    @LLMDescription("Brief explanation of the sentiment analysis")
+    val explanation: String
 )
 
-// 3. Mutation -- how state changes
-sealed interface LoginMutation {
-    data class EmailUpdated(val email: String) : LoginMutation
-    data class PasswordUpdated(val password: String) : LoginMutation
-    data class RememberMeUpdated(val checked: Boolean) : LoginMutation
-    data object Loading : LoginMutation
-    data class ValidationFailed(val emailError: StringKey?, val passwordError: StringKey?) : LoginMutation
-    data class ServerFailed(val message: String) : LoginMutation
-}
-
-// 4. Event -- one-shot side effects
-sealed interface LoginEvent {
-    data object NavigateToHome : LoginEvent
+@Serializable
+enum class Sentiment {
+    @LLMDescription("The text expresses positive feelings or opinions")
+    POSITIVE,
+    @LLMDescription("The text expresses negative feelings or opinions")
+    NEGATIVE,
+    @LLMDescription("The text is factual or does not express clear sentiment")
+    NEUTRAL
 }
 ```
 
-**The reduce function is pure:**
+**Agent execution:**
 
 ```kotlin
-override fun reduce(model: LoginModel, mutation: LoginMutation): LoginModel = when (mutation) {
-    is LoginMutation.EmailUpdated -> model.copy(email = mutation.email, emailError = null)
-    is LoginMutation.PasswordUpdated -> model.copy(password = mutation.password, passwordError = null)
-    is LoginMutation.RememberMeUpdated -> model.copy(rememberMe = mutation.checked)
-    is LoginMutation.Loading -> model.copy(isLoading = true, serverError = null)
-    is LoginMutation.ValidationFailed -> model.copy(emailError = mutation.emailError, passwordError = mutation.passwordError)
-    is LoginMutation.ServerFailed -> model.copy(serverError = mutation.message, isLoading = false)
-}
+// Using Koog's executeStructured API
+val result: SentimentAnalysis = agent.executeStructured<SentimentAnalysis>(
+    prompt = "Analyze the sentiment of: '$userText'"
+)
 ```
 
-**handleIntent produces a Flow of Either<Event, Mutation>:**
+**API endpoint:**
 
 ```kotlin
-override fun handleIntent(intent: LoginIntent): Flow<Either<LoginEvent, LoginMutation>> = flow {
-    when (intent) {
-        is LoginIntent.EmailChanged -> emit(LoginMutation.EmailUpdated(intent.email).right())
-        is LoginIntent.PasswordChanged -> emit(LoginMutation.PasswordUpdated(intent.password).right())
-        is LoginIntent.RememberMeChanged -> emit(LoginMutation.RememberMeUpdated(intent.checked).right())
-        is LoginIntent.Submit -> {
-            // validate, then call API
-            emit(LoginMutation.Loading.right())
-            authApi.login(...)
-                .fold(
-                    ifLeft = { emit(LoginMutation.ServerFailed(it.message).right()) },
-                    ifRight = { emit(LoginEvent.NavigateToHome.left()) }
-                )
-        }
-    }
-}
+// POST /api/ai/structured
+@Serializable
+data class StructuredOutputRequest(
+    val prompt: String,
+    val outputType: String // "sentiment", "task_extraction", etc.
+)
+
+// Response is the typed JSON matching the data class
 ```
 
-### B. MVI Test DSL -- What "Done" Looks Like
+### B. RAG Pipeline — What "Done" Looks Like
 
-```kotlin
-@Test
-fun `login success navigates to home`() = runTest {
-    val fakeAuthApi = FakeAuthApi(loginResult = AuthResponse(...).right())
-    val vm = LoginViewModel(fakeAuthApi)
-
-    vm.model.test {
-        // Initial state
-        awaitItem() shouldBe LoginModel()
-
-        // Type email
-        vm.take(LoginIntent.EmailChanged("user@test.com"))
-        awaitItem().email shouldBe "user@test.com"
-
-        // Type password
-        vm.take(LoginIntent.PasswordChanged("password123"))
-        awaitItem().password shouldBe "password123"
-
-        // Submit
-        vm.take(LoginIntent.Submit)
-        awaitItem().isLoading shouldBe true
-    }
-
-    vm.events.test {
-        vm.take(LoginIntent.Submit)
-        awaitItem() shouldBe LoginEvent.NavigateToHome
-    }
-}
-```
-
-### C. Groups Server Schema
+**pgvector table:**
 
 ```sql
--- New tables
-CREATE TABLE groups (
+CREATE EXTENSION IF NOT EXISTS vector;
+
+CREATE TABLE document_embeddings (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    created_by UUID NOT NULL REFERENCES users(id),
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    document_id UUID NOT NULL,
+    group_id UUID REFERENCES groups(id),
+    chunk_index INTEGER NOT NULL,
+    chunk_text TEXT NOT NULL,
+    embedding vector(768) NOT NULL,  -- Gemini embedding dimension
+    metadata JSONB,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE group_memberships (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    group_id UUID NOT NULL REFERENCES groups(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    role VARCHAR(20) NOT NULL DEFAULT 'MEMBER',  -- OWNER, ADMIN, MEMBER
-    joined_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(group_id, user_id)
-);
+CREATE INDEX ON document_embeddings
+    USING hnsw (embedding vector_cosine_ops);
 ```
 
-### D. Localization Resource Structure
-
-```
-core/localization/src/commonMain/kotlin/
-    com/m2f/template/localization/
-        StringKey.kt          -- shared enum of all string keys
-
-composeApp/src/commonMain/composeResources/
-    values/
-        strings.xml           -- English (default)
-    values-es/
-        strings.xml           -- Spanish (example)
-```
-
-**StringKey enum:**
+**Custom PgVectorStorage adapter:**
 
 ```kotlin
-enum class StringKey {
-    // Auth
-    EMAIL_REQUIRED,
-    EMAIL_INVALID,
-    PASSWORD_REQUIRED,
-    PASSWORD_TOO_SHORT,
-    LOGIN_BUTTON,
-    REGISTER_BUTTON,
-    // Groups
-    GROUP_NAME_REQUIRED,
-    GROUP_CREATED,
-    MEMBER_ADDED,
-    // etc.
+class PgVectorStorage(
+    private val database: Database
+) : VectorStorage {
+    
+    suspend fun store(documentId: UUID, chunks: List<EmbeddedChunk>) {
+        // INSERT chunks with embeddings into document_embeddings
+    }
+    
+    suspend fun query(
+        queryEmbedding: FloatArray,
+        topK: Int = 5,
+        groupId: UUID? = null
+    ): List<RankedDocument> {
+        // SELECT with cosine distance, optional group_id filter
+        // ORDER BY embedding <=> query_embedding LIMIT topK
+    }
 }
+```
+
+**RAG-augmented chat flow:**
+
+```
+User query → Embed query → pgvector cosine search → Top-K chunks
+    → Inject into system prompt as context → LLM generates answer
+    → Response includes source references
+```
+
+### C. Multi-Agent Architecture — What "Done" Looks Like
+
+**Router agent with specialist subgraphs:**
+
+```kotlin
+// Router strategy graph
+val orchestratorStrategy = strategy("orchestrator") {
+    val router = subgraph("router") {
+        // Analyzes user intent, returns routing decision
+        nodeExecuteStructured<RoutingDecision>()
+    }
+    
+    val codeHelper = subgraph("code-helper") {
+        // Tools: code analysis, syntax checking
+        nodeLLMCall()
+    }
+    
+    val documentAnalyst = subgraph("document-analyst") {
+        // Tools: RAG search, document retrieval
+        nodeLLMCall()
+    }
+    
+    val taskPlanner = subgraph("task-planner") {
+        // Tools: task extraction, structured output
+        nodeExecuteStructured<TaskPlan>()
+    }
+    
+    // Route: router → specialist → response
+    edge(router to codeHelper, condition = { it.agent == "code" })
+    edge(router to documentAnalyst, condition = { it.agent == "document" })
+    edge(router to taskPlanner, condition = { it.agent == "task" })
+}
+```
+
+### D. S3 File Upload — What "Done" Looks Like
+
+**Config:**
+
+```kotlin
+// In Env.kt
+data class S3(
+    val endpoint: String,      // "http://localhost:9000" (MinIO) or S3 URL
+    val bucket: String,        // "template-uploads"
+    val region: String,        // "us-east-1"
+    val accessKey: String,
+    val secretKey: String,
+    val publicUrl: String      // URL prefix for public access
+)
+```
+
+**Docker Compose addition:**
+
+```yaml
+minio:
+  image: minio/minio
+  ports:
+    - "9000:9000"
+    - "9001:9001"  # Console
+  environment:
+    MINIO_ROOT_USER: minioadmin
+    MINIO_ROOT_PASSWORD: minioadmin
+  command: server /data --console-address ":9001"
+  volumes:
+    - minio_data:/data
+```
+
+**Upload endpoint:**
+
+```kotlin
+// POST /api/files/upload (multipart)
+// PUT /api/users/me/avatar (multipart, profile-specific)
+
+// FileService stores to S3, returns public URL
+// Server validates: file type, size limit, generates unique key
+```
+
+### E. Email Invitation Flow — What "Done" Looks Like
+
+**Database:**
+
+```sql
+CREATE TABLE invite_tokens (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    token VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    group_id UUID NOT NULL REFERENCES groups(id),
+    group_role VARCHAR(20) NOT NULL DEFAULT 'MEMBER',
+    created_by UUID NOT NULL REFERENCES users(id),
+    expires_at TIMESTAMP NOT NULL,
+    used_at TIMESTAMP,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING'  -- PENDING, ACCEPTED, EXPIRED, REVOKED
+);
+```
+
+**Flow:**
+
+```
+Admin: POST /api/groups/{id}/invite { email, role }
+    → Server creates invite_tokens record
+    → Server sends email via EmailService with link:
+      https://app.example.com/accept-invite?token=abc123
+
+User: Clicks link → shown registration form (email pre-filled)
+    → POST /api/auth/accept-invite { token, name, password }
+    → Server validates token (not expired, not used)
+    → Creates user account (or activates existing)
+    → Adds user to group with specified role
+    → Marks token as used
+    → Returns auth tokens (user is logged in)
+```
+
+### F. Developer Onboarding — What "Done" Looks Like
+
+**CLI first-run experience:**
+
+```bash
+$ ./gradlew setup
+> Checking prerequisites...
+  ✓ JDK 21 found
+  ✓ Docker found
+  ✓ docker compose found
+
+> Starting services...
+  ✓ PostgreSQL (with pgvector) started on :5432
+  ✓ MinIO started on :9000 (console: :9001)
+
+> Running migrations...
+  ✓ Users, Roles, Groups tables created
+  ✓ pgvector extension enabled
+  ✓ Document embeddings table created
+  ✓ Invite tokens table created
+
+> Seeding dev data...
+  ✓ Admin user created (admin@example.com / admin123)
+  ✓ Sample group "Engineering" created
+  ✓ MinIO bucket "template-uploads" created
+
+> Configuration...
+  ✓ .env.local generated with dev defaults
+  ✓ AI provider: Gemini (set GEMINI_API_KEY in .env.local)
+
+> Ready! Run: ./gradlew :server:run
 ```
 
 ---
 
 ## Sources
 
-- [Turbine GitHub](https://github.com/cashapp/turbine) -- Flow testing library, v1.2.1 stable (HIGH confidence, official repo)
-- [Testing Android Flows with Turbine](https://proandroiddev.com/testing-android-flows-in-viewmodel-with-turbine-ea9bae7e811a) -- ViewModel + Turbine patterns (MEDIUM confidence, community)
-- [Ktor Server Testing Documentation](https://ktor.io/docs/server-testing.html) -- testApplication API (HIGH confidence, official docs)
-- [Ktor Client Testing Documentation](https://ktor.io/docs/client-testing.html) -- MockEngine for SDK tests (HIGH confidence, official docs)
-- [Compose Multiplatform Localization](https://kotlinlang.org/docs/multiplatform/compose-localize-strings.html) -- composeResources/values/ pattern (HIGH confidence, official docs)
-- [Compose Multiplatform Resources Setup](https://kotlinlang.org/docs/multiplatform/compose-multiplatform-resources-setup.html) -- resource directory structure (HIGH confidence, official docs)
-- [MVI Architecture in Android](https://www.droidcon.com/2025/04/29/reactive-state-management-in-compose-mvi-architecture/) -- MVI patterns 2025 (MEDIUM confidence, community)
-- [Multi-tenant SaaS Application Guide](https://blog.logto.io/build-multi-tenant-saas-application) -- group/tenant management patterns (MEDIUM confidence, community)
-- [Kotlin Coroutines Test](https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-test/) -- runTest, TestDispatcher API (HIGH confidence, official docs)
-- [KMP Testing Guide 2025](https://www.kmpship.app/blog/kotlin-multiplatform-testing-guide-2025) -- KMP testing strategy overview (MEDIUM confidence, commercial site)
-- [Kotest Ktor Extension](https://kotest.io/docs/extensions/ktor.html) -- Kotest + Ktor integration (HIGH confidence, official docs)
+- **Koog Structured Output** — Koog docs: executeStructured API, @LLMDescription annotations, StructureFixingParser. Three-layer API (PromptExecutor, Agent LLM Context, Node). Supports nested classes, enums, sealed classes, collections. (HIGH confidence, official JetBrains docs)
+- **Koog Embeddings** — Koog docs: `embeddings-base` and `embeddings-llm` modules. `LLMEmbedder` class with `embed()` and `diff()`. Providers: Ollama, OpenAI, AWS Bedrock. (HIGH confidence, official docs)
+- **Koog RAG/VectorStorage** — Koog docs: `RankedDocumentStorage`, `InMemoryVectorStorage`, `FileVectorStorage`, `EmbeddingBasedDocumentStorage`. No built-in pgvector adapter. Custom implementation needed. (HIGH confidence, official docs)
+- **Koog Subgraphs** — Koog docs: self-contained processing units within strategies. Unique name, node graph, tool subset, input/output contracts. (HIGH confidence, official docs)
+- **pgvector** — [GitHub: pgvector/pgvector](https://github.com/pgvector/pgvector). HNSW and IVFFlat indexes, cosine/L2/inner product distances, up to 2000 dimensions. Docker: `pgvector/pgvector:pg18`. (HIGH confidence, official repo)
+- **AWS SDK for Kotlin** — [AWS docs](https://docs.aws.amazon.com/sdk-for-kotlin/). S3 client with suspend functions, KMP-compatible. (HIGH confidence, official docs)
+- **MinIO** — [min.io](https://min.io). S3-compatible object storage. Docker image, wire-compatible with AWS S3 API. (HIGH confidence, official docs)
+- **Ktor Multipart** — [Ktor docs](https://ktor.io/docs/server-requests.html#multipart). `receiveMultipart()` API for file uploads. (HIGH confidence, official docs)
+- **Simple Java Mail** — [simplejavamail.org](https://www.simplejavamail.org). Clean SMTP API for JVM. Alternative: Jakarta Mail. (MEDIUM confidence, popular library)
 
 ---
-*Feature research for: KMP Full-Stack Template -- Milestone 2*
-*Researched: 2026-02-17*
+*Feature research for: KMP Full-Stack Template — Milestone v1.2*
+*Researched: 2026-02-21*
