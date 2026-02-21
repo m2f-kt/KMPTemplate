@@ -62,8 +62,8 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 - [ ] **DEBT-01**: Integration tests cover auth + groups + invite flow end-to-end with Testcontainers PostgreSQL
 - [ ] **DEBT-02**: Integration tests cover file upload + retrieval with S3/MinIO
 - [ ] **DEBT-03**: Integration tests cover AI structured output endpoint
-- [ ] **DEBT-04**: WASM locale selection persists across page reloads via localStorage
-- [ ] **DEBT-05**: Server coroutine dispatcher configuration reviewed and optimized for concurrent AI + R2DBC workloads
+- [x] **DEBT-04**: WASM locale selection persists across page reloads via localStorage -- Phase 16
+- [x] **DEBT-05**: Server coroutine dispatcher configuration reviewed and optimized for concurrent AI + R2DBC workloads -- Phase 16
 
 ### Developer Onboarding
 
@@ -144,8 +144,8 @@ Deferred to future milestone. Tracked but not in v1.2 roadmap.
 | DEBT-01 | Phase 21 | Pending |
 | DEBT-02 | Phase 18 | Pending |
 | DEBT-03 | Phase 19 | Pending |
-| DEBT-04 | Phase 16 | Pending |
-| DEBT-05 | Phase 16 | Pending |
+| DEBT-04 | Phase 16 | Complete |
+| DEBT-05 | Phase 16 | Complete |
 | ONBOARD-01 | Phase 22 | Pending |
 | ONBOARD-02 | Phase 22 | Pending |
 | ONBOARD-03 | Phase 22 | Pending |
