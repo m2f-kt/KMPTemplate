@@ -112,49 +112,49 @@ Deferred to future milestone. Tracked but not in v1.2 roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AISTR-01 | TBD | Pending |
-| AISTR-02 | TBD | Pending |
-| AISTR-03 | TBD | Pending |
-| RAG-01 | TBD | Pending |
-| RAG-02 | TBD | Pending |
-| RAG-03 | TBD | Pending |
-| RAG-04 | TBD | Pending |
-| RAG-05 | TBD | Pending |
-| RAG-06 | TBD | Pending |
-| RAG-07 | TBD | Pending |
-| AGENT-01 | TBD | Pending |
-| AGENT-02 | TBD | Pending |
-| AGENT-03 | TBD | Pending |
-| FILE-01 | TBD | Pending |
-| FILE-02 | TBD | Pending |
-| FILE-03 | TBD | Pending |
-| FILE-04 | TBD | Pending |
-| PROF-01 | TBD | Pending |
-| PROF-02 | TBD | Pending |
-| PROF-03 | TBD | Pending |
-| PROF-04 | TBD | Pending |
-| EMAIL-01 | TBD | Pending |
-| EMAIL-02 | TBD | Pending |
-| EMAIL-03 | TBD | Pending |
-| EMAIL-04 | TBD | Pending |
-| INVITE-01 | TBD | Pending |
-| INVITE-02 | TBD | Pending |
-| INVITE-03 | TBD | Pending |
-| INVITE-04 | TBD | Pending |
-| DEBT-01 | TBD | Pending |
-| DEBT-02 | TBD | Pending |
-| DEBT-03 | TBD | Pending |
-| DEBT-04 | TBD | Pending |
-| DEBT-05 | TBD | Pending |
-| ONBOARD-01 | TBD | Pending |
-| ONBOARD-02 | TBD | Pending |
-| ONBOARD-03 | TBD | Pending |
-| ONBOARD-04 | TBD | Pending |
+| AISTR-01 | Phase 19 | Pending |
+| AISTR-02 | Phase 19 | Pending |
+| AISTR-03 | Phase 19 | Pending |
+| RAG-01 | Phase 17 | Pending |
+| RAG-02 | Phase 19 | Pending |
+| RAG-03 | Phase 19 | Pending |
+| RAG-04 | Phase 19 | Pending |
+| RAG-05 | Phase 19 | Pending |
+| RAG-06 | Phase 19 | Pending |
+| RAG-07 | Phase 19 | Pending |
+| AGENT-01 | Phase 20 | Pending |
+| AGENT-02 | Phase 20 | Pending |
+| AGENT-03 | Phase 20 | Pending |
+| FILE-01 | Phase 18 | Pending |
+| FILE-02 | Phase 17 | Pending |
+| FILE-03 | Phase 17 | Pending |
+| FILE-04 | Phase 18 | Pending |
+| PROF-01 | Phase 21 | Pending |
+| PROF-02 | Phase 21 | Pending |
+| PROF-03 | Phase 21 | Pending |
+| PROF-04 | Phase 21 | Pending |
+| EMAIL-01 | Phase 18 | Pending |
+| EMAIL-02 | Phase 17 | Pending |
+| EMAIL-03 | Phase 17 | Pending |
+| EMAIL-04 | Phase 18 | Pending |
+| INVITE-01 | Phase 21 | Pending |
+| INVITE-02 | Phase 21 | Pending |
+| INVITE-03 | Phase 21 | Pending |
+| INVITE-04 | Phase 21 | Pending |
+| DEBT-01 | Phase 21 | Pending |
+| DEBT-02 | Phase 18 | Pending |
+| DEBT-03 | Phase 19 | Pending |
+| DEBT-04 | Phase 16 | Pending |
+| DEBT-05 | Phase 16 | Pending |
+| ONBOARD-01 | Phase 22 | Pending |
+| ONBOARD-02 | Phase 22 | Pending |
+| ONBOARD-03 | Phase 22 | Pending |
+| ONBOARD-04 | Phase 22 | Pending |
 
 **Coverage:**
 - v1.2 requirements: 38 total
-- Mapped to phases: 0
-- Unmapped: 38 (will be mapped during roadmap creation)
+- Mapped to phases: 38/38 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-02-21*

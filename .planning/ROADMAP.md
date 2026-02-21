@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 MVP** -- Phases 1-9 (shipped 2026-02-17)
 - ✅ **v1.1 Architecture** -- Phases 10-15 (shipped 2026-02-21)
+- 🚧 **v1.2 Polish & Patterns** -- Phases 16-22 (in progress)
 
 ## Phases
 
@@ -40,14 +41,134 @@ Full details: milestones/v1.1-ROADMAP.md
 
 </details>
 
+### 🚧 v1.2 Polish & Patterns (In Progress)
+
+**Milestone Goal:** Add AI patterns (structured output, RAG, multi-agent), file uploads, group invitations, email infrastructure, and developer onboarding — completing the template's production-ready feature set.
+
+- [ ] **Phase 16: Tech Debt Cleanup** - Fix WASM locale persistence and optimize server dispatchers
+- [ ] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table
+- [ ] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests
+- [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
+- [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
+- [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
+- [ ] **Phase 22: Developer Onboarding** - Setup CLI enhancements, documentation, Gradle tooling, first-run walkthrough
+
+## Phase Details
+
+### Phase 16: Tech Debt Cleanup
+**Goal**: Existing rough edges are smoothed before new features land
+**Depends on**: Nothing (first phase of v1.2)
+**Requirements**: DEBT-04, DEBT-05
+**Success Criteria** (what must be TRUE):
+  1. WASM user selects a locale, refreshes the page, and the selected locale persists (not reset to default)
+  2. Server handles concurrent AI streaming + R2DBC database queries without thread starvation or timeouts
+  3. Dispatcher configuration is explicit in code with documented rationale for AI vs DB workloads
+**Plans**: TBD
+
+Plans:
+- [ ] 16-01: TBD
+
+### Phase 17: Infrastructure Foundation
+**Goal**: All Docker services and configuration scaffolding exist so feature phases can build on them
+**Depends on**: Phase 16
+**Requirements**: FILE-02, FILE-03, EMAIL-02, EMAIL-03, RAG-01
+**Success Criteria** (what must be TRUE):
+  1. `docker compose up` starts PostgreSQL (with pgvector), MinIO (with default bucket), and MailHog — all healthy
+  2. `Env.S3` config section loads endpoint, bucket, region, accessKey, secretKey from environment variables
+  3. `Env.Email` config section loads SMTP host, port, credentials, fromAddress from environment variables
+  4. A `document_embeddings` table exists in PostgreSQL with a vector column for storing embeddings
+  5. Developer can open MailHog UI (port 8025) and MinIO console (port 9001) in browser after `docker compose up`
+**Plans**: TBD
+
+Plans:
+- [ ] 17-01: TBD
+
+### Phase 18: Core Services
+**Goal**: Files can be uploaded to S3 and emails can be sent — the two infrastructure services other features depend on
+**Depends on**: Phase 17 (Docker services and config must exist)
+**Requirements**: FILE-01, FILE-04, EMAIL-01, EMAIL-04, DEBT-02
+**Success Criteria** (what must be TRUE):
+  1. Authenticated user can upload a file via API and it appears in MinIO bucket (verified via MinIO console)
+  2. Server rejects files exceeding size limit or not in type whitelist with appropriate error response
+  3. Password reset flow sends a real email visible in MailHog instead of printing to console
+  4. Integration tests verify file upload + retrieval round-trip against MinIO (Testcontainers or local)
+  5. EmailService interface has sendEmail method with working SMTP implementation that delivers to MailHog
+**Plans**: TBD
+
+Plans:
+- [ ] 18-01: TBD
+
+### Phase 19: Structured AI & RAG Pipeline
+**Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
+**Depends on**: Phase 17 (pgvector table), Phase 18 (file upload for documents)
+**Requirements**: AISTR-01, AISTR-02, AISTR-03, RAG-02, RAG-03, RAG-04, RAG-05, RAG-06, RAG-07, DEBT-03
+**Success Criteria** (what must be TRUE):
+  1. Client calls structured output endpoint with a prompt and receives a typed Kotlin data class (e.g., SentimentAnalysis) as Either.Right
+  2. At least 2 example structured output schemas exist with @Serializable and @LLMDescription annotations
+  3. User uploads a document → it is chunked, embedded via Koog LLMEmbedder, and stored as vectors in pgvector
+  4. User asks a question in AI chat → relevant document chunks are retrieved via cosine similarity and injected into the prompt
+  5. Group A member's documents are NOT returned when Group B member queries RAG — scope isolation verified
+**Plans**: TBD
+
+Plans:
+- [ ] 19-01: TBD
+
+### Phase 20: Multi-Agent Orchestration
+**Goal**: AI chat supports multi-agent routing — user messages are analyzed and delegated to specialist agents
+**Depends on**: Phase 19 (structured output + RAG agents exist as potential specialists)
+**Requirements**: AGENT-01, AGENT-02, AGENT-03
+**Success Criteria** (what must be TRUE):
+  1. User sends a message and the router agent delegates to the correct specialist (at least 2 specialists with distinct behaviors)
+  2. Each specialist agent has its own system prompt, tool set, and optionally different LLM configuration
+  3. Multi-agent responses stream to the client via the existing streaming API endpoint
+**Plans**: TBD
+
+Plans:
+- [ ] 20-01: TBD
+
+### Phase 21: Group Invitations & Profiles
+**Goal**: Admins can invite users by email, users can accept invites and upload profile avatars — the complete user lifecycle
+**Depends on**: Phase 18 (email service for invites, file upload for avatars)
+**Requirements**: INVITE-01, INVITE-02, INVITE-03, INVITE-04, PROF-01, PROF-02, PROF-03, PROF-04, DEBT-01
+**Success Criteria** (what must be TRUE):
+  1. Admin invites user@example.com → invite email arrives in MailHog with acceptance link containing token
+  2. Recipient clicks invite link → account is created/activated and user joins the group with specified role
+  3. Admin sees list of pending invitations and can revoke any of them; expired tokens are rejected
+  4. User uploads a profile image → avatar URL appears in their profile; TerminalAvatar component shows image instead of initials
+  5. Integration tests cover the full auth → groups → invite → accept flow end-to-end against Testcontainers PostgreSQL
+**Plans**: TBD
+
+Plans:
+- [ ] 21-01: TBD
+
+### Phase 22: Developer Onboarding
+**Goal**: A new developer can go from `git clone` to running the full app with all services in under 10 minutes
+**Depends on**: Phase 21 (all features complete — onboarding must cover everything)
+**Requirements**: ONBOARD-01, ONBOARD-02, ONBOARD-03, ONBOARD-04
+**Success Criteria** (what must be TRUE):
+  1. Setup CLI detects missing prerequisites (JDK, Docker) and provides actionable fix instructions
+  2. `./gradlew devUp` starts all Docker services, runs migrations, and seeds sample data in one command
+  3. Architecture overview document exists explaining modules, data flow, and how to add a new feature
+  4. First-run walkthrough guides developer from clone → configure → run → verify all services (auth, AI, files, email)
+**Plans**: TBD
+
+Plans:
+- [ ] 22-01: TBD
+
 ## Progress
+
+**Execution Order:** 16 → 17 → 18 → 19 → 20 → 21 → 22
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
 | 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
+| 16. Tech Debt Cleanup | v1.2 | 0/TBD | Not started | - |
+| 17. Infrastructure Foundation | v1.2 | 0/TBD | Not started | - |
+| 18. Core Services | v1.2 | 0/TBD | Not started | - |
+| 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
+| 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
+| 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
+| 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 73 plans shipped across 2 milestones**
-
----
-*Next milestone: Run `/gsd-new-milestone` to plan v1.2+*
+**Total: 73 plans shipped across 2 milestones, 7 phases planned for v1.2**
