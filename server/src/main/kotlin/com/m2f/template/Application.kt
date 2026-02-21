@@ -10,6 +10,7 @@ import com.m2f.server.ai.agents.AssistantAgentService
 import com.m2f.server.ai.agents.ChatAgentService
 import com.m2f.server.ai.registerAiMigrations
 import com.m2f.server.ai.routes.aiRoutes
+import com.m2f.core.database.migrations.registerVectorMigrations
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.routes.authRoutes
 import com.m2f.server.groups.registerGroupMigrations
@@ -51,6 +52,7 @@ fun main() = SuspendApp {
             registerAuthMigrations()
             registerGroupMigrations()
             registerAiMigrations()
+            registerVectorMigrations()
             val database = startDatabase()
             startServer(Netty) {
                 context(database) {
