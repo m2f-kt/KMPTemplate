@@ -51,7 +51,16 @@ A developer can clone this template, run the setup CLI, and immediately have a w
 
 ### Active
 
-(No active requirements -- run `/gsd-new-milestone` to define next milestone)
+**Current Milestone: v1.2 Polish & Patterns**
+
+**Goal:** Add advanced AI patterns, file upload with profile images, group invitations, developer onboarding, and resolve tech debt — making the template production-complete and easy to adopt.
+
+**Target features:**
+- Tech debt cleanup (integration tests, WASM locale persistence, Ktor dispatcher)
+- AI patterns: structured output (JSON), RAG (pgvector), multi-agent orchestration, tool-use examples
+- Group email invite links (admin sends invite, recipient joins via token)
+- S3-compatible file uploads with user avatar/profile image feature
+- Developer onboarding: CLI polish, dev docs, tooling shortcuts, first-run walkthrough
 
 ### Out of Scope
 
@@ -61,6 +70,8 @@ A developer can clone this template, run the setup CLI, and immediately have a w
 - iOS-specific UIKit views -- Compose Multiplatform only
 - Server-side rendering -- API-first architecture
 - Push notifications -- requires platform-specific accounts (FCM, APNs)
+- Offline/caching -- adds significant complexity, not core to template value
+- Granular permissions model -- existing 3-role system (SuperAdmin/Admin/Member) sufficient for template
 
 ## Context
 
@@ -72,6 +83,8 @@ Targets: Android (minSdk 24), iOS, JVM Desktop, WASM/JS Web.
 The template uses Kotlin context parameters (`-Xcontext-parameters`) for dependency propagation and Arrow's Raise API for all domain error handling. The client SDK abstracts all networking behind clean Kotlin functions returning `Either<DomainError, T>`. All ViewModels follow MVI pattern with typed Intent/Model/Mutation/Event and are testable via Turbine DSL.
 
 Known tech debt: Koin DI runtime verification on all targets (human-needed), WASM production stability unconfirmed, missing integration tests for some group endpoints, WASM locale stored in memory only.
+
+v1.2 adds pgvector extension to PostgreSQL for RAG, S3-compatible object storage (MinIO for local dev), and email sending infrastructure for group invitations.
 
 ## Constraints
 
@@ -109,4 +122,4 @@ Known tech debt: Koin DI runtime verification on all targets (human-needed), WAS
 | java.util.Locale for locale switching | Avoids AppCompat dependency, Compose Resources respects JVM default | ✓ Good -- works on Android/JVM/WASM |
 
 ---
-*Last updated: 2026-02-21 after v1.1 Architecture milestone completed*
+*Last updated: 2026-02-21 after v1.2 Polish & Patterns milestone started*

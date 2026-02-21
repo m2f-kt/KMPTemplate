@@ -5,13 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Planning next milestone
+**Current focus:** v1.2 Polish & Patterns — AI patterns, file uploads, group invites, onboarding, tech debt
 
 ## Current Position
 
-Milestone: v1.1 Architecture -- SHIPPED 2026-02-21
-Status: Milestone archived, ready for next milestone
-Last activity: 2026-02-21 -- Completed v1.1 Architecture milestone
+Milestone: v1.2 Polish & Patterns
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-02-21 — Milestone v1.2 started
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -80,4 +82,4 @@ All v1.0 and v1.1 decisions archived in PROJECT.md Key Decisions table and miles
 Last session: 2026-02-21
 Stopped at: v1.1 Architecture milestone completed and archived
 Resume file: .planning/ROADMAP.md
-Next action: /gsd-new-milestone to plan v1.2+
+Next action: Define requirements for v1.2
