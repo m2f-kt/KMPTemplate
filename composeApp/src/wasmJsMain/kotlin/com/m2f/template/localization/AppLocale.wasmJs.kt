@@ -1,5 +1,7 @@
 package com.m2f.template.localization
 
+import kotlin.js.ExperimentalWasmJsInterop
+
 // WASM locale switching is best-effort. The browser's navigator.languages
 // determines the Compose Resources locale. We store the preference but
 // actual locale switching requires a page reload on web.
@@ -12,7 +14,11 @@ actual fun setAppLocale(languageTag: String) {
     // Runtime override requires page reload — this is a known limitation.
 }
 
-private fun browserLanguage(): String = js("navigator.language").toString().take(2)
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun navigatorLanguage(): JsString = js("navigator.language")
+
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun browserLanguage(): String = navigatorLanguage().toString().take(2)
 
 actual fun getAppLocale(): String =
     overrideLocale ?: browserLanguage()
