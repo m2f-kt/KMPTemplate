@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 15 (Localization) -- Gap closure in progress
-Plan: 12 of 13 in current phase (12 complete)
-Status: Plan 15-12 complete (WASM js() fix), Plan 15-13 remaining
-Last activity: 2026-02-21 -- Plan 15-12 executed
+Phase: 15 (Localization) -- COMPLETE (all plans executed)
+Plan: 13 of 13 in current phase (13 complete)
+Status: Phase 15 complete -- all 13 plans executed
+Last activity: 2026-02-21 -- Plan 15-13 executed
 
-Progress: [████████████████████] 92% (12/13 plans)
+Progress: [████████████████████] 100% (13/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -49,6 +49,7 @@ Progress: [████████████████████] 100% (3
 | Phase 15-localization P09 | ~15min | 2 tasks | 13 files |
 | Phase 15-localization P10 | 2min | 2 tasks | 4 files |
 | Phase 15-localization P12 | 1min | 1 task | 1 file |
+| Phase 15-localization P13 | 3min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,9 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 15-localization]: key(currentLocale) forces full UI tree recomposition for reactive locale switching
 - [Phase 15-localization]: ProfileRoute reads locale from CompositionLocal, writes only to PreferencesStorage
 - [Phase 15-12]: js() must be sole expression in top-level function body for Kotlin/Wasm 2.3.10 — split into navigatorLanguage() + browserLanguage()
+- [Phase 15-13]: SetSystemAdmin mutation fires before SetLoading(false) to ensure isAdmin is correct by first render
+- [Phase 15-13]: NavigateToAdmin.groupId nullable to support system admins without group memberships
+- [Phase 15-13]: AdminPanelRoute.groupId nullable with null guard skipping LoadAdminPanel intent
 
 ### Roadmap Evolution
 
@@ -129,5 +133,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 15-12-PLAN.md (WASM js() fix)
-Resume file: .planning/phases/15-localization/15-12-SUMMARY.md
+Stopped at: Completed 15-13-PLAN.md -- Phase 15 fully complete (13/13 plans)
+Resume file: .planning/phases/15-localization/15-13-SUMMARY.md
