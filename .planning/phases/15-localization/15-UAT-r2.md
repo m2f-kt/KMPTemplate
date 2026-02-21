@@ -1,5 +1,5 @@
 ---
-status: complete
+status: diagnosed
 phase: 15-localization
 source: 15-08-SUMMARY.md, 15-09-SUMMARY.md, 15-10-SUMMARY.md, 15-11-SUMMARY.md
 started: 2026-02-21T10:00:00Z
@@ -69,21 +69,30 @@ skipped: 0
 ## Gaps
 
 - truth: "Admin Panel is accessible and displays fully localized UI text for admin/poweradmin users"
-  status: failed
+  status: diagnosed
   reason: "User reported: I'm not able to see Admin Panel, I just see the profile and a different profile depending of the type of user but neither using admin or poweradmin i see admin panel"
   severity: major
   test: 5
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "DashboardViewModel determines admin panel visibility exclusively from group-level memberships (GroupRole), not system-level roles (UserRole). A system Admin/PowerAdmin who hasn't been added to any group gets an empty membership list → isAdmin stays false → admin nav item never renders. Even if forced true, AdminPanelClicked guards on groupId != null which is null without group membership."
+  artifacts:
+    - app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardViewModel.kt
+    - app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardModel.kt
+    - app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardSidebar.kt
+    - app/dashboard/src/commonMain/kotlin/com/m2f/template/app/dashboard/DashboardBottomNav.kt
+  missing:
+    - "Add dual-role check: also load user profile to check UserRole.Admin/PowerAdmin for admin panel visibility"
+    - "Fix AdminPanelClicked null-guard — provide fallback when groupId is null (e.g., group selector or system admin panel)"
+  debug_session: ".planning/debug/admin-panel-not-visible.md"
 
 - truth: "WASM target compiles without js() expression error"
-  status: failed
+  status: diagnosed
   reason: "User reported: same error as before — AppLocale.wasmJs.kt:15:41 Calls to 'js(code)' must be a single expression inside a top-level function body or a property initializer in Kotlin/Wasm"
   severity: blocker
   test: 9
-  root_cause: ""
-  artifacts: []
-  missing: []
-  debug_session: ""
+  root_cause: "The 15-11 fix extracted js() from the elvis expression into browserLanguage() but still chains .toString().take(2) on the js() call. In Kotlin/Wasm 2.3.10, js() must be the ENTIRE and SOLE expression of a top-level function body — no method chaining allowed. Current code: private fun browserLanguage(): String = js(\"navigator.language\").toString().take(2)"
+  artifacts:
+    - composeApp/src/wasmJsMain/kotlin/com/m2f/template/localization/AppLocale.wasmJs.kt
+  missing:
+    - "Extract js() to its own function returning JsString: private fun navigatorLanguage(): JsString = js(\"navigator.language\")"
+    - "Have browserLanguage() call navigatorLanguage().toString().take(2) separately"
+  debug_session: ".planning/debug/wasm-js-call-compile-error.md"
