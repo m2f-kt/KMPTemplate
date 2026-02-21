@@ -17,6 +17,8 @@ data class Env(
     val auth: Auth = Auth(),
     val oauth: OAuth = OAuth(),
     val ai: Ai = Ai(),
+    val s3: S3 = S3(),
+    val email: Email = Email(),
     val serverConfig: ServerConfig = ServerConfig(),
 ) {
     data class Http(
@@ -64,6 +66,32 @@ data class Env(
     data class Ai(
         val enabled: Boolean = System.getenv("AI_ENABLED")?.toBooleanStrictOrNull() ?: false,
         val googleApiKey: String = System.getenv("GOOGLE_API_KEY") ?: "",
+    )
+
+    /**
+     * S3-compatible object storage configuration.
+     * Defaults point to local MinIO from docker-compose.yml.
+     * Set env vars for production S3/R2/GCS deployments.
+     */
+    data class S3(
+        val endpoint: String = System.getenv("S3_ENDPOINT") ?: "http://localhost:9000",
+        val bucket: String = System.getenv("S3_BUCKET") ?: "uploads",
+        val region: String = System.getenv("S3_REGION") ?: "us-east-1",
+        val accessKey: String = System.getenv("S3_ACCESS_KEY") ?: "minioadmin",
+        val secretKey: String = System.getenv("S3_SECRET_KEY") ?: "minioadmin",
+    )
+
+    /**
+     * SMTP email configuration.
+     * Defaults point to local MailHog from docker-compose.yml.
+     * MailHog accepts any credentials, so username/password default to empty.
+     */
+    data class Email(
+        val host: String = System.getenv("SMTP_HOST") ?: "localhost",
+        val port: Int = System.getenv("SMTP_PORT")?.toIntOrNull() ?: 1025,
+        val username: String = System.getenv("SMTP_USERNAME") ?: "",
+        val password: String = System.getenv("SMTP_PASSWORD") ?: "",
+        val fromAddress: String = System.getenv("SMTP_FROM") ?: "noreply@template.local",
     )
 
     data class ServerConfig(
