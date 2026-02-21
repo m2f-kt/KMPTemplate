@@ -6,6 +6,13 @@
     <title>template</title>
     <link type="text/css" rel="stylesheet" href="styles.css">
     <script>
+        // Restore persisted locale from localStorage BEFORE WASM loads.
+        // multiplatform-settings StorageSettings uses "com.russhwolf.settings." prefix.
+        var savedLocale = localStorage.getItem("com.russhwolf.settings.pref_language");
+        if (savedLocale) {
+            window.__customLocale = savedLocale;
+        }
+
         // Monkey-patch Navigator.prototype.languages so Compose Resources can read
         // a custom locale set from Kotlin/WASM via window.__customLocale.
         // See: https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-resource-environment.html

@@ -19,6 +19,10 @@ private fun clearCustomLocale(): Unit = js("window.__customLocale = null")
 @OptIn(ExperimentalWasmJsInterop::class)
 private fun getCustomLocale(): JsString? = js("window.__customLocale")
 
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun getLocalStorageLocale(): JsString? =
+    js("localStorage.getItem('com.russhwolf.settings.pref_language')")
+
 private var overrideLocale: String? = null
 
 actual fun setAppLocale(languageTag: String) {
@@ -35,5 +39,8 @@ private fun navigatorLanguage(): JsString = js("navigator.language")
 @OptIn(ExperimentalWasmJsInterop::class)
 private fun browserLanguage(): String = navigatorLanguage().toString().take(2)
 
+@OptIn(ExperimentalWasmJsInterop::class)
 actual fun getAppLocale(): String =
-    overrideLocale ?: browserLanguage()
+    overrideLocale
+        ?: getLocalStorageLocale()?.toString()
+        ?: browserLanguage()
