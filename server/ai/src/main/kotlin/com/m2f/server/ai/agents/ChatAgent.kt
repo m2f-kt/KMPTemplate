@@ -13,11 +13,14 @@ import arrow.core.raise.catch
 import com.m2f.core.config.server.DomainError
 import com.m2f.server.ai.errors.AgentExecutionFailed
 import com.m2f.server.ai.persistence.ExposedPersistenceStorage
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * Service for the conversational agent with persistence.
@@ -29,6 +32,7 @@ import kotlinx.coroutines.runBlocking
 class ChatAgentService(
     private val persistenceStorage: ExposedPersistenceStorage,
     private val googleApiKey: String,
+    private val aiDispatcher: CoroutineDispatcher,
 ) {
     private val systemPrompt = """
         |You are a friendly conversational assistant.
@@ -75,7 +79,9 @@ class ChatAgentService(
                     }
                 }
 
-                agent.run(input)
+                withContext(aiDispatcher) {
+                    agent.run(input)
+                }
                 close()
             } catch (e: Exception) {
                 trySend("[ERROR] Agent failed: ${e.message}")
@@ -83,8 +89,13 @@ class ChatAgentService(
             }
 
             awaitClose {
-                runBlocking {
-                    try { agent?.close() } catch (_: Exception) {}
+                // Fire-and-forget cleanup. agent.close() is a suspend function,
+                // so we launch in a separate scope rather than using runBlocking
+                // which would block the Netty event loop thread.
+                agent?.let { a ->
+                    CoroutineScope(aiDispatcher).launch {
+                        try { a.close() } catch (_: Exception) {}
+                    }
                 }
             }
         }

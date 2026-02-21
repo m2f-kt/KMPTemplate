@@ -27,6 +27,7 @@ val aiModule = module {
         ChatAgentService(
             persistenceStorage = get(),
             googleApiKey = get<Configuration>().env.ai.googleApiKey,
+            aiDispatcher = get<Configuration>().aiDispatcher,
         )
     }
 }
