@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** -- Phases 1-9 (shipped 2026-02-17)
-- ✅ **v1.1 Architecture** -- Phases 10-15 (completed 2026-02-19)
+- ✅ **v1.1 Architecture** -- Phases 10-15 (shipped 2026-02-21)
 
 ## Phases
 
@@ -25,161 +25,29 @@ Full details: milestones/v1.0-ROADMAP.md
 
 </details>
 
-### ✅ v1.1 Architecture (Completed 2026-02-19)
+<details>
+<summary>✅ v1.1 Architecture (Phases 10-15) -- SHIPPED 2026-02-21</summary>
 
-**Milestone Goal:** Add architectural patterns and domain capabilities: MVI ViewModel layer, group-based user management with admin panel, full testing infrastructure, and localization system.
+- [x] Phase 10: MVI ViewModel Foundation (1/1 plan) -- completed 2026-02-17
+- [x] Phase 11: Testing Infrastructure (3/3 plans) -- completed 2026-02-18
+- [x] Phase 11.1: Fake SDK facade & fixes (2/2 plans) -- completed 2026-02-18
+- [x] Phase 12: ViewModel Migration (7/7 plans) -- completed 2026-02-18
+- [x] Phase 13: Group Server & SDK (4/4 plans) -- completed 2026-02-19
+- [x] Phase 14: Group Admin UI (4/4 plans) -- completed 2026-02-19
+- [x] Phase 15: Localization (13/13 plans) -- completed 2026-02-21
 
-- [x] **Phase 10: MVI ViewModel Foundation** - Base class with Intent/Model/Mutation/Event, StateFlow state, SharedFlow effects, Koin injection (completed 2026-02-17)
-- [x] **Phase 11: Testing Infrastructure** - core:testing module with Turbine DSL, SDK interface extraction, fake implementations, shared fixtures (completed 2026-02-18)
-- [x] **Phase 11.1: Fake SDK facade, fix Android compile, update mvi-viewmodel skill** (INSERTED) (completed 2026-02-18)
-- [x] **Phase 12: ViewModel Migration** - Migrate all 5 existing ViewModels to MVI pattern with tests (completed 2026-02-18)
-- [x] **Phase 13: Group Server & SDK** - server:groups module with tables, RBAC, SDK class, shared routes, integration tests (completed 2026-02-19)
-- [x] **Phase 14: Group Admin UI** - Admin panel with group management screens and role-gated navigation (completed 2026-02-19)
-- [x] **Phase 15: Localization** - StringKey enum, resource files, server i18n, client string loading, runtime locale switching
+Full details: milestones/v1.1-ROADMAP.md
 
-## Phase Details
-
-### Phase 10: MVI ViewModel Foundation
-**Goal**: Developers have a formal MVI base class they can extend with typed Intent/Model/Event parameters to build any ViewModel
-**Depends on**: Nothing (first phase of v1.1)
-**Requirements**: MVI-01, MVI-02, MVI-03, MVI-04
-**Success Criteria** (what must be TRUE):
-  1. Developer can create a new ViewModel by extending MviViewModel with custom Intent, Model, and Event sealed types
-  2. ViewModel state is exposed as StateFlow and UI recomposes reactively when state changes
-  3. One-shot events (navigation, toasts) arrive via SharedFlow<Event> with replay=0 -- never double-fire on recomposition
-  4. ViewModels are injectable via Koin using koinViewModel() on all KMP targets (Android, iOS, Desktop, WASM)
-**Plans**: 1 plan
-- [ ] 10-01-PLAN.md -- Create core:mvi module with MviViewModel base class
-
-### Phase 11: Testing Infrastructure
-**Goal**: Developers have a reusable testing toolkit -- SDK interfaces with fake implementations and a Turbine-based ViewModel test DSL -- so all subsequent feature work ships with tests
-**Depends on**: Phase 10
-**Requirements**: TEST-01, TEST-03, TEST-04, TEST-05, TEST-06, MVI-06
-**Success Criteria** (what must be TRUE):
-  1. Developer can write ViewModel tests using a Turbine-based DSL that dispatches intents and asserts state/event sequences
-  2. SDK API classes (AuthApi, UserApi) have extracted interfaces with hand-written fake implementations for test substitution
-  3. Shared test fixtures and utilities are available as a core:testing module importable by any project module
-  4. Kotest assertions work with Arrow Either/Raise types in multiplatform tests (JVM, iOS, WASM)
-  5. At least one working ViewModel test (LoginViewModel) demonstrates the full pattern as a reference
-**Plans**: 3 plans
-Plans:
-- [ ] 11-01-PLAN.md -- Extract SDK interfaces, create Impl classes, Sdk facade, update Koin bindings
-- [ ] 11-02-PLAN.md -- Create core:testing module with Turbine DSL, annotations, ViewModelTest base class
-- [ ] 11-03-PLAN.md -- Fake SDK builder DSL and reference LoginViewModel test
-
-### Phase 11.1: Fake SDK facade, fix Android compile, update mvi-viewmodel skill (INSERTED)
-**Goal:** Fix Android compilation blocker, create FakeSdkBuilder composing sub-API fakers into a parent-level fakeSdk {} DSL, migrate LoginViewModel to use Sdk as dependency, and update the mvi-viewmodel skill to document the canonical pattern
-**Depends on:** Phase 11
-**Requirements:** FIX-ANDROID, FAKE-SDK, UPDATE-LOGINVM, UPDATE-LOGINVM-TEST, UPDATE-KOIN, UPDATE-SKILL, REMOVE-SENDSTATEMENT
-**Success Criteria** (what must be TRUE):
-  1. Android target in core:testing compiles successfully (kotlin-test-junit added for androidMain)
-  2. FakeSdkBuilder composes FakeAuthApiBuilder + FakeUserApiBuilder; fakeSdk {} DSL is available
-  3. LoginViewModel takes Sdk as dependency; LoginViewModelTest uses fakeSdk { auth { ... } }
-  4. mvi-viewmodel skill documents that ViewModels MUST use Sdk and tests MUST use fakeSdk {}
-  5. sendStatement removed from MviViewModel (unused dead code)
-**Plans**: 2 plans
-Plans:
-- [ ] 11.1-01-PLAN.md -- Fix Android compile, create FakeSdkBuilder, remove sendStatement
-- [ ] 11.1-02-PLAN.md -- Migrate LoginViewModel to Sdk, update test to fakeSdk, update skill docs
-
-### Phase 12: ViewModel Migration
-**Goal**: All existing ViewModels use the MVI pattern consistently -- the template demonstrates one approach, not two
-**Depends on**: Phase 11
-**Requirements**: MVI-05
-**Success Criteria** (what must be TRUE):
-  1. All 5 existing ViewModels (Login, Register, ForgotPassword, Profile, Dashboard) extend MviViewModel
-  2. Boolean navigation flags (loginSuccess, logoutTriggered) are replaced with Channel-based effects
-  3. Composables consume effects via LaunchedEffect collection instead of state observation for one-shot actions
-  4. Each migrated ViewModel has at least one unit test using the core:testing DSL
-**Plans**: 7 plans
-Plans:
-- [ ] 12-01-PLAN.md -- Migrate LoginViewModel to MVI (reference implementation)
-- [ ] 12-02-PLAN.md -- Migrate RegisterViewModel to MVI
-- [ ] 12-03-PLAN.md -- Migrate ForgotPasswordViewModel to MVI
-- [ ] 12-04-PLAN.md -- Migrate ProfileViewModel to MVI
-- [ ] 12-05-PLAN.md -- Migrate DashboardViewModel to MVI
-- [ ] 12-06-PLAN.md -- Remove legacy State files and final verification
-- [ ] 12-07-PLAN.md -- Gap closure: Rewrite ProfileViewModelTest to use core:testing DSL
-
-### Phase 13: Group Server & SDK
-**Goal**: The server supports group-based user organization with CRUD operations, membership management, and data isolation -- accessible through the shared SDK
-**Depends on**: Phase 10
-**Requirements**: GRP-01, GRP-02, GRP-07, GRP-08, TEST-02
-**Success Criteria** (what must be TRUE):
-  1. Admin can create a group and the group persists in the database with correct schema (designed for future multi-group)
-  2. Users belong to one group and can only access their own group's data -- cross-group requests return 403
-  3. GroupApi SDK functions return Either<ClientError, T> using shared @Resource route definitions
-  4. Server integration tests verify auth flow, group CRUD, RBAC enforcement, and cross-group isolation using Ktor testApplication
-**Plans**: 4 plans
-Plans:
-- [ ] 13-01-PLAN.md -- Shared models: GroupRole, DTOs, @Resource routes, AppError.Group
-- [ ] 13-02-PLAN.md -- Server groups module: tables, repos, service, routes, migrations, DI
-- [ ] 13-03-PLAN.md -- SDK GroupApi interface, implementation, Sdk facade, testing fakes
-- [ ] 13-04-PLAN.md -- Integration tests: CRUD, RBAC, cross-group isolation via Testcontainers
-
-### Phase 14: Group Admin UI
-**Goal**: Admins have a dedicated panel to manage their group -- view members, register users, and access admin-specific dashboard content
-**Depends on**: Phase 12, Phase 13
-**Requirements**: GRP-03, GRP-04, GRP-05, GRP-06
-**Success Criteria** (what must be TRUE):
-  1. Admin can view group information and a list of group members from the admin panel
-  2. Admin can register new users directly into their group from the admin panel
-  3. Admin sees different dashboard content than regular users (admin panel sections visible only to admin role)
-  4. Navigation is role-gated -- admin routes appear only for admin users, regular users never see admin navigation items
-**Plans**: 4 plans
-Plans:
-- [ ] 14-01-PLAN.md -- Memberships endpoint (server + SDK + DTO + fake)
-- [ ] 14-02-PLAN.md -- app:admin module + role-gated Dashboard
-- [ ] 14-03-PLAN.md -- AdminPanel ViewModel + Screen + Tests
-- [ ] 14-04-PLAN.md -- RegisterMember ViewModel + Screen + Tests
-
-### Phase 15: Localization
-**Goal**: The template demonstrates a complete localization system -- shared string keys between server and client, platform resource files, and runtime locale switching
-**Depends on**: Phase 14
-**Requirements**: L10N-01, L10N-02, L10N-03, L10N-04, L10N-05, L10N-06
-**Success Criteria** (what must be TRUE):
-  1. A shared StringKey enum exists that both server and client reference for string lookup -- no hardcoded strings in ViewModels
-  2. Compose resource files (strings.xml) support locale qualifiers and load correctly on all KMP targets
-  3. Server returns localized error messages based on the Accept-Language header
-  4. User can switch locale at runtime and all UI strings update without app restart
-  5. A bridge function maps StringKey values to Compose Res.strings accessors for type-safe string resolution
-**Plans**: 13 plans
-Plans:
-- [x] 15-01-PLAN.md — Foundation: StringKey enum + English strings.xml + bridge function
-- [x] 15-02-PLAN.md — Auth module localization: Login/Register/ForgotPassword ViewModels + screens + tests
-- [x] 15-03-PLAN.md — Feature module localization: Profile/Dashboard/AdminPanel/RegisterMember
-- [x] 15-04-PLAN.md — Server i18n: ServerStrings + Accept-Language + Spanish locale
-- [x] 15-05-PLAN.md — Runtime locale switching: expect/actual + PreferencesStorage + locale selector UI
-- [x] 15-06-PLAN.md — Gap closure: Profile module screen localization (per-module strings + resolveStringKey)
-- [x] 15-07-PLAN.md — Gap closure: Admin + Dashboard module screen localization (per-module strings + resolveStringKey)
-- [x] 15-08-PLAN.md — Gap closure: Fix string resource XML values (raw keys → human-readable EN/ES)
-- [x] 15-09-PLAN.md — Gap closure: Wire composables with stringResource() + add new string keys
-- [x] 15-10-PLAN.md — Gap closure: Reactive locale switching (CompositionLocal + auth Spanish strings)
-- [x] 15-11-PLAN.md — Gap closure: Platform fixes (WASM js(), Android cleartext, Accept-Language, CORS)
-- [ ] 15-12-PLAN.md — Gap closure: Fix WASM js() compile error (isolate js() as sole function body expression)
-- [ ] 15-13-PLAN.md — Gap closure: Admin panel visibility for system Admin/PowerAdmin without group memberships
+</details>
 
 ## Progress
 
-**Execution Order:**
-Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
+| Phase | Milestone | Plans | Status | Completed |
+|-------|-----------|-------|--------|-----------|
+| 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
+| 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
 
-| Phase | Milestone | Plans Complete | Status | Completed |
-|-------|-----------|----------------|--------|-----------|
-| 1. Foundation & Module Structure | v1.0 | 4/4 | Complete | 2026-02-10 |
-| 2. Server Auth & Users | v1.0 | 3/3 | Complete | 2026-02-11 |
-| 3. Client SDK & Storage | v1.0 | 3/3 | Complete | 2026-02-11 |
-| 4. Navigation & UI Components | v1.0 | 7/7 | Complete | 2026-02-12 |
-| 5. Auth Screens, Dashboard & Setup CLI | v1.0 | 11/11 | Complete | 2026-02-13 |
-| 6. AI Agent Infrastructure | v1.0 | 3/3 | Complete | 2026-02-13 |
-| 6.1. Chat Agent Streaming Refactor | v1.0 | 2/2 | Complete | 2026-02-14 |
-| 7. Role System Refactor & Tech Debt | v1.0 | 2/2 | Complete | 2026-02-15 |
-| 8. Type-Safe Shared Routes | v1.0 | 3/3 | Complete | 2026-02-15 |
-| 9. WASM HTTP Engine Fix | v1.0 | 1/1 | Complete | 2026-02-16 |
-| 10. MVI ViewModel Foundation | v1.1 | Complete    | 2026-02-17 | - |
-| 11. Testing Infrastructure | v1.1 | Complete    | 2026-02-18 | - |
-| 11.1. Fake SDK facade & fixes | 2/2 | Complete    | 2026-02-18 | - |
-| 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
-| 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
-| 14. Group Admin UI | v1.1 | 4/4 | Complete | 2026-02-19 |
-| 15. Localization | v1.1 | 11/13 | Gap Closure | - |
+**Total: 73 plans shipped across 2 milestones**
+
+---
+*Next milestone: Run `/gsd-new-milestone` to plan v1.2+*

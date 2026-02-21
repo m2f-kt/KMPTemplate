@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A production-ready Kotlin Multiplatform project template for building full-stack applications. It provides a Ktor backend and Compose Multiplatform clients (Android, iOS, Desktop, Web/WASM) with pre-wired infrastructure: JWT authentication with typed roles, database with migrations, Koin DI across all targets, AI agent support (Koog), a terminal-themed component library (41+ components), and a shared SDK layer. Developers clone it, run a setup script, and start building features on top of a working app with auth, dashboard, and AI chat.
+A production-ready Kotlin Multiplatform project template for building full-stack applications. It provides a Ktor backend and Compose Multiplatform clients (Android, iOS, Desktop, Web/WASM) with pre-wired infrastructure: JWT authentication with typed roles and group-based RBAC, database with migrations, Koin DI across all targets, MVI ViewModel architecture with testing DSL, AI agent support (Koog), a terminal-themed component library (41+ components), localization with runtime locale switching, and a shared SDK layer. Developers clone it, run a setup script, and start building features on top of a working app with auth, groups, admin panel, dashboard, and AI chat.
 
 ## Core Value
 
@@ -31,18 +31,27 @@ A developer can clone this template, run the setup CLI, and immediately have a w
 - ✓ PostgreSQL via R2DBC with migration system -- v1.0
 - ✓ Metrics/monitoring with Micrometer Prometheus -- v1.0
 - ✓ Security headers (CSRF, CORS, caching, HTTPS redirect) -- v1.0
+- ✓ MVI ViewModel base class with Intent/Model/Mutation/Event pipeline -- v1.1
+- ✓ ViewModel state as StateFlow with pure reduce function -- v1.1
+- ✓ One-shot events via SharedFlow (no double-firing on recomposition) -- v1.1
+- ✓ ViewModels injectable via Koin across all KMP targets -- v1.1
+- ✓ All 5 ViewModels migrated to MVI pattern -- v1.1
+- ✓ Turbine-based ViewModel test DSL for intent/model/event assertions -- v1.1
+- ✓ Group CRUD with admin management and data isolation -- v1.1
+- ✓ Group membership with role-gated navigation and admin panel -- v1.1
+- ✓ Admin can register new users into their group -- v1.1
+- ✓ GroupApi SDK functions with Either<ClientError, T> and shared routes -- v1.1
+- ✓ core:testing module with fake SDK builder, test fixtures, Kotest assertions -- v1.1
+- ✓ Server integration tests via Ktor testApplication with Testcontainers -- v1.1
+- ✓ StringKey enum bridging server and client localization -- v1.1
+- ✓ Compose resource files with locale qualifiers (EN/ES) -- v1.1
+- ✓ Server localized errors via Accept-Language header -- v1.1
+- ✓ Runtime locale switching on all platforms -- v1.1
+- ✓ StringKey-to-Compose Res.strings bridge function -- v1.1
 
 ### Active
 
-## Current Milestone: v1.1 Architecture
-
-**Goal:** Add architectural patterns and domain capabilities: MVI ViewModel layer, group-based user management with admin panel, full testing infrastructure, and localization system.
-
-**Target features:**
-- MVI ViewModel base class (Intent/Model/Mutation/Event) with Koin injection and test DSL
-- Group entity with user membership, admin management, and admin-only dashboard content
-- Full testing infrastructure: ViewModel tests, server integration tests, SDK tests, fixtures
-- Localization system: resource files per platform, shared key enum, server + client i18n
+(No active requirements -- run `/gsd-new-milestone` to define next milestone)
 
 ### Out of Scope
 
@@ -56,12 +65,13 @@ A developer can clone this template, run the setup CLI, and immediately have a w
 ## Context
 
 Shipped v1.0 with 15,687 LOC Kotlin across 170 files in 7 days.
-Tech stack: Ktor + Netty, Exposed R2DBC, Arrow 2.2.0, Koin, Compose Multiplatform 1.9.3, Koog 0.6.2, Navigation Compose 2.9.1.
+Shipped v1.1 with 21,583 LOC Kotlin across 248+ files in 4 days (+5,896 LOC).
+Tech stack: Ktor + Netty, Exposed R2DBC, Arrow 2.2.0, Koin, Compose Multiplatform 1.9.3, Koog 0.6.2, Navigation Compose 2.9.1, Turbine 1.2.1.
 Targets: Android (minSdk 24), iOS, JVM Desktop, WASM/JS Web.
 
-The template uses Kotlin context parameters (`-Xcontext-parameters`) for dependency propagation and Arrow's Raise API for all domain error handling. The client SDK abstracts all networking behind clean Kotlin functions returning `Either<DomainError, T>`.
+The template uses Kotlin context parameters (`-Xcontext-parameters`) for dependency propagation and Arrow's Raise API for all domain error handling. The client SDK abstracts all networking behind clean Kotlin functions returning `Either<DomainError, T>`. All ViewModels follow MVI pattern with typed Intent/Model/Mutation/Event and are testable via Turbine DSL.
 
-Known tech debt: Koin DI runtime verification on all targets (human-needed), WASM production stability unconfirmed, STOR-02 PreferencesStorage wired but unused.
+Known tech debt: Koin DI runtime verification on all targets (human-needed), WASM production stability unconfirmed, missing integration tests for some group endpoints, WASM locale stored in memory only.
 
 ## Constraints
 
@@ -72,7 +82,7 @@ Known tech debt: Koin DI runtime verification on all targets (human-needed), WAS
 - **DI**: Koin across all targets
 - **Error handling**: Arrow Either/Raise -- no exception-based error handling for domain errors
 - **UI**: Compose Multiplatform only -- no platform-specific UI frameworks
-- **Kotlin version**: 2.2.10 with context parameters enabled
+- **Kotlin version**: 2.3.10 with context parameters enabled
 
 ## Key Decisions
 
@@ -90,6 +100,13 @@ Known tech debt: Koin DI runtime verification on all targets (human-needed), WAS
 | Js engine for WASM | Browser fetch API, CIO requires Node.js net module | ✓ Good -- WASM browser requests work |
 | WebSocket for AI streaming | Bidirectional, header-based JWT auth, better than SSE | ✓ Good -- replaced SSE after Phase 6.1 |
 | Per-request AIAgent | Streaming callback injection, no singleton state conflicts | ✓ Good -- clean concurrent request handling |
+| MVI ViewModel base class | ~30 LOC, template owns its patterns, no third-party dep | ✓ Good -- unified Either pipeline, typed generics |
+| SDK interface extraction | Interfaces for fakes, Impl suffix for concrete classes | ✓ Good -- clean test substitution via fakeSdk {} |
+| Turbine test DSL | Statement queuing pattern, auto-consume initial state | ✓ Good -- concise ViewModel test authoring |
+| SharingStarted.Lazily default | WhileSubscribed resets state on back-navigation timeout | ✓ Good -- no state loss on recomposition |
+| Group RBAC on server | Data isolation per group, membership-scoped access | ✓ Good -- cross-group requests return 403 |
+| StringKey enum (not code-gen) | Manual mapping sufficient for template scope | ✓ Good -- shared between server and client |
+| java.util.Locale for locale switching | Avoids AppCompat dependency, Compose Resources respects JVM default | ✓ Good -- works on Android/JVM/WASM |
 
 ---
-*Last updated: 2026-02-17 after v1.1 milestone started*
+*Last updated: 2026-02-21 after v1.1 Architecture milestone completed*
