@@ -63,10 +63,11 @@ Full details: milestones/v1.1-ROADMAP.md
   1. WASM user selects a locale, refreshes the page, and the selected locale persists (not reset to default)
   2. Server handles concurrent AI streaming + R2DBC database queries without thread starvation or timeouts
   3. Dispatcher configuration is explicit in code with documented rationale for AI vs DB workloads
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 16-01: TBD
+- [ ] 16-01-PLAN.md — Fix WASM locale persistence via pre-WASM localStorage read
+- [ ] 16-02-PLAN.md — Named dispatcher configuration and runBlocking removal
 
 ### Phase 17: Infrastructure Foundation
 **Goal**: All Docker services and configuration scaffolding exist so feature phases can build on them
@@ -163,7 +164,7 @@ Plans:
 |-------|-----------|-------|--------|-----------|
 | 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
-| 16. Tech Debt Cleanup | v1.2 | 0/TBD | Not started | - |
+| 16. Tech Debt Cleanup | v1.2 | 0/2 | Not started | - |
 | 17. Infrastructure Foundation | v1.2 | 0/TBD | Not started | - |
 | 18. Core Services | v1.2 | 0/TBD | Not started | - |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
