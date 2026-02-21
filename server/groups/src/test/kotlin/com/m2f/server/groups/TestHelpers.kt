@@ -103,7 +103,7 @@ suspend fun createTestUser(
     name: String,
     role: UserRole,
 ): Uuid {
-    val passwordHasher = PasswordHasher()
+    val passwordHasher = PasswordHasher(kotlinx.coroutines.Dispatchers.Default)
     val hash = passwordHasher.hash("TestPassword1!")
     return userRepository.insert(email, hash, name, role)
 }

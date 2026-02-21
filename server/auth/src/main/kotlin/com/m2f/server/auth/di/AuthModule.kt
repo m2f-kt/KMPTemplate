@@ -18,7 +18,7 @@ import org.koin.dsl.module
  * Koin module wiring all auth dependencies.
  */
 val authModule = module {
-    single { PasswordHasher() }
+    single { PasswordHasher(get<Configuration>().computeDispatcher) }
     single { JwtTokenProvider(get<Configuration>()) }
     single { UserRepository(get<R2dbcDatabase>()) }
     single { RefreshTokenRepository(get<R2dbcDatabase>()) }
