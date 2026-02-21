@@ -79,7 +79,7 @@
     <string name="forgot_login_link">volver al inicio de sesión</string>
 
     <!-- ======================== Dashboard Screen ======================== -->
-    <string name="dashboard_system_overview">$ system_overview</string>
+    <string name="dashboard_system_overview">$ vista_del_systema</string>
     <string name="dashboard_nodes_active">[4 nodos activos]</string>
     <string name="dashboard_active_processes">procesos_activos</string>
     <string name="dashboard_deployment_status">estado_despliegue</string>
