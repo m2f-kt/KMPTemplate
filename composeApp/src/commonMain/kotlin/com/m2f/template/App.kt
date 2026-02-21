@@ -11,6 +11,10 @@ import com.m2f.template.di.allAppModules
 import com.m2f.template.localization.LocalAppLocale
 import com.m2f.template.localization.setAppLocale
 import com.m2f.template.navigation.AppNavHost
+import com.m2f.template.navigation.DashboardRoute
+import com.m2f.template.navigation.LoginRoute
+import com.m2f.template.navigation.OAuthCallbackRoute
+import com.m2f.template.app.auth.checkOAuthCallback
 import com.m2f.template.storage.PreferencesStorage
 import com.m2f.template.storage.TokenStorage
 import com.m2f.template.sdk.AuthInterceptor
@@ -35,6 +39,46 @@ fun App() {
 
         // NavController lives OUTSIDE key(currentLocale) so it survives locale changes
         val navController = rememberNavController()
+
+        // --- Auth effects: MUST be outside key(currentLocale) ---
+        // These run once on app startup. If they were inside key(), locale changes
+        // would destroy/recreate the composable tree, re-triggering clearSessionTokens()
+        // and wiping non-rememberMe session tokens.
+
+        // Clear session-only tokens on startup; if rememberMe tokens survive, skip login
+        LaunchedEffect(Unit) {
+            tokenStorage.clearSessionTokens()
+            val accessToken = tokenStorage.getAccessToken()
+            if (accessToken != null) {
+                navController.navigate(DashboardRoute) {
+                    popUpTo(LoginRoute) { inclusive = true }
+                }
+            }
+        }
+
+        // Check for OAuth callback on startup (WASM: browser URL params)
+        LaunchedEffect(Unit) {
+            val callback = checkOAuthCallback()
+            if (callback != null) {
+                navController.navigate(
+                    OAuthCallbackRoute(
+                        accessToken = callback.first,
+                        refreshToken = callback.second,
+                    ),
+                ) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+        }
+
+        // Navigate to login when session expires (refresh token failed)
+        LaunchedEffect(Unit) {
+            authInterceptor.sessionExpired.collect {
+                navController.navigate(LoginRoute) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+        }
 
         CompositionLocalProvider(LocalAppLocale provides currentLocale) {
             key(currentLocale) {

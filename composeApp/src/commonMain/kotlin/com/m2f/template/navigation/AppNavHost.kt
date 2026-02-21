@@ -26,7 +26,6 @@ import com.m2f.template.app.auth.RegisterEvent
 import com.m2f.template.app.auth.RegisterIntent
 import com.m2f.template.app.auth.RegisterScreen
 import com.m2f.template.app.auth.RegisterViewModel
-import com.m2f.template.app.auth.checkOAuthCallback
 import com.m2f.template.app.dashboard.DashboardEvent
 import com.m2f.template.app.dashboard.DashboardIntent
 import com.m2f.template.app.dashboard.DashboardScreen
@@ -59,45 +58,6 @@ fun AppNavHost(
     authInterceptor: AuthInterceptor,
 ) {
     val oauthHandler = remember { OAuthHandler(serverBaseUrl = defaultBaseUrl()) }
-
-    // Auth effects use navController as key — they only re-run if the controller changes
-    // (which it won't, since it's lifted above key(currentLocale) in App.kt)
-    LaunchedEffect(navController) {
-        // Clear tokens from sessions where rememberMe was false
-        tokenStorage.clearSessionTokens()
-
-        // If tokens survived (rememberMe was true), skip login
-        val accessToken = tokenStorage.getAccessToken()
-        if (accessToken != null) {
-            navController.navigate(DashboardRoute) {
-                popUpTo(LoginRoute) { inclusive = true }
-            }
-        }
-    }
-
-    // Check for OAuth callback on startup (WASM: browser URL params)
-    LaunchedEffect(navController) {
-        val callback = checkOAuthCallback()
-        if (callback != null) {
-            navController.navigate(
-                OAuthCallbackRoute(
-                    accessToken = callback.first,
-                    refreshToken = callback.second,
-                ),
-            ) {
-                popUpTo(0) { inclusive = true }
-            }
-        }
-    }
-
-    // Navigate to login when session expires (refresh token failed)
-    LaunchedEffect(navController) {
-        authInterceptor.sessionExpired.collect {
-            navController.navigate(LoginRoute) {
-                popUpTo(0) { inclusive = true }
-            }
-        }
-    }
 
     Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
         NavHost(
