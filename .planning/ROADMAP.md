@@ -45,7 +45,7 @@ Full details: milestones/v1.1-ROADMAP.md
 
 **Milestone Goal:** Add AI patterns (structured output, RAG, multi-agent), file uploads, group invitations, email infrastructure, and developer onboarding — completing the template's production-ready feature set.
 
-- [ ] **Phase 16: Tech Debt Cleanup** - Fix WASM locale persistence and optimize server dispatchers
+- [x] **Phase 16: Tech Debt Cleanup** - Fix WASM locale persistence and optimize server dispatchers (completed 2026-02-21)
 - [ ] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table
 - [ ] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests
 - [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
@@ -164,7 +164,7 @@ Plans:
 |-------|-----------|-------|--------|-----------|
 | 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
-| 16. Tech Debt Cleanup | 1/2 | In Progress|  | - |
+| 16. Tech Debt Cleanup | 2/2 | Complete   | 2026-02-21 | - |
 | 17. Infrastructure Foundation | v1.2 | 0/TBD | Not started | - |
 | 18. Core Services | v1.2 | 0/TBD | Not started | - |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
