@@ -34,6 +34,8 @@ import template.app.admin.generated.resources.admin_error_title
 import template.app.admin.generated.resources.admin_load_more
 import template.app.admin.generated.resources.admin_loading
 import template.app.admin.generated.resources.admin_member_count
+import template.app.admin.generated.resources.admin_no_group_description
+import template.app.admin.generated.resources.admin_no_group_title
 import template.app.admin.generated.resources.admin_register_member_button
 import template.app.admin.generated.resources.admin_slug_prefix
 import template.app.admin.generated.resources.admin_table_email
@@ -96,6 +98,16 @@ fun AdminPanelScreen(
                 style = typography.md,
                 color = colors.textMuted,
             )
+            return@Column
+        }
+
+        // No group selected — system admin without group memberships
+        if (state.groupId.isBlank() && !state.isLoading && state.error == null) {
+            TerminalCard(
+                title = stringResource(Res.string.admin_no_group_title),
+                description = stringResource(Res.string.admin_no_group_description),
+                variant = CardVariant.Default,
+            ) {}
             return@Column
         }
 

@@ -12,6 +12,9 @@
     <string name="admin_load_more">Load More</string>
     <string name="admin_register_member_button">+ Register Member</string>
 
+    <string name="admin_no_group_title">No group selected</string>
+    <string name="admin_no_group_description">You are a system administrator but not a member of any group. Join or create a group to manage it here.</string>
+
     <!-- Admin Table Headers -->
     <string name="admin_table_name">NAME</string>
     <string name="admin_table_email">EMAIL</string>
