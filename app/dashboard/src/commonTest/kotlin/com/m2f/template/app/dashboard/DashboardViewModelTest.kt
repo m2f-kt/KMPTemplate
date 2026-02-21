@@ -171,6 +171,7 @@ class DashboardViewModelTest : ViewModelTest() {
                     isLoading = false,
                     isAdmin = true,
                     isSystemAdmin = true,
+                    userName = "Admin",
                 ),
             )
         }
@@ -201,6 +202,7 @@ class DashboardViewModelTest : ViewModelTest() {
                     isLoading = false,
                     isAdmin = true,
                     isSystemAdmin = true,
+                    userName = "Admin",
                 ),
             )
             intent(DashboardIntent.AdminPanelClicked)
@@ -246,6 +248,7 @@ class DashboardViewModelTest : ViewModelTest() {
                     isLoading = false,
                     isAdmin = true,
                     isSystemAdmin = true,
+                    userName = "Admin",
                     groupId = "group-1",
                     groupName = "Test Group",
                 ),
