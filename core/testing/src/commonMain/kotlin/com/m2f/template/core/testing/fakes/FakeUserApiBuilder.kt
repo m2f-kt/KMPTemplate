@@ -66,12 +66,3 @@ class FakeUserApiBuilder {
             _getMyMemberships()
     }
 }
-
-/**
- * Top-level DSL entry point for creating a fake [UserApi].
- *
- * @param block optional configuration block to override default method behaviors
- * @return a configured [UserApi] instance backed by the builder's lambdas
- */
-fun fakeUserApi(block: FakeUserApiBuilder.() -> Unit = {}): UserApi =
-    FakeUserApiBuilder().apply(block).build()

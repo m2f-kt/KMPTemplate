@@ -26,7 +26,6 @@ kotlin {
             api(libs.arrow.core)
             api(libs.kotlinx.coroutines)
             api(libs.androidx.lifecycle.viewmodelCompose)
-            implementation(libs.koin.core)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

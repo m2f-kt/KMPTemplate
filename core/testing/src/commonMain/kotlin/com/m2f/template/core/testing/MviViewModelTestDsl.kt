@@ -35,8 +35,6 @@ import kotlinx.coroutines.test.setMain
  * }
  * ```
  *
- * For suspend operations in test setup, use [scopedTest] instead.
- *
  * @param context optional [CoroutineContext] passed to [runTest]
  * @param block DSL block that queues intents, model assertions, and event assertions
  */
@@ -52,56 +50,6 @@ fun <Intent, Model, Mutation, Event> MviViewModel<Intent, Model, Mutation, Event
         // ensures eager execution of dispatched coroutines.
         Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
 
-        turbineScope {
-            val modelTurbine = model.testIn(backgroundScope)
-            val eventTurbine = event.testIn(backgroundScope)
-
-            // Skip initial StateFlow emission
-            modelTurbine.awaitItem()
-
-            for (statement in ctx.statements) {
-                when (statement) {
-                    is Statement.IntentStatement -> {
-                        take(statement.intent)
-                        advanceUntilIdle()
-                    }
-                    is Statement.ModelStatement -> modelTurbine.awaitItem() shouldBe statement.expected
-                    is Statement.EventStatement -> eventTurbine.awaitItem() shouldBe statement.expected
-                }
-            }
-
-            modelTurbine.cancelAndIgnoreRemainingEvents()
-            eventTurbine.cancelAndIgnoreRemainingEvents()
-        }
-    }
-}
-
-/**
- * Suspend variant of [test] that allows coroutine operations in the DSL block.
- *
- * Usage:
- * ```kotlin
- * viewModel.scopedTest {
- *     // Can call suspend functions here for setup
- *     intent(MyIntent.LoadData)
- *     model(MyModel(loading = true))
- *     event(MyEvent.DataLoaded)
- * }
- * ```
- *
- * @param context optional [CoroutineContext] passed to [runTest]
- * @param block suspend DSL block that queues intents, model assertions, and event assertions
- */
-@OptIn(ExperimentalCoroutinesApi::class)
-fun <Intent, Model, Mutation, Event> MviViewModel<Intent, Model, Mutation, Event>.scopedTest(
-    context: CoroutineContext = EmptyCoroutineContext,
-    block: suspend ViewModelTestContext<Intent, Model, Mutation, Event>.() -> Unit,
-) {
-    val ctx = ViewModelTestContext<Intent, Model, Mutation, Event>()
-    runTest(context) {
-        Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
-
-        ctx.block()
         turbineScope {
             val modelTurbine = model.testIn(backgroundScope)
             val eventTurbine = event.testIn(backgroundScope)

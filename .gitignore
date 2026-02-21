@@ -17,3 +17,7 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 /kotlin-js-store/wasm/yarn.lock
+__pycache__/
+*.http
+http-client.env.json
+.env

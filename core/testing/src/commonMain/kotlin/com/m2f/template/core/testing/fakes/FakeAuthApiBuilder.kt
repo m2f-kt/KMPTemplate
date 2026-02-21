@@ -89,12 +89,3 @@ class FakeAuthApiBuilder {
             _logout()
     }
 }
-
-/**
- * Top-level DSL entry point for creating a fake [AuthApi].
- *
- * @param block optional configuration block to override default method behaviors
- * @return a configured [AuthApi] instance backed by the builder's lambdas
- */
-fun fakeAuthApi(block: FakeAuthApiBuilder.() -> Unit = {}): AuthApi =
-    FakeAuthApiBuilder().apply(block).build()

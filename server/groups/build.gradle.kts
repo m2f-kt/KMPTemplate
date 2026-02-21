@@ -14,7 +14,6 @@ dependencies {
     implementation(libs.bundles.ktor.core)
     implementation(libs.ktor.server.resources)
     implementation(libs.bundles.di)
-    implementation(libs.jbcrypt)
     testImplementation(libs.bundles.testing.server)
     testImplementation(libs.ktor.client.content.negotiation)
 }

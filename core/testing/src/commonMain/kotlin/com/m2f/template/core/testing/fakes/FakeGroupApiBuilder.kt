@@ -133,12 +133,3 @@ class FakeGroupApiBuilder {
             _registerMember(groupId, request)
     }
 }
-
-/**
- * Top-level DSL entry point for creating a fake [GroupApi].
- *
- * @param block optional configuration block to override default method behaviors
- * @return a configured [GroupApi] instance backed by the builder's lambdas
- */
-fun fakeGroupApi(block: FakeGroupApiBuilder.() -> Unit = {}): GroupApi =
-    FakeGroupApiBuilder().apply(block).build()

@@ -37,8 +37,6 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
 import io.ktor.server.resources.Resources
-import io.ktor.server.response.respondText
-import io.ktor.server.routing.get
 import io.ktor.server.routing.routing
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.awaitCancellation
@@ -96,9 +94,6 @@ fun Application.module() {
     configureSecurity()
     configureOAuth()
     routing {
-        get("/amazing") {
-            call.respondText("Ktor: ${Greeting().greet()}")
-        }
         val authService: AuthService by inject()
         val passwordResetService: PasswordResetService by inject()
         val userService: UserService by inject()

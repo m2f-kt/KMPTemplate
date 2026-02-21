@@ -29,9 +29,6 @@ kotlin {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.components.resources)
-            implementation(libs.arrow.core)
-            implementation(libs.kotlinx.coroutines)
-            implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
