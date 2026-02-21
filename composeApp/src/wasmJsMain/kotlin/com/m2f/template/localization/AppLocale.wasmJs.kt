@@ -2,16 +2,31 @@ package com.m2f.template.localization
 
 import kotlin.js.ExperimentalWasmJsInterop
 
-// WASM locale switching is best-effort. The browser's navigator.languages
-// determines the Compose Resources locale. We store the preference but
-// actual locale switching requires a page reload on web.
+// WASM locale switching works via a JS shim that monkey-patches Navigator.prototype.languages
+// to read from window.__customLocale. When the user switches locale, we set __customLocale
+// and Compose Resources picks it up on next recomposition (via key(currentLocale) in App.kt).
+// See: https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-resource-environment.html
+
+/**
+ * External reference to the window object for setting __customLocale.
+ */
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun setCustomLocale(locale: JsString): Unit = js("window.__customLocale = locale")
+
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun clearCustomLocale(): Unit = js("window.__customLocale = null")
+
+@OptIn(ExperimentalWasmJsInterop::class)
+private fun getCustomLocale(): JsString? = js("window.__customLocale")
 
 private var overrideLocale: String? = null
 
 actual fun setAppLocale(languageTag: String) {
     overrideLocale = languageTag
-    // Note: Compose Resources on WASM reads navigator.languages at startup.
-    // Runtime override requires page reload — this is a known limitation.
+    // Set window.__customLocale so the index.html shim makes navigator.languages
+    // return this locale. Compose Resources reads navigator.languages via Locale.current.
+    @OptIn(ExperimentalWasmJsInterop::class)
+    setCustomLocale(languageTag.toJsString())
 }
 
 @OptIn(ExperimentalWasmJsInterop::class)

@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>template</title>
     <link type="text/css" rel="stylesheet" href="styles.css">
+    <script>
+        // Monkey-patch Navigator.prototype.languages so Compose Resources can read
+        // a custom locale set from Kotlin/WASM via window.__customLocale.
+        // See: https://www.jetbrains.com/help/kotlin-multiplatform-dev/compose-resource-environment.html
+        var currentLanguagesImpl = Object.getOwnPropertyDescriptor(Navigator.prototype, "languages");
+        var patchedLanguagesImpl = Object.assign({}, currentLanguagesImpl, {
+            get: function () {
+                if (window.__customLocale) {
+                    return [window.__customLocale];
+                }
+                return currentLanguagesImpl.get.apply(this);
+            }
+        });
+        Object.defineProperty(Navigator.prototype, "languages", patchedLanguagesImpl);
+    </script>
     <script type="application/javascript" src="composeApp.js"></script>
 </head>
 <body>
