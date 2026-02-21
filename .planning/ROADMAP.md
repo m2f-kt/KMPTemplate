@@ -79,10 +79,11 @@ Plans:
   3. `Env.Email` config section loads SMTP host, port, credentials, fromAddress from environment variables
   4. A `document_embeddings` table exists in PostgreSQL with a vector column for storing embeddings
   5. Developer can open MailHog UI (port 8025) and MinIO console (port 9001) in browser after `docker compose up`
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 17-01: TBD
+- [ ] 17-01-PLAN.md — Docker Compose services (MinIO, MailHog, pgvector) and Env config sections
+- [ ] 17-02-PLAN.md — Custom VectorColumnType and document_embeddings migration
 
 ### Phase 18: Core Services
 **Goal**: Files can be uploaded to S3 and emails can be sent — the two infrastructure services other features depend on
@@ -165,7 +166,7 @@ Plans:
 | 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
 | 16. Tech Debt Cleanup | 2/2 | Complete    | 2026-02-21 | - |
-| 17. Infrastructure Foundation | v1.2 | 0/TBD | Not started | - |
+| 17. Infrastructure Foundation | v1.2 | 0/2 | Not started | - |
 | 18. Core Services | v1.2 | 0/TBD | Not started | - |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
