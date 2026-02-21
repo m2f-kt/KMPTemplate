@@ -66,6 +66,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Phase 16 complete, ready to plan Phase 17
-Resume file: None
+Stopped at: Phase 17 context gathered, auto-advancing to plan
+Resume file: .planning/phases/17-infrastructure-foundation/17-CONTEXT.md
 Next action: `/gsd:plan-phase 17`
