@@ -28,6 +28,7 @@ class DashboardViewModel(
                     sdk.getProfile().onRight { user ->
                         val isSystemAdmin = user.role.level >= UserRole.Admin.level
                         sendMutation(DashboardMutation.SetSystemAdmin(isSystemAdmin))
+                        sendMutation(DashboardMutation.SetUserName(user.name.ifBlank { user.email }))
                     }
                     // Load memberships for role-gated nav
                     sdk.getMyMemberships().fold(
@@ -74,5 +75,6 @@ class DashboardViewModel(
                 isSystemAdmin = mutation.isSystemAdmin,
                 isAdmin = mutation.isSystemAdmin || model.isAdmin,
             )
+            is DashboardMutation.SetUserName -> model.copy(userName = mutation.userName)
         }
 }
