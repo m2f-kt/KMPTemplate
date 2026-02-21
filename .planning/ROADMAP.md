@@ -143,7 +143,7 @@ Plans:
   3. Server returns localized error messages based on the Accept-Language header
   4. User can switch locale at runtime and all UI strings update without app restart
   5. A bridge function maps StringKey values to Compose Res.strings accessors for type-safe string resolution
-**Plans**: 7 plans
+**Plans**: 13 plans
 Plans:
 - [x] 15-01-PLAN.md — Foundation: StringKey enum + English strings.xml + bridge function
 - [x] 15-02-PLAN.md — Auth module localization: Login/Register/ForgotPassword ViewModels + screens + tests
@@ -156,6 +156,8 @@ Plans:
 - [x] 15-09-PLAN.md — Gap closure: Wire composables with stringResource() + add new string keys
 - [x] 15-10-PLAN.md — Gap closure: Reactive locale switching (CompositionLocal + auth Spanish strings)
 - [x] 15-11-PLAN.md — Gap closure: Platform fixes (WASM js(), Android cleartext, Accept-Language, CORS)
+- [ ] 15-12-PLAN.md — Gap closure: Fix WASM js() compile error (isolate js() as sole function body expression)
+- [ ] 15-13-PLAN.md — Gap closure: Admin panel visibility for system Admin/PowerAdmin without group memberships
 
 ## Progress
 
@@ -180,4 +182,4 @@ Phases execute in numeric order: 10 -> 11 -> 11.1 -> 12 -> 13 -> 14 -> 15
 | 12. ViewModel Migration | 7/7 | Complete    | 2026-02-18 | - |
 | 13. Group Server & SDK | 4/4 | Complete | 2026-02-19 | - |
 | 14. Group Admin UI | v1.1 | 4/4 | Complete | 2026-02-19 |
-| 15. Localization | v1.1 | 11/11 | Complete | 2026-02-20 |
+| 15. Localization | v1.1 | 11/13 | Gap Closure | - |
