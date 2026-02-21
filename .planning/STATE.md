@@ -9,12 +9,12 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 15 (Localization) -- COMPLETE (verified)
-Plan: 11 of 11 in current phase (all done)
-Status: Phase 15 complete -- all 11 plans executed, verification PASSED (5/5 must-haves)
-Last activity: 2026-02-20 -- Gap closure complete, verification passed
+Phase: 15 (Localization) -- Gap closure in progress
+Plan: 12 of 13 in current phase (12 complete)
+Status: Plan 15-12 complete (WASM js() fix), Plan 15-13 remaining
+Last activity: 2026-02-21 -- Plan 15-12 executed
 
-Progress: [████████████████████] 100% (11/11 plans)
+Progress: [████████████████████] 92% (12/13 plans)
 
 ## v1.0 Performance (archived)
 
@@ -48,6 +48,7 @@ Progress: [████████████████████] 100% (3
 | Phase 15-localization P11 | 2min | 2 tasks | 6 files |
 | Phase 15-localization P09 | ~15min | 2 tasks | 13 files |
 | Phase 15-localization P10 | 2min | 2 tasks | 4 files |
+| Phase 15-localization P12 | 1min | 1 task | 1 file |
 
 ## Accumulated Context
 
@@ -113,6 +114,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 15-localization]: DashboardMockData uses StringResource fields (labelRes/titleRes) for non-composable static data, resolved at render sites
 - [Phase 15-localization]: key(currentLocale) forces full UI tree recomposition for reactive locale switching
 - [Phase 15-localization]: ProfileRoute reads locale from CompositionLocal, writes only to PreferencesStorage
+- [Phase 15-12]: js() must be sole expression in top-level function body for Kotlin/Wasm 2.3.10 — split into navigatorLanguage() + browserLanguage()
 
 ### Roadmap Evolution
 
@@ -126,6 +128,6 @@ Decisions are logged in PROJECT.md Key Decisions table.
 
 ## Session Continuity
 
-Last session: 2026-02-20
-Stopped at: Phase 15 gap closure complete -- verification passed (5/5 must-haves)
-Resume file: .planning/phases/15-localization/15-VERIFICATION.md
+Last session: 2026-02-21
+Stopped at: Completed 15-12-PLAN.md (WASM js() fix)
+Resume file: .planning/phases/15-localization/15-12-SUMMARY.md
