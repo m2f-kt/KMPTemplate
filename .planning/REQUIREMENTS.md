@@ -15,7 +15,7 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 
 ### RAG Pipeline (Koog-exclusive)
 
-- [ ] **RAG-01**: PostgreSQL runs with pgvector extension enabled, and a document_embeddings table stores vector embeddings
+- [x] **RAG-01**: PostgreSQL runs with pgvector extension enabled, and a document_embeddings table stores vector embeddings -- Phase 17
 - [ ] **RAG-02**: RAG pipeline uses exclusively Koog framework APIs — `koog-agents-ext-embeddings` and `koog-agents-ext-rag` modules. No third-party RAG/vector libraries (LangChain4j, Spring AI, etc.)
 - [ ] **RAG-03**: Custom PgVectorStorage adapter implements Koog's `VectorStorage` interface backed by pgvector with cosine similarity search
 - [ ] **RAG-04**: Documents are chunked and embedded via Koog's `LLMEmbedder` and stored as vectors in pgvector
@@ -32,8 +32,8 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 ### File Uploads
 
 - [ ] **FILE-01**: Server provides S3-compatible file upload endpoint with MinIO as local dev backend
-- [ ] **FILE-02**: Docker Compose includes MinIO service with default bucket created on startup
-- [ ] **FILE-03**: Env.S3 configuration section exists with endpoint, bucket, region, accessKey, secretKey
+- [x] **FILE-02**: Docker Compose includes MinIO service with default bucket created on startup -- Phase 17
+- [x] **FILE-03**: Env.S3 configuration section exists with endpoint, bucket, region, accessKey, secretKey -- Phase 17
 - [ ] **FILE-04**: Server validates uploaded files (type whitelist, size limit) before storing in S3
 
 ### Profile Images
@@ -46,8 +46,8 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 ### Email Infrastructure
 
 - [ ] **EMAIL-01**: EmailService interface exists with sendEmail(to, subject, htmlBody) method and SMTP implementation
-- [ ] **EMAIL-02**: Docker Compose includes MailHog service for local dev email testing
-- [ ] **EMAIL-03**: Env.Email configuration section exists with SMTP host, port, credentials, fromAddress
+- [x] **EMAIL-02**: Docker Compose includes MailHog service for local dev email testing -- Phase 17
+- [x] **EMAIL-03**: Env.Email configuration section exists with SMTP host, port, credentials, fromAddress -- Phase 17
 - [ ] **EMAIL-04**: Password reset flow sends real email via EmailService instead of console println
 
 ### Group Invitations

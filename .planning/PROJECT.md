@@ -57,6 +57,7 @@ A developer can clone this template, run the setup CLI, and immediately have a w
 
 **Target features:**
 - ~~Tech debt cleanup (integration tests, WASM locale persistence, Ktor dispatcher)~~ -- Phase 16 shipped
+- ~~Infrastructure foundation (Docker services, config sections, pgvector table)~~ -- Phase 17 shipped
 - AI patterns: structured output (JSON), RAG (pgvector), multi-agent orchestration, tool-use examples
 - Group email invite links (admin sends invite, recipient joins via token)
 - S3-compatible file uploads with user avatar/profile image feature
@@ -84,7 +85,7 @@ The template uses Kotlin context parameters (`-Xcontext-parameters`) for depende
 
 Known tech debt: Koin DI runtime verification on all targets (human-needed), WASM production stability unconfirmed, missing integration tests for some group endpoints.
 
-v1.2 adds pgvector extension to PostgreSQL for RAG, S3-compatible object storage (MinIO for local dev), and email sending infrastructure for group invitations.
+v1.2 infrastructure shipped: pgvector extension enabled in PostgreSQL, MinIO for S3-compatible storage, MailHog for SMTP testing, Env.S3 and Env.Email config sections, custom VectorColumnType for Exposed R2DBC, document_embeddings table with vector(768) column.
 
 ## Constraints
 
@@ -123,6 +124,11 @@ v1.2 adds pgvector extension to PostgreSQL for RAG, S3-compatible object storage
 | Pre-WASM localStorage for locale | Read persisted locale before Compose Resources initializes | ✓ Good -- closes timing gap, locale survives refresh |
 | Named bounded dispatchers | Separate IO views for DB (16), AI (8), compute (Default) | ✓ Good -- prevents AI stream starvation of DB queries |
 | Fire-and-forget agent cleanup | CoroutineScope.launch instead of runBlocking in awaitClose | ✓ Good -- no Netty event loop blocking |
+| pgvector/pgvector:pg15 image | Drop-in replacement for postgres:15-alpine, includes vector extension | ✓ Good -- no separate vector DB needed |
+| MinIO sidecar bucket creation | Ephemeral minio/mc container creates bucket then exits | ✓ Good -- zero-config local dev |
+| Custom VectorColumnType | Exposed R2DBC has no native vector support, custom ColumnType needed | ✓ Good -- maps List<Float> to/from pgvector |
+| TransactionManager.current().exec() | Raw SQL in migrations since exec is on R2dbcTransaction not top-level | ✓ Good -- enables pgvector extension in migration |
+| Vector dimension 768 | Matches Google text-embedding-004 output (Koog/Gemini stack) | TBD -- verify against actual Koog embedding API |
 
 ---
-*Last updated: 2026-02-21 after Phase 16 Tech Debt Cleanup*
+*Last updated: 2026-02-21 after Phase 17 Infrastructure Foundation*

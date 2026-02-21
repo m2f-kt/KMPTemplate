@@ -46,7 +46,7 @@ Full details: milestones/v1.1-ROADMAP.md
 **Milestone Goal:** Add AI patterns (structured output, RAG, multi-agent), file uploads, group invitations, email infrastructure, and developer onboarding — completing the template's production-ready feature set.
 
 - [x] **Phase 16: Tech Debt Cleanup** - Fix WASM locale persistence and optimize server dispatchers (completed 2026-02-21)
-- [ ] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table
+- [x] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table (completed 2026-02-21)
 - [ ] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests
 - [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
@@ -82,8 +82,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 17-01-PLAN.md — Docker Compose services (MinIO, MailHog, pgvector) and Env config sections
-- [ ] 17-02-PLAN.md — Custom VectorColumnType and document_embeddings migration
+- [x] 17-01-PLAN.md — Docker Compose services (MinIO, MailHog, pgvector) and Env config sections
+- [x] 17-02-PLAN.md — Custom VectorColumnType and document_embeddings migration
 
 ### Phase 18: Core Services
 **Goal**: Files can be uploaded to S3 and emails can be sent — the two infrastructure services other features depend on
@@ -166,11 +166,11 @@ Plans:
 | 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
 | 16. Tech Debt Cleanup | 2/2 | Complete    | 2026-02-21 | - |
-| 17. Infrastructure Foundation | v1.2 | 0/2 | Not started | - |
+| 17. Infrastructure Foundation | v1.2 | 2/2 | Complete | 2026-02-21 |
 | 18. Core Services | v1.2 | 0/TBD | Not started | - |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 73 plans shipped across 2 milestones, 7 phases planned for v1.2**
+**Total: 77 plans shipped across 2 milestones, 7 phases planned for v1.2**
