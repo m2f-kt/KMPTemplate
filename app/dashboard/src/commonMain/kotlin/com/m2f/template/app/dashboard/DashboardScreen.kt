@@ -64,6 +64,10 @@ import template.app.dashboard.generated.resources.activity_auto_scaling
 import template.app.dashboard.generated.resources.activity_deploy
 import template.app.dashboard.generated.resources.activity_memory_alert
 import template.app.dashboard.generated.resources.activity_ssl_renewed
+import template.app.dashboard.generated.resources.nav_deployments
+import template.app.dashboard.generated.resources.nav_logs
+import template.app.dashboard.generated.resources.nav_processes
+import template.app.dashboard.generated.resources.nav_settings
 
 /**
  * Responsive dashboard screen with desktop sidebar and mobile bottom nav layouts.
@@ -178,25 +182,25 @@ private fun DesktopDashboard(
             }
             "processes" -> {
                 PlaceholderContent(
-                    title = "> processes",
+                    title = "> ${stringResource(Res.string.nav_processes)}",
                     modifier = Modifier.weight(1f),
                 )
             }
             "logs" -> {
                 PlaceholderContent(
-                    title = "> logs",
+                    title = "> ${stringResource(Res.string.nav_logs)}",
                     modifier = Modifier.weight(1f),
                 )
             }
             "deployments" -> {
                 PlaceholderContent(
-                    title = "> deployments",
+                    title = "> ${stringResource(Res.string.nav_deployments)}",
                     modifier = Modifier.weight(1f),
                 )
             }
             "settings" -> {
                 PlaceholderContent(
-                    title = "> settings",
+                    title = "> ${stringResource(Res.string.nav_settings)}",
                     modifier = Modifier.weight(1f),
                 )
             }
@@ -348,13 +352,13 @@ private fun MobileDashboard(
                     ActivityList(activities = state.activities)
                 }
                 "processes" -> {
-                    MobilePlaceholderContent(title = "> processes")
+                    MobilePlaceholderContent(title = "> ${stringResource(Res.string.nav_processes)}")
                 }
                 "logs" -> {
-                    MobilePlaceholderContent(title = "> logs")
+                    MobilePlaceholderContent(title = "> ${stringResource(Res.string.nav_logs)}")
                 }
                 "settings" -> {
-                    MobilePlaceholderContent(title = "> settings")
+                    MobilePlaceholderContent(title = "> ${stringResource(Res.string.nav_settings)}")
                 }
                 else -> {
                     MobilePlaceholderContent(title = "> ${state.selectedNavItem}")

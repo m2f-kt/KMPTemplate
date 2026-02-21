@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.stateIn
 
 abstract class MviViewModel<Intent, Model, Mutation, Event>(
     initialState: Model,
-    modelSharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5_000),
+    modelSharingStarted: SharingStarted = SharingStarted.Lazily,
 ) : ViewModel() {
 
     private val pipeline = MutableSharedFlow<Either<Event, Mutation>>(extraBufferCapacity = 64)

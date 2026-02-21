@@ -9,10 +9,10 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 
 ## Current Position
 
-Phase: 15 (Localization) -- COMPLETE (all plans executed)
+Phase: 15 (Localization) -- COMPLETE (all plans executed, UAT passed)
 Plan: 13 of 13 in current phase (13 complete)
-Status: Phase 15 complete -- all 13 plans executed
-Last activity: 2026-02-21 -- Plan 15-13 executed
+Status: Phase 15 complete -- all 13 plans executed, UAT round 5 passed (8/8)
+Last activity: 2026-02-21 -- UAT round 5 all tests passed
 
 Progress: [████████████████████] 100% (13/13 plans)
 
@@ -119,6 +119,8 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - [Phase 15-13]: SetSystemAdmin mutation fires before SetLoading(false) to ensure isAdmin is correct by first render
 - [Phase 15-13]: NavigateToAdmin.groupId nullable to support system admins without group memberships
 - [Phase 15-13]: AdminPanelRoute.groupId nullable with null guard skipping LoadAdminPanel intent
+- [Phase 15-UAT]: MviViewModel default SharingStarted changed from WhileSubscribed(5_000) to Lazily — WhileSubscribed causes scan() to reset from initialState when upstream restarts after subscriber timeout, losing ViewModel state on back-navigation
+- [Phase 15-UAT]: Placeholder content screen titles (processes, logs, deployments, settings) use nav_* string resources instead of hardcoded English strings
 
 ### Roadmap Evolution
 
@@ -133,5 +135,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Completed 15-13-PLAN.md -- Phase 15 fully complete (13/13 plans)
-Resume file: .planning/phases/15-localization/15-13-SUMMARY.md
+Stopped at: Phase 15 UAT complete -- all 8 tests passed, v1.1 milestone fully verified
+Resume file: .planning/ROADMAP.md
