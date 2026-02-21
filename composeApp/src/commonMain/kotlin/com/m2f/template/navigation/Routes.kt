@@ -31,7 +31,7 @@ data class OAuthCallbackRoute(
  * Route for the group admin panel.
  */
 @Serializable
-data class AdminPanelRoute(val groupId: String)
+data class AdminPanelRoute(val groupId: String? = null)
 
 /**
  * Route for the register-member form.

@@ -258,7 +258,11 @@ fun AppNavHost() {
                 val state by viewModel.model.collectAsStateWithLifecycle()
 
                 LaunchedEffect(Unit) {
-                    viewModel.take(AdminPanelIntent.LoadAdminPanel(route.groupId))
+                    val groupId = route.groupId
+                    if (groupId != null) {
+                        viewModel.take(AdminPanelIntent.LoadAdminPanel(groupId))
+                    }
+                    // When groupId is null, admin panel shows its initial/empty state
                 }
 
                 AdminPanelScreen(

@@ -3,6 +3,7 @@ package com.m2f.template.app.dashboard
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.GroupRole
+import com.m2f.template.models.UserRole
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,6 +24,11 @@ class DashboardViewModel(
                 is DashboardIntent.LoadDashboard -> {
                     sendMutation(DashboardMutation.SetLoading(true))
                     delay(300)
+                    // Check system-level role
+                    sdk.getProfile().onRight { user ->
+                        val isSystemAdmin = user.role.level >= UserRole.Admin.level
+                        sendMutation(DashboardMutation.SetSystemAdmin(isSystemAdmin))
+                    }
                     sendMutation(DashboardMutation.SetLoading(false))
                     // Load memberships for role-gated nav
                     sdk.getMyMemberships().fold(
@@ -49,10 +55,7 @@ class DashboardViewModel(
                     sendEvent(DashboardEvent.NavigateToLogin)
                 }
                 is DashboardIntent.AdminPanelClicked -> {
-                    val currentGroupId = model.value.groupId
-                    if (currentGroupId != null) {
-                        sendEvent(DashboardEvent.NavigateToAdmin(currentGroupId))
-                    }
+                    sendEvent(DashboardEvent.NavigateToAdmin(model.value.groupId))
                 }
             }
         }
@@ -63,9 +66,13 @@ class DashboardViewModel(
             is DashboardMutation.SetLoading -> model.copy(isLoading = mutation.loading)
             is DashboardMutation.SetNavItem -> model.copy(selectedNavItem = mutation.item)
             is DashboardMutation.SetMembership -> model.copy(
-                isAdmin = mutation.isAdmin,
+                isAdmin = mutation.isAdmin || model.isSystemAdmin,
                 groupId = mutation.groupId,
                 groupName = mutation.groupName,
+            )
+            is DashboardMutation.SetSystemAdmin -> model.copy(
+                isSystemAdmin = mutation.isSystemAdmin,
+                isAdmin = mutation.isSystemAdmin || model.isAdmin,
             )
         }
 }

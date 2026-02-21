@@ -5,7 +5,9 @@ import com.m2f.template.core.testing.ViewModelTest
 import com.m2f.template.core.testing.fakes.fakeSdk
 import com.m2f.template.core.testing.test
 import com.m2f.template.models.GroupRole
+import com.m2f.template.models.UserRole
 import com.m2f.template.models.dto.MembershipSummary
+import com.m2f.template.models.dto.UserResponse
 import kotlin.test.Test
 
 class DashboardViewModelTest : ViewModelTest() {
@@ -139,6 +141,115 @@ class DashboardViewModelTest : ViewModelTest() {
             )
             intent(DashboardIntent.AdminPanelClicked)
             event(DashboardEvent.NavigateToAdmin("group-1"))
+        }
+    }
+
+    @Test
+    fun `LoadDashboard with system admin role sets isAdmin true even without group memberships`() {
+        val sdk = fakeSdk {
+            user {
+                getProfile {
+                    Either.Right(
+                        UserResponse(
+                            id = "1",
+                            email = "admin@test.com",
+                            name = "Admin",
+                            role = UserRole.Admin,
+                        ),
+                    )
+                }
+            }
+        }
+        val viewModel = DashboardViewModel(sdk)
+        viewModel.test {
+            intent(DashboardIntent.LoadDashboard)
+            model(DashboardModel(isLoading = true))
+            // getProfile returns admin → SetSystemAdmin fires, then SetLoading(false)
+            // The final observed state after conflation includes isAdmin=true, isSystemAdmin=true
+            model(
+                DashboardModel(
+                    isLoading = false,
+                    isAdmin = true,
+                    isSystemAdmin = true,
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun `AdminPanelClicked emits NavigateToAdmin with null groupId for system admin without groups`() {
+        val sdk = fakeSdk {
+            user {
+                getProfile {
+                    Either.Right(
+                        UserResponse(
+                            id = "1",
+                            email = "admin@test.com",
+                            name = "Admin",
+                            role = UserRole.Admin,
+                        ),
+                    )
+                }
+            }
+        }
+        val viewModel = DashboardViewModel(sdk)
+        viewModel.test {
+            intent(DashboardIntent.LoadDashboard)
+            model(DashboardModel(isLoading = true))
+            model(
+                DashboardModel(
+                    isLoading = false,
+                    isAdmin = true,
+                    isSystemAdmin = true,
+                ),
+            )
+            intent(DashboardIntent.AdminPanelClicked)
+            event(DashboardEvent.NavigateToAdmin(null))
+        }
+    }
+
+    @Test
+    fun `LoadDashboard with system admin AND group admin membership gets groupId`() {
+        val sdk = fakeSdk {
+            user {
+                getProfile {
+                    Either.Right(
+                        UserResponse(
+                            id = "1",
+                            email = "admin@test.com",
+                            name = "Admin",
+                            role = UserRole.Admin,
+                        ),
+                    )
+                }
+                getMyMemberships {
+                    Either.Right(
+                        listOf(
+                            MembershipSummary(
+                                groupId = "group-1",
+                                groupName = "Test Group",
+                                groupRole = GroupRole.Admin,
+                            ),
+                        ),
+                    )
+                }
+            }
+        }
+        val viewModel = DashboardViewModel(sdk)
+        viewModel.test {
+            intent(DashboardIntent.LoadDashboard)
+            model(DashboardModel(isLoading = true))
+            // Both getProfile (admin) and getMyMemberships (admin group) succeed
+            // Final state: isAdmin=true, isSystemAdmin=true, groupId="group-1"
+            model(
+                DashboardModel(
+                    isLoading = false,
+                    isAdmin = true,
+                    isSystemAdmin = true,
+                    groupId = "group-1",
+                    groupName = "Test Group",
+                ),
+            )
         }
     }
 }

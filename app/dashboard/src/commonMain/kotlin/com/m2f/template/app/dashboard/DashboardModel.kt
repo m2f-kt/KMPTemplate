@@ -9,6 +9,7 @@ data class DashboardModel(
     val userName: String = "user@terminal.dev",
     val selectedNavItem: String = "dashboard",
     val isAdmin: Boolean = false,
+    val isSystemAdmin: Boolean = false,
     val groupId: String? = null,
     val groupName: String? = null,
 )
