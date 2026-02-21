@@ -135,5 +135,5 @@ Decisions are logged in PROJECT.md Key Decisions table.
 ## Session Continuity
 
 Last session: 2026-02-21
-Stopped at: Phase 15 UAT complete -- all 8 tests passed, v1.1 milestone fully verified
+Stopped at: Completed quick-1: fix dashboard display name to show user's profile name
 Resume file: .planning/ROADMAP.md
