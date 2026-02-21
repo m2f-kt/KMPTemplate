@@ -29,7 +29,6 @@ class DashboardViewModel(
                         val isSystemAdmin = user.role.level >= UserRole.Admin.level
                         sendMutation(DashboardMutation.SetSystemAdmin(isSystemAdmin))
                     }
-                    sendMutation(DashboardMutation.SetLoading(false))
                     // Load memberships for role-gated nav
                     sdk.getMyMemberships().fold(
                         ifLeft = { /* Silently ignore — user may not be in any group */ },
@@ -46,6 +45,7 @@ class DashboardViewModel(
                             )
                         },
                     )
+                    sendMutation(DashboardMutation.SetLoading(false))
                 }
                 is DashboardIntent.NavItemSelected -> {
                     sendMutation(DashboardMutation.SetNavItem(intent.item))

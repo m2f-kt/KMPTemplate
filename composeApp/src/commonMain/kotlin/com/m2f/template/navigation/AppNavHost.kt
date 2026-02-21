@@ -9,9 +9,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.m2f.template.app.auth.ForgotPasswordIntent
 import com.m2f.template.app.auth.ForgotPasswordScreen
@@ -53,14 +53,16 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun AppNavHost() {
-    val navController = rememberNavController()
-    val tokenStorage = koinInject<TokenStorage>()
-    val authInterceptor = koinInject<AuthInterceptor>()
+fun AppNavHost(
+    navController: NavHostController,
+    tokenStorage: TokenStorage,
+    authInterceptor: AuthInterceptor,
+) {
     val oauthHandler = remember { OAuthHandler(serverBaseUrl = defaultBaseUrl()) }
 
-    // Check for existing auth tokens on startup
-    LaunchedEffect(Unit) {
+    // Auth effects use navController as key — they only re-run if the controller changes
+    // (which it won't, since it's lifted above key(currentLocale) in App.kt)
+    LaunchedEffect(navController) {
         // Clear tokens from sessions where rememberMe was false
         tokenStorage.clearSessionTokens()
 
@@ -74,7 +76,7 @@ fun AppNavHost() {
     }
 
     // Check for OAuth callback on startup (WASM: browser URL params)
-    LaunchedEffect(Unit) {
+    LaunchedEffect(navController) {
         val callback = checkOAuthCallback()
         if (callback != null) {
             navController.navigate(
@@ -89,7 +91,7 @@ fun AppNavHost() {
     }
 
     // Navigate to login when session expires (refresh token failed)
-    LaunchedEffect(Unit) {
+    LaunchedEffect(navController) {
         authInterceptor.sessionExpired.collect {
             navController.navigate(LoginRoute) {
                 popUpTo(0) { inclusive = true }
