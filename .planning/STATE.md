@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-02-17)
 Phase: 15 (Localization) -- COMPLETE (all plans executed, UAT passed)
 Plan: 13 of 13 in current phase (13 complete)
 Status: Phase 15 complete -- all 13 plans executed, UAT round 5 passed (8/8)
-Last activity: 2026-02-21 -- UAT round 5 all tests passed
+Last activity: 2026-02-21 -- Completed quick task 1: Fix dashboard display name to show user name instead of hardcoded email
 
 Progress: [████████████████████] 100% (13/13 plans)
 
@@ -131,6 +131,12 @@ Decisions are logged in PROJECT.md Key Decisions table.
 - RESOLVED: Turbine 1.2.1 + Kotlin 2.3.10 compatibility verified (compiles on all KMP targets including wasmJs)
 - Research flags: Ktor testApplication dispatcher issue (KTOR-7121) needs spike in Phase 11
 - Research flags: WASM async resource loading timing needs smoke test in Phase 15
+
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 1 | Fix dashboard display name to show user name instead of hardcoded email | 2026-02-21 | f0e3dcc | [1-fix-dashboard-display-name-to-show-user-](./quick/1-fix-dashboard-display-name-to-show-user-/) |
 
 ## Session Continuity
 
