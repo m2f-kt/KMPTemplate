@@ -74,7 +74,7 @@ data class Env(
      * Set env vars for production S3/R2/GCS deployments.
      */
     data class S3(
-        val endpoint: String = System.getenv("S3_ENDPOINT") ?: "http://localhost:9000",
+        val endpoint: String = System.getenv("S3_ENDPOINT") ?: "http://localhost:9002",
         val bucket: String = System.getenv("S3_BUCKET") ?: "uploads",
         val region: String = System.getenv("S3_REGION") ?: "us-east-1",
         val accessKey: String = System.getenv("S3_ACCESS_KEY") ?: "minioadmin",
