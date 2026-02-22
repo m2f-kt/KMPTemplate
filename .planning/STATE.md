@@ -11,14 +11,14 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 Milestone: v1.2 Polish & Patterns
 Phase: 18 of 22 (Core Services)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-02-21 — Phase 17 complete, 4 plans shipped (2 Phase 16 + 2 Phase 17)
+Plan: 1 of 3 in Phase ✅
+Status: Executing
+Last activity: 2026-02-22 — Plan 18-01 (S3 File Upload Service) complete
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [████░░░░░░░░░░░░░░░░] 4/TBD plans
+- v1.2 Polish & Patterns: [█████░░░░░░░░░░░░░░░] 5/TBD plans
 
 ## Performance Metrics
 
@@ -49,6 +49,9 @@ v1.2 decisions:
 - Phase 17: TransactionManager.current().exec() for raw SQL in Exposed R2DBC migrations
 - Phase 17: Vector dimension 768 matches Google text-embedding-004 (Koog/Gemini stack)
 - Phase 17: metadata column uses text (not JSONB) to avoid R2DBC driver issues
+- Phase 18: ByteReadChannel.toByteArray() for Ktor 3.x multipart file reading (not deprecated readRemaining)
+- Phase 18: arrow.core.raise.context.ensureNotNull for context-parameter Raise (not extension form)
+- Phase 18: Multipart parsing outside conduitAuth — RoutingContext.call not available in Raise context block
 - RAG pipeline exclusively Koog-based (no LangChain4j, Spring AI)
 - pgvector in existing PostgreSQL (no separate vector DB service)
 - MinIO for local S3-compatible storage
@@ -70,7 +73,7 @@ v1.2 decisions:
 
 ## Session Continuity
 
-Last session: 2026-02-21
-Stopped at: Phase 17 complete, auto-advancing to Phase 18
-Resume file: .planning/phases/17-infrastructure-foundation/17-VERIFICATION.md
-Next action: `/gsd:discuss-phase 18` or `/gsd:plan-phase 18`
+Last session: 2026-02-22
+Stopped at: Completed 18-01-PLAN.md (S3 File Upload Service)
+Resume file: .planning/phases/18-core-services/18-01-SUMMARY.md
+Next action: Execute 18-02-PLAN.md or `/gsd:execute-phase 18`
