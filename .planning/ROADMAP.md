@@ -48,7 +48,7 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 16: Tech Debt Cleanup** - Fix WASM locale persistence and optimize server dispatchers (completed 2026-02-21)
 - [x] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table (completed 2026-02-21)
 - [x] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests (completed 2026-02-22)
-- [ ] **Phase 18.1: Profile Uploads, Group Creation & Email Invitations** - Profile picture uploads from UI, group creation from admin panel, email invitations (INSERTED)
+- [x] **Phase 18.1: Profile Uploads, Group Creation & Email Invitations** - Profile picture uploads from UI, group creation from admin panel, email invitations (completed 2026-02-22)
 - [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
 - [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
@@ -116,11 +116,11 @@ Plans:
 **Plans:** 5 plans in 3 waves
 
 Plans:
-- [ ] 18.1-01-PLAN.md — Profile Avatar: Server (UsersTable.avatarUrl, upload endpoint, SDK)
-- [ ] 18.1-02-PLAN.md — Profile Avatar: UI (ImagePicker expect/actual, TerminalAvatar image, crop dialog)
-- [ ] 18.1-03-PLAN.md — Admin Group Creation: UI (modal dialog in admin panel)
-- [ ] 18.1-04-PLAN.md — Invitations: Server + SDK (InvitationsTable, service, routes, API)
-- [ ] 18.1-05-PLAN.md — Invitations: Admin UI + Accept Flow (invite dialog, InviteAcceptScreen)
+- [x] 18.1-01-PLAN.md — Profile Avatar: Server (UsersTable.avatarUrl, upload endpoint, SDK)
+- [x] 18.1-02-PLAN.md — Profile Avatar: UI (ImagePicker expect/actual, TerminalAvatar image, crop dialog)
+- [x] 18.1-03-PLAN.md — Admin Group Creation: UI (modal dialog in admin panel)
+- [x] 18.1-04-PLAN.md — Invitations: Server + SDK (InvitationsTable, service, routes, API)
+- [x] 18.1-05-PLAN.md — Invitations: Admin UI + Accept Flow (invite dialog, InviteAcceptScreen)
 
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
@@ -190,10 +190,10 @@ Plans:
 | 16. Tech Debt Cleanup | 2/2 | Complete    | 2026-02-21 | - |
 | 17. Infrastructure Foundation | v1.2 | 2/2 | Complete | 2026-02-21 |
 | 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
-| 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 0/5 | Planned | - |
+| 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 80 plans shipped across 2 milestones, 8 phases planned for v1.2**
+**Total: 85 plans shipped across 2 milestones, 8 phases planned for v1.2**

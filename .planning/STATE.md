@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 18 — Core Services (v1.2 Polish & Patterns)
+**Current focus:** Phase 19 — Structured AI & RAG Pipeline (v1.2 Polish & Patterns)
 
 ## Current Position
 
@@ -18,7 +18,7 @@ Last activity: 2026-02-22 — Plan 18.1-05 (Invitation UI) complete
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [███████████░░░░░░░░░] 11/TBD plans
+- v1.2 Polish & Patterns: [██████████████░░░░░░] 12/TBD plans
 
 ## Performance Metrics
 
@@ -86,4 +86,4 @@ v1.2 decisions:
 Last session: 2026-02-22
 Stopped at: Completed 18.1-05-PLAN.md (Invitation UI) — Phase 18.1 COMPLETE (5/5 plans)
 Resume file: .planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-05-SUMMARY.md
-Next action: Phase 18.1 complete. Proceed to next phase or verify phase deliverables.
+Next action: Plan Phase 19 via `/gsd-plan-phase 19` — Structured AI & RAG Pipeline
