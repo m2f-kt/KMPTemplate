@@ -161,6 +161,27 @@ sealed class AppError {
     }
 
     @Serializable
+    sealed class Invitation : AppError() {
+        @Serializable
+        data class NotFound(
+            override val code: String = "INVITATION_NOT_FOUND",
+            override val message: String = "Invitation not found"
+        ) : Invitation()
+
+        @Serializable
+        data class Expired(
+            override val code: String = "INVITATION_EXPIRED",
+            override val message: String = "Invitation has expired"
+        ) : Invitation()
+
+        @Serializable
+        data class AlreadyAccepted(
+            override val code: String = "INVITATION_ALREADY_ACCEPTED",
+            override val message: String = "Invitation has already been accepted"
+        ) : Invitation()
+    }
+
+    @Serializable
     sealed class AI : AppError() {
         @Serializable
         data class AgentFailed(

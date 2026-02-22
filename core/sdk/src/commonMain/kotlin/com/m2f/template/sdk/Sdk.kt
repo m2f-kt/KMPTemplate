@@ -3,6 +3,7 @@ package com.m2f.template.sdk
 import com.m2f.template.sdk.api.AuthApi
 import com.m2f.template.sdk.api.FileApi
 import com.m2f.template.sdk.api.GroupApi
+import com.m2f.template.sdk.api.InvitationApi
 import com.m2f.template.sdk.api.UserApi
 
 /**
@@ -16,4 +17,5 @@ class Sdk(
     private val userApi: UserApi,
     private val groupApi: GroupApi,
     private val fileApi: FileApi,
-) : AuthApi by authApi, UserApi by userApi, GroupApi by groupApi, FileApi by fileApi
+    private val invitationApi: InvitationApi,
+) : AuthApi by authApi, UserApi by userApi, GroupApi by groupApi, FileApi by fileApi, InvitationApi by invitationApi

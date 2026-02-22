@@ -185,3 +185,11 @@ suspend inline fun RoutingContext.unsupportedMediaType(
     HttpStatusCode.UnsupportedMediaType,
     ErrorResponse(code = code, message = error),
 )
+
+suspend inline fun RoutingContext.gone(
+    code: String,
+    error: String,
+): Unit = call.respond(
+    HttpStatusCode.Gone,
+    ErrorResponse(code = code, message = error),
+)

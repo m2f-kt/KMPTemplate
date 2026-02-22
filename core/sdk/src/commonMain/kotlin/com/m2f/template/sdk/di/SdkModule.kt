@@ -8,6 +8,8 @@ import com.m2f.template.sdk.api.FileApi
 import com.m2f.template.sdk.api.FileApiImpl
 import com.m2f.template.sdk.api.GroupApi
 import com.m2f.template.sdk.api.GroupApiImpl
+import com.m2f.template.sdk.api.InvitationApi
+import com.m2f.template.sdk.api.InvitationApiImpl
 import com.m2f.template.sdk.api.UserApi
 import com.m2f.template.sdk.api.UserApiImpl
 import com.m2f.template.sdk.createApiClient
@@ -21,6 +23,8 @@ import org.koin.dsl.module
  * - [HttpClient] via [createApiClient] with interceptor installed
  * - [AuthApi] for register, login, refresh, logout
  * - [UserApi] for getProfile, updateProfile, getUserById
+ * - [GroupApi] for group CRUD and member management
+ * - [InvitationApi] for group invitation operations
  *
  * Depends on [TokenStorage] from storageModule being available in the DI graph.
  */
@@ -40,5 +44,6 @@ val sdkModule = module {
     single<UserApi> { UserApiImpl(client = get()) }
     single<GroupApi> { GroupApiImpl(client = get()) }
     single<FileApi> { FileApiImpl(client = get()) }
-    single { Sdk(authApi = get(), userApi = get(), groupApi = get(), fileApi = get()) }
+    single<InvitationApi> { InvitationApiImpl(client = get()) }
+    single { Sdk(authApi = get(), userApi = get(), groupApi = get(), fileApi = get(), invitationApi = get()) }
 }

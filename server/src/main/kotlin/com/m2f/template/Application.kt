@@ -18,7 +18,9 @@ import com.m2f.server.files.routes.fileRoutes
 import com.m2f.server.files.service.FileService
 import com.m2f.server.groups.registerGroupMigrations
 import com.m2f.server.groups.routes.groupRoutes
+import com.m2f.server.groups.routes.invitationRoutes
 import com.m2f.server.groups.service.GroupService
+import com.m2f.server.groups.service.InvitationService
 import com.m2f.server.auth.routes.oauthRoutes
 import com.m2f.server.auth.routes.userRoutes
 import com.m2f.server.auth.service.AuthService
@@ -110,6 +112,8 @@ fun Application.module() {
         userRoutes(userService)
         val groupService: GroupService by inject()
         groupRoutes(groupService)
+        val invitationService: InvitationService by inject()
+        invitationRoutes(invitationService)
         val fileService: FileService by inject()
         fileRoutes(fileService)
         avatarRoutes(userRepository, fileService)
