@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -148,9 +149,18 @@ fun AppNavHost(
                 val dashboardViewModel = koinViewModel<DashboardViewModel>()
                 val dashboardState by dashboardViewModel.model.collectAsStateWithLifecycle()
 
-                // Refresh profile data when returning to this screen (e.g., after editing profile)
-                LaunchedEffect(backStackEntry) {
-                    dashboardViewModel.take(DashboardIntent.RefreshProfile)
+                // Refresh profile data when this screen becomes visible (initial or returning from another screen)
+                val lifecycleOwner = backStackEntry
+                DisposableEffect(lifecycleOwner) {
+                    val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
+                        if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                            dashboardViewModel.take(DashboardIntent.RefreshProfile)
+                        }
+                    }
+                    lifecycleOwner.lifecycle.addObserver(observer)
+                    onDispose {
+                        lifecycleOwner.lifecycle.removeObserver(observer)
+                    }
                 }
 
                 DashboardScreen(
