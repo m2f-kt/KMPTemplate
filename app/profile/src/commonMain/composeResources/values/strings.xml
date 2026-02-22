@@ -21,6 +21,12 @@
     <string name="profile_error_title">error</string>
     <string name="profile_back">&lt; back</string>
     <string name="profile_logout">$ Logout</string>
+    <string name="profile_avatar_tap_hint">Tap to change avatar</string>
+    <string name="profile_avatar_uploading">Uploading avatar…</string>
+    <string name="profile_crop_dialog_title">Crop Image</string>
+    <string name="profile_crop_dialog_desc">// adjust your profile picture</string>
+    <string name="profile_crop_confirm">&gt; confirm</string>
+    <string name="profile_crop_cancel">cancel</string>
 
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 

@@ -181,6 +181,11 @@ fun AppNavHost(
                     onSaveProfile = { viewModel.take(ProfileIntent.SaveProfileClicked) },
                     onLogout = { viewModel.take(ProfileIntent.LogoutClicked) },
                     onBack = { navController.popBackStack() },
+                    onImageSelected = { bytes, mimeType ->
+                        viewModel.take(ProfileIntent.ImageSelected(bytes, mimeType))
+                    },
+                    onCropConfirmed = { viewModel.take(ProfileIntent.CropConfirmed) },
+                    onCropCancelled = { viewModel.take(ProfileIntent.CropCancelled) },
                     localeSelector = {
                         LocaleSelector(
                             currentLocale = currentLocale,

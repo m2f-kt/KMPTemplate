@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,19 +37,28 @@ import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.components.button.ButtonVariant
 import com.m2f.template.designsystem.components.button.TerminalButton
 import com.m2f.template.designsystem.components.card.TerminalCard
+import com.m2f.template.designsystem.components.display.TerminalAvatar
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.components.input.TerminalInput
+import com.m2f.template.designsystem.components.picker.ImagePickerResult
+import com.m2f.template.designsystem.components.picker.rememberImagePickerLauncher
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.UserTier
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
 import template.app.profile.generated.resources.profile_account_info
 import template.app.profile.generated.resources.profile_account_info_subtitle
+import template.app.profile.generated.resources.profile_avatar_tap_hint
+import template.app.profile.generated.resources.profile_avatar_uploading
 import template.app.profile.generated.resources.profile_back
 import template.app.profile.generated.resources.profile_cancel_button
 import template.app.profile.generated.resources.profile_command
+import template.app.profile.generated.resources.profile_crop_cancel
+import template.app.profile.generated.resources.profile_crop_confirm
+import template.app.profile.generated.resources.profile_crop_dialog_desc
+import template.app.profile.generated.resources.profile_crop_dialog_title
 import template.app.profile.generated.resources.profile_edit_button
 import template.app.profile.generated.resources.profile_edit_email_placeholder
 import template.app.profile.generated.resources.profile_edit_name_placeholder
@@ -81,6 +91,9 @@ import template.app.profile.generated.resources.profile_user_id_label
  * @param onSaveProfile Callback to save edited profile.
  * @param onLogout Callback to trigger logout.
  * @param onBack Callback to navigate back.
+ * @param onImageSelected Callback when an image is selected from picker.
+ * @param onCropConfirmed Callback when crop is confirmed.
+ * @param onCropCancelled Callback when crop is cancelled.
  * @param modifier Modifier for the screen root.
  */
 @Composable
@@ -93,10 +106,19 @@ fun ProfileScreen(
     onSaveProfile: () -> Unit,
     onLogout: () -> Unit,
     onBack: () -> Unit,
+    onImageSelected: (ByteArray, String) -> Unit,
+    onCropConfirmed: () -> Unit,
+    onCropCancelled: () -> Unit,
     modifier: Modifier = Modifier,
     localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
+
+    val launchImagePicker = rememberImagePickerLauncher { result: ImagePickerResult? ->
+        if (result != null) {
+            onImageSelected(result.bytes, result.mimeType)
+        }
+    }
 
     BoxWithConstraints(
         modifier = modifier.fillMaxSize().background(colors.bg),
@@ -120,6 +142,7 @@ fun ProfileScreen(
                     onSaveProfile = onSaveProfile,
                     onLogout = onLogout,
                     onBack = onBack,
+                    onAvatarClick = launchImagePicker,
                     localeSelector = localeSelector,
                 )
             }
@@ -133,9 +156,19 @@ fun ProfileScreen(
                     onSaveProfile = onSaveProfile,
                     onLogout = onLogout,
                     onBack = onBack,
+                    onAvatarClick = launchImagePicker,
                     localeSelector = localeSelector,
                 )
             }
+        }
+
+        // Crop Dialog Overlay
+        if (state.showCropDialog) {
+            CropDialog(
+                imageBytes = state.pendingImageBytes,
+                onConfirm = onCropConfirmed,
+                onCancel = onCropCancelled,
+            )
         }
     }
 }
@@ -152,6 +185,7 @@ private fun DesktopProfile(
     onSaveProfile: () -> Unit,
     onLogout: () -> Unit,
     onBack: () -> Unit,
+    onAvatarClick: () -> Unit,
     localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
@@ -183,7 +217,10 @@ private fun DesktopProfile(
                 modifier = Modifier.clickable(onClick = onBack),
             )
 
-            ProfileHeader(state = state)
+            ProfileHeader(
+                state = state,
+                onAvatarClick = onAvatarClick,
+            )
 
             if (state.isEditing) {
                 EditProfileSection(
@@ -218,6 +255,7 @@ private fun MobileProfile(
     onSaveProfile: () -> Unit,
     onLogout: () -> Unit,
     onBack: () -> Unit,
+    onAvatarClick: () -> Unit,
     localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
@@ -263,7 +301,10 @@ private fun MobileProfile(
                 .padding(horizontal = 20.dp, vertical = 24.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
         ) {
-            ProfileHeader(state = state)
+            ProfileHeader(
+                state = state,
+                onAvatarClick = onAvatarClick,
+            )
 
             if (state.isEditing) {
                 EditProfileSection(
@@ -289,21 +330,71 @@ private fun MobileProfile(
 // -- Shared Components --
 
 @Composable
-private fun ProfileHeader(state: ProfileModel) {
+private fun ProfileHeader(
+    state: ProfileModel,
+    onAvatarClick: () -> Unit,
+) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        TerminalText(
-            text = stringResource(Res.string.profile_command),
-            style = typography.xxl.copy(fontWeight = FontWeight.Bold),
-            color = colors.text,
-        )
-        TerminalText(
-            text = "// ${state.tier.displayName} | ${state.email}",
-            style = typography.sm,
-            color = colors.textMuted,
-        )
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        // Tappable avatar with upload progress indicator
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(RoundedCornerShape(50))
+                .clickable(enabled = !state.isUploadingAvatar, onClick = onAvatarClick),
+            contentAlignment = Alignment.Center,
+        ) {
+            val initials = state.name.takeIf { it.isNotBlank() }?.take(2)?.uppercase()
+                ?: state.email.take(2).uppercase()
+            TerminalAvatar(
+                initials = initials,
+                imageUrl = state.avatarUrl,
+                size = 64.dp,
+            )
+
+            // Upload progress overlay
+            if (state.isUploadingAvatar) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(colors.bg.copy(alpha = 0.7f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    TerminalProgress()
+                }
+            }
+        }
+
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            TerminalText(
+                text = stringResource(Res.string.profile_command),
+                style = typography.xxl.copy(fontWeight = FontWeight.Bold),
+                color = colors.text,
+            )
+            TerminalText(
+                text = "// ${state.tier.displayName} | ${state.email}",
+                style = typography.sm,
+                color = colors.textMuted,
+            )
+            if (!state.isUploadingAvatar) {
+                TerminalText(
+                    text = stringResource(Res.string.profile_avatar_tap_hint),
+                    style = typography.xs,
+                    color = colors.textDim,
+                )
+            } else {
+                TerminalText(
+                    text = stringResource(Res.string.profile_avatar_uploading),
+                    style = typography.xs,
+                    color = colors.accent,
+                )
+            }
+        }
     }
 }
 
@@ -448,5 +539,85 @@ private fun TierContent(state: ProfileModel) {
         is UserTier.Premium -> PremiumTierContent(state = state)
         is UserTier.Admin -> AdminTierContent(state = state)
         is UserTier.PowerAdmin -> PowerAdminTierContent(state = state)
+    }
+}
+
+/**
+ * Simple crop dialog overlay. In a real implementation, this would include
+ * a crop region selector. For MVP, shows a preview and confirm/cancel buttons.
+ */
+@Composable
+private fun CropDialog(
+    imageBytes: ByteArray?,
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    // Full screen overlay
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(colors.bg.copy(alpha = 0.9f))
+            .clickable(enabled = false) { /* consume clicks */ },
+        contentAlignment = Alignment.Center,
+    ) {
+        TerminalCard(
+            title = stringResource(Res.string.profile_crop_dialog_title),
+            description = stringResource(Res.string.profile_crop_dialog_desc),
+            modifier = Modifier
+                .padding(32.dp)
+                .fillMaxWidth(0.8f),
+        ) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+            ) {
+                // Image preview placeholder
+                // In a full implementation, this would use a crop library to render
+                // the image with crop handles. For MVP, we show a placeholder.
+                Box(
+                    modifier = Modifier
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(colors.surface),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (imageBytes != null) {
+                        // Note: For actual image preview, we'd use a platform-specific
+                        // bitmap decoder. For MVP, show size info.
+                        TerminalText(
+                            text = "${imageBytes.size / 1024} KB",
+                            style = typography.md,
+                            color = colors.textMuted,
+                        )
+                    } else {
+                        TerminalText(
+                            text = "No image",
+                            style = typography.sm,
+                            color = colors.textMuted,
+                        )
+                    }
+                }
+
+                // Action buttons
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    TerminalButton(
+                        text = stringResource(Res.string.profile_crop_confirm),
+                        onClick = onConfirm,
+                        variant = ButtonVariant.Default,
+                    )
+                    TerminalButton(
+                        text = stringResource(Res.string.profile_crop_cancel),
+                        onClick = onCancel,
+                        variant = ButtonVariant.Ghost,
+                    )
+                }
+            }
+        }
     }
 }

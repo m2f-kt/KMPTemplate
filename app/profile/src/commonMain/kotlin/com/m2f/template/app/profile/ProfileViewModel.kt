@@ -34,6 +34,9 @@ class ProfileViewModel(
                 is ProfileIntent.EditEmailChanged -> sendMutation(ProfileMutation.SetEditEmail(intent.email))
                 is ProfileIntent.SaveProfileClicked -> handleSaveProfile()
                 is ProfileIntent.LogoutClicked -> handleLogout()
+                is ProfileIntent.ImageSelected -> handleImageSelected(intent.bytes)
+                is ProfileIntent.CropConfirmed -> handleCropConfirmed()
+                is ProfileIntent.CropCancelled -> handleCropCancelled()
             }
         }
     }
@@ -46,7 +49,7 @@ class ProfileViewModel(
                 sendMutation(ProfileMutation.SetLoading(false))
             },
             ifRight = { user ->
-                sendMutation(ProfileMutation.SetProfile(user.id, user.email, user.name, user.tier))
+                sendMutation(ProfileMutation.SetProfile(user.id, user.email, user.name, user.tier, user.avatarUrl))
             },
         )
     }
@@ -81,7 +84,7 @@ class ProfileViewModel(
                 sendMutation(ProfileMutation.SetLoading(false))
             },
             ifRight = { user ->
-                sendMutation(ProfileMutation.SetProfile(user.id, user.email, user.name, user.tier))
+                sendMutation(ProfileMutation.SetProfile(user.id, user.email, user.name, user.tier, user.avatarUrl))
                 sendMutation(ProfileMutation.SetSaveSuccess)
             },
         )
@@ -92,6 +95,38 @@ class ProfileViewModel(
         sendEvent(ProfileEvent.NavigateToLogin)
     }
 
+    private suspend fun handleImageSelected(bytes: ByteArray) {
+        sendMutation(ProfileMutation.SetPendingImage(bytes))
+        sendMutation(ProfileMutation.ShowCropDialog)
+    }
+
+    private suspend fun handleCropConfirmed() {
+        val current = model.value
+        val imageBytes = current.pendingImageBytes ?: return
+
+        sendMutation(ProfileMutation.HideCropDialog)
+        sendMutation(ProfileMutation.SetUploadingAvatar(true))
+
+        sdk.uploadAvatar(
+            imageBytes = imageBytes,
+            fileName = "avatar.jpg",
+            contentType = "image/jpeg",
+        ).fold(
+            ifLeft = { error ->
+                sendMutation(ProfileMutation.SetServerError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
+                sendMutation(ProfileMutation.SetUploadingAvatar(false))
+            },
+            ifRight = { user ->
+                sendMutation(ProfileMutation.SetAvatarUrl(user.avatarUrl))
+                sendMutation(ProfileMutation.SetUploadingAvatar(false))
+            },
+        )
+    }
+
+    private suspend fun handleCropCancelled() {
+        sendMutation(ProfileMutation.HideCropDialog)
+    }
+
     override suspend fun reduce(model: ProfileModel, mutation: ProfileMutation): ProfileModel =
         when (mutation) {
             is ProfileMutation.SetProfile -> model.copy(
@@ -99,6 +134,7 @@ class ProfileViewModel(
                 email = mutation.email,
                 name = mutation.name,
                 tier = mutation.tier,
+                avatarUrl = mutation.avatarUrl,
                 isLoading = false,
             )
             is ProfileMutation.SetLoading -> model.copy(isLoading = mutation.loading)
@@ -130,5 +166,10 @@ class ProfileViewModel(
                 saveSuccess = true,
                 isLoading = false,
             )
+            is ProfileMutation.SetPendingImage -> model.copy(pendingImageBytes = mutation.bytes)
+            is ProfileMutation.ShowCropDialog -> model.copy(showCropDialog = true)
+            is ProfileMutation.HideCropDialog -> model.copy(showCropDialog = false, pendingImageBytes = null)
+            is ProfileMutation.SetUploadingAvatar -> model.copy(isUploadingAvatar = mutation.uploading)
+            is ProfileMutation.SetAvatarUrl -> model.copy(avatarUrl = mutation.url)
         }
 }
