@@ -210,15 +210,12 @@ fun AdminPanelScreen(
                 }
             }
 
-            // Action buttons row: Create Group + Invite Member + Register Member
+            // Action buttons row: Invite Member + Register Member
+            // Note: Create Group is intentionally hidden when a group exists.
+            // Multi-group support deferred to future iteration.
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalButton(
-                    text = stringResource(Res.string.admin_create_group),
-                    onClick = onOpenCreateGroup,
-                    variant = ButtonVariant.Secondary,
-                )
                 TerminalButton(
                     text = stringResource(Res.string.admin_invite_member),
                     onClick = onOpenInvite,
