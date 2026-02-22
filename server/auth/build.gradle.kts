@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.jbcrypt)
+    implementation(libs.jakarta.mail)
     implementation(libs.ktor.server.resources)
     implementation(libs.bundles.di)
     testImplementation(libs.bundles.testing.server)
