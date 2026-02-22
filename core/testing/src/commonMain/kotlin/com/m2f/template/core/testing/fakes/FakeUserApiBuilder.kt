@@ -36,6 +36,9 @@ class FakeUserApiBuilder {
     private var _getMyMemberships: suspend () -> Either<AppError, List<MembershipSummary>> =
         { Either.Left(AppError.Client.Unknown()) }
 
+    private var _uploadAvatar: suspend (ByteArray, String, String) -> Either<AppError, UserResponse> =
+        { _, _, _ -> Either.Left(AppError.Client.Unknown()) }
+
     fun getProfile(behavior: suspend () -> Either<AppError, UserResponse>) {
         _getProfile = behavior
     }
@@ -52,6 +55,10 @@ class FakeUserApiBuilder {
         _getMyMemberships = behavior
     }
 
+    fun uploadAvatar(behavior: suspend (ByteArray, String, String) -> Either<AppError, UserResponse>) {
+        _uploadAvatar = behavior
+    }
+
     internal fun build(): UserApi = object : UserApi {
         override suspend fun getProfile(): Either<AppError, UserResponse> =
             _getProfile()
@@ -64,5 +71,12 @@ class FakeUserApiBuilder {
 
         override suspend fun getMyMemberships(): Either<AppError, List<MembershipSummary>> =
             _getMyMemberships()
+
+        override suspend fun uploadAvatar(
+            imageBytes: ByteArray,
+            fileName: String,
+            contentType: String,
+        ): Either<AppError, UserResponse> =
+            _uploadAvatar(imageBytes, fileName, contentType)
     }
 }

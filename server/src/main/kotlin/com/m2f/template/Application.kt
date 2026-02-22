@@ -12,6 +12,7 @@ import com.m2f.server.ai.registerAiMigrations
 import com.m2f.server.ai.routes.aiRoutes
 import com.m2f.core.database.migrations.registerVectorMigrations
 import com.m2f.server.auth.registerAuthMigrations
+import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.routes.authRoutes
 import com.m2f.server.files.routes.fileRoutes
 import com.m2f.server.files.service.FileService
@@ -25,6 +26,7 @@ import com.m2f.server.auth.service.OAuthService
 import com.m2f.server.auth.service.PasswordResetService
 import com.m2f.server.auth.service.UserService
 import com.m2f.template.di.serverModule
+import com.m2f.template.routes.avatarRoutes
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
 import io.ktor.client.HttpClient
@@ -101,6 +103,7 @@ fun Application.module() {
         val authService: AuthService by inject()
         val passwordResetService: PasswordResetService by inject()
         val userService: UserService by inject()
+        val userRepository: UserRepository by inject()
         val oauthService: OAuthService by inject()
         authRoutes(authService, passwordResetService)
         oauthRoutes(oauthService, config.env.oauth)
@@ -109,6 +112,7 @@ fun Application.module() {
         groupRoutes(groupService)
         val fileService: FileService by inject()
         fileRoutes(fileService)
+        avatarRoutes(userRepository, fileService)
         val assistantAgentService: AssistantAgentService by inject()
         val chatAgentService: ChatAgentService by inject()
         aiRoutes(

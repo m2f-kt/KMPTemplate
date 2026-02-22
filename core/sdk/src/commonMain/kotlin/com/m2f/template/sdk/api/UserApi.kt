@@ -17,4 +17,9 @@ interface UserApi {
     suspend fun updateProfile(request: UpdateProfileRequest): Either<AppError, UserResponse>
     suspend fun getUserById(id: String): Either<AppError, UserResponse>
     suspend fun getMyMemberships(): Either<AppError, List<MembershipSummary>>
+    suspend fun uploadAvatar(
+        imageBytes: ByteArray,
+        fileName: String,
+        contentType: String,
+    ): Either<AppError, UserResponse>
 }

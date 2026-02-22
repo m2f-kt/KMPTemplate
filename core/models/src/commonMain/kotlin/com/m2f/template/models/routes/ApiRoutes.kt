@@ -32,6 +32,9 @@ class Users {
     class Me(val parent: Users = Users()) {
         @Serializable @Resource("memberships")
         class Memberships(val parent: Me = Me())
+
+        @Serializable @Resource("avatar")
+        class Avatar(val parent: Me = Me())
     }
 
     @Serializable @Resource("{id}")
