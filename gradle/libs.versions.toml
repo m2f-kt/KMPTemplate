@@ -29,6 +29,7 @@ koog = "0.6.2"
 aws-s3 = "1.4.45"
 aws-smithy = "1.4.12"
 jakarta-mail = "2.0.2"
+greenmail = "2.1.3"
 navigation-compose = "2.9.2"
 uiTooling = "1.10.3"
 
@@ -107,6 +108,7 @@ aws-smithy-runtime = { module = "aws.smithy.kotlin:runtime-core", version.ref = 
 
 # Email
 jakarta-mail = { module = "com.sun.mail:jakarta.mail", version.ref = "jakarta-mail" }
+greenmail = { module = "com.icegreen:greenmail", version.ref = "greenmail" }
 
 # Serialization (multiplatform)
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

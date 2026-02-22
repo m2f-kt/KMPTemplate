@@ -20,4 +20,5 @@ dependencies {
     implementation(libs.ktor.server.resources)
     implementation(libs.bundles.di)
     testImplementation(libs.bundles.testing.server)
+    testImplementation(libs.greenmail)
 }
