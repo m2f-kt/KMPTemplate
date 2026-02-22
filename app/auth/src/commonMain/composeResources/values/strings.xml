@@ -133,4 +133,17 @@
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>
 
+    <!-- ======================== Invite Accept Screen ======================== -->
+    <string name="invite_title">$ accept_invite</string>
+    <string name="invite_subtitle">// you have been invited to join a group</string>
+    <string name="invite_loading">$ loading invitation...</string>
+    <string name="invite_group_label">group:</string>
+    <string name="invite_inviter_label">invited_by:</string>
+    <string name="invite_role_label">role:</string>
+    <string name="invite_accept_button">$ accept_invite()</string>
+    <string name="invite_accept_button_loading">$ accepting...</string>
+    <string name="invite_expired">This invitation has expired.</string>
+    <string name="invite_already_accepted">This invitation has already been accepted.</string>
+    <string name="invite_success_message">Successfully joined the group!</string>
+
 </resources>

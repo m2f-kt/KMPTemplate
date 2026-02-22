@@ -38,3 +38,10 @@ data class AdminPanelRoute(val groupId: String? = null)
  */
 @Serializable
 data class RegisterMemberRoute(val groupId: String)
+
+/**
+ * Route for accepting a group invitation via email link.
+ * The token is extracted from the invitation URL.
+ */
+@Serializable
+data class InviteAcceptRoute(val token: String)

@@ -38,6 +38,10 @@ import com.m2f.template.app.admin.RegisterMemberEvent
 import com.m2f.template.app.admin.RegisterMemberIntent
 import com.m2f.template.app.admin.RegisterMemberScreen
 import com.m2f.template.app.admin.RegisterMemberViewModel
+import com.m2f.template.app.auth.InviteAcceptEvent
+import com.m2f.template.app.auth.InviteAcceptIntent
+import com.m2f.template.app.auth.InviteAcceptScreen
+import com.m2f.template.app.auth.InviteAcceptViewModel
 import com.m2f.template.app.profile.ProfileEvent
 import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
@@ -241,6 +245,10 @@ fun AppNavHost(
                     onCloseCreateGroup = { viewModel.take(AdminPanelIntent.CloseCreateGroupDialog) },
                     onCreateGroupNameChange = { viewModel.take(AdminPanelIntent.CreateGroupNameChanged(it)) },
                     onSubmitCreateGroup = { viewModel.take(AdminPanelIntent.SubmitCreateGroup) },
+                    onOpenInvite = { viewModel.take(AdminPanelIntent.OpenInviteDialog) },
+                    onCloseInvite = { viewModel.take(AdminPanelIntent.CloseInviteDialog) },
+                    onInviteEmailChange = { viewModel.take(AdminPanelIntent.InviteEmailChanged(it)) },
+                    onSendInvite = { viewModel.take(AdminPanelIntent.SendInvite) },
                 )
                 LaunchedEffect(Unit) {
                     viewModel.event.collect { event ->
@@ -276,6 +284,33 @@ fun AppNavHost(
                         when (event) {
                             is RegisterMemberEvent.RegistrationSuccess -> {
                                 navController.popBackStack()
+                            }
+                        }
+                    }
+                }
+            }
+
+            composable<InviteAcceptRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<InviteAcceptRoute>()
+                val viewModel = koinViewModel<InviteAcceptViewModel>()
+                val state by viewModel.model.collectAsStateWithLifecycle()
+
+                LaunchedEffect(route.token) {
+                    viewModel.take(InviteAcceptIntent.LoadInvitation(route.token))
+                }
+
+                InviteAcceptScreen(
+                    state = state,
+                    onAccept = { viewModel.take(InviteAcceptIntent.AcceptInvitation) },
+                )
+
+                LaunchedEffect(Unit) {
+                    viewModel.event.collect { event ->
+                        when (event) {
+                            is InviteAcceptEvent.NavigateToGroup -> {
+                                navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
+                                    popUpTo<DashboardRoute>()
+                                }
                             }
                         }
                     }
