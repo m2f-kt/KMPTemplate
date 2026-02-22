@@ -6,8 +6,9 @@ import com.m2f.template.sdk.Sdk
 /**
  * DSL builder for creating a fake [Sdk] instance in tests.
  *
- * Composes [FakeAuthApiBuilder], [FakeUserApiBuilder], and [FakeGroupApiBuilder]
- * so tests configure only the API methods they exercise, while unconfigured paths fail fast.
+ * Composes [FakeAuthApiBuilder], [FakeUserApiBuilder], [FakeGroupApiBuilder],
+ * and [FakeFileApiBuilder] so tests configure only the API methods they exercise,
+ * while unconfigured paths fail fast.
  *
  * Usage:
  * ```kotlin
@@ -15,6 +16,7 @@ import com.m2f.template.sdk.Sdk
  *     auth { login { _, _ -> Either.Right(AuthResponse(...)) } }
  *     user { getProfile { Either.Right(UserResponse(...)) } }
  *     group { createGroup { Either.Right(GroupResponse(...)) } }
+ *     file { uploadFile { _, _, _ -> Either.Right(FileResponse(...)) } }
  * }
  * ```
  */
@@ -24,6 +26,7 @@ class FakeSdkBuilder {
     private var authApiBuilder: FakeAuthApiBuilder = FakeAuthApiBuilder()
     private var userApiBuilder: FakeUserApiBuilder = FakeUserApiBuilder()
     private var groupApiBuilder: FakeGroupApiBuilder = FakeGroupApiBuilder()
+    private var fileApiBuilder: FakeFileApiBuilder = FakeFileApiBuilder()
 
     fun auth(init: FakeAuthApiBuilder.() -> Unit) {
         authApiBuilder.init()
@@ -37,11 +40,16 @@ class FakeSdkBuilder {
         groupApiBuilder.init()
     }
 
+    fun file(init: FakeFileApiBuilder.() -> Unit) {
+        fileApiBuilder.init()
+    }
+
     internal fun build(): Sdk {
         return Sdk(
             authApi = authApiBuilder.build(),
             userApi = userApiBuilder.build(),
             groupApi = groupApiBuilder.build(),
+            fileApi = fileApiBuilder.build(),
         )
     }
 }
