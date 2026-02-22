@@ -13,4 +13,8 @@ dependencies {
     implementation(libs.ktor.server.resources)
     implementation(libs.bundles.di)
     implementation(libs.aws.s3)
+    testImplementation(projects.server.core.database)
+    testImplementation(projects.server.core.security)
+    testImplementation(libs.bundles.testing.server)
+    testImplementation(libs.ktor.client.content.negotiation)
 }
