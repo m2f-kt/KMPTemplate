@@ -24,4 +24,11 @@ sealed interface AdminPanelMutation {
         val hasMore: Boolean,
     ) : AdminPanelMutation
     data class SetError(val error: StringKey) : AdminPanelMutation
+    // Create group dialog mutations
+    data object ShowCreateGroupDialog : AdminPanelMutation
+    data object HideCreateGroupDialog : AdminPanelMutation
+    data class SetCreateGroupName(val name: String) : AdminPanelMutation
+    data class SetCreatingGroup(val creating: Boolean) : AdminPanelMutation
+    data class SetCreateGroupError(val error: StringKey?) : AdminPanelMutation
+    data object SetCreateGroupSuccess : AdminPanelMutation
 }

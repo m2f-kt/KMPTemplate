@@ -15,4 +15,10 @@ data class AdminPanelModel(
     val isLoading: Boolean = false,
     val isLoadingMore: Boolean = false,
     val error: StringKey? = null,
+    // Create group dialog state
+    val showCreateGroupDialog: Boolean = false,
+    val createGroupName: String = "",
+    val isCreatingGroup: Boolean = false,
+    val createGroupError: StringKey? = null,
+    val createGroupSuccess: Boolean = false,
 )

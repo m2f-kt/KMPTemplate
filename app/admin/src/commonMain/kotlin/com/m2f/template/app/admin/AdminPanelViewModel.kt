@@ -2,6 +2,7 @@ package com.m2f.template.app.admin
 
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
+import com.m2f.template.models.dto.CreateGroupRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
@@ -23,6 +24,10 @@ class AdminPanelViewModel(
                         sendEvent(AdminPanelEvent.NavigateToRegisterMember(groupId))
                     }
                 }
+                is AdminPanelIntent.OpenCreateGroupDialog -> sendMutation(AdminPanelMutation.ShowCreateGroupDialog)
+                is AdminPanelIntent.CloseCreateGroupDialog -> sendMutation(AdminPanelMutation.HideCreateGroupDialog)
+                is AdminPanelIntent.CreateGroupNameChanged -> sendMutation(AdminPanelMutation.SetCreateGroupName(intent.name))
+                is AdminPanelIntent.SubmitCreateGroup -> handleCreateGroup()
             }
         }
     }
@@ -86,6 +91,34 @@ class AdminPanelViewModel(
         )
     }
 
+    private suspend fun handleCreateGroup() {
+        val current = model.value
+        val name = current.createGroupName.trim()
+
+        if (name.isBlank()) {
+            sendMutation(AdminPanelMutation.SetCreateGroupError(StringKey.VALIDATION_NAME_BLANK))
+            return
+        }
+
+        sendMutation(AdminPanelMutation.SetCreatingGroup(true))
+        sendMutation(AdminPanelMutation.SetCreateGroupError(null))
+
+        // Generate slug from name: lowercase, replace spaces with hyphens
+        val slug = name.lowercase().replace(Regex("[^a-z0-9]+"), "-").trim('-')
+
+        sdk.createGroup(CreateGroupRequest(name = name, slug = slug)).fold(
+            ifLeft = { error ->
+                sendMutation(AdminPanelMutation.SetCreateGroupError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
+                sendMutation(AdminPanelMutation.SetCreatingGroup(false))
+            },
+            ifRight = { group ->
+                sendMutation(AdminPanelMutation.SetCreatingGroup(false))
+                sendMutation(AdminPanelMutation.SetCreateGroupSuccess)
+                sendEvent(AdminPanelEvent.GroupCreated(group.id, group.slug))
+            },
+        )
+    }
+
     override suspend fun reduce(
         model: AdminPanelModel,
         mutation: AdminPanelMutation,
@@ -110,5 +143,23 @@ class AdminPanelViewModel(
             hasMoreMembers = mutation.hasMore,
         )
         is AdminPanelMutation.SetError -> model.copy(error = mutation.error)
+        is AdminPanelMutation.ShowCreateGroupDialog -> model.copy(
+            showCreateGroupDialog = true,
+            createGroupName = "",
+            createGroupError = null,
+            createGroupSuccess = false,
+        )
+        is AdminPanelMutation.HideCreateGroupDialog -> model.copy(
+            showCreateGroupDialog = false,
+            createGroupName = "",
+            createGroupError = null,
+        )
+        is AdminPanelMutation.SetCreateGroupName -> model.copy(createGroupName = mutation.name)
+        is AdminPanelMutation.SetCreatingGroup -> model.copy(isCreatingGroup = mutation.creating)
+        is AdminPanelMutation.SetCreateGroupError -> model.copy(createGroupError = mutation.error)
+        is AdminPanelMutation.SetCreateGroupSuccess -> model.copy(
+            showCreateGroupDialog = false,
+            createGroupSuccess = true,
+        )
     }
 }
