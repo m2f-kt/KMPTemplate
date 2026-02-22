@@ -85,6 +85,7 @@ fun Application.module() {
         // Development origins (WASM dev server + backend)
         allowHost("localhost:8080", schemes = listOf("http"))
         allowHost("localhost:8081", schemes = listOf("http"))
+        allowHost("localhost:8082", schemes = listOf("http"))
         allowHost("localhost:3000", schemes = listOf("http"))
         // HTTP methods used by API endpoints
         allowMethod(HttpMethod.Get)
