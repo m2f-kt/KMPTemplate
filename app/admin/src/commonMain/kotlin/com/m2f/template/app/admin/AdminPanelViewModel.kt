@@ -3,6 +3,7 @@ package com.m2f.template.app.admin
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.CreateGroupRequest
+import com.m2f.template.models.dto.CreateInvitationRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
@@ -28,6 +29,11 @@ class AdminPanelViewModel(
                 is AdminPanelIntent.CloseCreateGroupDialog -> sendMutation(AdminPanelMutation.HideCreateGroupDialog)
                 is AdminPanelIntent.CreateGroupNameChanged -> sendMutation(AdminPanelMutation.SetCreateGroupName(intent.name))
                 is AdminPanelIntent.SubmitCreateGroup -> handleCreateGroup()
+                // Invite member handling
+                is AdminPanelIntent.OpenInviteDialog -> sendMutation(AdminPanelMutation.ShowInviteDialog)
+                is AdminPanelIntent.CloseInviteDialog -> sendMutation(AdminPanelMutation.HideInviteDialog)
+                is AdminPanelIntent.InviteEmailChanged -> sendMutation(AdminPanelMutation.SetInviteEmail(intent.email))
+                is AdminPanelIntent.SendInvite -> handleSendInvite()
             }
         }
     }
@@ -119,6 +125,32 @@ class AdminPanelViewModel(
         )
     }
 
+    private suspend fun handleSendInvite() {
+        val current = model.value
+        val email = current.inviteEmail.trim()
+
+        if (email.isBlank() || !email.contains("@")) {
+            sendMutation(AdminPanelMutation.SetInviteError(StringKey.VALIDATION_EMAIL_INVALID))
+            return
+        }
+
+        sendMutation(AdminPanelMutation.SetSendingInvite(true))
+        sendMutation(AdminPanelMutation.SetInviteError(null))
+
+        sdk.createInvitation(current.groupId, CreateInvitationRequest(email = email)).fold(
+            ifLeft = { error ->
+                sendMutation(AdminPanelMutation.SetInviteError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
+                sendMutation(AdminPanelMutation.SetSendingInvite(false))
+            },
+            ifRight = { invitation ->
+                // Build invite link from token
+                val link = "https://yourapp.com/invite?token=${invitation.token}"
+                sendMutation(AdminPanelMutation.SetInviteSuccess(link))
+                sendMutation(AdminPanelMutation.SetSendingInvite(false))
+            },
+        )
+    }
+
     override suspend fun reduce(
         model: AdminPanelModel,
         mutation: AdminPanelMutation,
@@ -160,6 +192,26 @@ class AdminPanelViewModel(
         is AdminPanelMutation.SetCreateGroupSuccess -> model.copy(
             showCreateGroupDialog = false,
             createGroupSuccess = true,
+        )
+        // Invite member mutations
+        is AdminPanelMutation.ShowInviteDialog -> model.copy(
+            showInviteDialog = true,
+            inviteEmail = "",
+            inviteError = null,
+            inviteSuccess = false,
+            inviteLink = null,
+        )
+        is AdminPanelMutation.HideInviteDialog -> model.copy(
+            showInviteDialog = false,
+            inviteEmail = "",
+            inviteError = null,
+        )
+        is AdminPanelMutation.SetInviteEmail -> model.copy(inviteEmail = mutation.email)
+        is AdminPanelMutation.SetSendingInvite -> model.copy(isSendingInvite = mutation.sending)
+        is AdminPanelMutation.SetInviteError -> model.copy(inviteError = mutation.error)
+        is AdminPanelMutation.SetInviteSuccess -> model.copy(
+            inviteSuccess = true,
+            inviteLink = mutation.link,
         )
     }
 }

@@ -31,4 +31,11 @@ sealed interface AdminPanelMutation {
     data class SetCreatingGroup(val creating: Boolean) : AdminPanelMutation
     data class SetCreateGroupError(val error: StringKey?) : AdminPanelMutation
     data object SetCreateGroupSuccess : AdminPanelMutation
+    // Invite member dialog mutations
+    data object ShowInviteDialog : AdminPanelMutation
+    data object HideInviteDialog : AdminPanelMutation
+    data class SetInviteEmail(val email: String) : AdminPanelMutation
+    data class SetSendingInvite(val sending: Boolean) : AdminPanelMutation
+    data class SetInviteError(val error: StringKey?) : AdminPanelMutation
+    data class SetInviteSuccess(val link: String) : AdminPanelMutation
 }

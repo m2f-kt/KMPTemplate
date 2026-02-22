@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -50,6 +51,15 @@ import template.app.admin.generated.resources.admin_create_group_success
 import template.app.admin.generated.resources.admin_create_group_title
 import template.app.admin.generated.resources.admin_error_description
 import template.app.admin.generated.resources.admin_error_title
+import template.app.admin.generated.resources.admin_invite_cancel
+import template.app.admin.generated.resources.admin_invite_done
+import template.app.admin.generated.resources.admin_invite_email_label
+import template.app.admin.generated.resources.admin_invite_email_placeholder
+import template.app.admin.generated.resources.admin_invite_link_label
+import template.app.admin.generated.resources.admin_invite_member
+import template.app.admin.generated.resources.admin_invite_send
+import template.app.admin.generated.resources.admin_invite_success
+import template.app.admin.generated.resources.admin_invite_title
 import template.app.admin.generated.resources.admin_load_more
 import template.app.admin.generated.resources.admin_loading
 import template.app.admin.generated.resources.admin_member_count
@@ -77,6 +87,10 @@ import template.app.admin.generated.resources.admin_title
  * @param onCloseCreateGroup Callback to close the create group dialog.
  * @param onCreateGroupNameChange Callback when the group name input changes.
  * @param onSubmitCreateGroup Callback to submit the create group form.
+ * @param onOpenInvite Callback to open the invite member dialog.
+ * @param onCloseInvite Callback to close the invite member dialog.
+ * @param onInviteEmailChange Callback when the invite email input changes.
+ * @param onSendInvite Callback to send the invitation.
  * @param modifier Modifier for the screen root.
  */
 @Composable
@@ -89,6 +103,10 @@ fun AdminPanelScreen(
     onCloseCreateGroup: () -> Unit,
     onCreateGroupNameChange: (String) -> Unit,
     onSubmitCreateGroup: () -> Unit,
+    onOpenInvite: () -> Unit,
+    onCloseInvite: () -> Unit,
+    onInviteEmailChange: (String) -> Unit,
+    onSendInvite: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -192,13 +210,18 @@ fun AdminPanelScreen(
                 }
             }
 
-            // Action buttons row: Create Group + Register Member
+            // Action buttons row: Create Group + Invite Member + Register Member
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 TerminalButton(
                     text = stringResource(Res.string.admin_create_group),
                     onClick = onOpenCreateGroup,
+                    variant = ButtonVariant.Secondary,
+                )
+                TerminalButton(
+                    text = stringResource(Res.string.admin_invite_member),
+                    onClick = onOpenInvite,
                     variant = ButtonVariant.Secondary,
                 )
                 TerminalButton(
@@ -268,6 +291,20 @@ fun AdminPanelScreen(
                 onNameChange = onCreateGroupNameChange,
                 onSubmit = onSubmitCreateGroup,
                 onCancel = onCloseCreateGroup,
+            )
+        }
+
+        // Invite Member Dialog overlay
+        if (state.showInviteDialog) {
+            InviteDialog(
+                email = state.inviteEmail,
+                isSending = state.isSendingInvite,
+                error = state.inviteError,
+                success = state.inviteSuccess,
+                inviteLink = state.inviteLink,
+                onEmailChange = onInviteEmailChange,
+                onSend = onSendInvite,
+                onClose = onCloseInvite,
             )
         }
     }
@@ -344,6 +381,111 @@ private fun CreateGroupDialog(
                         onClick = onSubmit,
                         enabled = !isCreating && groupName.isNotBlank(),
                     )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Modal dialog for inviting a new member via email.
+ *
+ * Displays a dark overlay with a centered card containing the email input,
+ * validation error display, send button, and success state with shareable link.
+ */
+@Composable
+private fun InviteDialog(
+    email: String,
+    isSending: Boolean,
+    error: StringKey?,
+    success: Boolean,
+    inviteLink: String?,
+    onEmailChange: (String) -> Unit,
+    onSend: () -> Unit,
+    onClose: () -> Unit,
+) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClose,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        TerminalCard(
+            title = stringResource(Res.string.admin_invite_title),
+            modifier = Modifier
+                .widthIn(max = 400.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {}, // Prevent click through to overlay
+                ),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                if (success && inviteLink != null) {
+                    // Success state
+                    TerminalAlert(
+                        message = stringResource(Res.string.admin_invite_success),
+                        variant = AlertVariant.Success,
+                    )
+                    TerminalText(
+                        text = stringResource(Res.string.admin_invite_link_label),
+                        style = typography.sm,
+                        color = colors.textMuted,
+                    )
+                    // Selectable link text
+                    SelectionContainer {
+                        TerminalText(
+                            text = inviteLink,
+                            style = typography.sm,
+                            color = colors.accent,
+                        )
+                    }
+                    TerminalButton(
+                        text = stringResource(Res.string.admin_invite_done),
+                        onClick = onClose,
+                    )
+                } else {
+                    // Input state
+                    if (error != null) {
+                        TerminalAlert(
+                            message = resolveStringKey(error),
+                            variant = AlertVariant.Error,
+                        )
+                    }
+
+                    TerminalInput(
+                        value = email,
+                        onValueChange = onEmailChange,
+                        label = stringResource(Res.string.admin_invite_email_label),
+                        placeholder = stringResource(Res.string.admin_invite_email_placeholder),
+                        enabled = !isSending,
+                    )
+
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        TerminalButton(
+                            text = stringResource(Res.string.admin_invite_cancel),
+                            onClick = onClose,
+                            variant = ButtonVariant.Ghost,
+                            enabled = !isSending,
+                        )
+                        TerminalButton(
+                            text = if (isSending) "..." else stringResource(Res.string.admin_invite_send),
+                            onClick = onSend,
+                            enabled = !isSending && email.isNotBlank(),
+                        )
+                    }
                 }
             }
         }

@@ -21,6 +21,17 @@
     <string name="admin_create_group_cancel">Cancel</string>
     <string name="admin_create_group_success">Group created successfully</string>
 
+    <!-- Admin Invite Member Dialog -->
+    <string name="admin_invite_member">+ Invite Member</string>
+    <string name="admin_invite_title">Invite New Member</string>
+    <string name="admin_invite_email_label">Email Address</string>
+    <string name="admin_invite_email_placeholder">Enter email to invite</string>
+    <string name="admin_invite_send">Send Invitation</string>
+    <string name="admin_invite_cancel">Cancel</string>
+    <string name="admin_invite_success">Invitation sent!</string>
+    <string name="admin_invite_link_label">Or share this link:</string>
+    <string name="admin_invite_done">Done</string>
+
     <string name="admin_no_group_title">No group selected</string>
     <string name="admin_no_group_description">You are a system administrator but not a member of any group. Join or create a group to manage it here.</string>
 

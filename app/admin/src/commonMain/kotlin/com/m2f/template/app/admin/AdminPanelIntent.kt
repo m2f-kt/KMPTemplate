@@ -8,4 +8,9 @@ sealed interface AdminPanelIntent {
     data object CloseCreateGroupDialog : AdminPanelIntent
     data class CreateGroupNameChanged(val name: String) : AdminPanelIntent
     data object SubmitCreateGroup : AdminPanelIntent
+    // Invite member intents
+    data object OpenInviteDialog : AdminPanelIntent
+    data object CloseInviteDialog : AdminPanelIntent
+    data class InviteEmailChanged(val email: String) : AdminPanelIntent
+    data object SendInvite : AdminPanelIntent
 }

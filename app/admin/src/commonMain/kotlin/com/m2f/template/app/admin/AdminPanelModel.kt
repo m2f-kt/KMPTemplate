@@ -21,4 +21,11 @@ data class AdminPanelModel(
     val isCreatingGroup: Boolean = false,
     val createGroupError: StringKey? = null,
     val createGroupSuccess: Boolean = false,
+    // Invite member dialog state
+    val showInviteDialog: Boolean = false,
+    val inviteEmail: String = "",
+    val isSendingInvite: Boolean = false,
+    val inviteError: StringKey? = null,
+    val inviteSuccess: Boolean = false,
+    val inviteLink: String? = null,
 )
