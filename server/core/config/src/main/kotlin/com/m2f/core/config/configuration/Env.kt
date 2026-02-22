@@ -24,6 +24,7 @@ data class Env(
     data class Http(
         val host: String = System.getenv("HOST") ?: "0.0.0.0",
         val port: Int = System.getenv("PORT")?.toIntOrNull() ?: PORT,
+        val baseUrl: String = System.getenv("BASE_URL") ?: "http://localhost:$port",
     )
 
     data class Auth(

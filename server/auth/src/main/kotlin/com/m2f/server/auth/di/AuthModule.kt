@@ -26,5 +26,5 @@ val authModule = module {
     single { AuthService(get(), get(), get(), get()) }
     single { UserService(get()) }
     single { OAuthService(get(), get(), get(), get<HttpClient>(), get()) }
-    single { PasswordResetService(get(), get(), get(), get()) }
+    single { PasswordResetService(get(), get(), get(), get(), get(), get()) }
 }

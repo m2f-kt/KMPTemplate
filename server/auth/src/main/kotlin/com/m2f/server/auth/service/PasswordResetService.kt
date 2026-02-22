@@ -3,6 +3,7 @@
 package com.m2f.server.auth.service
 
 import arrow.core.raise.Raise
+import com.m2f.core.config.configuration.Configuration
 import com.m2f.core.config.server.DomainError
 import com.m2f.server.auth.errors.TokenInvalid
 import com.m2f.server.auth.errors.UserNotFound
@@ -31,12 +32,14 @@ class PasswordResetService(
     private val passwordResetTokenRepository: PasswordResetTokenRepository,
     private val passwordHasher: PasswordHasher,
     private val tokenProvider: JwtTokenProvider,
+    private val emailService: EmailService,
+    private val config: Configuration,
 ) {
 
     /**
      * Handle a forgot-password request.
      * If the email exists, generates a reset token, hashes and stores it,
-     * and logs the reset link to console (dev mode -- no real email).
+     * and sends a password reset email.
      *
      * Always returns success to prevent user enumeration.
      */
@@ -54,8 +57,27 @@ class PasswordResetService(
                 .toLocalDateTime(TimeZone.UTC)
             passwordResetTokenRepository.store(user.id, hashedToken, expiresAt)
 
-            // Dev mode: log reset link to console
-            println("[DEV] Password reset link: /reset-password?token=$rawToken")
+            // Send password reset email
+            try {
+                val resetLink = "${config.env.http.baseUrl}/reset-password?token=$rawToken"
+                emailService.sendEmail(
+                    to = user.email,
+                    subject = "Password Reset Request",
+                    body = """
+                        You requested a password reset.
+
+                        Click the link below to reset your password:
+                        $resetLink
+
+                        This link will expire in 1 hour.
+
+                        If you did not request this, please ignore this email.
+                    """.trimIndent()
+                )
+            } catch (_: Exception) {
+                // Log failure but don't expose to user (security: don't reveal email existence)
+                // TODO: Add proper logging when logging infrastructure exists
+            }
         }
         // Always return success (prevents user enumeration)
         return mapOf("message" to "If the email exists, a reset link has been sent")
