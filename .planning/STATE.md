@@ -10,10 +10,10 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 18 of 22 (Core Services)
-Plan: 3 of 3 in Phase ✅
-Status: Phase Complete
-Last activity: 2026-02-22 — Plan 18-03 (Integration Tests: File Upload + Email Delivery) complete
+Phase: 18.1 of 22 (Profile Uploads, Group Creation & Email Invitations)
+Plan: 3 of 4 in Phase
+Status: In Progress
+Last activity: 2026-02-22 — Plan 18.1-03 (Group Creation UI) complete
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -69,6 +69,10 @@ v1.2 decisions:
 - Open: Koog RAG/embedding APIs must be verified against latest docs (RAG-07)
 - Resolved: Exposed R2DBC has no native vector column type -- custom VectorColumnType created in Phase 17
 
+### Roadmap Evolution
+
+- Phase 18.1 inserted after Phase 18: Profile Uploads, Group Creation & Email Invitations (URGENT)
+
 ### Quick Tasks Completed
 
 | # | Description | Date | Commit | Directory |
@@ -78,6 +82,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 18-03-PLAN.md (Integration Tests: File Upload + Email Delivery) — Phase 18 complete
-Resume file: .planning/phases/18-core-services/18-03-SUMMARY.md
-Next action: Start Phase 19 or `/gsd:execute-phase 19`
+Stopped at: Completed 18.1-03-PLAN.md (Group Creation UI) — Plan 3 of Phase 18.1 complete
+Resume file: .planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-03-SUMMARY.md
+Next action: Execute Plan 18.1-04 via `/gsd-execute-phase 18.1` or manually run plan 04
