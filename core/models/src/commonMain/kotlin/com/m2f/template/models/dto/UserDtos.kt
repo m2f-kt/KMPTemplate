@@ -10,6 +10,7 @@ data class UserResponse(
     val email: String,
     val name: String,
     val role: UserRole,
+    val avatarUrl: String? = null,
 )
 
 /**

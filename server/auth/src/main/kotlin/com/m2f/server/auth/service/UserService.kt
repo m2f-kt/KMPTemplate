@@ -116,4 +116,5 @@ private fun UserRecord.toUserResponse(): UserResponse = UserResponse(
     email = email,
     name = name,
     role = role,
+    avatarUrl = avatarUrl,
 )

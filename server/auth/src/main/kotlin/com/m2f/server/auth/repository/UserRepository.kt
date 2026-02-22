@@ -24,6 +24,7 @@ data class UserRecord(
     val passwordHash: String,
     val name: String,
     val role: UserRole,
+    val avatarUrl: String? = null,
 )
 
 /**
@@ -99,6 +100,17 @@ class UserRepository(private val db: R2dbcDatabase) {
     suspend fun count(): Long = suspendTransaction(db = db) {
         UsersTable.select(UsersTable.columns).count()
     }
+
+    /**
+     * Update a user's avatar URL.
+     */
+    suspend fun updateAvatarUrl(id: Uuid, avatarUrl: String): Boolean =
+        suspendTransaction(db = db) {
+            val rowsUpdated = UsersTable.update({ UsersTable.id eq id }) { stmt ->
+                stmt[UsersTable.avatarUrl] = avatarUrl
+            }
+            rowsUpdated > 0
+        }
 }
 
 /**
@@ -120,4 +132,5 @@ private fun ResultRow.toUserRecord(): UserRecord = UserRecord(
         3 -> UserRole.PowerAdmin
         else -> UserRole.User
     },
+    avatarUrl = this[UsersTable.avatarUrl],
 )
