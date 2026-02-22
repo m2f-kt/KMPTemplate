@@ -95,10 +95,12 @@ Plans:
   3. Password reset flow sends a real email visible in MailHog instead of printing to console
   4. Integration tests verify file upload + retrieval round-trip against MinIO (Testcontainers or local)
   5. EmailService interface has sendEmail method with working SMTP implementation that delivers to MailHog
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 18-01: TBD
+- [ ] 18-01-PLAN.md — S3 file upload service (shared models, FileService, routes, DI wiring)
+- [ ] 18-02-PLAN.md — Email service + SDK FileApi + password reset migration
+- [ ] 18-03-PLAN.md — Integration tests (MinIO file round-trip, SMTP email delivery)
 
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
