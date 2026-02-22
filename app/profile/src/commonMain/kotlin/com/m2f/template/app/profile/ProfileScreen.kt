@@ -1,5 +1,6 @@
 package com.m2f.template.app.profile
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.app.profile.tier.AdminTierContent
@@ -45,6 +47,7 @@ import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.components.picker.ImagePickerResult
 import com.m2f.template.designsystem.components.picker.rememberImagePickerLauncher
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.util.rememberDecodedImage
 import com.m2f.template.models.UserTier
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
@@ -543,8 +546,9 @@ private fun TierContent(state: ProfileModel) {
 }
 
 /**
- * Simple crop dialog overlay. In a real implementation, this would include
- * a crop region selector. For MVP, shows a preview and confirm/cancel buttons.
+ * Simple crop dialog overlay. Shows a circular preview of the selected image
+ * with confirm/cancel buttons. In a full implementation, this would include
+ * a crop region selector with drag handles.
  */
 @Composable
 private fun CropDialog(
@@ -554,6 +558,9 @@ private fun CropDialog(
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
+
+    // Decode image bytes to ImageBitmap using platform-specific decoder
+    val imageBitmap = rememberDecodedImage(imageBytes)
 
     // Full screen overlay
     Box(
@@ -575,9 +582,7 @@ private fun CropDialog(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                // Image preview placeholder
-                // In a full implementation, this would use a crop library to render
-                // the image with crop handles. For MVP, we show a placeholder.
+                // Image preview (circular crop preview)
                 Box(
                     modifier = Modifier
                         .size(200.dp)
@@ -585,9 +590,15 @@ private fun CropDialog(
                         .background(colors.surface),
                     contentAlignment = Alignment.Center,
                 ) {
-                    if (imageBytes != null) {
-                        // Note: For actual image preview, we'd use a platform-specific
-                        // bitmap decoder. For MVP, show size info.
+                    if (imageBitmap != null) {
+                        Image(
+                            bitmap = imageBitmap,
+                            contentDescription = "Image preview",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                    } else if (imageBytes != null) {
+                        // Fallback: show size if decoding failed
                         TerminalText(
                             text = "${imageBytes.size / 1024} KB",
                             style = typography.md,
