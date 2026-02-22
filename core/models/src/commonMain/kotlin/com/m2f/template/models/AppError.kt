@@ -187,6 +187,33 @@ sealed class AppError {
             override val message: String = "AI provider is not available or not configured"
         ) : AI()
     }
+
+    @Serializable
+    sealed class File : AppError() {
+        @Serializable
+        data class TooLarge(
+            override val code: String = "FILE_TOO_LARGE",
+            override val message: String = "File exceeds maximum allowed size"
+        ) : File()
+
+        @Serializable
+        data class UnsupportedType(
+            override val code: String = "FILE_UNSUPPORTED_TYPE",
+            override val message: String = "File type is not allowed"
+        ) : File()
+
+        @Serializable
+        data class UploadFailed(
+            override val code: String = "FILE_UPLOAD_FAILED",
+            override val message: String = "Failed to upload file"
+        ) : File()
+
+        @Serializable
+        data class NotFound(
+            override val code: String = "FILE_NOT_FOUND",
+            override val message: String = "File not found"
+        ) : File()
+    }
 }
 
 /**

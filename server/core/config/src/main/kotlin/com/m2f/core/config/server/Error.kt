@@ -169,3 +169,19 @@ suspend inline fun RoutingContext.notFound(
     HttpStatusCode.NotFound,
     ErrorResponse(code = code, message = error),
 )
+
+suspend inline fun RoutingContext.payloadTooLarge(
+    code: String,
+    error: String,
+): Unit = call.respond(
+    HttpStatusCode.PayloadTooLarge,
+    ErrorResponse(code = code, message = error),
+)
+
+suspend inline fun RoutingContext.unsupportedMediaType(
+    code: String,
+    error: String,
+): Unit = call.respond(
+    HttpStatusCode.UnsupportedMediaType,
+    ErrorResponse(code = code, message = error),
+)

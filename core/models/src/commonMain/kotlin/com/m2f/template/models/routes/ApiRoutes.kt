@@ -83,3 +83,13 @@ class Groups {
     @Serializable @Resource("{groupId}/members/register")
     class RegisterMember(val parent: Groups = Groups(), val groupId: String)
 }
+
+@Serializable
+@Resource("/api/files")
+class Files {
+    @Serializable @Resource("upload")
+    class Upload(val parent: Files = Files())
+
+    @Serializable @Resource("{fileKey}")
+    class Get(val parent: Files = Files(), val fileKey: String)
+}
