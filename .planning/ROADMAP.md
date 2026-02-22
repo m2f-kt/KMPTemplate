@@ -47,7 +47,7 @@ Full details: milestones/v1.1-ROADMAP.md
 
 - [x] **Phase 16: Tech Debt Cleanup** - Fix WASM locale persistence and optimize server dispatchers (completed 2026-02-21)
 - [x] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table (completed 2026-02-21)
-- [ ] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests
+- [x] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests (completed 2026-02-22)
 - [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
 - [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
@@ -98,9 +98,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 18-01-PLAN.md — S3 file upload service (shared models, FileService, routes, DI wiring)
-- [ ] 18-02-PLAN.md — Email service + SDK FileApi + password reset migration
-- [ ] 18-03-PLAN.md — Integration tests (MinIO file round-trip, SMTP email delivery)
+- [x] 18-01-PLAN.md — S3 file upload service (shared models, FileService, routes, DI wiring)
+- [x] 18-02-PLAN.md — Email service + SDK FileApi + password reset migration
+- [x] 18-03-PLAN.md — Integration tests (MinIO file round-trip, SMTP email delivery)
 
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
@@ -169,10 +169,10 @@ Plans:
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
 | 16. Tech Debt Cleanup | 2/2 | Complete    | 2026-02-21 | - |
 | 17. Infrastructure Foundation | v1.2 | 2/2 | Complete | 2026-02-21 |
-| 18. Core Services | v1.2 | 0/TBD | Not started | - |
+| 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 77 plans shipped across 2 milestones, 7 phases planned for v1.2**
+**Total: 80 plans shipped across 2 milestones, 7 phases planned for v1.2**
