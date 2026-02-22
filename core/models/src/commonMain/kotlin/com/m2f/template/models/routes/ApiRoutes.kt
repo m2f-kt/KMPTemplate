@@ -85,6 +85,24 @@ class Groups {
 
     @Serializable @Resource("{groupId}/members/register")
     class RegisterMember(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("{groupId}/invitations/create")
+    class CreateInvitation(val parent: Groups = Groups(), val groupId: String)
+}
+
+/**
+ * Invitation routes for viewing and accepting group invitations.
+ * GET /{token} is public (no auth) so potential invitees can view invitation details.
+ * POST /accept requires authentication to join the group.
+ */
+@Serializable
+@Resource("/api/invitations")
+class Invitations {
+    @Serializable @Resource("{token}")
+    class ByToken(val parent: Invitations = Invitations(), val token: String)
+
+    @Serializable @Resource("accept")
+    class Accept(val parent: Invitations = Invitations())
 }
 
 @Serializable
