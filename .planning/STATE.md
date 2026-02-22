@@ -11,14 +11,14 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 Milestone: v1.2 Polish & Patterns
 Phase: 18.1 of 22 (Profile Uploads, Group Creation & Email Invitations)
-Plan: 4 of 5 in Phase
-Status: Executing
-Last activity: 2026-02-22 — Plan 18.1-02 (Profile Avatar UI) complete
+Plan: 5 of 5 in Phase (COMPLETE)
+Status: Phase Complete
+Last activity: 2026-02-22 — Plan 18.1-05 (Invitation UI) complete
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [██████████░░░░░░░░░░] 10/TBD plans
+- v1.2 Polish & Patterns: [███████████░░░░░░░░░] 11/TBD plans
 
 ## Performance Metrics
 
@@ -56,6 +56,8 @@ v1.2 decisions:
 - Phase 18: Email failure silencing in password reset (security: don't reveal email existence)
 - Phase 18: GreenMail 2.1.3 for in-JVM SMTP testing (no Docker needed)
 - Phase 18: URL-encode S3 fileKey in API calls (key contains '/' from userId prefix)
+- Phase 18.1: InviteAccept files in auth root (not invite/ subdirectory) — matches module structure
+- Phase 18.1: InviteAcceptRoute navigates to AdminPanelRoute on success
 - RAG pipeline exclusively Koog-based (no LangChain4j, Spring AI)
 - pgvector in existing PostgreSQL (no separate vector DB service)
 - MinIO for local S3-compatible storage
@@ -82,6 +84,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 18.1-02-PLAN.md (Profile Avatar UI) — 4/5 plans complete
-Resume file: .planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-02-SUMMARY.md
-Next action: Execute Plan 18.1-05 (Invitation Acceptance UI)
+Stopped at: Completed 18.1-05-PLAN.md (Invitation UI) — Phase 18.1 COMPLETE (5/5 plans)
+Resume file: .planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-05-SUMMARY.md
+Next action: Phase 18.1 complete. Proceed to next phase or verify phase deliverables.
