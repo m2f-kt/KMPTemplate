@@ -144,9 +144,14 @@ fun AppNavHost(
                 )
             }
 
-            composable<DashboardRoute> {
+            composable<DashboardRoute> { backStackEntry ->
                 val dashboardViewModel = koinViewModel<DashboardViewModel>()
                 val dashboardState by dashboardViewModel.model.collectAsStateWithLifecycle()
+
+                // Refresh profile data when returning to this screen (e.g., after editing profile)
+                LaunchedEffect(backStackEntry) {
+                    dashboardViewModel.take(DashboardIntent.RefreshProfile)
+                }
 
                 DashboardScreen(
                     state = dashboardState,

@@ -52,6 +52,13 @@ class DashboardViewModel(
                 is DashboardIntent.NavItemSelected -> {
                     sendMutation(DashboardMutation.SetNavItem(intent.item))
                 }
+                is DashboardIntent.RefreshProfile -> {
+                    // Lightweight refresh of just user profile data (name + avatar)
+                    sdk.getProfile().onRight { user ->
+                        sendMutation(DashboardMutation.SetUserName(user.name.ifBlank { user.email }))
+                        sendMutation(DashboardMutation.SetAvatarUrl(user.avatarUrl))
+                    }
+                }
                 is DashboardIntent.LogoutClicked -> {
                     sdk.logout()
                     sendEvent(DashboardEvent.NavigateToLogin)
