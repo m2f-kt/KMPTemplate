@@ -11,14 +11,14 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 Milestone: v1.2 Polish & Patterns
 Phase: 18 of 22 (Core Services)
-Plan: 2 of 3 in Phase ✅
-Status: Executing
-Last activity: 2026-02-22 — Plan 18-02 (Email Service + Password Reset + SDK FileApi) complete
+Plan: 3 of 3 in Phase ✅
+Status: Phase Complete
+Last activity: 2026-02-22 — Plan 18-03 (Integration Tests: File Upload + Email Delivery) complete
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [██████░░░░░░░░░░░░░░] 6/TBD plans
+- v1.2 Polish & Patterns: [███████░░░░░░░░░░░░░] 9/TBD plans
 
 ## Performance Metrics
 
@@ -54,6 +54,8 @@ v1.2 decisions:
 - Phase 18: Multipart parsing outside conduitAuth — RoutingContext.call not available in Raise context block
 - Phase 18: Jakarta Mail 2.0.2 for SMTP email with separate emailModule Koin module
 - Phase 18: Email failure silencing in password reset (security: don't reveal email existence)
+- Phase 18: GreenMail 2.1.3 for in-JVM SMTP testing (no Docker needed)
+- Phase 18: URL-encode S3 fileKey in API calls (key contains '/' from userId prefix)
 - RAG pipeline exclusively Koog-based (no LangChain4j, Spring AI)
 - pgvector in existing PostgreSQL (no separate vector DB service)
 - MinIO for local S3-compatible storage
@@ -76,6 +78,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-22
-Stopped at: Completed 18-02-PLAN.md (Email Service + Password Reset + SDK FileApi)
-Resume file: .planning/phases/18-core-services/18-02-SUMMARY.md
-Next action: Execute 18-03-PLAN.md or `/gsd:execute-phase 18`
+Stopped at: Completed 18-03-PLAN.md (Integration Tests: File Upload + Email Delivery) — Phase 18 complete
+Resume file: .planning/phases/18-core-services/18-03-SUMMARY.md
+Next action: Start Phase 19 or `/gsd:execute-phase 19`
