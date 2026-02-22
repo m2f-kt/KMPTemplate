@@ -21,6 +21,7 @@ dependencies {
     implementation(projects.server.core.security)
     implementation(projects.server.auth)
     implementation(projects.server.groups)
+    implementation(projects.server.files)
     implementation(projects.server.ai)
     implementation(libs.bundles.logging.server)
     implementation(libs.bundles.ktor.security)

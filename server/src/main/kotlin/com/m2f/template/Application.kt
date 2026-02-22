@@ -13,6 +13,8 @@ import com.m2f.server.ai.routes.aiRoutes
 import com.m2f.core.database.migrations.registerVectorMigrations
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.routes.authRoutes
+import com.m2f.server.files.routes.fileRoutes
+import com.m2f.server.files.service.FileService
 import com.m2f.server.groups.registerGroupMigrations
 import com.m2f.server.groups.routes.groupRoutes
 import com.m2f.server.groups.service.GroupService
@@ -105,6 +107,8 @@ fun Application.module() {
         userRoutes(userService)
         val groupService: GroupService by inject()
         groupRoutes(groupService)
+        val fileService: FileService by inject()
+        fileRoutes(fileService)
         val assistantAgentService: AssistantAgentService by inject()
         val chatAgentService: ChatAgentService by inject()
         aiRoutes(
