@@ -12,6 +12,15 @@
     <string name="admin_load_more">Load More</string>
     <string name="admin_register_member_button">+ Register Member</string>
 
+    <!-- Admin Create Group Dialog -->
+    <string name="admin_create_group">+ Create Group</string>
+    <string name="admin_create_group_title">Create New Group</string>
+    <string name="admin_create_group_name_label">Group Name</string>
+    <string name="admin_create_group_name_placeholder">Enter group name</string>
+    <string name="admin_create_group_submit">Create</string>
+    <string name="admin_create_group_cancel">Cancel</string>
+    <string name="admin_create_group_success">Group created successfully</string>
+
     <string name="admin_no_group_title">No group selected</string>
     <string name="admin_no_group_description">You are a system administrator but not a member of any group. Join or create a group to manage it here.</string>
 

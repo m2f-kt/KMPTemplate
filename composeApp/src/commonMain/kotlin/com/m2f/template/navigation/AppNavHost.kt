@@ -232,12 +232,20 @@ fun AppNavHost(
                     onLoadMore = { viewModel.take(AdminPanelIntent.LoadMoreMembers) },
                     onRegisterMember = { viewModel.take(AdminPanelIntent.RegisterMemberClicked) },
                     onBack = { navController.popBackStack() },
+                    onOpenCreateGroup = { viewModel.take(AdminPanelIntent.OpenCreateGroupDialog) },
+                    onCloseCreateGroup = { viewModel.take(AdminPanelIntent.CloseCreateGroupDialog) },
+                    onCreateGroupNameChange = { viewModel.take(AdminPanelIntent.CreateGroupNameChanged(it)) },
+                    onSubmitCreateGroup = { viewModel.take(AdminPanelIntent.SubmitCreateGroup) },
                 )
                 LaunchedEffect(Unit) {
                     viewModel.event.collect { event ->
                         when (event) {
                             is AdminPanelEvent.NavigateToRegisterMember -> {
                                 navController.navigate(RegisterMemberRoute(groupId = event.groupId))
+                            }
+                            is AdminPanelEvent.GroupCreated -> {
+                                // Navigate to admin panel with new group
+                                navController.navigate(AdminPanelRoute(groupId = event.groupId))
                             }
                         }
                     }
