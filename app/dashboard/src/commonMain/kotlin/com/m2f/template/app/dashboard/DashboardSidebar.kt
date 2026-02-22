@@ -29,6 +29,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.display.TerminalAvatar
 import com.m2f.template.designsystem.theme.TerminalTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.dashboard.generated.resources.Res
@@ -51,6 +52,7 @@ import template.app.dashboard.generated.resources.nav_settings
  *
  * @param selectedItem The currently selected navigation item key.
  * @param userName The logged-in user's email or display name.
+ * @param avatarUrl The URL of the user's avatar image, or null to show initials.
  * @param isAdmin Whether the current user has admin/owner role in a group.
  * @param onNavItemSelected Callback when a nav item is clicked.
  * @param onAdminClick Callback when the admin nav item is clicked.
@@ -62,6 +64,7 @@ import template.app.dashboard.generated.resources.nav_settings
 fun DashboardSidebar(
     selectedItem: String,
     userName: String,
+    avatarUrl: String?,
     isAdmin: Boolean,
     onNavItemSelected: (String) -> Unit,
     onAdminClick: () -> Unit,
@@ -154,20 +157,12 @@ fun DashboardSidebar(
                     .padding(vertical = spacing.sm),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // Avatar circle
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(colors.accentMuted),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TerminalText(
-                        text = userName.take(1).uppercase(),
-                        style = typography.sm.copy(fontWeight = FontWeight.Medium),
-                        color = colors.accent,
-                    )
-                }
+                // Avatar (image or initials)
+                TerminalAvatar(
+                    initials = userName.take(1).uppercase(),
+                    imageUrl = avatarUrl,
+                    size = 32.dp,
+                )
 
                 Spacer(modifier = Modifier.width(12.dp))
 

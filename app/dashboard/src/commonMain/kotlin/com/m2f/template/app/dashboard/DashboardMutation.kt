@@ -6,4 +6,5 @@ sealed interface DashboardMutation {
     data class SetMembership(val isAdmin: Boolean, val groupId: String?, val groupName: String?) : DashboardMutation
     data class SetSystemAdmin(val isSystemAdmin: Boolean) : DashboardMutation
     data class SetUserName(val userName: String) : DashboardMutation
+    data class SetAvatarUrl(val avatarUrl: String?) : DashboardMutation
 }

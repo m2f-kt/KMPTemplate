@@ -32,6 +32,7 @@ import com.m2f.template.designsystem.components.data.TerminalListItem
 import com.m2f.template.designsystem.components.data.TerminalTable
 import com.m2f.template.designsystem.components.data.TerminalTableCell
 import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.display.TerminalAvatar
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
@@ -135,6 +136,7 @@ private fun DesktopDashboard(
         DashboardSidebar(
             selectedItem = state.selectedNavItem,
             userName = state.userName,
+            avatarUrl = state.avatarUrl,
             isAdmin = state.isAdmin,
             onNavItemSelected = onNavItemSelected,
             onAdminClick = onAdminClick,
@@ -154,7 +156,11 @@ private fun DesktopDashboard(
                     verticalArrangement = Arrangement.spacedBy(28.dp),
                 ) {
                     // Header row
-                    DesktopHeader(userName = state.userName, onProfileClick = onProfileClick)
+                    DesktopHeader(
+                        userName = state.userName,
+                        avatarUrl = state.avatarUrl,
+                        onProfileClick = onProfileClick,
+                    )
 
                     // Metrics row
                     MetricsRow(metrics = state.metrics)
@@ -217,6 +223,7 @@ private fun DesktopDashboard(
 @Composable
 private fun DesktopHeader(
     userName: String,
+    avatarUrl: String?,
     onProfileClick: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
@@ -245,19 +252,11 @@ private fun DesktopHeader(
                 style = typography.sm,
                 color = colors.textMuted,
             )
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(colors.accentMuted),
-                contentAlignment = Alignment.Center,
-            ) {
-                TerminalText(
-                    text = userName.take(1).uppercase(),
-                    style = typography.sm.copy(fontWeight = FontWeight.Medium),
-                    color = colors.accent,
-                )
-            }
+            TerminalAvatar(
+                initials = userName.take(1).uppercase(),
+                imageUrl = avatarUrl,
+                size = 32.dp,
+            )
         }
     }
 }
@@ -305,20 +304,12 @@ private fun MobileDashboard(
                     )
                 }
 
-                Box(
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape)
-                        .background(colors.accentMuted)
-                        .clickable(onClick = onProfileClick),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    TerminalText(
-                        text = state.userName.take(1).uppercase(),
-                        style = typography.sm.copy(fontWeight = FontWeight.Medium),
-                        color = colors.accent,
-                    )
-                }
+                TerminalAvatar(
+                    initials = state.userName.take(1).uppercase(),
+                    imageUrl = state.avatarUrl,
+                    size = 32.dp,
+                    modifier = Modifier.clickable(onClick = onProfileClick),
+                )
             }
 
             // State-based content switching

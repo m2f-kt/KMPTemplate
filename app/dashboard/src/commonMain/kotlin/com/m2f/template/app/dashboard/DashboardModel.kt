@@ -7,6 +7,7 @@ data class DashboardModel(
     val deployment: DashboardMockData.DeploymentStatus = DashboardMockData.deployment,
     val isLoading: Boolean = false,
     val userName: String = "",
+    val avatarUrl: String? = null,
     val selectedNavItem: String = "dashboard",
     val isAdmin: Boolean = false,
     val isSystemAdmin: Boolean = false,
