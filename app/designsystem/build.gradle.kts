@@ -26,6 +26,11 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network.ktor)
+        }
+        androidMain.dependencies {
+            implementation(libs.androidx.activity.compose)
         }
     }
 }
