@@ -247,13 +247,15 @@ fun AdminPanelScreen(
                         ) {
                             TerminalTableCell(text = member.name)
                             TerminalTableCell(text = member.email, secondary = true)
-                            TerminalBadge(
-                                text = member.role.value,
-                                variant = when (member.role) {
-                                    is GroupRole.Owner, is GroupRole.Admin -> BadgeVariant.Success
-                                    is GroupRole.Member -> BadgeVariant.Default
-                                },
-                            )
+                            Box(modifier = Modifier.weight(1f)) {
+                                TerminalBadge(
+                                    text = member.role.value,
+                                    variant = when (member.role) {
+                                        is GroupRole.Owner, is GroupRole.Admin -> BadgeVariant.Success
+                                        is GroupRole.Member -> BadgeVariant.Default
+                                    },
+                                )
+                            }
                             TerminalTableCell(
                                 text = member.joinedAt.ifBlank { "-" },
                                 secondary = true,

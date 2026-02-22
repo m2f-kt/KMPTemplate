@@ -12,6 +12,26 @@
     <string name="admin_load_more">Cargar Más</string>
     <string name="admin_register_member_button">+ Registrar Miembro</string>
 
+    <!-- Admin Create Group Dialog -->
+    <string name="admin_create_group">+ Crear Grupo</string>
+    <string name="admin_create_group_title">Crear Nuevo Grupo</string>
+    <string name="admin_create_group_name_label">Nombre del Grupo</string>
+    <string name="admin_create_group_name_placeholder">Ingresa el nombre del grupo</string>
+    <string name="admin_create_group_submit">Crear</string>
+    <string name="admin_create_group_cancel">Cancelar</string>
+    <string name="admin_create_group_success">Grupo creado exitosamente</string>
+
+    <!-- Admin Invite Member Dialog -->
+    <string name="admin_invite_member">+ Invitar Miembro</string>
+    <string name="admin_invite_title">Invitar Nuevo Miembro</string>
+    <string name="admin_invite_email_label">Correo Electrónico</string>
+    <string name="admin_invite_email_placeholder">Ingresa el correo a invitar</string>
+    <string name="admin_invite_send">Enviar Invitación</string>
+    <string name="admin_invite_cancel">Cancelar</string>
+    <string name="admin_invite_success">¡Invitación enviada!</string>
+    <string name="admin_invite_link_label">O comparte este enlace:</string>
+    <string name="admin_invite_done">Listo</string>
+
     <string name="admin_no_group_title">Ningún grupo seleccionado</string>
     <string name="admin_no_group_description">Eres administrador del sistema pero no eres miembro de ningún grupo. Únete o crea un grupo para administrarlo aquí.</string>
 
