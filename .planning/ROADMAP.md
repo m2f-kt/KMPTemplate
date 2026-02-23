@@ -135,12 +135,13 @@ Plans:
   3. User clicks Register → registers with invitation token → auto-linked to group → navigates to Admin Panel
   4. Expired invitation shows error message with "Request new invitation" option (no accept/register allowed)
   5. Already-accepted invitation shows appropriate error state
-**Plans:** 3 plans in 2 waves
+**Plans:** 4 plans (3 original + 1 gap closure)
 
 Plans:
 - [x] 18.2-01-PLAN.md — Server: Register with invitation token + accept endpoint fix
 - [x] 18.2-02-PLAN.md — Client: InviteAcceptScreen conditional UI for auth state
 - [x] 18.2-03-PLAN.md — Client: Login/Register with invitation context + post-auth flow
+- [ ] 18.2-04-PLAN.md — Gap fix: NavigateToGroup → DashboardRoute (not AdminPanelRoute)
 
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
