@@ -11,9 +11,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 Milestone: v1.2 Polish & Patterns
 Phase: 18.2 of 22 (Invitation Acceptance Flow - Gap Closure)
-Plan: 2 of 3 in Phase (18.2-01 complete, 18.2-02 complete)
-Status: In Progress
-Last activity: 2026-02-23 — Completed 18.2-01 (server-side invitation token registration)
+Plan: 3 of 3 in Phase (18.2-01 complete, 18.2-02 complete, 18.2-03 complete)
+Status: Phase Complete
+Last activity: 2026-02-23 — Completed 18.2-03 (login/register invitation token integration)
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -66,6 +66,8 @@ v1.2 decisions:
 - Integration tests ship WITH feature phases, not deferred
 - [Phase 18.2]: Callback pattern instead of direct InvitationService dependency — avoids circular module dependency between server/auth and server/groups
 - [Phase 18.2]: Koin dual registration: AuthService in authModule (default) + override in serverModule (with invitation callback) for test compatibility
+- [Phase 18.2]: Post-login acceptInvitation call in LoginViewModel — on failure, falls back to dashboard (user is still logged in)
+- [Phase 18.2]: Register with invitationToken navigates to dashboard for MVP (server auto-links via RegisterRequest)
 
 ### Blockers/Concerns
 
@@ -99,6 +101,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 18.2-01-PLAN.md (server-side invitation token registration)
+Stopped at: Completed 18.2-03-PLAN.md (login/register invitation token integration) — Phase 18.2 complete
 Resume file: None
-Next action: Execute 18.2-03-PLAN.md (invitation flow completion)
+Next action: Start next phase or UAT for Phase 18.2
