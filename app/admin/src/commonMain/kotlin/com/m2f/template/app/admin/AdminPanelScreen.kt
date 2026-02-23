@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -55,7 +54,6 @@ import template.app.admin.generated.resources.admin_invite_cancel
 import template.app.admin.generated.resources.admin_invite_done
 import template.app.admin.generated.resources.admin_invite_email_label
 import template.app.admin.generated.resources.admin_invite_email_placeholder
-import template.app.admin.generated.resources.admin_invite_link_label
 import template.app.admin.generated.resources.admin_invite_member
 import template.app.admin.generated.resources.admin_invite_send
 import template.app.admin.generated.resources.admin_invite_success
@@ -300,7 +298,6 @@ fun AdminPanelScreen(
                 isSending = state.isSendingInvite,
                 error = state.inviteError,
                 success = state.inviteSuccess,
-                inviteLink = state.inviteLink,
                 onEmailChange = onInviteEmailChange,
                 onSend = onSendInvite,
                 onClose = onCloseInvite,
@@ -390,7 +387,8 @@ private fun CreateGroupDialog(
  * Modal dialog for inviting a new member via email.
  *
  * Displays a dark overlay with a centered card containing the email input,
- * validation error display, send button, and success state with shareable link.
+ * validation error display, send button, and success state message.
+ * Note: Invitation link is only sent via email for security.
  */
 @Composable
 private fun InviteDialog(
@@ -398,7 +396,6 @@ private fun InviteDialog(
     isSending: Boolean,
     error: StringKey?,
     success: Boolean,
-    inviteLink: String?,
     onEmailChange: (String) -> Unit,
     onSend: () -> Unit,
     onClose: () -> Unit,
@@ -430,25 +427,12 @@ private fun InviteDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                if (success && inviteLink != null) {
-                    // Success state
+                if (success) {
+                    // Success state - link was emailed to the invitee
                     TerminalAlert(
                         message = stringResource(Res.string.admin_invite_success),
                         variant = AlertVariant.Success,
                     )
-                    TerminalText(
-                        text = stringResource(Res.string.admin_invite_link_label),
-                        style = typography.sm,
-                        color = colors.textMuted,
-                    )
-                    // Selectable link text
-                    SelectionContainer {
-                        TerminalText(
-                            text = inviteLink,
-                            style = typography.sm,
-                            color = colors.accent,
-                        )
-                    }
                     TerminalButton(
                         text = stringResource(Res.string.admin_invite_done),
                         onClick = onClose,

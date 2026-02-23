@@ -1,5 +1,6 @@
 package com.m2f.server.groups.di
 
+import com.m2f.core.config.configuration.Configuration
 import com.m2f.server.groups.repository.GroupRepository
 import com.m2f.server.groups.repository.InvitationRepository
 import com.m2f.server.groups.repository.MembershipRepository
@@ -16,5 +17,5 @@ val groupModule = module {
     single { MembershipRepository(get<R2dbcDatabase>()) }
     single { InvitationRepository(get<R2dbcDatabase>()) }
     single { GroupService(get(), get(), get(), get()) }
-    single { InvitationService(get(), get(), get(), get(), get()) }
+    single { InvitationService(get(), get(), get(), get(), get(), get<Configuration>()) }
 }

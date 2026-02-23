@@ -25,6 +25,8 @@ data class Env(
         val host: String = System.getenv("HOST") ?: "0.0.0.0",
         val port: Int = System.getenv("PORT")?.toIntOrNull() ?: PORT,
         val baseUrl: String = System.getenv("BASE_URL") ?: "http://localhost:$port",
+        /** Frontend app URL for generating user-facing links (e.g., invitation links). */
+        val appUrl: String = System.getenv("APP_URL") ?: "http://localhost:8080",
     )
 
     data class Auth(

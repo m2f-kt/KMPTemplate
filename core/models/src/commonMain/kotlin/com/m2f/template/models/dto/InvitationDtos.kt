@@ -14,11 +14,12 @@ data class CreateInvitationRequest(
 /**
  * Server response representing a group invitation.
  * Contains metadata for displaying invitation details and status.
+ * Note: Token is intentionally excluded from API responses for security.
+ * The invitation link is only sent via email to the invitee.
  */
 @Serializable
 data class InvitationResponse(
     val id: String,
-    val token: String,
     val groupId: String,
     val groupName: String,
     val email: String,

@@ -27,5 +27,4 @@ data class AdminPanelModel(
     val isSendingInvite: Boolean = false,
     val inviteError: StringKey? = null,
     val inviteSuccess: Boolean = false,
-    val inviteLink: String? = null,
 )

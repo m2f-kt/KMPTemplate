@@ -37,5 +37,5 @@ sealed interface AdminPanelMutation {
     data class SetInviteEmail(val email: String) : AdminPanelMutation
     data class SetSendingInvite(val sending: Boolean) : AdminPanelMutation
     data class SetInviteError(val error: StringKey?) : AdminPanelMutation
-    data class SetInviteSuccess(val link: String) : AdminPanelMutation
+    data object SetInviteSuccess : AdminPanelMutation
 }

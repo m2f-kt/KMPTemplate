@@ -143,9 +143,8 @@ class AdminPanelViewModel(
                 sendMutation(AdminPanelMutation.SetSendingInvite(false))
             },
             ifRight = { invitation ->
-                // Build invite link from token
-                val link = "https://yourapp.com/invite?token=${invitation.token}"
-                sendMutation(AdminPanelMutation.SetInviteSuccess(link))
+                // Invitation sent successfully - link was emailed to the invitee
+                sendMutation(AdminPanelMutation.SetInviteSuccess)
                 sendMutation(AdminPanelMutation.SetSendingInvite(false))
             },
         )
@@ -199,7 +198,6 @@ class AdminPanelViewModel(
             inviteEmail = "",
             inviteError = null,
             inviteSuccess = false,
-            inviteLink = null,
         )
         is AdminPanelMutation.HideInviteDialog -> model.copy(
             showInviteDialog = false,
@@ -211,7 +209,6 @@ class AdminPanelViewModel(
         is AdminPanelMutation.SetInviteError -> model.copy(inviteError = mutation.error)
         is AdminPanelMutation.SetInviteSuccess -> model.copy(
             inviteSuccess = true,
-            inviteLink = mutation.link,
         )
     }
 }

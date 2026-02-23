@@ -4,6 +4,7 @@ package com.m2f.server.groups.service
 
 import arrow.core.raise.Raise
 import arrow.core.raise.ensure
+import com.m2f.core.config.configuration.Configuration
 import com.m2f.core.config.server.DomainError
 import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.service.EmailService
@@ -45,6 +46,7 @@ class InvitationService(
     private val membershipRepository: MembershipRepository,
     private val userRepository: UserRepository,
     private val emailService: EmailService,
+    private val config: Configuration,
 ) {
 
     companion object {
@@ -199,7 +201,7 @@ class InvitationService(
             |$inviterName has invited you to join $groupName.
             |
             |Click the link below to accept the invitation:
-            |https://app.example.com/invitations/$token
+            |${config.env.http.appUrl}/invite/accept?token=$token
             |
             |This invitation will expire in 7 days.
             |
@@ -218,7 +220,6 @@ private fun InvitationRecord.toResponse(groupName: String, inviterName: String):
 
     return InvitationResponse(
         id = id.toString(),
-        token = token,
         groupId = groupId.toString(),
         groupName = groupName,
         email = email,
