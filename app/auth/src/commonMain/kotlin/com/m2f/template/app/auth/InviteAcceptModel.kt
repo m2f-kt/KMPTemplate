@@ -19,4 +19,5 @@ data class InviteAcceptModel(
     val error: StringKey? = null,
     val acceptSuccess: Boolean = false,
     val acceptedGroupId: String? = null,
+    val isLoggedIn: Boolean = false,
 )

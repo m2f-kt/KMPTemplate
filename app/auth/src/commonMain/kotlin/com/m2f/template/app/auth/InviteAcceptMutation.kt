@@ -19,4 +19,5 @@ sealed interface InviteAcceptMutation {
     ) : InviteAcceptMutation
     data class SetError(val error: StringKey?) : InviteAcceptMutation
     data class SetAcceptSuccess(val groupId: String) : InviteAcceptMutation
+    data class SetLoggedIn(val loggedIn: Boolean) : InviteAcceptMutation
 }

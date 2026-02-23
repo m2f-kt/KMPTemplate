@@ -5,6 +5,7 @@ import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.AcceptInvitationRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
+import com.m2f.template.storage.TokenStorage
 import kotlinx.coroutines.launch
 
 /**
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
  */
 class InviteAcceptViewModel(
     private val sdk: Sdk,
+    private val tokenStorage: TokenStorage,
 ) : MviViewModel<InviteAcceptIntent, InviteAcceptModel, InviteAcceptMutation, InviteAcceptEvent>(
     initialState = InviteAcceptModel()
 ) {
@@ -22,6 +24,12 @@ class InviteAcceptViewModel(
             when (intent) {
                 is InviteAcceptIntent.LoadInvitation -> handleLoadInvitation(intent.token)
                 is InviteAcceptIntent.AcceptInvitation -> handleAcceptInvitation()
+                is InviteAcceptIntent.GoToLogin -> {
+                    sendEvent(InviteAcceptEvent.NavigateToLogin(model.value.token))
+                }
+                is InviteAcceptIntent.GoToRegister -> {
+                    sendEvent(InviteAcceptEvent.NavigateToRegister(model.value.token))
+                }
             }
         }
     }
@@ -30,6 +38,9 @@ class InviteAcceptViewModel(
         sendMutation(InviteAcceptMutation.SetToken(token))
         sendMutation(InviteAcceptMutation.SetLoadingInvitation(true))
         sendMutation(InviteAcceptMutation.SetError(null))
+
+        val isLoggedIn = tokenStorage.getAccessToken() != null
+        sendMutation(InviteAcceptMutation.SetLoggedIn(isLoggedIn))
 
         sdk.getInvitation(token)
             .fold(
@@ -99,5 +110,6 @@ class InviteAcceptViewModel(
                 acceptSuccess = true,
                 acceptedGroupId = mutation.groupId,
             )
+            is InviteAcceptMutation.SetLoggedIn -> model.copy(isLoggedIn = mutation.loggedIn)
         }
 }

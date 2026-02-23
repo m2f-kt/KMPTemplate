@@ -13,4 +13,14 @@ sealed interface InviteAcceptIntent {
      * User clicked the accept button.
      */
     data object AcceptInvitation : InviteAcceptIntent
+
+    /**
+     * User wants to navigate to login to accept invitation.
+     */
+    data object GoToLogin : InviteAcceptIntent
+
+    /**
+     * User wants to navigate to register to accept invitation.
+     */
+    data object GoToRegister : InviteAcceptIntent
 }
