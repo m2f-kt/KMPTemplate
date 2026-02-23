@@ -8,8 +8,13 @@ import com.m2f.core.database.startDatabase
 import com.m2f.core.security.configureSecurity
 import com.m2f.server.ai.agents.AssistantAgentService
 import com.m2f.server.ai.agents.ChatAgentService
+import com.m2f.server.ai.rag.DocumentIngestionService
+import com.m2f.server.ai.rag.DocumentRepository
 import com.m2f.server.ai.registerAiMigrations
 import com.m2f.server.ai.routes.aiRoutes
+import com.m2f.server.ai.routes.documentRoutes
+import com.m2f.server.groups.repository.MembershipRepository
+import com.m2f.template.models.GroupRole
 import com.m2f.core.database.migrations.registerVectorMigrations
 import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.repository.UserRepository
@@ -53,6 +58,8 @@ import org.slf4j.LoggerFactory
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.awaitCancellation
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 import org.koin.ktor.ext.getKoin
 import org.koin.ktor.ext.inject
 import org.koin.ktor.plugin.Koin
@@ -142,6 +149,27 @@ fun Application.module() {
         aiRoutes(
             assistantAgentService,
             chatAgentService,
+        )
+        // Document management routes for RAG pipeline
+        val documentIngestionService: DocumentIngestionService by inject()
+        val documentRepository: DocumentRepository by inject()
+        val membershipRepository: MembershipRepository by inject()
+        @OptIn(ExperimentalUuidApi::class)
+        documentRoutes(
+            documentIngestionService = documentIngestionService,
+            documentRepository = documentRepository,
+            fileUploader = { userId, fileName, contentType, bytes ->
+                fileService.upload(userId, fileName, contentType, bytes).key
+            },
+            fileDeleter = { /* S3 cleanup is best-effort; FileService has no delete yet */ },
+            roleChecker = { userId, groupId ->
+                val membership = membershipRepository.findByUserAndGroup(
+                    Uuid.parse(userId),
+                    Uuid.parse(groupId),
+                )
+                membership != null && GroupRole.fromString(membership.role).level >= GroupRole.Admin.level
+            },
+            aiDispatcher = config.aiDispatcher,
         )
     }
 }
