@@ -153,10 +153,15 @@ Plans:
   3. User uploads a document → it is chunked, embedded via Koog LLMEmbedder, and stored as vectors in pgvector
   4. User asks a question in AI chat → relevant document chunks are retrieved via cosine similarity and injected into the prompt
   5. Group A member's documents are NOT returned when Group B member queries RAG — scope isolation verified
-**Plans**: TBD
+**Plans**: 6 plans in 3 waves
 
 Plans:
-- [ ] 19-01: TBD
+- [ ] 19-01-PLAN.md -- Database schema (DocumentsTable, DocumentEmbeddingsTable evolution, shared DTOs, routes, errors)
+- [ ] 19-02-PLAN.md -- Core AI services (StructuredOutputService, RelevanceDetector, PgVectorStorage)
+- [ ] 19-03-PLAN.md -- Document ingestion pipeline (DocumentRepository, DocumentIngestionService, DocumentRoutes, DI)
+- [ ] 19-04-PLAN.md -- RAG retrieval + chat integration (RagService, ChatAgentService RAG enhancement)
+- [ ] 19-05-PLAN.md -- Client SDK + Documents UI (DocumentApi, DocumentsViewModel, DocumentsScreen)
+- [ ] 19-06-PLAN.md -- Integration tests (StructuredOutputTest, DocumentRoutesTest)
 
 ### Phase 20: Multi-Agent Orchestration
 **Goal**: AI chat supports multi-agent routing — user messages are analyzed and delegated to specialist agents
@@ -213,7 +218,7 @@ Plans:
 | 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
 | 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
 | 18.2 Invitation Acceptance Flow | v1.2 | 3/3 | Complete | 2026-02-23 |
-| 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
+| 19. Structured AI & RAG | v1.2 | 0/6 | Planned | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
