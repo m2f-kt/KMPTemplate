@@ -28,6 +28,7 @@ dependencies {
     implementation(libs.bundles.ktor.core)
     implementation(libs.ktor.server.websockets)
     implementation(libs.ktor.server.resources)
+    implementation(libs.ktor.server.status.pages)
     implementation(libs.bundles.ktor.monitoring)
     implementation(libs.ktor.client.core)
     implementation(libs.ktor.client.cio)

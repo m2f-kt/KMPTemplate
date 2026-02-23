@@ -28,6 +28,7 @@ import com.m2f.server.auth.service.OAuthService
 import com.m2f.server.auth.service.PasswordResetService
 import com.m2f.server.auth.service.UserService
 import com.m2f.template.di.serverModule
+import com.m2f.template.models.dto.ErrorResponse
 import com.m2f.template.routes.avatarRoutes
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
@@ -35,6 +36,7 @@ import io.ktor.client.HttpClient
 import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpMethod
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
 import io.ktor.server.auth.OAuthServerSettings
@@ -43,8 +45,11 @@ import io.ktor.server.auth.oauth
 import io.ktor.server.netty.Netty
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.plugins.cors.routing.CORS
+import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.resources.Resources
+import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
+import org.slf4j.LoggerFactory
 import io.ktor.server.websocket.WebSockets
 import kotlinx.coroutines.awaitCancellation
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
@@ -99,6 +104,20 @@ fun Application.module() {
         allowHeader(HttpHeaders.AcceptLanguage)
         // Allow credentials (needed for auth flows)
         allowCredentials = true
+    }
+    // Global exception handler - prevents leaking internal details (SQL errors, stack traces)
+    install(StatusPages) {
+        val logger = LoggerFactory.getLogger("StatusPages")
+        exception<Throwable> { call, cause ->
+            logger.error("Unhandled exception", cause)
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                ErrorResponse(
+                    code = "SERVER_INTERNAL_ERROR",
+                    message = "An unexpected error occurred",
+                ),
+            )
+        }
     }
     configureSecurity()
     configureOAuth()
