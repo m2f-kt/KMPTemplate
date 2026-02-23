@@ -77,7 +77,7 @@ fun App() {
             val accessToken = tokenStorage.getAccessToken()
             if (accessToken != null) {
                 navController.navigate(DashboardRoute) {
-                    popUpTo(LoginRoute) { inclusive = true }
+                    popUpTo<LoginRoute> { inclusive = true }
                 }
             }
         }
@@ -85,7 +85,7 @@ fun App() {
         // Navigate to login when session expires (refresh token failed)
         LaunchedEffect(Unit) {
             authInterceptor.sessionExpired.collect {
-                navController.navigate(LoginRoute) {
+                navController.navigate(LoginRoute()) {
                     popUpTo(0) { inclusive = true }
                 }
             }

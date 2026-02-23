@@ -67,11 +67,20 @@ fun AppNavHost(
     Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
         NavHost(
             navController = navController,
-            startDestination = LoginRoute,
+            startDestination = LoginRoute(),
         ) {
-            composable<LoginRoute> {
+            composable<LoginRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<LoginRoute>()
                 val viewModel = koinViewModel<LoginViewModel>()
                 val state by viewModel.model.collectAsStateWithLifecycle()
+
+                // Set invitation token if present
+                LaunchedEffect(route.invitationToken) {
+                    route.invitationToken?.let { token ->
+                        viewModel.take(LoginIntent.SetInvitationToken(token))
+                    }
+                }
+
                 LoginScreen(
                     state = state,
                     onEmailChange = { viewModel.take(LoginIntent.EmailChanged(it)) },
@@ -81,7 +90,7 @@ fun AppNavHost(
                     onGoogleClick = { oauthHandler.startOAuth("google") },
                     onAppleClick = { oauthHandler.startOAuth("apple") },
                     onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
-                    onRegister = { navController.navigate(RegisterRoute) },
+                    onRegister = { navController.navigate(RegisterRoute()) },
                 )
                 LaunchedEffect(Unit) {
                     viewModel.event.collect { event ->
@@ -91,14 +100,28 @@ fun AppNavHost(
                                     popUpTo<LoginRoute> { inclusive = true }
                                 }
                             }
+                            is LoginEvent.NavigateToGroup -> {
+                                navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
+                                    popUpTo<LoginRoute> { inclusive = true }
+                                }
+                            }
                         }
                     }
                 }
             }
 
-            composable<RegisterRoute> {
+            composable<RegisterRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<RegisterRoute>()
                 val viewModel = koinViewModel<RegisterViewModel>()
                 val state by viewModel.model.collectAsStateWithLifecycle()
+
+                // Set invitation token if present
+                LaunchedEffect(route.invitationToken) {
+                    route.invitationToken?.let { token ->
+                        viewModel.take(RegisterIntent.SetInvitationToken(token))
+                    }
+                }
+
                 RegisterScreen(
                     state = state,
                     onFirstNameChange = { viewModel.take(RegisterIntent.FirstNameChanged(it)) },
@@ -120,6 +143,11 @@ fun AppNavHost(
                                     popUpTo<LoginRoute> { inclusive = true }
                                 }
                             }
+                            is RegisterEvent.NavigateToGroup -> {
+                                navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
+                                    popUpTo<LoginRoute> { inclusive = true }
+                                }
+                            }
                         }
                     }
                 }
@@ -138,7 +166,7 @@ fun AppNavHost(
                         }
                     },
                     onError = {
-                        navController.navigate(LoginRoute) {
+                        navController.navigate(LoginRoute()) {
                             popUpTo(0) { inclusive = true }
                         }
                     },
@@ -174,7 +202,7 @@ fun AppNavHost(
                     dashboardViewModel.event.collect { event ->
                         when (event) {
                             is DashboardEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute) {
+                                navController.navigate(LoginRoute()) {
                                     popUpTo(0) { inclusive = true }
                                 }
                             }
@@ -218,7 +246,7 @@ fun AppNavHost(
                     viewModel.event.collect { event ->
                         when (event) {
                             is ProfileEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute) {
+                                navController.navigate(LoginRoute()) {
                                     popUpTo(0) { inclusive = true }
                                 }
                             }
@@ -330,10 +358,14 @@ fun AppNavHost(
                                 }
                             }
                             is InviteAcceptEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute)
+                                navController.navigate(LoginRoute(invitationToken = event.token)) {
+                                    popUpTo<InviteAcceptRoute> { inclusive = true }
+                                }
                             }
                             is InviteAcceptEvent.NavigateToRegister -> {
-                                navController.navigate(RegisterRoute)
+                                navController.navigate(RegisterRoute(invitationToken = event.token)) {
+                                    popUpTo<InviteAcceptRoute> { inclusive = true }
+                                }
                             }
                         }
                     }
