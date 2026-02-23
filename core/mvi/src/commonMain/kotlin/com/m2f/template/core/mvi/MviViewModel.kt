@@ -15,25 +15,23 @@ import kotlinx.coroutines.flow.stateIn
 
 abstract class MviViewModel<Intent, Model, Mutation, Event>(
     initialState: Model,
-    modelSharingStarted: SharingStarted = SharingStarted.Lazily,
+    modelSharingStarted: SharingStarted = SharingStarted.Eagerly,
 ) : ViewModel() {
 
     private val pipeline = MutableSharedFlow<Either<Event, Mutation>>(extraBufferCapacity = 64)
 
-    val model: StateFlow<Model> by lazy {
+    val model: StateFlow<Model> =
         pipeline
             .filterIsInstance<Either.Right<Mutation>>()
             .map { it.value }
             .scan(initialState) { model, mutation -> reduce(model, mutation) }
             .stateIn(viewModelScope, modelSharingStarted, initialState)
-    }
 
-    val event: SharedFlow<Event> by lazy {
+    val event: SharedFlow<Event> =
         pipeline
             .filterIsInstance<Either.Left<Event>>()
             .map { it.value }
             .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
-    }
 
     abstract fun take(intent: Intent)
 
