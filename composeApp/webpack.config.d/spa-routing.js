@@ -1,15 +1,6 @@
-// Enable SPA routing for the dev server
-// This redirects all 404s to index.html so client-side routing works,
-// while allowing static assets to be served from their correct paths
+// SPA routing configuration for webpack dev server
+// Handles deep links like /invite/accept?token=... by serving index.html for non-file requests
+// The <base href="/"> in index.html ensures all relative URLs resolve from root
+
 config.devServer = config.devServer || {};
-config.devServer.historyApiFallback = {
-    // Rewrite resource requests that have a path prefix (like /invite/composeResources)
-    // to serve from root (like /composeResources)
-    rewrites: [
-        // Static assets should be served from root
-        { from: /^\/[^/]+\/composeResources\/(.*)$/, to: '/composeResources/$1' },
-        { from: /^\/[^/]+\/[^/]+\/composeResources\/(.*)$/, to: '/composeResources/$1' },
-        // Everything else falls back to index.html for client-side routing
-        { from: /./, to: '/index.html' }
-    ]
-};
+config.devServer.historyApiFallback = true;
