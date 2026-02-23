@@ -49,7 +49,7 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table (completed 2026-02-21)
 - [x] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests (completed 2026-02-22)
 - [x] **Phase 18.1: Profile Uploads, Group Creation & Email Invitations** - Profile picture uploads from UI, group creation from admin panel, email invitations (completed 2026-02-22)
-- [ ] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration
+- [x] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration (completed 2026-02-23)
 - [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
 - [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
@@ -138,9 +138,9 @@ Plans:
 **Plans:** 3 plans in 2 waves
 
 Plans:
-- [ ] 18.2-01-PLAN.md — Server: Register with invitation token + accept endpoint fix
-- [ ] 18.2-02-PLAN.md — Client: InviteAcceptScreen conditional UI for auth state
-- [ ] 18.2-03-PLAN.md — Client: Login/Register with invitation context + post-auth flow
+- [x] 18.2-01-PLAN.md — Server: Register with invitation token + accept endpoint fix
+- [x] 18.2-02-PLAN.md — Client: InviteAcceptScreen conditional UI for auth state
+- [x] 18.2-03-PLAN.md — Client: Login/Register with invitation context + post-auth flow
 
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
@@ -211,7 +211,7 @@ Plans:
 | 17. Infrastructure Foundation | v1.2 | 2/2 | Complete | 2026-02-21 |
 | 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
 | 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
-| 18.2 Invitation Acceptance Flow | v1.2 | 0/3 | Planning | - |
+| 18.2 Invitation Acceptance Flow | v1.2 | 3/3 | Complete | 2026-02-23 |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
