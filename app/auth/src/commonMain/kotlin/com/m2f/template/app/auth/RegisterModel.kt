@@ -12,4 +12,5 @@ data class RegisterModel(
     val isLoading: Boolean = false,
     val fieldErrors: Map<String, StringKey> = emptyMap(),
     val serverError: StringKey? = null,
+    val invitationToken: String? = null,
 )

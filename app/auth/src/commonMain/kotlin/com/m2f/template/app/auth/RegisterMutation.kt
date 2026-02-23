@@ -12,4 +12,5 @@ sealed interface RegisterMutation {
     data class SetLoading(val loading: Boolean) : RegisterMutation
     data class SetFieldErrors(val errors: Map<String, StringKey>) : RegisterMutation
     data class SetServerError(val error: StringKey?) : RegisterMutation
+    data class SetInvitationToken(val token: String?) : RegisterMutation
 }

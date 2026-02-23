@@ -31,6 +31,7 @@ class RegisterViewModel(
                 is RegisterIntent.ConfirmPasswordChanged -> sendMutation(RegisterMutation.SetConfirmPassword(intent.confirmPassword))
                 is RegisterIntent.TermsAcceptedChanged -> sendMutation(RegisterMutation.SetTermsAccepted(intent.accepted))
                 is RegisterIntent.SubmitRegisterClicked -> handleRegister()
+                is RegisterIntent.SetInvitationToken -> sendMutation(RegisterMutation.SetInvitationToken(intent.token))
             }
         }
     }
@@ -68,6 +69,7 @@ class RegisterViewModel(
                     password = password,
                     firstName = firstName,
                     lastName = lastName,
+                    invitationToken = current.invitationToken,
                 )
             }
         }
@@ -105,5 +107,6 @@ class RegisterViewModel(
             is RegisterMutation.SetLoading -> model.copy(isLoading = mutation.loading, serverError = null)
             is RegisterMutation.SetFieldErrors -> model.copy(fieldErrors = mutation.errors)
             is RegisterMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
+            is RegisterMutation.SetInvitationToken -> model.copy(invitationToken = mutation.token)
         }
 }

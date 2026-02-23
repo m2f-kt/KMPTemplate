@@ -8,4 +8,5 @@ sealed interface RegisterIntent {
     data class ConfirmPasswordChanged(val confirmPassword: String) : RegisterIntent
     data class TermsAcceptedChanged(val accepted: Boolean) : RegisterIntent
     data object SubmitRegisterClicked : RegisterIntent
+    data class SetInvitationToken(val token: String?) : RegisterIntent
 }
