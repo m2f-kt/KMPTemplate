@@ -14,7 +14,9 @@ import com.m2f.template.navigation.AppNavHost
 import com.m2f.template.navigation.DashboardRoute
 import com.m2f.template.navigation.LoginRoute
 import com.m2f.template.navigation.OAuthCallbackRoute
+import com.m2f.template.navigation.InviteAcceptRoute
 import com.m2f.template.app.auth.checkOAuthCallback
+import com.m2f.template.app.auth.checkInviteLink
 import com.m2f.template.storage.PreferencesStorage
 import com.m2f.template.storage.TokenStorage
 import com.m2f.template.sdk.AuthInterceptor
@@ -66,6 +68,16 @@ fun App() {
                         refreshToken = callback.second,
                     ),
                 ) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+        }
+
+        // Check for invite link on startup (WASM: browser URL /invite/accept?token=...)
+        LaunchedEffect(Unit) {
+            val token = checkInviteLink()
+            if (token != null) {
+                navController.navigate(InviteAcceptRoute(token = token)) {
                     popUpTo(0) { inclusive = true }
                 }
             }
