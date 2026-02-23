@@ -11,9 +11,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 Milestone: v1.2 Polish & Patterns
 Phase: 18.2 of 22 (Invitation Acceptance Flow - Gap Closure)
-Plan: 1 of 3 in Phase (Executing)
+Plan: 2 of 3 in Phase (18.2-01 complete, 18.2-02 complete)
 Status: In Progress
-Last activity: 2026-02-23 — Completed 18.2-02 (InviteAcceptScreen auth-conditional UI)
+Last activity: 2026-02-23 — Completed 18.2-01 (server-side invitation token registration)
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -64,6 +64,8 @@ v1.2 decisions:
 - MinIO for local S3-compatible storage
 - MailHog for local SMTP testing
 - Integration tests ship WITH feature phases, not deferred
+- [Phase 18.2]: Callback pattern instead of direct InvitationService dependency — avoids circular module dependency between server/auth and server/groups
+- [Phase 18.2]: Koin dual registration: AuthService in authModule (default) + override in serverModule (with invitation callback) for test compatibility
 
 ### Blockers/Concerns
 
@@ -97,6 +99,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-23
-Stopped at: Completed 18.2-02-PLAN.md (InviteAcceptScreen auth-conditional UI)
+Stopped at: Completed 18.2-01-PLAN.md (server-side invitation token registration)
 Resume file: None
 Next action: Execute 18.2-03-PLAN.md (invitation flow completion)
