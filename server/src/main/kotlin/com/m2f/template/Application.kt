@@ -144,16 +144,27 @@ fun Application.module() {
         val fileService: FileService by inject()
         fileRoutes(fileService)
         avatarRoutes(userRepository, fileService)
+        // Shared role checker lambda for cross-module authorization
+        val membershipRepository: MembershipRepository by inject()
+        @OptIn(ExperimentalUuidApi::class)
+        val roleChecker: suspend (String, String) -> Boolean = { userId, groupId ->
+            val membership = membershipRepository.findByUserAndGroup(
+                Uuid.parse(userId),
+                Uuid.parse(groupId),
+            )
+            membership != null && GroupRole.fromString(membership.role).level >= GroupRole.Admin.level
+        }
+
         val assistantAgentService: AssistantAgentService by inject()
         val chatAgentService: ChatAgentService by inject()
         aiRoutes(
             assistantAgentService,
             chatAgentService,
+            roleChecker = roleChecker,
         )
         // Document management routes for RAG pipeline
         val documentIngestionService: DocumentIngestionService by inject()
         val documentRepository: DocumentRepository by inject()
-        val membershipRepository: MembershipRepository by inject()
         @OptIn(ExperimentalUuidApi::class)
         documentRoutes(
             documentIngestionService = documentIngestionService,
@@ -162,13 +173,7 @@ fun Application.module() {
                 fileService.upload(userId, fileName, contentType, bytes).key
             },
             fileDeleter = { /* S3 cleanup is best-effort; FileService has no delete yet */ },
-            roleChecker = { userId, groupId ->
-                val membership = membershipRepository.findByUserAndGroup(
-                    Uuid.parse(userId),
-                    Uuid.parse(groupId),
-                )
-                membership != null && GroupRole.fromString(membership.role).level >= GroupRole.Admin.level
-            },
+            roleChecker = roleChecker,
             aiDispatcher = config.aiDispatcher,
         )
     }

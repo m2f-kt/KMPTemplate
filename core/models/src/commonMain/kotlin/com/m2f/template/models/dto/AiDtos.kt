@@ -17,6 +17,7 @@ data class AgentResponse(
 data class ChatRequest(
     val message: String,
     val conversationId: String? = null,
+    val groupId: String? = null,
 )
 
 @Serializable

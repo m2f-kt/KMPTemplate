@@ -39,15 +39,18 @@ private fun ensureAiEnabled(aiEnabled: Boolean) {
 /**
  * AI agent routes behind authentication.
  * POST /api/ai/assistant -- ReAct agent with UserTools
- * POST /api/ai/chat -- Conversational agent with persistence
+ * POST /api/ai/chat -- Conversational agent with persistence + RAG
  *
  * Both routes are gated by [aiEnabled] flag -- when false, returns ProviderUnavailable error.
+ *
+ * @param roleChecker Lambda to check if user is admin in a group (avoids groups module dependency)
  */
 @OptIn(ExperimentalUuidApi::class)
 context(config: Configuration)
 fun Route.aiRoutes(
     assistantAgentService: AssistantAgentService,
     chatAgentService: ChatAgentService,
+    roleChecker: suspend (userId: String, groupId: String) -> Boolean = { _, _ -> false },
 ) {
     authenticate {
         post<Ai.Assistant> {
@@ -67,10 +70,19 @@ fun Route.aiRoutes(
                 val request = getModel<ChatRequest>()
                 val conversationId = request.conversationId
                     ?: Uuid.random().toString()
+
+                // Resolve RAG parameters if groupId is provided
+                val groupUuid = request.groupId?.let { Uuid.parse(it) }
+                val userUuid = Uuid.parse(userId)
+                val isAdmin = request.groupId?.let { roleChecker(userId, it) } ?: false
+
                 val result = chatAgentService.run(
                     userId = userId,
                     conversationId = conversationId,
                     input = request.message,
+                    groupId = groupUuid,
+                    userUuid = userUuid,
+                    isAdmin = isAdmin,
                 )
                 ChatResponse(
                     message = result,
@@ -90,11 +102,19 @@ fun Route.aiRoutes(
                 val conversationId = request.conversationId
                     ?: Uuid.random().toString()
 
+                // Resolve RAG parameters if groupId is provided
+                val groupUuid = request.groupId?.let { Uuid.parse(it) }
+                val userUuid = Uuid.parse(userId)
+                val isAdmin = request.groupId?.let { roleChecker(userId, it) } ?: false
+
                 try {
                     chatAgentService.streamChat(
                         userId = userId,
                         conversationId = conversationId,
                         input = request.message,
+                        groupId = groupUuid,
+                        userUuid = userUuid,
+                        isAdmin = isAdmin,
                     ).collect { chunk ->
                         send(Frame.Text(Json.encodeToString(
                             ChatStreamFrame(
