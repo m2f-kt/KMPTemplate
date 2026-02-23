@@ -10,4 +10,6 @@ data class LoginModel(
     val emailError: StringKey? = null,
     val passwordError: StringKey? = null,
     val serverError: StringKey? = null,
+    val invitationToken: String? = null,
+    val isAcceptingInvitation: Boolean = false,
 )

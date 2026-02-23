@@ -2,6 +2,7 @@ package com.m2f.template.app.auth
 
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
+import com.m2f.template.models.dto.AcceptInvitationRequest
 import com.m2f.template.models.dto.LoginRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
@@ -20,6 +21,7 @@ class LoginViewModel(
                 is LoginIntent.PasswordChanged -> sendMutation(LoginMutation.SetPassword(intent.password))
                 is LoginIntent.RememberMeChanged -> sendMutation(LoginMutation.SetRememberMe(intent.checked))
                 is LoginIntent.SubmitLoginClicked -> handleLogin()
+                is LoginIntent.SetInvitationToken -> sendMutation(LoginMutation.SetInvitationToken(intent.token))
             }
         }
     }
@@ -52,9 +54,30 @@ class LoginViewModel(
                     sendMutation(LoginMutation.SetServerError(key))
                 },
                 ifRight = {
-                    sendEvent(LoginEvent.NavigateToDashboard)
+                    handlePostLogin()
                 },
             )
+    }
+
+    private suspend fun handlePostLogin() {
+        val token = model.value.invitationToken
+        if (token != null) {
+            sendMutation(LoginMutation.SetAcceptingInvitation(true))
+            sdk.acceptInvitation(AcceptInvitationRequest(token))
+                .fold(
+                    ifLeft = {
+                        // Log error but still navigate - user is logged in
+                        sendMutation(LoginMutation.SetAcceptingInvitation(false))
+                        sendEvent(LoginEvent.NavigateToDashboard)
+                    },
+                    ifRight = { response ->
+                        sendMutation(LoginMutation.SetAcceptingInvitation(false))
+                        sendEvent(LoginEvent.NavigateToGroup(response.groupId))
+                    },
+                )
+        } else {
+            sendEvent(LoginEvent.NavigateToDashboard)
+        }
     }
 
     override suspend fun reduce(model: LoginModel, mutation: LoginMutation): LoginModel =
@@ -65,5 +88,7 @@ class LoginViewModel(
             is LoginMutation.SetLoading -> model.copy(isLoading = mutation.loading, serverError = null)
             is LoginMutation.SetValidationErrors -> model.copy(emailError = mutation.emailError, passwordError = mutation.passwordError)
             is LoginMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
+            is LoginMutation.SetInvitationToken -> model.copy(invitationToken = mutation.token)
+            is LoginMutation.SetAcceptingInvitation -> model.copy(isAcceptingInvitation = mutation.accepting)
         }
 }
