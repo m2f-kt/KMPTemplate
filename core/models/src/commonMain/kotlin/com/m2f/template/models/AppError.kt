@@ -210,6 +210,28 @@ sealed class AppError {
     }
 
     @Serializable
+    sealed class Document : AppError() {
+        @Serializable
+        data class NotFound(
+            override val code: String = "DOCUMENT_NOT_FOUND",
+            override val message: String = "Document not found"
+        ) : Document()
+
+        @Serializable
+        data class IngestionFailed(
+            val detail: String = "Document ingestion failed",
+            override val code: String = "DOCUMENT_INGESTION_FAILED",
+            override val message: String = detail
+        ) : Document()
+
+        @Serializable
+        data class AccessDenied(
+            override val code: String = "DOCUMENT_ACCESS_DENIED",
+            override val message: String = "You do not have permission to access this document"
+        ) : Document()
+    }
+
+    @Serializable
     sealed class File : AppError() {
         @Serializable
         data class TooLarge(

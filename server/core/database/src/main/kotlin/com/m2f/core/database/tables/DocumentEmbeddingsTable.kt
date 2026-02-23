@@ -21,6 +21,9 @@ object DocumentEmbeddingsTable : Table("document_embeddings") {
     val content = text("content")
     val embedding = vector("embedding", 768)
     val metadata = text("metadata").default("{}")
+    val userId = uuid("user_id").index().nullable()
+    val documentId = uuid("document_id").index().nullable()
+    val chunkIndex = integer("chunk_index").default(0)
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
 
     override val primaryKey = PrimaryKey(id)

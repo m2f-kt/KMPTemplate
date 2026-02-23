@@ -114,3 +114,19 @@ class Files {
     @Serializable @Resource("{fileKey}")
     class Get(val parent: Files = Files(), val fileKey: String)
 }
+
+@Serializable
+@Resource("/api/documents")
+class Documents {
+    @Serializable @Resource("upload")
+    class Upload(val parent: Documents = Documents())
+
+    @Serializable @Resource("list")
+    class ListByGroup(val parent: Documents = Documents(), val groupId: String, val scope: String? = null)
+
+    @Serializable @Resource("{documentId}")
+    class ById(val parent: Documents = Documents(), val documentId: String)
+
+    @Serializable @Resource("{documentId}/delete")
+    class Delete(val parent: Documents = Documents(), val documentId: String)
+}
