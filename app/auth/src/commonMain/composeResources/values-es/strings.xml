@@ -133,4 +133,22 @@
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>
 
+    <!-- ======================== Invite Accept Screen ======================== -->
+    <string name="invite_title">$ aceptar_invitación</string>
+    <string name="invite_subtitle">// has sido invitado a unirte a un grupo</string>
+    <string name="invite_loading">$ cargando invitación...</string>
+    <string name="invite_group_label">grupo:</string>
+    <string name="invite_inviter_label">invitado_por:</string>
+    <string name="invite_role_label">rol:</string>
+    <string name="invite_accept_button">$ aceptar_invitación()</string>
+    <string name="invite_accept_button_loading">$ aceptando...</string>
+    <string name="invite_expired">Esta invitación ha expirado.</string>
+    <string name="invite_already_accepted">Esta invitación ya ha sido aceptada.</string>
+    <string name="invite_success_message">¡Te has unido al grupo exitosamente!</string>
+
+    <!-- Invite Accept Auth Prompt -->
+    <string name="invite_login_button">$ iniciar_sesión_para_aceptar()</string>
+    <string name="invite_register_button">$ crear_cuenta_para_aceptar()</string>
+    <string name="invite_auth_prompt">// inicia sesión o crea una cuenta para aceptar esta invitación</string>
+
 </resources>

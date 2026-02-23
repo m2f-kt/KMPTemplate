@@ -146,4 +146,9 @@
     <string name="invite_already_accepted">This invitation has already been accepted.</string>
     <string name="invite_success_message">Successfully joined the group!</string>
 
+    <!-- Invite Accept Auth Prompt -->
+    <string name="invite_login_button">$ login_to_accept()</string>
+    <string name="invite_register_button">$ create_account_to_accept()</string>
+    <string name="invite_auth_prompt">// sign in or create an account to accept this invitation</string>
+
 </resources>

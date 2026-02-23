@@ -30,10 +30,13 @@ import template.app.auth.generated.resources.common_brand_prompt
 import template.app.auth.generated.resources.invite_accept_button
 import template.app.auth.generated.resources.invite_accept_button_loading
 import template.app.auth.generated.resources.invite_already_accepted
+import template.app.auth.generated.resources.invite_auth_prompt
 import template.app.auth.generated.resources.invite_expired
 import template.app.auth.generated.resources.invite_group_label
 import template.app.auth.generated.resources.invite_inviter_label
 import template.app.auth.generated.resources.invite_loading
+import template.app.auth.generated.resources.invite_login_button
+import template.app.auth.generated.resources.invite_register_button
 import template.app.auth.generated.resources.invite_role_label
 import template.app.auth.generated.resources.invite_subtitle
 import template.app.auth.generated.resources.invite_success_message
@@ -47,6 +50,8 @@ import template.app.auth.generated.resources.invite_title
 fun InviteAcceptScreen(
     state: InviteAcceptModel,
     onAccept: () -> Unit,
+    onGoToLogin: () -> Unit,
+    onGoToRegister: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -177,19 +182,47 @@ fun InviteAcceptScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Accept button (only if not expired, not already accepted, and not success)
+                        // Action buttons (only if not expired, not already accepted, and not success)
                         if (!state.isExpired && !state.isAlreadyAccepted && !state.acceptSuccess) {
-                            TerminalButton(
-                                text = if (state.isAccepting) {
-                                    stringResource(Res.string.invite_accept_button_loading)
-                                } else {
-                                    stringResource(Res.string.invite_accept_button)
-                                },
-                                onClick = onAccept,
-                                modifier = Modifier.fillMaxWidth(),
-                                variant = ButtonVariant.Default,
-                                enabled = !state.isAccepting,
-                            )
+                            if (state.isLoggedIn) {
+                                // Authenticated user: show Accept button
+                                TerminalButton(
+                                    text = if (state.isAccepting) {
+                                        stringResource(Res.string.invite_accept_button_loading)
+                                    } else {
+                                        stringResource(Res.string.invite_accept_button)
+                                    },
+                                    onClick = onAccept,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    variant = ButtonVariant.Default,
+                                    enabled = !state.isAccepting,
+                                )
+                            } else {
+                                // Unauthenticated user: show Login/Register options
+                                TerminalText(
+                                    text = stringResource(Res.string.invite_auth_prompt),
+                                    style = typography.sm,
+                                    color = colors.textDim,
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                TerminalButton(
+                                    text = stringResource(Res.string.invite_login_button),
+                                    onClick = onGoToLogin,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    variant = ButtonVariant.Default,
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                TerminalButton(
+                                    text = stringResource(Res.string.invite_register_button),
+                                    onClick = onGoToRegister,
+                                    modifier = Modifier.fillMaxWidth(),
+                                    variant = ButtonVariant.Secondary,
+                                )
+                            }
                         }
                     }
                 }

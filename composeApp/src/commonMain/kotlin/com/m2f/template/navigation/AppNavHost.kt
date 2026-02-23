@@ -317,6 +317,8 @@ fun AppNavHost(
                 InviteAcceptScreen(
                     state = state,
                     onAccept = { viewModel.take(InviteAcceptIntent.AcceptInvitation) },
+                    onGoToLogin = { viewModel.take(InviteAcceptIntent.GoToLogin) },
+                    onGoToRegister = { viewModel.take(InviteAcceptIntent.GoToRegister) },
                 )
 
                 LaunchedEffect(Unit) {
@@ -326,6 +328,12 @@ fun AppNavHost(
                                 navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
                                     popUpTo<DashboardRoute>()
                                 }
+                            }
+                            is InviteAcceptEvent.NavigateToLogin -> {
+                                navController.navigate(LoginRoute)
+                            }
+                            is InviteAcceptEvent.NavigateToRegister -> {
+                                navController.navigate(RegisterRoute)
                             }
                         }
                     }
