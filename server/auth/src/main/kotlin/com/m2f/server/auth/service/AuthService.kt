@@ -44,12 +44,15 @@ class AuthService(
     private val refreshTokenRepository: RefreshTokenRepository,
     private val passwordHasher: PasswordHasher,
     private val tokenProvider: JwtTokenProvider,
+    private val onRegistered: (suspend (raise: Raise<DomainError>, userId: String, request: RegisterRequest) -> Unit)? = null,
 ) {
 
     /**
      * Register a new user with accumulated validation.
      * Returns an [AuthResponse] with access and refresh tokens on success.
      * Accepts firstName + lastName, concatenates to name for storage.
+     * If an invitationToken is provided in the request, the [onRegistered] callback
+     * is invoked after user creation to link the user to the invited group.
      *
      * @throws DomainError via Raise if validation fails or user already exists.
      */
@@ -90,20 +93,25 @@ class AuthService(
         // Step 5: Insert user
         val userId = userRepository.insert(validEmail, hash, fullName, UserRole.User)
 
-        // Step 6: Generate token pair
+        // Step 6: Accept invitation if token provided (after user creation, before tokens)
+        if (request.invitationToken != null && onRegistered != null) {
+            onRegistered.invoke(raise, userId.toString(), request)
+        }
+
+        // Step 7: Generate token pair
         val (authResponse, rawRefreshToken) = tokenProvider.generateTokenPair(
             userId.toString(),
             UserRole.User,
         )
 
-        // Step 7: Hash and store refresh token
+        // Step 8: Hash and store refresh token
         val hashedToken = tokenProvider.hashRefreshToken(rawRefreshToken)
         val expiresAt = Clock.System.now()
             .plus(tokenProvider.getRefreshTokenExpiry().milliseconds)
             .toLocalDateTime(TimeZone.UTC)
         refreshTokenRepository.store(userId, hashedToken, expiresAt)
 
-        // Step 8: Return the response
+        // Step 9: Return the response
         return authResponse
     }
 
