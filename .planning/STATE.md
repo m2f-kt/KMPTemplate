@@ -5,15 +5,15 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 19 — Structured AI & RAG Pipeline (v1.2 Polish & Patterns)
+**Current focus:** Phase 18.2 — Invitation Acceptance Flow (Gap Closure)
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
 Phase: 18.1 of 22 (Profile Uploads, Group Creation & Email Invitations)
 Plan: 5 of 5 in Phase (COMPLETE)
-Status: Phase Complete
-Last activity: 2026-02-22 — Plan 18.1-05 (Invitation UI) complete
+Status: UAT Complete - Gap Identified
+Last activity: 2026-02-23 — UAT completed with 1 gap requiring new phase
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -58,6 +58,7 @@ v1.2 decisions:
 - Phase 18: URL-encode S3 fileKey in API calls (key contains '/' from userId prefix)
 - Phase 18.1: InviteAccept files in auth root (not invite/ subdirectory) — matches module structure
 - Phase 18.1: InviteAcceptRoute navigates to AdminPanelRoute on success
+- Phase 18.1: MviViewModel uses eager StateFlow initialization (not lazy) to prevent mutation loss
 - RAG pipeline exclusively Koog-based (no LangChain4j, Spring AI)
 - pgvector in existing PostgreSQL (no separate vector DB service)
 - MinIO for local S3-compatible storage
@@ -74,6 +75,18 @@ v1.2 decisions:
 ### Roadmap Evolution
 
 - Phase 18.1 inserted after Phase 18: Profile Uploads, Group Creation & Email Invitations (URGENT)
+- **Phase 18.2 needed**: Invitation Acceptance Flow for Unauthenticated Users (Gap from 18.1 UAT)
+
+### UAT Gaps Requiring New Phases
+
+| Phase | Gap | Description | Priority |
+|-------|-----|-------------|----------|
+| 18.1 | #1 | Invitation acceptance flow for unauthenticated users | High |
+
+**Gap #1 Details:**
+- Current flow requires user to be authenticated to accept invitation
+- Correct flow: Unauthenticated user can accept → redirects to login/register → auto-links to group after auth
+- See `.planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-UAT.md` for full requirements
 
 ### Quick Tasks Completed
 
@@ -83,7 +96,7 @@ v1.2 decisions:
 
 ## Session Continuity
 
-Last session: 2026-02-22
-Stopped at: Completed 18.1-05-PLAN.md (Invitation UI) — Phase 18.1 COMPLETE (5/5 plans)
-Resume file: .planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-05-SUMMARY.md
-Next action: Plan Phase 19 via `/gsd-plan-phase 19` — Structured AI & RAG Pipeline
+Last session: 2026-02-23
+Stopped at: UAT complete for Phase 18.1 — 8 passed, 1 failed (gap), 1 skipped
+Resume file: .planning/phases/18.1-profile-uploads-group-creation-email-invitations/18.1-UAT.md
+Next action: Create Phase 18.2 to close invitation acceptance gap, OR proceed to Phase 19
