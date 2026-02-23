@@ -49,6 +49,7 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 17: Infrastructure Foundation** - Docker services (MinIO, MailHog, pgvector), config sections, vector storage table (completed 2026-02-21)
 - [x] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests (completed 2026-02-22)
 - [x] **Phase 18.1: Profile Uploads, Group Creation & Email Invitations** - Profile picture uploads from UI, group creation from admin panel, email invitations (completed 2026-02-22)
+- [ ] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration
 - [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
 - [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
@@ -122,6 +123,25 @@ Plans:
 - [x] 18.1-04-PLAN.md — Invitations: Server + SDK (InvitationsTable, service, routes, API)
 - [x] 18.1-05-PLAN.md — Invitations: Admin UI + Accept Flow (invite dialog, InviteAcceptScreen)
 
+### Phase 18.2: Invitation Acceptance Flow (GAP CLOSURE)
+
+**Goal:** Unauthenticated users can accept invitations by logging in or registering with automatic group linking
+**Depends on:** Phase 18.1 (invitation system exists but requires authentication)
+**Requirements:** INVITE-02 (complete), INVITE-04 (expiry handling)
+**Gap Source:** 18.1-UAT.md Gap #1 — Accept endpoint returns 401 for unauthenticated users
+**Success Criteria** (what must be TRUE):
+  1. Unauthenticated user opens invite link → sees invitation details + Login/Register buttons (not Accept)
+  2. User clicks Login → logs in with invitation token context → auto-linked to group → navigates to Admin Panel
+  3. User clicks Register → registers with invitation token → auto-linked to group → navigates to Admin Panel
+  4. Expired invitation shows error message with "Request new invitation" option (no accept/register allowed)
+  5. Already-accepted invitation shows appropriate error state
+**Plans:** 3 plans in 2 waves
+
+Plans:
+- [ ] 18.2-01-PLAN.md — Server: Register with invitation token + accept endpoint fix
+- [ ] 18.2-02-PLAN.md — Client: InviteAcceptScreen conditional UI for auth state
+- [ ] 18.2-03-PLAN.md — Client: Login/Register with invitation context + post-auth flow
+
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
 **Depends on**: Phase 17 (pgvector table), Phase 18 (file upload for documents)
@@ -181,19 +201,20 @@ Plans:
 
 ## Progress
 
-**Execution Order:** 16 → 17 → 18 → **18.1** → 19 → 20 → 21 → 22
+**Execution Order:** 16 → 17 → 18 → 18.1 → **18.2** → 19 → 20 → 21 → 22
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
 | 1-9 | v1.0 | 39/39 | Complete | 2026-02-17 |
 | 10-15 | v1.1 | 34/34 | Complete | 2026-02-21 |
-| 16. Tech Debt Cleanup | 2/2 | Complete    | 2026-02-21 | - |
+| 16. Tech Debt Cleanup | v1.2 | 2/2 | Complete | 2026-02-21 |
 | 17. Infrastructure Foundation | v1.2 | 2/2 | Complete | 2026-02-21 |
 | 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
 | 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
+| 18.2 Invitation Acceptance Flow | v1.2 | 0/3 | Planning | - |
 | 19. Structured AI & RAG | v1.2 | 0/TBD | Not started | - |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 85 plans shipped across 2 milestones, 8 phases planned for v1.2**
+**Total: 85 plans shipped across 2 milestones, 9 phases planned for v1.2**
