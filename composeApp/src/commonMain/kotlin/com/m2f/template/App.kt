@@ -47,19 +47,18 @@ fun App() {
         // would destroy/recreate the composable tree, re-triggering clearSessionTokens()
         // and wiping non-rememberMe session tokens.
 
-        // Clear session-only tokens on startup; if rememberMe tokens survive, skip login
+        // Check for deep links FIRST - they take priority over auto-login
+        // Check for invite link on startup (WASM: browser URL /invite/accept?token=...)
         LaunchedEffect(Unit) {
-            tokenStorage.clearSessionTokens()
-            val accessToken = tokenStorage.getAccessToken()
-            if (accessToken != null) {
-                navController.navigate(DashboardRoute) {
-                    popUpTo(LoginRoute) { inclusive = true }
+            val token = checkInviteLink()
+            if (token != null) {
+                navController.navigate(InviteAcceptRoute(token = token)) {
+                    popUpTo(0) { inclusive = true }
                 }
+                return@LaunchedEffect
             }
-        }
 
-        // Check for OAuth callback on startup (WASM: browser URL params)
-        LaunchedEffect(Unit) {
+            // Check for OAuth callback on startup (WASM: browser URL params)
             val callback = checkOAuthCallback()
             if (callback != null) {
                 navController.navigate(
@@ -70,15 +69,15 @@ fun App() {
                 ) {
                     popUpTo(0) { inclusive = true }
                 }
+                return@LaunchedEffect
             }
-        }
 
-        // Check for invite link on startup (WASM: browser URL /invite/accept?token=...)
-        LaunchedEffect(Unit) {
-            val token = checkInviteLink()
-            if (token != null) {
-                navController.navigate(InviteAcceptRoute(token = token)) {
-                    popUpTo(0) { inclusive = true }
+            // Clear session-only tokens on startup; if rememberMe tokens survive, skip login
+            tokenStorage.clearSessionTokens()
+            val accessToken = tokenStorage.getAccessToken()
+            if (accessToken != null) {
+                navController.navigate(DashboardRoute) {
+                    popUpTo(LoginRoute) { inclusive = true }
                 }
             }
         }
