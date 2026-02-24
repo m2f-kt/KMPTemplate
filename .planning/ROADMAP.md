@@ -50,7 +50,7 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 18: Core Services** - S3 file upload service and SMTP email service with integration tests (completed 2026-02-22)
 - [x] **Phase 18.1: Profile Uploads, Group Creation & Email Invitations** - Profile picture uploads from UI, group creation from admin panel, email invitations (completed 2026-02-22)
 - [x] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration (completed 2026-02-23)
-- [ ] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval
+- [x] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval (completed 2026-02-24)
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
 - [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
 - [ ] **Phase 22: Developer Onboarding** - Setup CLI enhancements, documentation, Gradle tooling, first-run walkthrough
@@ -156,12 +156,12 @@ Plans:
 **Plans**: 6 plans in 3 waves
 
 Plans:
-- [ ] 19-01-PLAN.md -- Database schema (DocumentsTable, DocumentEmbeddingsTable evolution, shared DTOs, routes, errors)
-- [ ] 19-02-PLAN.md -- Core AI services (StructuredOutputService, RelevanceDetector, PgVectorStorage)
-- [ ] 19-03-PLAN.md -- Document ingestion pipeline (DocumentRepository, DocumentIngestionService, DocumentRoutes, DI)
-- [ ] 19-04-PLAN.md -- RAG retrieval + chat integration (RagService, ChatAgentService RAG enhancement)
-- [ ] 19-05-PLAN.md -- Client SDK + Documents UI (DocumentApi, DocumentsViewModel, DocumentsScreen)
-- [ ] 19-06-PLAN.md -- Integration tests (StructuredOutputTest, DocumentRoutesTest)
+- [x] 19-01-PLAN.md -- Database schema (DocumentsTable, DocumentEmbeddingsTable evolution, shared DTOs, routes, errors)
+- [x] 19-02-PLAN.md -- Core AI services (StructuredOutputService, RelevanceDetector, PgVectorStorage)
+- [x] 19-03-PLAN.md -- Document ingestion pipeline (DocumentRepository, DocumentIngestionService, DocumentRoutes, DI)
+- [x] 19-04-PLAN.md -- RAG retrieval + chat integration (RagService, ChatAgentService RAG enhancement)
+- [x] 19-05-PLAN.md -- Client SDK + Documents UI (DocumentApi, DocumentsViewModel, DocumentsScreen)
+- [x] 19-06-PLAN.md -- Integration tests (StructuredOutputTest, DocumentRoutesTest)
 
 ### Phase 20: Multi-Agent Orchestration
 **Goal**: AI chat supports multi-agent routing — user messages are analyzed and delegated to specialist agents
@@ -218,9 +218,9 @@ Plans:
 | 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
 | 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
 | 18.2 Invitation Acceptance Flow | v1.2 | 3/3 | Complete | 2026-02-23 |
-| 19. Structured AI & RAG | v1.2 | 0/6 | Planned | - |
+| 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 85 plans shipped across 2 milestones, 9 phases planned for v1.2**
+**Total: 91 plans shipped across 2 milestones, 9 phases planned for v1.2**

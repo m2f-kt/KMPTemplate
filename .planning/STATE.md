@@ -5,20 +5,20 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 18.2 COMPLETE — Ready for Phase 19
+**Current focus:** Phase 19 COMPLETE — Ready for Phase 20
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 18.2 of 22 (Invitation Acceptance Flow - Gap Closure) — COMPLETE
-Plan: 3 of 3 in Phase — ALL COMPLETE + VERIFIED
-Status: Phase Complete — Verification PASSED (5/5 must-haves)
-Last activity: 2026-02-23 — Phase 18.2 executed and verified
+Phase: 19 of 22 (Structured AI & RAG Pipeline) — COMPLETE
+Plan: 6 of 6 in Phase — ALL COMPLETE + VERIFIED
+Status: Phase Complete — Verification PASSED (5/5 success criteria)
+Last activity: 2026-02-24 — Phase 19 executed and verified
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [███████████████░░░░░] 15/TBD plans
+- v1.2 Polish & Patterns: [████████████████░░░░] 21/TBD plans
 
 ## Performance Metrics
 
@@ -32,7 +32,7 @@ Progress:
 - Average duration: ~6 min
 - Total execution time: ~170 min
 
-**Combined:** 78 plans shipped, ~515 min total
+**Combined:** 91 plans shipped, ~575 min total
 
 ## Accumulated Context
 
@@ -68,12 +68,20 @@ v1.2 decisions:
 - [Phase 18.2]: Koin dual registration: AuthService in authModule (default) + override in serverModule (with invitation callback) for test compatibility
 - [Phase 18.2]: Post-login acceptInvitation call in LoginViewModel — on failure, falls back to dashboard (user is still logged in)
 - [Phase 18.2]: Register with invitationToken navigates to dashboard for MVP (server auto-links via RegisterRequest)
+- [Phase 19]: arrow.core.raise.context.ensure for Kotlin 2.x context parameters (not arrow.core.raise.ensure)
+- [Phase 19]: AIAgentConfig is final class (not data class), construct new instance instead of copy()
+- [Phase 19]: Lambda bridges for cross-module dependencies in documentRoutes (fileUploader, fileDeleter, roleChecker)
+- [Phase 19]: Shared GoogleLLMClient singleton across agents, embedder, and structured output
+- [Phase 19]: Auto-RAG detection via RelevanceDetector gates retrieval (avoids unnecessary embedding calls)
+- [Phase 19]: RagService fails open on errors (returns null, never breaks chat)
+- [Phase 19]: FakeEmbeddingProvider returning zero vectors for test LLMEmbedder construction
+- [Phase 19]: TextEmbedding004 is a top-level val, not Models.TextEmbedding004
 
 ### Blockers/Concerns
 
 - Open: Ktor testApplication dispatcher issue (KTOR-7121) -- workaround exists
 - Open: WASM production build stability unconfirmed (dev works)
-- Open: Koog RAG/embedding APIs must be verified against latest docs (RAG-07)
+- Resolved: Koog RAG/embedding APIs verified against 0.6.2 source JARs (RAG-07, Phase 19)
 - Resolved: Exposed R2DBC has no native vector column type -- custom VectorColumnType created in Phase 17
 
 ### Roadmap Evolution
@@ -95,7 +103,7 @@ v1.2 decisions:
 
 ## Session Continuity
 
-Last session: 2026-02-23
-Stopped at: Phase 18.2 complete — all 3 plans executed, verification PASSED (5/5)
+Last session: 2026-02-24
+Stopped at: Phase 19 complete — all 6 plans executed, verification PASSED (5/5)
 Resume file: None
-Next action: Plan Phase 19 (Structured AI & RAG Pipeline)
+Next action: Plan Phase 20 (Multi-Agent Orchestration)
