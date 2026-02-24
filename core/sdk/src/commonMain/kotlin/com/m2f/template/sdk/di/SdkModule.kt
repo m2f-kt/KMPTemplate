@@ -4,6 +4,8 @@ import com.m2f.template.sdk.AuthInterceptor
 import com.m2f.template.sdk.Sdk
 import com.m2f.template.sdk.api.AuthApi
 import com.m2f.template.sdk.api.AuthApiImpl
+import com.m2f.template.sdk.api.DocumentApi
+import com.m2f.template.sdk.api.DocumentApiImpl
 import com.m2f.template.sdk.api.FileApi
 import com.m2f.template.sdk.api.FileApiImpl
 import com.m2f.template.sdk.api.GroupApi
@@ -45,5 +47,6 @@ val sdkModule = module {
     single<GroupApi> { GroupApiImpl(client = get()) }
     single<FileApi> { FileApiImpl(client = get()) }
     single<InvitationApi> { InvitationApiImpl(client = get()) }
-    single { Sdk(authApi = get(), userApi = get(), groupApi = get(), fileApi = get(), invitationApi = get()) }
+    single<DocumentApi> { DocumentApiImpl(client = get()) }
+    single { Sdk(authApi = get(), userApi = get(), groupApi = get(), fileApi = get(), invitationApi = get(), documentApi = get()) }
 }

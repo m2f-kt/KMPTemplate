@@ -7,7 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
@@ -43,6 +45,10 @@ import com.m2f.template.app.auth.InviteAcceptEvent
 import com.m2f.template.app.auth.InviteAcceptIntent
 import com.m2f.template.app.auth.InviteAcceptScreen
 import com.m2f.template.app.auth.InviteAcceptViewModel
+import com.m2f.template.app.documents.DocumentsEvent
+import com.m2f.template.app.documents.DocumentsIntent
+import com.m2f.template.app.documents.DocumentsScreen
+import com.m2f.template.app.documents.DocumentsViewModel
 import com.m2f.template.app.profile.ProfileEvent
 import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
@@ -101,7 +107,7 @@ fun AppNavHost(
                                 }
                             }
                             is LoginEvent.NavigateToGroup -> {
-                                navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
+                                navController.navigate(DashboardRoute) {
                                     popUpTo<LoginRoute> { inclusive = true }
                                 }
                             }
@@ -144,7 +150,7 @@ fun AppNavHost(
                                 }
                             }
                             is RegisterEvent.NavigateToGroup -> {
-                                navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
+                                navController.navigate(DashboardRoute) {
                                     popUpTo<LoginRoute> { inclusive = true }
                                 }
                             }
@@ -353,8 +359,8 @@ fun AppNavHost(
                     viewModel.event.collect { event ->
                         when (event) {
                             is InviteAcceptEvent.NavigateToGroup -> {
-                                navController.navigate(AdminPanelRoute(groupId = event.groupId)) {
-                                    popUpTo<DashboardRoute>()
+                                navController.navigate(DashboardRoute) {
+                                    popUpTo(0) { inclusive = true }
                                 }
                             }
                             is InviteAcceptEvent.NavigateToLogin -> {
@@ -370,6 +376,40 @@ fun AppNavHost(
                         }
                     }
                 }
+            }
+
+            composable<DocumentsRoute> { backStackEntry ->
+                val route = backStackEntry.toRoute<DocumentsRoute>()
+                val viewModel = koinViewModel<DocumentsViewModel>()
+                val state by viewModel.model.collectAsStateWithLifecycle()
+                var showUploadSuccess by remember { mutableStateOf(false) }
+
+                LaunchedEffect(route.groupId) {
+                    viewModel.take(DocumentsIntent.LoadDocuments(route.groupId))
+                }
+
+                LaunchedEffect(Unit) {
+                    viewModel.event.collect { event ->
+                        when (event) {
+                            is DocumentsEvent.UploadSuccess -> {
+                                showUploadSuccess = true
+                            }
+                        }
+                    }
+                }
+
+                DocumentsScreen(
+                    state = state,
+                    onUploadClick = {
+                        // File picker integration is platform-specific;
+                        // placeholder for now - will be wired per-platform.
+                    },
+                    onDeleteDocument = { documentId ->
+                        viewModel.take(DocumentsIntent.DeleteDocument(documentId))
+                    },
+                    onBack = { navController.popBackStack() },
+                    showUploadSuccess = showUploadSuccess,
+                )
             }
         }
     }

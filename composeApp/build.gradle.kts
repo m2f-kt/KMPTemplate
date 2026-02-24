@@ -82,6 +82,7 @@ kotlin {
             implementation(projects.app.auth)
             implementation(projects.app.admin)
             implementation(projects.app.dashboard)
+            implementation(projects.app.documents)
             implementation(projects.app.profile)
         }
         commonTest.dependencies {

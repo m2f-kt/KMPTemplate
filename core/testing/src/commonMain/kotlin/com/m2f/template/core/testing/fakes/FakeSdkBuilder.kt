@@ -7,8 +7,8 @@ import com.m2f.template.sdk.Sdk
  * DSL builder for creating a fake [Sdk] instance in tests.
  *
  * Composes [FakeAuthApiBuilder], [FakeUserApiBuilder], [FakeGroupApiBuilder],
- * [FakeFileApiBuilder], and [FakeInvitationApiBuilder] so tests configure only
- * the API methods they exercise, while unconfigured paths fail fast.
+ * [FakeFileApiBuilder], [FakeInvitationApiBuilder], and [FakeDocumentApiBuilder]
+ * so tests configure only the API methods they exercise, while unconfigured paths fail fast.
  *
  * Usage:
  * ```kotlin
@@ -29,6 +29,7 @@ class FakeSdkBuilder {
     private var groupApiBuilder: FakeGroupApiBuilder = FakeGroupApiBuilder()
     private var fileApiBuilder: FakeFileApiBuilder = FakeFileApiBuilder()
     private var invitationApiBuilder: FakeInvitationApiBuilder = FakeInvitationApiBuilder()
+    private var documentApiBuilder: FakeDocumentApiBuilder = FakeDocumentApiBuilder()
 
     fun auth(init: FakeAuthApiBuilder.() -> Unit) {
         authApiBuilder.init()
@@ -50,6 +51,10 @@ class FakeSdkBuilder {
         invitationApiBuilder.init()
     }
 
+    fun document(init: FakeDocumentApiBuilder.() -> Unit) {
+        documentApiBuilder.init()
+    }
+
     internal fun build(): Sdk {
         return Sdk(
             authApi = authApiBuilder.build(),
@@ -57,6 +62,7 @@ class FakeSdkBuilder {
             groupApi = groupApiBuilder.build(),
             fileApi = fileApiBuilder.build(),
             invitationApi = invitationApiBuilder.build(),
+            documentApi = documentApiBuilder.build(),
         )
     }
 }

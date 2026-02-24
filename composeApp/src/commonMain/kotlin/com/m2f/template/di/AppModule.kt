@@ -5,6 +5,7 @@ import com.m2f.template.app.admin.RegisterMemberViewModel
 import com.m2f.template.app.auth.ForgotPasswordViewModel
 import com.m2f.template.app.auth.InviteAcceptViewModel
 import com.m2f.template.app.auth.LoginViewModel
+import com.m2f.template.app.documents.DocumentsViewModel
 import com.m2f.template.app.auth.RegisterViewModel
 import com.m2f.template.app.dashboard.DashboardViewModel
 import com.m2f.template.app.profile.ProfileViewModel
@@ -24,6 +25,7 @@ val appModule = module {
     viewModelOf(::AdminPanelViewModel)
     viewModelOf(::RegisterMemberViewModel)
     viewModelOf(::InviteAcceptViewModel)
+    viewModelOf(::DocumentsViewModel)
 }
 
 /**
