@@ -135,7 +135,7 @@ Plans:
   3. User clicks Register → registers with invitation token → auto-linked to group → navigates to Dashboard
   4. Expired invitation shows error message with "Request new invitation" option (no accept/register allowed)
   5. Already-accepted invitation shows appropriate error state
-**Plans:** 5 plans (3 original + 2 gap closure)
+**Plans:** 5/5 plans complete
 
 Plans:
 - [x] 18.2-01-PLAN.md — Server: Register with invitation token + accept endpoint fix
@@ -218,7 +218,7 @@ Plans:
 | 17. Infrastructure Foundation | v1.2 | 2/2 | Complete | 2026-02-21 |
 | 18. Core Services | v1.2 | 3/3 | Complete | 2026-02-22 |
 | 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
-| 18.2 Invitation Acceptance Flow | v1.2 | 5/5 | Gap closure | 2026-02-25 |
+| 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |

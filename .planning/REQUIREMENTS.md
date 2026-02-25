@@ -38,8 +38,8 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 
 ### Profile Images
 
-- [ ] **PROF-01**: UsersTable has avatarUrl column and UserResponse DTO includes avatarUrl field
-- [ ] **PROF-02**: User can upload a profile image via PUT /api/users/me/avatar endpoint
+- [x] **PROF-01**: UsersTable has avatarUrl column and UserResponse DTO includes avatarUrl field
+- [x] **PROF-02**: User can upload a profile image via PUT /api/users/me/avatar endpoint
 - [ ] **PROF-03**: TerminalAvatar component displays image when avatarUrl is present, falls back to initials
 - [ ] **PROF-04**: ProfileViewModel supports avatar upload intent and reflects avatar URL in state
 
@@ -52,7 +52,7 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 
 ### Group Invitations
 
-- [ ] **INVITE-01**: Admin can invite a user to a group by email — server generates token, sends invite email with link
+- [x] **INVITE-01**: Admin can invite a user to a group by email — server generates token, sends invite email with link
 - [x] **INVITE-02**: Recipient can accept invite via token link — creates/activates account and joins group with specified role -- Phase 18.2
 - [ ] **INVITE-03**: Admin can view pending invitations for their group and revoke them
 - [x] **INVITE-04**: Invite tokens expire after configurable duration and cannot be reused -- Phase 18.2
@@ -129,15 +129,15 @@ Deferred to future milestone. Tracked but not in v1.2 roadmap.
 | FILE-02 | Phase 17 | Pending |
 | FILE-03 | Phase 17 | Pending |
 | FILE-04 | Phase 18 | Pending |
-| PROF-01 | Phase 21 | Pending |
-| PROF-02 | Phase 21 | Pending |
+| PROF-01 | Phase 21 | Complete |
+| PROF-02 | Phase 21 | Complete |
 | PROF-03 | Phase 21 | Pending |
 | PROF-04 | Phase 21 | Pending |
 | EMAIL-01 | Phase 18 | Pending |
 | EMAIL-02 | Phase 17 | Pending |
 | EMAIL-03 | Phase 17 | Pending |
 | EMAIL-04 | Phase 18 | Pending |
-| INVITE-01 | Phase 21 | Pending |
+| INVITE-01 | Phase 21 | Complete |
 | INVITE-02 | Phase 18.2 | Complete |
 | INVITE-03 | Phase 21 | Pending |
 | INVITE-04 | Phase 18.2 | Complete |
