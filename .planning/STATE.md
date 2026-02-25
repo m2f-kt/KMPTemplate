@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 19 COMPLETE — Ready for Phase 20
+**Current focus:** Phase 18.2 gap closure complete, Phase 19 COMPLETE — Ready for Phase 20
 
 ## Current Position
 
@@ -18,7 +18,7 @@ Last activity: 2026-02-24 — Phase 19 executed and verified
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [████████████████░░░░] 21/TBD plans
+- v1.2 Polish & Patterns: [████████████████░░░░] 22/TBD plans
 
 ## Performance Metrics
 
@@ -32,7 +32,7 @@ Progress:
 - Average duration: ~6 min
 - Total execution time: ~170 min
 
-**Combined:** 91 plans shipped, ~575 min total
+**Combined:** 92 plans shipped, ~577 min total
 
 ## Accumulated Context
 
@@ -57,7 +57,7 @@ v1.2 decisions:
 - Phase 18: GreenMail 2.1.3 for in-JVM SMTP testing (no Docker needed)
 - Phase 18: URL-encode S3 fileKey in API calls (key contains '/' from userId prefix)
 - Phase 18.1: InviteAccept files in auth root (not invite/ subdirectory) — matches module structure
-- Phase 18.1: InviteAcceptRoute navigates to AdminPanelRoute on success
+- Phase 18.1: InviteAcceptRoute navigates to AdminPanelRoute on success (SUPERSEDED by 18.2-04: DashboardRoute)
 - Phase 18.1: MviViewModel uses eager StateFlow initialization (not lazy) to prevent mutation loss
 - RAG pipeline exclusively Koog-based (no LangChain4j, Spring AI)
 - pgvector in existing PostgreSQL (no separate vector DB service)
@@ -68,6 +68,7 @@ v1.2 decisions:
 - [Phase 18.2]: Koin dual registration: AuthService in authModule (default) + override in serverModule (with invitation callback) for test compatibility
 - [Phase 18.2]: Post-login acceptInvitation call in LoginViewModel — on failure, falls back to dashboard (user is still logged in)
 - [Phase 18.2]: Register with invitationToken navigates to dashboard for MVP (server auto-links via RegisterRequest)
+- [Phase 18.2]: NavigateToGroup handlers use DashboardRoute (not AdminPanelRoute) -- invited users are regular members without admin permissions
 - [Phase 19]: arrow.core.raise.context.ensure for Kotlin 2.x context parameters (not arrow.core.raise.ensure)
 - [Phase 19]: AIAgentConfig is final class (not data class), construct new instance instead of copy()
 - [Phase 19]: Lambda bridges for cross-module dependencies in documentRoutes (fileUploader, fileDeleter, roleChecker)
@@ -87,7 +88,7 @@ v1.2 decisions:
 ### Roadmap Evolution
 
 - Phase 18.1 inserted after Phase 18: Profile Uploads, Group Creation & Email Invitations (URGENT)
-- **Phase 18.2 completed**: Invitation Acceptance Flow for Unauthenticated Users (Gap from 18.1 UAT) — verified 2026-02-23
+- **Phase 18.2 completed**: Invitation Acceptance Flow for Unauthenticated Users (Gap from 18.1 UAT) — verified 2026-02-23, gap closure plan 04 completed 2026-02-25
 
 ### UAT Gaps Requiring New Phases
 
@@ -103,7 +104,7 @@ v1.2 decisions:
 
 ## Session Continuity
 
-Last session: 2026-02-24
-Stopped at: Phase 19 complete — all 6 plans executed, verification PASSED (5/5)
+Last session: 2026-02-25
+Stopped at: Completed 18.2-04-PLAN.md (gap closure for NavigateToGroup fix)
 Resume file: None
 Next action: Plan Phase 20 (Multi-Agent Orchestration)
