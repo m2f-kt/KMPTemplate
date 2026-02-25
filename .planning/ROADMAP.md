@@ -142,7 +142,7 @@ Plans:
 - [x] 18.2-02-PLAN.md — Client: InviteAcceptScreen conditional UI for auth state
 - [x] 18.2-03-PLAN.md — Client: Login/Register with invitation context + post-auth flow
 - [x] 18.2-04-PLAN.md — Gap fix: NavigateToGroup → DashboardRoute (not AdminPanelRoute)
-- [ ] 18.2-05-PLAN.md — Gap fix: "Request new invitation" button + documentation fixes
+- [x] 18.2-05-PLAN.md — Gap fix: "Request new invitation" button + documentation fixes
 
 ### Phase 19: Structured AI & RAG Pipeline
 **Goal**: AI can return typed structured responses, and chat can be augmented with group-scoped document context via Koog-exclusive RAG
