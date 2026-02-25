@@ -23,4 +23,9 @@ sealed interface InviteAcceptIntent {
      * User wants to navigate to register to accept invitation.
      */
     data object GoToRegister : InviteAcceptIntent
+
+    /**
+     * User wants to request a new invitation (current one is expired).
+     */
+    data object RequestNewInvitation : InviteAcceptIntent
 }

@@ -40,6 +40,8 @@ import template.app.auth.generated.resources.invite_register_button
 import template.app.auth.generated.resources.invite_role_label
 import template.app.auth.generated.resources.invite_subtitle
 import template.app.auth.generated.resources.invite_success_message
+import template.app.auth.generated.resources.invite_expired_hint
+import template.app.auth.generated.resources.invite_request_new
 import template.app.auth.generated.resources.invite_title
 
 /**
@@ -52,6 +54,7 @@ fun InviteAcceptScreen(
     onAccept: () -> Unit,
     onGoToLogin: () -> Unit,
     onGoToRegister: () -> Unit,
+    onRequestNewInvitation: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -140,6 +143,19 @@ fun InviteAcceptScreen(
                         TerminalAlert(
                             message = stringResource(Res.string.invite_expired),
                             variant = AlertVariant.Warning,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TerminalText(
+                            text = stringResource(Res.string.invite_expired_hint),
+                            style = typography.sm,
+                            color = colors.textDim,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TerminalButton(
+                            text = stringResource(Res.string.invite_request_new),
+                            onClick = onRequestNewInvitation,
+                            modifier = Modifier.fillMaxWidth(),
+                            variant = ButtonVariant.Secondary,
                         )
                     }
 

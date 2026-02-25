@@ -353,6 +353,7 @@ fun AppNavHost(
                     onAccept = { viewModel.take(InviteAcceptIntent.AcceptInvitation) },
                     onGoToLogin = { viewModel.take(InviteAcceptIntent.GoToLogin) },
                     onGoToRegister = { viewModel.take(InviteAcceptIntent.GoToRegister) },
+                    onRequestNewInvitation = { viewModel.take(InviteAcceptIntent.RequestNewInvitation) },
                 )
 
                 LaunchedEffect(Unit) {
@@ -370,6 +371,11 @@ fun AppNavHost(
                             }
                             is InviteAcceptEvent.NavigateToRegister -> {
                                 navController.navigate(RegisterRoute(invitationToken = event.token)) {
+                                    popUpTo<InviteAcceptRoute> { inclusive = true }
+                                }
+                            }
+                            is InviteAcceptEvent.RequestedNewInvitation -> {
+                                navController.navigate(LoginRoute()) {
                                     popUpTo<InviteAcceptRoute> { inclusive = true }
                                 }
                             }

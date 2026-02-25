@@ -151,4 +151,8 @@
     <string name="invite_register_button">$ create_account_to_accept()</string>
     <string name="invite_auth_prompt">// sign in or create an account to accept this invitation</string>
 
+    <!-- Invite Expired Action -->
+    <string name="invite_request_new">$ request_new_invite()</string>
+    <string name="invite_expired_hint">// contact the group administrator to receive a new invitation</string>
+
 </resources>

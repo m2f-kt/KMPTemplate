@@ -30,6 +30,9 @@ class InviteAcceptViewModel(
                 is InviteAcceptIntent.GoToRegister -> {
                     sendEvent(InviteAcceptEvent.NavigateToRegister(model.value.token))
                 }
+                is InviteAcceptIntent.RequestNewInvitation -> {
+                    sendEvent(InviteAcceptEvent.RequestedNewInvitation)
+                }
             }
         }
     }

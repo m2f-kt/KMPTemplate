@@ -18,4 +18,9 @@ sealed interface InviteAcceptEvent {
      * Navigate to register screen, preserving the invitation token.
      */
     data class NavigateToRegister(val token: String) : InviteAcceptEvent
+
+    /**
+     * Navigate away after requesting a new invitation (expired token).
+     */
+    data object RequestedNewInvitation : InviteAcceptEvent
 }
