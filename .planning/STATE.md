@@ -5,7 +5,7 @@
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 18.2 gap closure complete, Phase 19 COMPLETE — Ready for Phase 20
+**Current focus:** Phase 18.2 gap closure FULLY complete (5/5 plans), Phase 19 COMPLETE — Ready for Phase 20
 
 ## Current Position
 
@@ -69,6 +69,7 @@ v1.2 decisions:
 - [Phase 18.2]: Post-login acceptInvitation call in LoginViewModel — on failure, falls back to dashboard (user is still logged in)
 - [Phase 18.2]: Register with invitationToken navigates to dashboard for MVP (server auto-links via RegisterRequest)
 - [Phase 18.2]: NavigateToGroup handlers use DashboardRoute (not AdminPanelRoute) -- invited users are regular members without admin permissions
+- [Phase 18.2]: LoginRoute as expired invite escape destination -- user can log in/register after seeing expired message
 - [Phase 19]: arrow.core.raise.context.ensure for Kotlin 2.x context parameters (not arrow.core.raise.ensure)
 - [Phase 19]: AIAgentConfig is final class (not data class), construct new instance instead of copy()
 - [Phase 19]: Lambda bridges for cross-module dependencies in documentRoutes (fileUploader, fileDeleter, roleChecker)
@@ -88,7 +89,7 @@ v1.2 decisions:
 ### Roadmap Evolution
 
 - Phase 18.1 inserted after Phase 18: Profile Uploads, Group Creation & Email Invitations (URGENT)
-- **Phase 18.2 completed**: Invitation Acceptance Flow for Unauthenticated Users (Gap from 18.1 UAT) — verified 2026-02-23, gap closure plan 04 completed 2026-02-25
+- **Phase 18.2 completed**: Invitation Acceptance Flow for Unauthenticated Users (Gap from 18.1 UAT) — verified 2026-02-23, all 5 plans complete 2026-02-25
 
 ### UAT Gaps Requiring New Phases
 
@@ -105,6 +106,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-02-25
-Stopped at: Completed 18.2-04-PLAN.md (gap closure for NavigateToGroup fix)
+Stopped at: Completed 18.2-05-PLAN.md (gap closure: request new invitation button + docs fixes)
 Resume file: None
 Next action: Plan Phase 20 (Multi-Agent Orchestration)
