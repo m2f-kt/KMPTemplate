@@ -6,6 +6,7 @@ import com.m2f.core.database.migrations.Migration
 import com.m2f.core.database.migrations.MigrationRegistry
 import com.m2f.server.auth.tables.UsersTable
 import com.m2f.server.groups.tables.GroupsTable
+import com.m2f.server.groups.tables.InvitationsTable
 import com.m2f.server.groups.tables.UserGroupMembershipsTable
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.toList
@@ -13,6 +14,7 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.insert
 import org.jetbrains.exposed.v1.r2dbc.select
+import org.jetbrains.exposed.v1.r2dbc.transactions.TransactionManager
 import kotlin.uuid.ExperimentalUuidApi
 
 /**
@@ -133,6 +135,31 @@ internal class SeedDevTestGroupsMigration : Migration {
 }
 
 /**
+ * Migration to create the invitations table.
+ */
+internal class CreateInvitationsTableMigration : Migration {
+    override val version: String = "20260222000001"
+    override val description: String = "Create invitations table"
+
+    override suspend fun migrate() {
+        SchemaUtils.create(InvitationsTable)
+    }
+}
+
+/**
+ * Migration to add revokedAt column to the invitations table.
+ * Allows admins to revoke pending invitations.
+ */
+internal class AddRevokedAtColumnMigration : Migration {
+    override val version: String = "20260226000001"
+    override val description: String = "Add revoked_at column to invitations table"
+
+    override suspend fun migrate() {
+        TransactionManager.current().exec("ALTER TABLE invitations ADD COLUMN IF NOT EXISTS revoked_at TIMESTAMP NULL")
+    }
+}
+
+/**
  * Register all group-related database migrations.
  * Must be called before startDatabase() so migrations are available when the database starts.
  */
@@ -141,4 +168,6 @@ fun registerGroupMigrations() {
     MigrationRegistry.register(CreateMembershipsTableMigration())
     MigrationRegistry.register(SeedDefaultGroupMigration())
     MigrationRegistry.register(SeedDevTestGroupsMigration())
+    MigrationRegistry.register(CreateInvitationsTableMigration())
+    MigrationRegistry.register(AddRevokedAtColumnMigration())
 }

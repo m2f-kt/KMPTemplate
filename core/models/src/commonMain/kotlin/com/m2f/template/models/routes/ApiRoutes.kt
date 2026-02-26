@@ -88,6 +88,12 @@ class Groups {
 
     @Serializable @Resource("{groupId}/invitations/create")
     class CreateInvitation(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("{groupId}/invitations")
+    class ListInvitations(val parent: Groups = Groups(), val groupId: String)
+
+    @Serializable @Resource("{groupId}/invitations/{invitationId}/revoke")
+    class RevokeInvitation(val parent: Groups = Groups(), val groupId: String, val invitationId: String)
 }
 
 /**

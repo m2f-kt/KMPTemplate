@@ -179,6 +179,12 @@ sealed class AppError {
             override val code: String = "INVITATION_ALREADY_ACCEPTED",
             override val message: String = "Invitation has already been accepted"
         ) : Invitation()
+
+        @Serializable
+        data class Revoked(
+            override val code: String = "INVITATION_REVOKED",
+            override val message: String = "Invitation has been revoked"
+        ) : Invitation()
     }
 
     @Serializable

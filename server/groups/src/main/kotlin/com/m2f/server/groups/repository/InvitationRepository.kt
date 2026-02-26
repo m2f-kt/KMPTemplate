@@ -29,6 +29,7 @@ data class InvitationRecord(
     val expiresAt: LocalDateTime,
     val acceptedAt: LocalDateTime?,
     val acceptedBy: Uuid?,
+    val revokedAt: LocalDateTime?,
     val createdAt: LocalDateTime,
 )
 
@@ -111,5 +112,6 @@ private fun ResultRow.toInvitationRecord(): InvitationRecord = InvitationRecord(
     expiresAt = this[InvitationsTable.expiresAt],
     acceptedAt = this[InvitationsTable.acceptedAt],
     acceptedBy = this[InvitationsTable.acceptedBy],
+    revokedAt = this[InvitationsTable.revokedAt],
     createdAt = this[InvitationsTable.createdAt],
 )

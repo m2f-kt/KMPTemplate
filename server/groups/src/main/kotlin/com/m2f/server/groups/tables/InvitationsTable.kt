@@ -27,6 +27,7 @@ object InvitationsTable : Table("invitations") {
     val expiresAt = datetime("expires_at")
     val acceptedAt = datetime("accepted_at").nullable()
     val acceptedBy = uuid("accepted_by").references(UsersTable.id).nullable()
+    val revokedAt = datetime("revoked_at").nullable()
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
 
     override val primaryKey = PrimaryKey(id)

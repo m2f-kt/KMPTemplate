@@ -28,6 +28,7 @@ data class InvitationResponse(
     val expiresAt: String,
     val isExpired: Boolean,
     val isAccepted: Boolean,
+    val isRevoked: Boolean = false,
 )
 
 /**

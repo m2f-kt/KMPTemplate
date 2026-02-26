@@ -50,3 +50,17 @@ data class InvitationAlreadyAccepted(
         routingContext.unprocessable(error.code, message)
     }
 }
+
+data class InvitationRevoked(
+    val detail: String = "Invitation has been revoked",
+) : DomainError {
+    override fun toAppError(): AppError = AppError.Invitation.Revoked()
+
+    context(routingContext: RoutingContext)
+    override suspend fun respond() {
+        val error = toAppError()
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.gone(error.code, message)
+    }
+}
