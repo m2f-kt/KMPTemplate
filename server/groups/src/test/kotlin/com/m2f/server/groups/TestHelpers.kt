@@ -13,8 +13,11 @@ import com.m2f.server.auth.registerAuthMigrations
 import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.security.PasswordHasher
 import com.m2f.server.groups.di.groupModule
+import com.m2f.server.auth.service.EmailService
 import com.m2f.server.groups.routes.groupRoutes
+import com.m2f.server.groups.routes.invitationRoutes
 import com.m2f.server.groups.service.GroupService
+import com.m2f.server.groups.service.InvitationService
 import com.m2f.template.models.UserRole
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
@@ -170,6 +173,77 @@ suspend fun groupTestApp(
                 routing {
                     val groupService: GroupService = GlobalContext.get().get()
                     groupRoutes(groupService)
+                }
+            }
+            block()
+        }
+    } finally {
+        stopKoin()
+    }
+}
+
+// ---- No-op EmailService for invitation tests ----
+
+/** No-op EmailService for tests -- doesn't attempt SMTP connections. */
+private object NoOpEmailService : EmailService {
+    override suspend fun sendEmail(to: String, subject: String, body: String) {
+        // Silent in tests -- no SMTP needed
+    }
+}
+
+// ---- Invitation Test Application ----
+
+/**
+ * Set up a Ktor testApplication with database, auth, group, and invitation routes configured.
+ * Overrides EmailService with a no-op implementation to avoid SMTP in tests.
+ */
+suspend fun invitationTestApp(
+    database: R2dbcDatabase,
+    block: suspend ApplicationTestBuilder.() -> Unit,
+) {
+    val config = testConfiguration()
+
+    // Register and run migrations
+    registerAuthMigrations()
+    registerGroupMigrations()
+    context(config) {
+        Migrations.migrate(database)
+    }
+
+    // Start Koin before testApplication so test blocks can access it
+    if (GlobalContext.getOrNull() != null) {
+        stopKoin()
+    }
+    startKoin {
+        allowOverride(true)
+        modules(
+            module {
+                single { config }
+                single { database }
+            },
+            authModule,
+            groupModule,
+            module {
+                single<EmailService> { NoOpEmailService }
+            },
+        )
+    }
+
+    try {
+        testApplication {
+            install(Resources)
+            install(ContentNegotiation) { json() }
+
+            application {
+                context(config) {
+                    configureSecurity()
+                }
+
+                routing {
+                    val groupService: GroupService = GlobalContext.get().get()
+                    val invitationService: InvitationService = GlobalContext.get().get()
+                    groupRoutes(groupService)
+                    invitationRoutes(invitationService)
                 }
             }
             block()
