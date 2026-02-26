@@ -187,10 +187,12 @@ Plans:
   3. Admin sees list of pending invitations and can revoke any of them; expired tokens are rejected
   4. User uploads a profile image → avatar URL appears in their profile; TerminalAvatar component shows image instead of initials
   5. Integration tests cover the full auth → groups → invite → accept flow end-to-end against Testcontainers PostgreSQL
-**Plans**: TBD
+**Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 21-01: TBD
+- [ ] 21-01-PLAN.md — Server: revokedAt migration, list/revoke endpoints, InvitationResponse isRevoked field
+- [ ] 21-02-PLAN.md — SDK listInvitations/revokeInvitation + AdminPanel pending invitations section with revoke dialog
+- [ ] 21-03-PLAN.md — Integration tests: full invitation lifecycle, revoke, expiry, authorization against Testcontainers
 
 ### Phase 22: Developer Onboarding
 **Goal**: A new developer can go from `git clone` to running the full app with all services in under 10 minutes
@@ -221,7 +223,7 @@ Plans:
 | 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
-| 21. Invitations & Profiles | v1.2 | 0/TBD | Not started | - |
+| 21. Invitations & Profiles | v1.2 | 0/3 | Planned | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
 **Total: 91 plans shipped across 2 milestones, 9 phases planned for v1.2**
