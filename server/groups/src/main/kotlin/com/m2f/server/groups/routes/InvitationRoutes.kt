@@ -23,11 +23,13 @@ import io.ktor.server.routing.RoutingContext
  * Invitation management routes.
  *
  * Create invitation: POST /api/groups/{groupId}/invitations/create (requires auth + admin)
+ * List invitations: GET /api/groups/{groupId}/invitations (requires auth + admin)
+ * Revoke invitation: POST /api/groups/{groupId}/invitations/{invitationId}/revoke (requires auth + admin)
  * Get invitation: GET /api/invitations/{token} (public, no auth)
  * Accept invitation: POST /api/invitations/accept (requires auth)
  */
 fun Route.invitationRoutes(invitationService: InvitationService) {
-    // Create invitation -- requires auth + ADMIN/OWNER or PowerAdmin
+    // Admin-only invitation management -- requires auth + ADMIN/OWNER or PowerAdmin
     authenticate {
         withRole(UserRole.Admin, UserRole.PowerAdmin) {
             post<Groups.CreateInvitation> { route ->
@@ -35,6 +37,22 @@ fun Route.invitationRoutes(invitationService: InvitationService) {
                     val request = getModel<CreateInvitationRequest>()
                     val role = getUserRole()
                     invitationService.createInvitation(route.groupId, request, userId, role)
+                }
+            }
+
+            // List all invitations for a group
+            get<Groups.ListInvitations> { route ->
+                conduitAuth { userId ->
+                    val role = getUserRole()
+                    invitationService.listInvitations(route.groupId, userId, role)
+                }
+            }
+
+            // Revoke a pending invitation
+            post<Groups.RevokeInvitation> { route ->
+                conduitAuth { userId ->
+                    val role = getUserRole()
+                    invitationService.revokeInvitation(route.groupId, route.invitationId, userId, role)
                 }
             }
         }
