@@ -37,7 +37,12 @@ import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.GroupRole
+import com.m2f.template.models.dto.InvitationResponse
 import com.m2f.template.models.localization.StringKey
+import kotlin.time.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import org.jetbrains.compose.resources.stringResource
 import template.app.admin.generated.resources.Res
 import template.app.admin.generated.resources.admin_back
@@ -69,6 +74,23 @@ import template.app.admin.generated.resources.admin_table_email
 import template.app.admin.generated.resources.admin_table_joined
 import template.app.admin.generated.resources.admin_table_name
 import template.app.admin.generated.resources.admin_table_role
+import template.app.admin.generated.resources.admin_invitations_accepted
+import template.app.admin.generated.resources.admin_invitations_actions
+import template.app.admin.generated.resources.admin_invitations_email
+import template.app.admin.generated.resources.admin_invitations_expired
+import template.app.admin.generated.resources.admin_invitations_expires_days
+import template.app.admin.generated.resources.admin_invitations_expires_today
+import template.app.admin.generated.resources.admin_invitations_expires_tomorrow
+import template.app.admin.generated.resources.admin_invitations_none
+import template.app.admin.generated.resources.admin_invitations_revoked
+import template.app.admin.generated.resources.admin_invitations_role
+import template.app.admin.generated.resources.admin_invitations_status
+import template.app.admin.generated.resources.admin_invitations_title
+import template.app.admin.generated.resources.admin_revoke_button
+import template.app.admin.generated.resources.admin_revoke_cancel
+import template.app.admin.generated.resources.admin_revoke_confirm
+import template.app.admin.generated.resources.admin_revoke_submit
+import template.app.admin.generated.resources.admin_revoke_title
 import template.app.admin.generated.resources.admin_title
 
 /**
@@ -105,6 +127,9 @@ fun AdminPanelScreen(
     onCloseInvite: () -> Unit,
     onInviteEmailChange: (String) -> Unit,
     onSendInvite: () -> Unit,
+    onConfirmRevoke: (InvitationResponse) -> Unit,
+    onCancelRevoke: () -> Unit,
+    onExecuteRevoke: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -276,6 +301,15 @@ fun AdminPanelScreen(
                 }
             }
 
+            // Pending invitations section
+            if (state.groupId.isNotBlank()) {
+                InvitationsSection(
+                    invitations = state.invitations,
+                    isLoading = state.isLoadingInvitations,
+                    onConfirmRevoke = onConfirmRevoke,
+                )
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
         }
 
@@ -301,6 +335,16 @@ fun AdminPanelScreen(
                 onEmailChange = onInviteEmailChange,
                 onSend = onSendInvite,
                 onClose = onCloseInvite,
+            )
+        }
+
+        // Revoke Invitation Confirmation Dialog overlay
+        if (state.showRevokeDialog && state.revokeTarget != null) {
+            RevokeDialog(
+                email = state.revokeTarget.email,
+                isRevoking = state.isRevoking,
+                onRevoke = onExecuteRevoke,
+                onCancel = onCancelRevoke,
             )
         }
     }
@@ -472,5 +516,179 @@ private fun InviteDialog(
                 }
             }
         }
+    }
+}
+
+/**
+ * Section displaying pending group invitations in a table.
+ *
+ * Shows a TerminalCard with header "Pending Invitations" and a table with
+ * Email, Role, Status, and Actions columns. Status shows badges for
+ * Accepted/Revoked/Expired states or an expiry countdown for active invitations.
+ * A Revoke button is shown for active (non-accepted, non-revoked, non-expired) invitations.
+ */
+@Composable
+private fun InvitationsSection(
+    invitations: List<InvitationResponse>,
+    isLoading: Boolean,
+    onConfirmRevoke: (InvitationResponse) -> Unit,
+) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    TerminalCard(
+        title = stringResource(Res.string.admin_invitations_title),
+        variant = CardVariant.Default,
+    ) {
+        if (isLoading) {
+            TerminalText(
+                text = stringResource(Res.string.admin_loading),
+                style = typography.sm,
+                color = colors.textMuted,
+            )
+        } else if (invitations.isEmpty()) {
+            TerminalText(
+                text = stringResource(Res.string.admin_invitations_none),
+                style = typography.sm,
+                color = colors.textMuted,
+            )
+        } else {
+            TerminalTable(
+                headers = listOf(
+                    stringResource(Res.string.admin_invitations_email),
+                    stringResource(Res.string.admin_invitations_role),
+                    stringResource(Res.string.admin_invitations_status),
+                    stringResource(Res.string.admin_invitations_actions),
+                ),
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                invitations.forEachIndexed { index, invitation ->
+                    TerminalTableRow(
+                        showBottomBorder = index < invitations.lastIndex,
+                    ) {
+                        TerminalTableCell(text = invitation.email)
+                        TerminalTableCell(text = invitation.role, secondary = true)
+                        Box(modifier = Modifier.weight(1f)) {
+                            when {
+                                invitation.isAccepted -> TerminalBadge(
+                                    text = stringResource(Res.string.admin_invitations_accepted),
+                                    variant = BadgeVariant.Success,
+                                )
+                                invitation.isRevoked -> TerminalBadge(
+                                    text = stringResource(Res.string.admin_invitations_revoked),
+                                    variant = BadgeVariant.Error,
+                                )
+                                invitation.isExpired -> TerminalBadge(
+                                    text = stringResource(Res.string.admin_invitations_expired),
+                                    variant = BadgeVariant.Warning,
+                                )
+                                else -> {
+                                    val daysLeft = computeDaysUntilExpiry(invitation.expiresAt)
+                                    val expiryText = when {
+                                        daysLeft <= 0 -> stringResource(Res.string.admin_invitations_expires_today)
+                                        daysLeft == 1 -> stringResource(Res.string.admin_invitations_expires_tomorrow)
+                                        else -> stringResource(Res.string.admin_invitations_expires_days, daysLeft)
+                                    }
+                                    TerminalBadge(
+                                        text = expiryText,
+                                        variant = BadgeVariant.Accent,
+                                    )
+                                }
+                            }
+                        }
+                        Box(modifier = Modifier.weight(1f)) {
+                            if (!invitation.isAccepted && !invitation.isRevoked && !invitation.isExpired) {
+                                TerminalButton(
+                                    text = stringResource(Res.string.admin_revoke_button),
+                                    onClick = { onConfirmRevoke(invitation) },
+                                    variant = ButtonVariant.Destructive,
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Modal confirmation dialog for revoking an invitation.
+ *
+ * Displays a dark overlay with a centered card containing a confirmation message
+ * and Revoke/Cancel buttons.
+ */
+@Composable
+private fun RevokeDialog(
+    email: String,
+    isRevoking: Boolean,
+    onRevoke: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onCancel,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        TerminalCard(
+            title = stringResource(Res.string.admin_revoke_title),
+            modifier = Modifier
+                .widthIn(max = 400.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {}, // Prevent click through to overlay
+                ),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                TerminalText(
+                    text = stringResource(Res.string.admin_revoke_confirm, email),
+                    style = TerminalTheme.typography.sm,
+                    color = TerminalTheme.colors.text,
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    TerminalButton(
+                        text = stringResource(Res.string.admin_revoke_cancel),
+                        onClick = onCancel,
+                        variant = ButtonVariant.Ghost,
+                        enabled = !isRevoking,
+                    )
+                    TerminalButton(
+                        text = if (isRevoking) "..." else stringResource(Res.string.admin_revoke_submit),
+                        onClick = onRevoke,
+                        variant = ButtonVariant.Destructive,
+                        enabled = !isRevoking,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Computes the number of days until the given expiry date string.
+ *
+ * Parses the ISO-8601 [LocalDateTime] string (assumed UTC) and returns the
+ * number of whole days remaining. Returns 0 if the date has already passed
+ * or if parsing fails.
+ */
+private fun computeDaysUntilExpiry(expiresAt: String): Int {
+    return try {
+        val expiryInstant = LocalDateTime.parse(expiresAt).toInstant(TimeZone.UTC)
+        val now = Clock.System.now()
+        val diffMs = expiryInstant.toEpochMilliseconds() - now.toEpochMilliseconds()
+        if (diffMs <= 0L) 0 else (diffMs / (1000L * 60 * 60 * 24)).toInt()
+    } catch (_: Exception) {
+        0
     }
 }

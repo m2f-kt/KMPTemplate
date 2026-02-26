@@ -298,6 +298,9 @@ fun AppNavHost(
                     onCloseInvite = { viewModel.take(AdminPanelIntent.CloseInviteDialog) },
                     onInviteEmailChange = { viewModel.take(AdminPanelIntent.InviteEmailChanged(it)) },
                     onSendInvite = { viewModel.take(AdminPanelIntent.SendInvite) },
+                    onConfirmRevoke = { viewModel.take(AdminPanelIntent.ConfirmRevokeInvitation(it)) },
+                    onCancelRevoke = { viewModel.take(AdminPanelIntent.CancelRevoke) },
+                    onExecuteRevoke = { viewModel.take(AdminPanelIntent.ExecuteRevoke) },
                 )
                 LaunchedEffect(Unit) {
                     viewModel.event.collect { event ->

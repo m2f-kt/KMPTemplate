@@ -17,6 +17,7 @@ koin = "4.1.1"
 prometheus = "1.16.3"
 testcontainers = "2.0.3"
 kotest = "6.1.3"
+kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
 arrow = "2.2.1.1"
 kermit = "2.0.8"
@@ -115,6 +116,9 @@ greenmail = { module = "com.icegreen:greenmail", version.ref = "greenmail" }
 # Image Loading
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+
+# DateTime (multiplatform)
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 # Serialization (multiplatform)
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }

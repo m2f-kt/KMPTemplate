@@ -29,6 +29,7 @@ kotlin {
             implementation(compose.foundation)
             implementation(compose.components.resources)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.kotlinx.datetime)
         }
         commonTest.dependencies {
             implementation(projects.core.testing)
