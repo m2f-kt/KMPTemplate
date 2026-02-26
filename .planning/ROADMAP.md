@@ -52,7 +52,7 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration (completed 2026-02-23)
 - [x] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval (completed 2026-02-24)
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
-- [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests
+- [x] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests (completed 2026-02-26)
 - [ ] **Phase 22: Developer Onboarding** - Setup CLI enhancements, documentation, Gradle tooling, first-run walkthrough
 
 ## Phase Details
@@ -190,9 +190,9 @@ Plans:
 **Plans**: 3 plans in 2 waves
 
 Plans:
-- [ ] 21-01-PLAN.md — Server: revokedAt migration, list/revoke endpoints, InvitationResponse isRevoked field
-- [ ] 21-02-PLAN.md — SDK listInvitations/revokeInvitation + AdminPanel pending invitations section with revoke dialog
-- [ ] 21-03-PLAN.md — Integration tests: full invitation lifecycle, revoke, expiry, authorization against Testcontainers
+- [x] 21-01-PLAN.md — Server: revokedAt migration, list/revoke endpoints, InvitationResponse isRevoked field
+- [x] 21-02-PLAN.md — SDK listInvitations/revokeInvitation + AdminPanel pending invitations section with revoke dialog
+- [x] 21-03-PLAN.md — Integration tests: full invitation lifecycle, revoke, expiry, authorization against Testcontainers
 
 ### Phase 22: Developer Onboarding
 **Goal**: A new developer can go from `git clone` to running the full app with all services in under 10 minutes
@@ -223,7 +223,7 @@ Plans:
 | 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
-| 21. Invitations & Profiles | 1/3 | In Progress|  | - |
+| 21. Invitations & Profiles | v1.2 | 3/3 | Complete | 2026-02-26 |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 91 plans shipped across 2 milestones, 9 phases planned for v1.2**
+**Total: 94 plans shipped across 2 milestones, 9 phases planned for v1.2**
