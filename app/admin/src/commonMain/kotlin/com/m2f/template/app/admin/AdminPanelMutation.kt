@@ -1,5 +1,6 @@
 package com.m2f.template.app.admin
 
+import com.m2f.template.models.dto.InvitationResponse
 import com.m2f.template.models.dto.MemberResponse
 import com.m2f.template.models.localization.StringKey
 
@@ -38,4 +39,10 @@ sealed interface AdminPanelMutation {
     data class SetSendingInvite(val sending: Boolean) : AdminPanelMutation
     data class SetInviteError(val error: StringKey?) : AdminPanelMutation
     data object SetInviteSuccess : AdminPanelMutation
+    // Pending invitations mutations
+    data class SetInvitations(val invitations: List<InvitationResponse>) : AdminPanelMutation
+    data class SetLoadingInvitations(val loading: Boolean) : AdminPanelMutation
+    data class ShowRevokeDialog(val invitation: InvitationResponse) : AdminPanelMutation
+    data object HideRevokeDialog : AdminPanelMutation
+    data class SetRevoking(val revoking: Boolean) : AdminPanelMutation
 }

@@ -34,6 +34,11 @@ class AdminPanelViewModel(
                 is AdminPanelIntent.CloseInviteDialog -> sendMutation(AdminPanelMutation.HideInviteDialog)
                 is AdminPanelIntent.InviteEmailChanged -> sendMutation(AdminPanelMutation.SetInviteEmail(intent.email))
                 is AdminPanelIntent.SendInvite -> handleSendInvite()
+                // Pending invitations handling
+                is AdminPanelIntent.LoadInvitations -> handleLoadInvitations()
+                is AdminPanelIntent.ConfirmRevokeInvitation -> sendMutation(AdminPanelMutation.ShowRevokeDialog(intent.invitation))
+                is AdminPanelIntent.CancelRevoke -> sendMutation(AdminPanelMutation.HideRevokeDialog)
+                is AdminPanelIntent.ExecuteRevoke -> handleRevokeInvitation()
             }
         }
     }
@@ -69,6 +74,8 @@ class AdminPanelViewModel(
                             ),
                         )
                         sendMutation(AdminPanelMutation.SetLoading(false))
+                        // Auto-load invitations after admin panel loads
+                        handleLoadInvitations()
                     },
                 )
             },
@@ -150,6 +157,33 @@ class AdminPanelViewModel(
         )
     }
 
+    private suspend fun handleLoadInvitations() {
+        val groupId = model.value.groupId
+        if (groupId.isBlank()) return
+        sendMutation(AdminPanelMutation.SetLoadingInvitations(true))
+        sdk.listInvitations(groupId).fold(
+            ifLeft = { /* silently ignore -- invitations section is secondary */ },
+            ifRight = { invitations -> sendMutation(AdminPanelMutation.SetInvitations(invitations)) },
+        )
+        sendMutation(AdminPanelMutation.SetLoadingInvitations(false))
+    }
+
+    private suspend fun handleRevokeInvitation() {
+        val target = model.value.revokeTarget ?: return
+        sendMutation(AdminPanelMutation.SetRevoking(true))
+        sdk.revokeInvitation(model.value.groupId, target.id).fold(
+            ifLeft = {
+                sendMutation(AdminPanelMutation.SetRevoking(false))
+                sendMutation(AdminPanelMutation.HideRevokeDialog)
+            },
+            ifRight = {
+                sendMutation(AdminPanelMutation.SetRevoking(false))
+                sendMutation(AdminPanelMutation.HideRevokeDialog)
+                handleLoadInvitations() // Refresh the list
+            },
+        )
+    }
+
     override suspend fun reduce(
         model: AdminPanelModel,
         mutation: AdminPanelMutation,
@@ -210,5 +244,11 @@ class AdminPanelViewModel(
         is AdminPanelMutation.SetInviteSuccess -> model.copy(
             inviteSuccess = true,
         )
+        // Pending invitations mutations
+        is AdminPanelMutation.SetInvitations -> model.copy(invitations = mutation.invitations)
+        is AdminPanelMutation.SetLoadingInvitations -> model.copy(isLoadingInvitations = mutation.loading)
+        is AdminPanelMutation.ShowRevokeDialog -> model.copy(showRevokeDialog = true, revokeTarget = mutation.invitation)
+        is AdminPanelMutation.HideRevokeDialog -> model.copy(showRevokeDialog = false, revokeTarget = null, isRevoking = false)
+        is AdminPanelMutation.SetRevoking -> model.copy(isRevoking = mutation.revoking)
     }
 }

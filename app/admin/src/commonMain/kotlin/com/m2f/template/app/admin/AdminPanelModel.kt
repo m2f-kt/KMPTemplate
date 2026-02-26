@@ -1,5 +1,6 @@
 package com.m2f.template.app.admin
 
+import com.m2f.template.models.dto.InvitationResponse
 import com.m2f.template.models.dto.MemberResponse
 import com.m2f.template.models.localization.StringKey
 
@@ -27,4 +28,10 @@ data class AdminPanelModel(
     val isSendingInvite: Boolean = false,
     val inviteError: StringKey? = null,
     val inviteSuccess: Boolean = false,
+    // Pending invitations section state
+    val invitations: List<InvitationResponse> = emptyList(),
+    val isLoadingInvitations: Boolean = false,
+    val showRevokeDialog: Boolean = false,
+    val revokeTarget: InvitationResponse? = null,
+    val isRevoking: Boolean = false,
 )
