@@ -31,4 +31,16 @@ interface InvitationApi {
      * Requires authentication.
      */
     suspend fun acceptInvitation(request: AcceptInvitationRequest): Either<AppError, AcceptInvitationResponse>
+
+    /**
+     * List all invitations for a group.
+     * Requires ADMIN or OWNER role in the group.
+     */
+    suspend fun listInvitations(groupId: String): Either<AppError, List<InvitationResponse>>
+
+    /**
+     * Revoke a pending invitation.
+     * Requires ADMIN or OWNER role in the group.
+     */
+    suspend fun revokeInvitation(groupId: String, invitationId: String): Either<AppError, Unit>
 }
