@@ -4,6 +4,7 @@ package com.m2f.server.groups.repository
 
 import com.m2f.server.groups.tables.InvitationsTable
 import kotlinx.coroutines.flow.singleOrNull
+import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import org.jetbrains.exposed.v1.core.ResultRow
@@ -89,6 +90,40 @@ class InvitationRepository(private val db: R2dbcDatabase) {
         val rowsUpdated = InvitationsTable.update({ InvitationsTable.token eq token }) {
             it[acceptedAt] = now
             it[acceptedBy] = userId
+        }
+        rowsUpdated > 0
+    }
+
+    /**
+     * Find all invitations for a group.
+     */
+    suspend fun findByGroupId(groupId: Uuid): List<InvitationRecord> = suspendTransaction(db = db) {
+        InvitationsTable
+            .select(InvitationsTable.columns)
+            .where { InvitationsTable.groupId eq groupId }
+            .toList()
+            .map { it.toInvitationRecord() }
+    }
+
+    /**
+     * Find an invitation by its ID.
+     */
+    suspend fun findById(id: Uuid): InvitationRecord? = suspendTransaction(db = db) {
+        InvitationsTable
+            .select(InvitationsTable.columns)
+            .where { InvitationsTable.id eq id }
+            .singleOrNull()
+            ?.toInvitationRecord()
+    }
+
+    /**
+     * Mark an invitation as revoked.
+     * Returns true if a row was updated.
+     */
+    suspend fun revokeById(id: Uuid): Boolean = suspendTransaction(db = db) {
+        val now = java.time.LocalDateTime.now().toKotlinLocalDateTime()
+        val rowsUpdated = InvitationsTable.update({ InvitationsTable.id eq id }) {
+            it[revokedAt] = now
         }
         rowsUpdated > 0
     }

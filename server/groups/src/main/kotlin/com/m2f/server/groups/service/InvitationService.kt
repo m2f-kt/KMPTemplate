@@ -13,6 +13,7 @@ import com.m2f.server.groups.errors.GroupNotFound
 import com.m2f.server.groups.errors.InvitationAlreadyAccepted
 import com.m2f.server.groups.errors.InvitationExpired
 import com.m2f.server.groups.errors.InvitationNotFound
+import com.m2f.server.groups.errors.InvitationRevoked
 import com.m2f.server.groups.errors.MemberAlreadyInGroup
 import com.m2f.server.groups.repository.GroupRepository
 import com.m2f.server.groups.repository.InvitationRecord
@@ -145,6 +146,9 @@ class InvitationService(
         val invitation = invitationRepository.findByToken(request.token)
         raise.ensure(invitation != null) { InvitationNotFound() }
 
+        // Check if revoked
+        raise.ensure(invitation.revokedAt == null) { InvitationRevoked() }
+
         // Check if already accepted
         raise.ensure(invitation.acceptedAt == null) { InvitationAlreadyAccepted() }
 
@@ -170,6 +174,81 @@ class InvitationService(
             groupSlug = group.slug,
             role = invitation.role,
         )
+    }
+
+    /**
+     * List all invitations for a group.
+     * Requires ADMIN or OWNER in group, or PowerAdmin.
+     */
+    context(raise: Raise<DomainError>)
+    suspend fun listInvitations(
+        groupId: String,
+        userId: String,
+        userRole: UserRole,
+    ): List<InvitationResponse> {
+        val gid = Uuid.parse(groupId)
+        val uid = Uuid.parse(userId)
+
+        val group = groupRepository.findById(gid)
+        raise.ensure(group != null) { GroupNotFound() }
+
+        // Authorization: ADMIN/OWNER or PowerAdmin
+        if (userRole != UserRole.PowerAdmin) {
+            requireGroupRole(uid, gid, GroupRole.Admin)
+        }
+
+        val invitations = invitationRepository.findByGroupId(gid)
+
+        // Cache inviter names to avoid repeated DB lookups
+        val inviterNameCache = mutableMapOf<Uuid, String>()
+
+        return invitations.map { invitation ->
+            val inviterName = inviterNameCache.getOrPut(invitation.invitedBy) {
+                userRepository.findById(invitation.invitedBy)?.name ?: "A team member"
+            }
+            invitation.toResponse(groupName = group.name, inviterName = inviterName)
+        }
+    }
+
+    /**
+     * Revoke a pending invitation.
+     * Requires ADMIN or OWNER in group, or PowerAdmin.
+     * Cannot revoke already-accepted invitations.
+     */
+    context(raise: Raise<DomainError>)
+    suspend fun revokeInvitation(
+        groupId: String,
+        invitationId: String,
+        userId: String,
+        userRole: UserRole,
+    ): Map<String, String> {
+        val gid = Uuid.parse(groupId)
+        val uid = Uuid.parse(userId)
+        val iid = Uuid.parse(invitationId)
+
+        val group = groupRepository.findById(gid)
+        raise.ensure(group != null) { GroupNotFound() }
+
+        // Authorization: ADMIN/OWNER or PowerAdmin
+        if (userRole != UserRole.PowerAdmin) {
+            requireGroupRole(uid, gid, GroupRole.Admin)
+        }
+
+        val invitation = invitationRepository.findById(iid)
+        raise.ensure(invitation != null) { InvitationNotFound() }
+
+        // Ensure invitation belongs to this group
+        raise.ensure(invitation.groupId == gid) { InvitationNotFound() }
+
+        // Cannot revoke already accepted invitations
+        raise.ensure(invitation.acceptedAt == null) { InvitationAlreadyAccepted() }
+
+        // Cannot revoke already revoked invitations
+        raise.ensure(invitation.revokedAt == null) { InvitationRevoked() }
+
+        invitationRepository.revokeById(iid)
+
+        return mapOf("message" to "Invitation revoked")
     }
 
     // ---- Helpers ----
@@ -228,5 +307,6 @@ private fun InvitationRecord.toResponse(groupName: String, inviterName: String):
         expiresAt = expiresAt.toString(),
         isExpired = nowLocal >= expiresAt,
         isAccepted = acceptedAt != null,
+        isRevoked = revokedAt != null,
     )
 }
