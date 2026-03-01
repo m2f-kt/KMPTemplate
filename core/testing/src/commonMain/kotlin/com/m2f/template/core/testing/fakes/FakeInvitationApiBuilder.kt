@@ -42,6 +42,9 @@ class FakeInvitationApiBuilder {
     private var _revokeInvitation: suspend (String, String) -> Either<AppError, Unit> =
         { _, _ -> Either.Left(AppError.Client.Unknown()) }
 
+    private var _resendInvitation: suspend (String, String) -> Either<AppError, InvitationResponse> =
+        { _, _ -> Either.Left(AppError.Client.Unknown()) }
+
     fun createInvitation(behavior: suspend (String, CreateInvitationRequest) -> Either<AppError, InvitationResponse>) {
         _createInvitation = behavior
     }
@@ -62,6 +65,10 @@ class FakeInvitationApiBuilder {
         _revokeInvitation = behavior
     }
 
+    fun resendInvitation(behavior: suspend (String, String) -> Either<AppError, InvitationResponse>) {
+        _resendInvitation = behavior
+    }
+
     internal fun build(): InvitationApi = object : InvitationApi {
         override suspend fun createInvitation(
             groupId: String,
@@ -80,5 +87,8 @@ class FakeInvitationApiBuilder {
 
         override suspend fun revokeInvitation(groupId: String, invitationId: String): Either<AppError, Unit> =
             _revokeInvitation(groupId, invitationId)
+
+        override suspend fun resendInvitation(groupId: String, invitationId: String): Either<AppError, InvitationResponse> =
+            _resendInvitation(groupId, invitationId)
     }
 }

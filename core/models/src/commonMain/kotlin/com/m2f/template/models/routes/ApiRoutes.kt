@@ -94,6 +94,9 @@ class Groups {
 
     @Serializable @Resource("{groupId}/invitations/{invitationId}/revoke")
     class RevokeInvitation(val parent: Groups = Groups(), val groupId: String, val invitationId: String)
+
+    @Serializable @Resource("{groupId}/invitations/{invitationId}/resend")
+    class ResendInvitation(val parent: Groups = Groups(), val groupId: String, val invitationId: String)
 }
 
 /**

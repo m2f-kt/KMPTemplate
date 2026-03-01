@@ -55,6 +55,14 @@ fun Route.invitationRoutes(invitationService: InvitationService) {
                     invitationService.revokeInvitation(route.groupId, route.invitationId, userId, role)
                 }
             }
+
+            // Resend an expired or revoked invitation
+            post<Groups.ResendInvitation> { route ->
+                conduitAuth(HttpStatusCode.Created) { userId ->
+                    val role = getUserRole()
+                    invitationService.resendInvitation(route.groupId, route.invitationId, userId, role)
+                }
+            }
         }
 
         // Accept invitation -- requires auth (any role)

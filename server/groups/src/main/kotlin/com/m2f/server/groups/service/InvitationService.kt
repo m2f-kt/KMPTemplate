@@ -251,6 +251,72 @@ class InvitationService(
         return mapOf("message" to "Invitation revoked")
     }
 
+    /**
+     * Resend an expired or revoked invitation.
+     * Revokes the old invitation (if not already revoked), creates a new one for the same email
+     * with fresh 7-day expiry, and sends the invitation email.
+     * Requires ADMIN or OWNER in group, or PowerAdmin.
+     */
+    context(raise: Raise<DomainError>)
+    suspend fun resendInvitation(
+        groupId: String,
+        invitationId: String,
+        userId: String,
+        userRole: UserRole,
+    ): InvitationResponse {
+        val gid = Uuid.parse(groupId)
+        val uid = Uuid.parse(userId)
+        val iid = Uuid.parse(invitationId)
+
+        val group = groupRepository.findById(gid)
+        raise.ensure(group != null) { GroupNotFound() }
+
+        // Authorization: ADMIN/OWNER or PowerAdmin
+        if (userRole != UserRole.PowerAdmin) {
+            requireGroupRole(uid, gid, GroupRole.Admin)
+        }
+
+        val oldInvitation = invitationRepository.findById(iid)
+        raise.ensure(oldInvitation != null) { InvitationNotFound() }
+        raise.ensure(oldInvitation.groupId == gid) { InvitationNotFound() }
+
+        // Can only resend expired or revoked invitations
+        val isExpiredOrRevoked = oldInvitation.revokedAt != null || run {
+            val nowLocal = Clock.System.now().toLocalDateTime(TimeZone.UTC)
+            nowLocal >= oldInvitation.expiresAt
+        }
+        raise.ensure(isExpiredOrRevoked) { InvitationAlreadyAccepted() }
+
+        // Revoke old one if not already revoked
+        if (oldInvitation.revokedAt == null) {
+            invitationRepository.revokeById(iid)
+        }
+
+        // Create new invitation with same email/role
+        val now = Clock.System.now()
+        val expiresAt = (now + INVITATION_EXPIRY).toLocalDateTime(TimeZone.UTC)
+
+        val newInvitation = invitationRepository.create(
+            groupId = gid,
+            email = oldInvitation.email,
+            invitedBy = uid,
+            role = oldInvitation.role,
+            expiresAt = expiresAt,
+        )
+
+        val inviter = userRepository.findById(uid)
+        val inviterName = inviter?.name ?: "A team member"
+
+        sendInvitationEmail(
+            toEmail = oldInvitation.email,
+            groupName = group.name,
+            inviterName = inviterName,
+            token = newInvitation.token,
+        )
+
+        return newInvitation.toResponse(groupName = group.name, inviterName = inviterName)
+    }
+
     // ---- Helpers ----
 
     /**

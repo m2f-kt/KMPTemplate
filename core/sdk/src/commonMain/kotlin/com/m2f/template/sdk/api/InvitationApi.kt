@@ -43,4 +43,11 @@ interface InvitationApi {
      * Requires ADMIN or OWNER role in the group.
      */
     suspend fun revokeInvitation(groupId: String, invitationId: String): Either<AppError, Unit>
+
+    /**
+     * Resend an expired or revoked invitation.
+     * Creates a new invitation for the same email and revokes the old one.
+     * Requires ADMIN or OWNER role in the group.
+     */
+    suspend fun resendInvitation(groupId: String, invitationId: String): Either<AppError, InvitationResponse>
 }

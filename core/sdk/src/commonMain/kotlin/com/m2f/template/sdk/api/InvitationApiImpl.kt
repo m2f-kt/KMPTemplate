@@ -45,4 +45,7 @@ class InvitationApiImpl(private val client: HttpClient) : InvitationApi {
 
     override suspend fun revokeInvitation(groupId: String, invitationId: String): Either<AppError, Unit> =
         apiCall { client.post(Groups.RevokeInvitation(groupId = groupId, invitationId = invitationId)) }
+
+    override suspend fun resendInvitation(groupId: String, invitationId: String): Either<AppError, InvitationResponse> =
+        apiCall { client.post(Groups.ResendInvitation(groupId = groupId, invitationId = invitationId)) }
 }
