@@ -89,7 +89,23 @@ class RegisterViewModel(
                         sendMutation(RegisterMutation.SetServerError(key))
                     },
                     ifRight = {
-                        sendEvent(RegisterEvent.NavigateToDashboard)
+                        val token = current.invitationToken
+                        if (!token.isNullOrBlank()) {
+                            // Server already accepted invitation during registration.
+                            // Use getInvitation (read-only) to retrieve groupId for navigation.
+                            // Do NOT call acceptInvitation — it's not idempotent.
+                            sdk.getInvitation(token).fold(
+                                ifLeft = {
+                                    // User IS in the group (server handled it), just navigate to dashboard
+                                    sendEvent(RegisterEvent.NavigateToDashboard)
+                                },
+                                ifRight = { invitation ->
+                                    sendEvent(RegisterEvent.NavigateToGroup(invitation.groupId))
+                                },
+                            )
+                        } else {
+                            sendEvent(RegisterEvent.NavigateToDashboard)
+                        }
                     },
                 )
             },
