@@ -83,6 +83,7 @@
     <string name="error_invitation_expired">This invitation has expired</string>
     <string name="error_invitation_already_accepted">This invitation has already been accepted</string>
     <string name="error_invitation_not_found">Invitation not found</string>
+    <string name="error_invitation_email_mismatch">Your email does not match this invitation</string>
 
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>

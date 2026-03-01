@@ -231,6 +231,7 @@
     <string name="error_invitation_expired">Esta invitación ha expirado</string>
     <string name="error_invitation_already_accepted">Esta invitación ya ha sido aceptada</string>
     <string name="error_invitation_not_found">Invitación no encontrada</string>
+    <string name="error_invitation_email_mismatch">Tu correo no coincide con esta invitación</string>
 
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>

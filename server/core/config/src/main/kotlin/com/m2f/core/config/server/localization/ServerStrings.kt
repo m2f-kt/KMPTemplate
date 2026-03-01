@@ -24,6 +24,8 @@ object ServerStrings {
             // Server errors
             "SERVER_INTERNAL_ERROR" to "An unexpected error occurred",
             "SERVER_SERVICE_UNAVAILABLE" to "Service is temporarily unavailable",
+            // Invitation errors
+            "INVITATION_EMAIL_MISMATCH" to "Your email does not match this invitation",
         ),
         "es" to mapOf(
             // Auth errors
@@ -47,6 +49,8 @@ object ServerStrings {
             // Server errors
             "SERVER_INTERNAL_ERROR" to "Ha ocurrido un error inesperado",
             "SERVER_SERVICE_UNAVAILABLE" to "El servicio no está disponible temporalmente",
+            // Invitation errors
+            "INVITATION_EMAIL_MISMATCH" to "Tu correo no coincide con esta invitación",
         ),
     )
 

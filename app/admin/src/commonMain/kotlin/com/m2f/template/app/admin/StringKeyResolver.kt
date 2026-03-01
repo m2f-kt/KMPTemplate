@@ -40,6 +40,7 @@ import template.app.admin.generated.resources.error_invitation_already_accepted
 import template.app.admin.generated.resources.error_invitation_expired
 import template.app.admin.generated.resources.error_invitation_not_found
 import template.app.admin.generated.resources.error_invitation_revoked
+import template.app.admin.generated.resources.error_invitation_email_mismatch
 import template.app.admin.generated.resources.error_validation_terms_not_accepted
 
 /**
@@ -104,6 +105,7 @@ internal fun resolveStringKey(key: StringKey, vararg args: Any): String =
         StringKey.INVITATION_EXPIRED -> stringResource(Res.string.error_invitation_expired, *args)
         StringKey.INVITATION_ALREADY_ACCEPTED -> stringResource(Res.string.error_invitation_already_accepted, *args)
         StringKey.INVITATION_NOT_FOUND -> stringResource(Res.string.error_invitation_not_found, *args)
+        StringKey.INVITATION_EMAIL_MISMATCH -> stringResource(Res.string.error_invitation_email_mismatch, *args)
 
         // Generic fallback
         StringKey.GENERIC_ERROR -> stringResource(Res.string.error_generic, *args)

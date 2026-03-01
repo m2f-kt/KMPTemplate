@@ -12,6 +12,7 @@ import com.m2f.server.groups.errors.GroupForbidden
 import com.m2f.server.groups.errors.GroupNotFound
 import com.m2f.server.groups.errors.InvitationAlreadyAccepted
 import com.m2f.server.groups.errors.InvitationExpired
+import com.m2f.server.groups.errors.InvitationEmailMismatch
 import com.m2f.server.groups.errors.InvitationNotFound
 import com.m2f.server.groups.errors.InvitationRevoked
 import com.m2f.server.groups.errors.MemberAlreadyInGroup
@@ -162,6 +163,11 @@ class InvitationService(
         // Check if user is already a member
         val existingMembership = membershipRepository.findByUserAndGroup(uid, invitation.groupId)
         raise.ensure(existingMembership == null) { MemberAlreadyInGroup() }
+
+        // Validate that the accepting user's email matches the invitation email
+        val user = userRepository.findById(uid)
+        raise.ensure(user != null) { InvitationNotFound() }
+        raise.ensure(user.email.equals(invitation.email, ignoreCase = true)) { InvitationEmailMismatch() }
 
         // Add user to group
         membershipRepository.insert(uid, invitation.groupId, invitation.role)

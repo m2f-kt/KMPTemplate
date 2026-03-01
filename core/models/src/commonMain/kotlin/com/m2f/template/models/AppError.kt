@@ -185,6 +185,12 @@ sealed class AppError {
             override val code: String = "INVITATION_REVOKED",
             override val message: String = "Invitation has been revoked"
         ) : Invitation()
+
+        @Serializable
+        data class EmailMismatch(
+            override val code: String = "INVITATION_EMAIL_MISMATCH",
+            override val message: String = "Your email does not match this invitation"
+        ) : Invitation()
     }
 
     @Serializable

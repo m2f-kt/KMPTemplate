@@ -64,3 +64,17 @@ data class InvitationRevoked(
         routingContext.gone(error.code, message)
     }
 }
+
+data class InvitationEmailMismatch(
+    val detail: String = "Email does not match invitation",
+) : DomainError {
+    override fun toAppError(): AppError = AppError.Invitation.EmailMismatch()
+
+    context(routingContext: RoutingContext)
+    override suspend fun respond() {
+        val error = toAppError()
+        val locale = routingContext.preferredLanguage()
+        val message = ServerStrings.resolve(error.code, locale)
+        routingContext.unprocessable(error.code, message)
+    }
+}

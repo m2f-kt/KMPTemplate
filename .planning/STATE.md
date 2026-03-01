@@ -24,9 +24,9 @@ See: .planning/PROJECT.md (updated 2026-02-21)
 
 Milestone: v1.2 Polish & Patterns
 Phase: 21 (Group Invitations & Profiles) — GAP CLOSURE ROUND 2
-Plan: 6 of 8 completed in Phase — 2 gap closure plans pending (21-07, 21-08)
-Status: Plans 21-07 (server email validation + resend dedup) and 21-08 (role badges + email pre-fill) ready for execution
-Last activity: 2026-03-02 — Gap closure round 2 plans created
+Plan: 7 of 8 completed in Phase — 21-07 (server email validation + resend dedup) still pending
+Status: Plan 21-08 complete, 21-07 remains
+Last activity: 2026-03-02 — Completed 21-08 (role badges + email pre-fill)
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -99,6 +99,8 @@ v1.2 decisions:
   - [Phase 21]: Resend only allowed for expired/revoked invitations (active ones should be revoked first)
   - [Phase 21]: HTTP 410 mapped to ServerMapped (same as 422) to preserve server error code for StringKey resolution
   - [Phase 21]: All 5 StringKeyResolver files must be updated simultaneously when adding StringKey entries
+  - [Phase 21]: Invitation email pre-fill uses separate invitationEmail field to distinguish locked vs user-typed state
+  - [Phase 21]: TerminalInput enabled param controls email lock — no design system changes needed
 
 ### Blockers/Concerns
 
@@ -127,6 +129,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 21 gap closure round 2 — plans 21-07 and 21-08 created, ready for execution
+Stopped at: Completed 21-08-PLAN.md — 21-07 still pending
 Resume file: None
-Next action: Execute `/gsd-execute-phase 21-group-invitations-profiles` to run plans 21-07 and 21-08
+Next action: Execute plan 21-07 (server email validation + resend dedup)
