@@ -18,15 +18,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 21 gap closure round 2 — plans 21-07 and 21-08 created
+**Current focus:** Phase 21 complete — all 8 plans shipped including gap closure round 2
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 21 (Group Invitations & Profiles) — GAP CLOSURE ROUND 2
-Plan: 7 of 8 completed in Phase — 21-07 (server email validation + resend dedup) still pending
-Status: Plan 21-08 complete, 21-07 remains
-Last activity: 2026-03-02 — Completed 21-08 (role badges + email pre-fill)
+Phase: 21 (Group Invitations & Profiles) — COMPLETE
+Plan: 8 of 8 completed in Phase — all plans shipped
+Status: Phase 21 fully complete, ready for Phase 22
+Last activity: 2026-03-02 — Completed 21-07 (email validation + resend dedup)
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -101,6 +101,8 @@ v1.2 decisions:
   - [Phase 21]: All 5 StringKeyResolver files must be updated simultaneously when adding StringKey entries
   - [Phase 21]: Invitation email pre-fill uses separate invitationEmail field to distinguish locked vs user-typed state
   - [Phase 21]: TerminalInput enabled param controls email lock — no design system changes needed
+  - [Phase 21]: HTTP 422 (unprocessable) for email mismatch — validation error, not auth/gone
+  - [Phase 21]: Resend = delete old + create new (not revoke old) to eliminate duplicate invitation rows
 
 ### Blockers/Concerns
 
@@ -129,6 +131,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 21-08-PLAN.md — 21-07 still pending
+Stopped at: Completed 21-07-PLAN.md — Phase 21 fully complete (8/8 plans)
 Resume file: None
-Next action: Execute plan 21-07 (server email validation + resend dedup)
+Next action: Begin Phase 22 (Developer Onboarding) or any other priority
