@@ -32,6 +32,25 @@
     <string name="admin_invite_link_label">O comparte este enlace:</string>
     <string name="admin_invite_done">Listo</string>
 
+    <!-- Admin Pending Invitations Section -->
+    <string name="admin_invitations_title">Invitaciones Pendientes</string>
+    <string name="admin_invitations_none">Sin invitaciones</string>
+    <string name="admin_invitations_email">CORREO</string>
+    <string name="admin_invitations_role">ROL</string>
+    <string name="admin_invitations_status">ESTADO</string>
+    <string name="admin_invitations_actions">ACCIONES</string>
+    <string name="admin_invitations_accepted">Aceptada</string>
+    <string name="admin_invitations_revoked">Revocada</string>
+    <string name="admin_invitations_expired">Expirada</string>
+    <string name="admin_invitations_expires_days">Expira en %1$d días</string>
+    <string name="admin_invitations_expires_tomorrow">Expira mañana</string>
+    <string name="admin_invitations_expires_today">Expira hoy</string>
+    <string name="admin_revoke_title">Revocar Invitación</string>
+    <string name="admin_revoke_confirm">¿Revocar invitación a %1$s?</string>
+    <string name="admin_revoke_cancel">Cancelar</string>
+    <string name="admin_revoke_submit">Revocar</string>
+    <string name="admin_revoke_button">Revocar</string>
+
     <string name="admin_no_group_title">Ningún grupo seleccionado</string>
     <string name="admin_no_group_description">Eres administrador del sistema pero no eres miembro de ningún grupo. Únete o crea un grupo para administrarlo aquí.</string>
 
