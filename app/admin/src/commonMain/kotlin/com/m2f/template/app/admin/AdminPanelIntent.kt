@@ -20,4 +20,5 @@ sealed interface AdminPanelIntent {
     data class ConfirmRevokeInvitation(val invitation: InvitationResponse) : AdminPanelIntent
     data object CancelRevoke : AdminPanelIntent
     data object ExecuteRevoke : AdminPanelIntent
+    data class ResendInvitation(val invitation: InvitationResponse) : AdminPanelIntent
 }

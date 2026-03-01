@@ -39,6 +39,7 @@ class AdminPanelViewModel(
                 is AdminPanelIntent.ConfirmRevokeInvitation -> sendMutation(AdminPanelMutation.ShowRevokeDialog(intent.invitation))
                 is AdminPanelIntent.CancelRevoke -> sendMutation(AdminPanelMutation.HideRevokeDialog)
                 is AdminPanelIntent.ExecuteRevoke -> handleRevokeInvitation()
+                is AdminPanelIntent.ResendInvitation -> handleResendInvitation(intent.invitation)
             }
         }
     }
@@ -184,6 +185,19 @@ class AdminPanelViewModel(
         )
     }
 
+    private suspend fun handleResendInvitation(invitation: com.m2f.template.models.dto.InvitationResponse) {
+        sendMutation(AdminPanelMutation.SetResending(true))
+        sdk.resendInvitation(model.value.groupId, invitation.id).fold(
+            ifLeft = {
+                sendMutation(AdminPanelMutation.SetResending(false))
+            },
+            ifRight = {
+                sendMutation(AdminPanelMutation.SetResending(false))
+                handleLoadInvitations() // Refresh the list — old invitation is now revoked, new one appears
+            },
+        )
+    }
+
     override suspend fun reduce(
         model: AdminPanelModel,
         mutation: AdminPanelMutation,
@@ -250,5 +264,6 @@ class AdminPanelViewModel(
         is AdminPanelMutation.ShowRevokeDialog -> model.copy(showRevokeDialog = true, revokeTarget = mutation.invitation)
         is AdminPanelMutation.HideRevokeDialog -> model.copy(showRevokeDialog = false, revokeTarget = null, isRevoking = false)
         is AdminPanelMutation.SetRevoking -> model.copy(isRevoking = mutation.revoking)
+        is AdminPanelMutation.SetResending -> model.copy(isResending = mutation.resending)
     }
 }

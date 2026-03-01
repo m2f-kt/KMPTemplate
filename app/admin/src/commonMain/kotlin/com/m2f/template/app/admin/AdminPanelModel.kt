@@ -34,4 +34,5 @@ data class AdminPanelModel(
     val showRevokeDialog: Boolean = false,
     val revokeTarget: InvitationResponse? = null,
     val isRevoking: Boolean = false,
+    val isResending: Boolean = false,
 )

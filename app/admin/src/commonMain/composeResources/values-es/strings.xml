@@ -50,6 +50,7 @@
     <string name="admin_revoke_cancel">Cancelar</string>
     <string name="admin_revoke_submit">Revocar</string>
     <string name="admin_revoke_button">Revocar</string>
+    <string name="admin_resend_button">Reenviar</string>
 
     <string name="admin_no_group_title">Ningún grupo seleccionado</string>
     <string name="admin_no_group_description">Eres administrador del sistema pero no eres miembro de ningún grupo. Únete o crea un grupo para administrarlo aquí.</string>

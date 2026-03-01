@@ -35,6 +35,26 @@
     <string name="admin_no_group_title">No group selected</string>
     <string name="admin_no_group_description">You are a system administrator but not a member of any group. Join or create a group to manage it here.</string>
 
+    <!-- Admin Pending Invitations Section -->
+    <string name="admin_invitations_title">Pending Invitations</string>
+    <string name="admin_invitations_none">No invitations</string>
+    <string name="admin_invitations_email">EMAIL</string>
+    <string name="admin_invitations_role">ROLE</string>
+    <string name="admin_invitations_status">STATUS</string>
+    <string name="admin_invitations_actions">ACTIONS</string>
+    <string name="admin_invitations_accepted">Accepted</string>
+    <string name="admin_invitations_revoked">Revoked</string>
+    <string name="admin_invitations_expired">Expired</string>
+    <string name="admin_invitations_expires_days">Expires in %1$d days</string>
+    <string name="admin_invitations_expires_tomorrow">Expires tomorrow</string>
+    <string name="admin_invitations_expires_today">Expires today</string>
+    <string name="admin_revoke_title">Revoke Invitation</string>
+    <string name="admin_revoke_confirm">Revoke invitation to %1$s?</string>
+    <string name="admin_revoke_cancel">Cancel</string>
+    <string name="admin_revoke_submit">Revoke</string>
+    <string name="admin_revoke_button">Revoke</string>
+    <string name="admin_resend_button">Resend</string>
+
     <!-- Admin Table Headers -->
     <string name="admin_table_name">NAME</string>
     <string name="admin_table_email">EMAIL</string>

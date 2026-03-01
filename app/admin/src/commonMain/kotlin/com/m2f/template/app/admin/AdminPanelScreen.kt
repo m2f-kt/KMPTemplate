@@ -87,6 +87,7 @@ import template.app.admin.generated.resources.admin_invitations_role
 import template.app.admin.generated.resources.admin_invitations_status
 import template.app.admin.generated.resources.admin_invitations_title
 import template.app.admin.generated.resources.admin_revoke_button
+import template.app.admin.generated.resources.admin_resend_button
 import template.app.admin.generated.resources.admin_revoke_cancel
 import template.app.admin.generated.resources.admin_revoke_confirm
 import template.app.admin.generated.resources.admin_revoke_submit
@@ -130,6 +131,7 @@ fun AdminPanelScreen(
     onConfirmRevoke: (InvitationResponse) -> Unit,
     onCancelRevoke: () -> Unit,
     onExecuteRevoke: () -> Unit,
+    onResend: (InvitationResponse) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -307,6 +309,7 @@ fun AdminPanelScreen(
                     invitations = state.invitations,
                     isLoading = state.isLoadingInvitations,
                     onConfirmRevoke = onConfirmRevoke,
+                    onResend = onResend,
                 )
             }
 
@@ -532,6 +535,7 @@ private fun InvitationsSection(
     invitations: List<InvitationResponse>,
     isLoading: Boolean,
     onConfirmRevoke: (InvitationResponse) -> Unit,
+    onResend: (InvitationResponse) -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -597,12 +601,21 @@ private fun InvitationsSection(
                             }
                         }
                         Box(modifier = Modifier.weight(1f)) {
-                            if (!invitation.isAccepted && !invitation.isRevoked && !invitation.isExpired) {
-                                TerminalButton(
-                                    text = stringResource(Res.string.admin_revoke_button),
-                                    onClick = { onConfirmRevoke(invitation) },
-                                    variant = ButtonVariant.Destructive,
-                                )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                if (!invitation.isAccepted && !invitation.isRevoked && !invitation.isExpired) {
+                                    TerminalButton(
+                                        text = stringResource(Res.string.admin_revoke_button),
+                                        onClick = { onConfirmRevoke(invitation) },
+                                        variant = ButtonVariant.Destructive,
+                                    )
+                                }
+                                if (invitation.isExpired || invitation.isRevoked) {
+                                    TerminalButton(
+                                        text = stringResource(Res.string.admin_resend_button),
+                                        onClick = { onResend(invitation) },
+                                        variant = ButtonVariant.Secondary,
+                                    )
+                                }
                             }
                         }
                     }
