@@ -1,0 +1,91 @@
+---
+status: complete
+phase: 21-group-invitations-profiles
+source: [21-01-SUMMARY.md, 21-02-SUMMARY.md, 21-03-SUMMARY.md]
+started: 2026-03-01T14:12:00Z
+updated: 2026-03-01T14:25:00Z
+---
+
+## Current Test
+
+[testing complete]
+
+## Tests
+
+### 1. Admin Lists Pending Invitations
+expected: Open the admin panel for a group. The invitations section shows a table with Email, Role, Status, and Actions columns. Previously sent invitations appear with correct status badges (expiry countdown for active, Accepted/Revoked/Expired badges).
+result: issue
+reported: "the data looks correct but the items are not translated (the words looking in english should look in spanish)"
+severity: minor
+
+### 2. Admin Revokes an Invitation
+expected: In the invitations table, click the Revoke button on an active invitation. A confirmation dialog appears asking "Revoke invitation to {email}?". Confirm the revocation. The invitation status changes to "Revoked" (Error badge) and the Revoke button disappears for that row.
+result: pass
+
+### 3. Revoked Invitation Cannot Be Accepted
+expected: After revoking an invitation, attempt to open the invitation acceptance link. The server rejects it — the user sees an error state indicating the invitation is no longer valid (410 Gone or equivalent error).
+result: issue
+reported: "several things: 1) when accepting invitation no matter if already accepted, revoked or pending, the user when accepts via login or register the app authenticates correctly but doesn't apply the invitation. logging out and clicking link again has same problem — invitation is not applied from the invitation page. 2) from a logged-in account opening the invitation email works correctly — already accepted/revoked are rejected, pending invitations are accepted. 3) without authentication opening link then login/register does nothing, but refreshing page (cmd+R) triggers correct flow: pending gets accepted, already accepted shows message, but revoked shows generic message instead of saying it's revoked. No option to re-ask for invitation or re-send from admin."
+severity: major
+
+### 4. Expired Invitation Shows Proper Status
+expected: An invitation that has passed its expiry time shows an "Expired" warning badge in the admin panel invitations table. The Revoke button is not shown for expired invitations. Attempting to accept an expired invitation link returns an error.
+result: pass
+
+### 5. Non-Admin Cannot Access Invitation Management
+expected: A regular (non-admin) group member cannot see or access invitation management features. API calls to list or revoke invitations return 403 Forbidden.
+result: pass
+
+### 6. Integration Tests Pass
+expected: Run `./gradlew :server:groups:test --tests "com.m2f.server.groups.InvitationRoutesTest"` — all 6 tests pass (lifecycle, list, revoke, expired, auth x2).
+result: pass
+
+## Summary
+
+total: 6
+passed: 4
+issues: 2
+pending: 0
+skipped: 0
+
+## Gaps
+
+- truth: "Invitation table labels and status badges display in user's selected locale (Spanish)"
+  status: failed
+  reason: "User reported: the data looks correct but the items are not translated (the words looking in english should look in spanish)"
+  severity: minor
+  test: 1
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Unauthenticated user opens invite link, logs in or registers, and invitation is automatically applied"
+  status: failed
+  reason: "User reported: login/register from invitation page authenticates but doesn't apply the invitation. Only works after page refresh (cmd+R). From logged-in account it works correctly."
+  severity: major
+  test: 3
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Revoked invitation shows specific 'revoked' error message, not generic error"
+  status: failed
+  reason: "User reported: revoked invitation shows generic message instead of saying it's revoked"
+  severity: minor
+  test: 3
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
+
+- truth: "Option exists to re-request invitation or admin can re-send from admin panel"
+  status: failed
+  reason: "User reported: no option to re-ask for an invitation or to re-send an invitation from the admin"
+  severity: minor
+  test: 3
+  root_cause: ""
+  artifacts: []
+  missing: []
+  debug_session: ""
