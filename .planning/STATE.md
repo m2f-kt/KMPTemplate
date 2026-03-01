@@ -18,15 +18,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 21 gap closure plan 04 complete — Spanish translations + register-with-invite navigation fix
+**Current focus:** Phase 21 gap closure plan 06 complete — resend invitation full stack
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
 Phase: 21 (Group Invitations & Profiles)
-Plan: 4 of N in Phase — COMPLETE
-Status: Plan 21-04 complete — UAT gaps 1 & 2 closed
-Last activity: 2026-03-01 — Phase 21 plan 04 executed
+Plan: 6 of N in Phase — COMPLETE
+Status: Plan 21-06 complete — resend invitation feature shipped
+Last activity: 2026-03-01 — Phase 21 plan 06 executed
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -95,6 +95,9 @@ v1.2 decisions:
 - [Phase 21]: Use getInvitation (read-only) instead of acceptInvitation for post-registration groupId lookup — avoids non-idempotent call
 - [Phase 21]: Fall back to NavigateToDashboard on getInvitation failure — user IS in group, navigation is best-effort
 
+  - [Phase 21]: Resend = revoke old + create new invitation (not just extend expiry) for clean audit trail
+  - [Phase 21]: Resend only allowed for expired/revoked invitations (active ones should be revoked first)
+
 ### Blockers/Concerns
 
 - Open: Ktor testApplication dispatcher issue (KTOR-7121) -- workaround exists
@@ -122,6 +125,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 21-04-PLAN.md (gap closure: Spanish translations + register-with-invite navigation)
+Stopped at: Completed 21-06-PLAN.md (gap closure: resend invitation full stack)
 Resume file: None
-Next action: Continue Phase 21 remaining plans or next phase
+Next action: Continue Phase 21 remaining gap closure plans or next phase
