@@ -293,10 +293,8 @@ class InvitationService(
         }
         raise.ensure(isExpiredOrRevoked) { InvitationAlreadyAccepted() }
 
-        // Revoke old one if not already revoked
-        if (oldInvitation.revokedAt == null) {
-            invitationRepository.revokeById(iid)
-        }
+        // Delete old invitation to avoid duplicates
+        invitationRepository.deleteById(iid)
 
         // Create new invitation with same email/role
         val now = Clock.System.now()

@@ -13,6 +13,7 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.insert
 import org.jetbrains.exposed.v1.r2dbc.select
 import org.jetbrains.exposed.v1.r2dbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.r2dbc.deleteWhere
 import org.jetbrains.exposed.v1.r2dbc.update
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -126,6 +127,15 @@ class InvitationRepository(private val db: R2dbcDatabase) {
             it[revokedAt] = now
         }
         rowsUpdated > 0
+    }
+
+    /**
+     * Delete an invitation by its ID.
+     * Returns true if a row was deleted.
+     */
+    suspend fun deleteById(id: Uuid): Boolean = suspendTransaction(db = db) {
+        val rowsDeleted = InvitationsTable.deleteWhere { InvitationsTable.id eq id }
+        rowsDeleted > 0
     }
 
     /**
