@@ -13,4 +13,5 @@ sealed interface RegisterMutation {
     data class SetFieldErrors(val errors: Map<String, StringKey>) : RegisterMutation
     data class SetServerError(val error: StringKey?) : RegisterMutation
     data class SetInvitationToken(val token: String?) : RegisterMutation
+    data class SetInvitationEmail(val email: String?) : RegisterMutation
 }

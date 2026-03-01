@@ -25,10 +25,16 @@ class InviteAcceptViewModel(
                 is InviteAcceptIntent.LoadInvitation -> handleLoadInvitation(intent.token)
                 is InviteAcceptIntent.AcceptInvitation -> handleAcceptInvitation()
                 is InviteAcceptIntent.GoToLogin -> {
-                    sendEvent(InviteAcceptEvent.NavigateToLogin(model.value.token))
+                    sendEvent(InviteAcceptEvent.NavigateToLogin(
+                        token = model.value.token,
+                        email = model.value.email ?: "",
+                    ))
                 }
                 is InviteAcceptIntent.GoToRegister -> {
-                    sendEvent(InviteAcceptEvent.NavigateToRegister(model.value.token))
+                    sendEvent(InviteAcceptEvent.NavigateToRegister(
+                        token = model.value.token,
+                        email = model.value.email ?: "",
+                    ))
                 }
                 is InviteAcceptIntent.RequestNewInvitation -> {
                     sendEvent(InviteAcceptEvent.RequestedNewInvitation)

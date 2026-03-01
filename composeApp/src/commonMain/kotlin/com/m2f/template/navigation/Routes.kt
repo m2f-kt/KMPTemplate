@@ -3,10 +3,10 @@ package com.m2f.template.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginRoute(val invitationToken: String? = null)
+data class LoginRoute(val invitationToken: String? = null, val invitationEmail: String? = null)
 
 @Serializable
-data class RegisterRoute(val invitationToken: String? = null)
+data class RegisterRoute(val invitationToken: String? = null, val invitationEmail: String? = null)
 
 @Serializable
 data object DashboardRoute

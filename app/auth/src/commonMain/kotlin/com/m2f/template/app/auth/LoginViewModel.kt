@@ -22,6 +22,10 @@ class LoginViewModel(
                 is LoginIntent.RememberMeChanged -> sendMutation(LoginMutation.SetRememberMe(intent.checked))
                 is LoginIntent.SubmitLoginClicked -> handleLogin()
                 is LoginIntent.SetInvitationToken -> sendMutation(LoginMutation.SetInvitationToken(intent.token))
+                is LoginIntent.SetInvitationEmail -> {
+                    sendMutation(LoginMutation.SetInvitationEmail(intent.email))
+                    if (intent.email != null) sendMutation(LoginMutation.SetEmail(intent.email))
+                }
             }
         }
     }
@@ -89,6 +93,7 @@ class LoginViewModel(
             is LoginMutation.SetValidationErrors -> model.copy(emailError = mutation.emailError, passwordError = mutation.passwordError)
             is LoginMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
             is LoginMutation.SetInvitationToken -> model.copy(invitationToken = mutation.token)
+            is LoginMutation.SetInvitationEmail -> model.copy(invitationEmail = mutation.email)
             is LoginMutation.SetAcceptingInvitation -> model.copy(isAcceptingInvitation = mutation.accepting)
         }
 }

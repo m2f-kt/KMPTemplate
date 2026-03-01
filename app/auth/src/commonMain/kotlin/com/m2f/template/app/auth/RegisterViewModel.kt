@@ -32,6 +32,10 @@ class RegisterViewModel(
                 is RegisterIntent.TermsAcceptedChanged -> sendMutation(RegisterMutation.SetTermsAccepted(intent.accepted))
                 is RegisterIntent.SubmitRegisterClicked -> handleRegister()
                 is RegisterIntent.SetInvitationToken -> sendMutation(RegisterMutation.SetInvitationToken(intent.token))
+                is RegisterIntent.SetInvitationEmail -> {
+                    sendMutation(RegisterMutation.SetInvitationEmail(intent.email))
+                    if (intent.email != null) sendMutation(RegisterMutation.SetEmail(intent.email))
+                }
             }
         }
     }
@@ -124,5 +128,6 @@ class RegisterViewModel(
             is RegisterMutation.SetFieldErrors -> model.copy(fieldErrors = mutation.errors)
             is RegisterMutation.SetServerError -> model.copy(serverError = mutation.error, isLoading = false)
             is RegisterMutation.SetInvitationToken -> model.copy(invitationToken = mutation.token)
+            is RegisterMutation.SetInvitationEmail -> model.copy(invitationEmail = mutation.email)
         }
 }

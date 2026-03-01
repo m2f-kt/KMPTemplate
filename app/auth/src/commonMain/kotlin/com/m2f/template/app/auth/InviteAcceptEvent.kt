@@ -12,12 +12,12 @@ sealed interface InviteAcceptEvent {
     /**
      * Navigate to login screen, preserving the invitation token.
      */
-    data class NavigateToLogin(val token: String) : InviteAcceptEvent
+    data class NavigateToLogin(val token: String, val email: String) : InviteAcceptEvent
 
     /**
      * Navigate to register screen, preserving the invitation token.
      */
-    data class NavigateToRegister(val token: String) : InviteAcceptEvent
+    data class NavigateToRegister(val token: String, val email: String) : InviteAcceptEvent
 
     /**
      * Navigate away after requesting a new invitation (expired token).

@@ -459,6 +459,7 @@ private fun LoginFormContent(
             placeholder = stringResource(Res.string.login_email_placeholder),
             isError = state.emailError != null,
             errorMessage = state.emailError?.let { resolveStringKey(it) },
+            enabled = state.invitationEmail == null && !state.isLoading,
         )
 
         // Password input

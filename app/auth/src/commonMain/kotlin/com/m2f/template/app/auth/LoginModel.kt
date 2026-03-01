@@ -11,5 +11,6 @@ data class LoginModel(
     val passwordError: StringKey? = null,
     val serverError: StringKey? = null,
     val invitationToken: String? = null,
+    val invitationEmail: String? = null,
     val isAcceptingInvitation: Boolean = false,
 )

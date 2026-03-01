@@ -13,4 +13,5 @@ data class RegisterModel(
     val fieldErrors: Map<String, StringKey> = emptyMap(),
     val serverError: StringKey? = null,
     val invitationToken: String? = null,
+    val invitationEmail: String? = null,
 )

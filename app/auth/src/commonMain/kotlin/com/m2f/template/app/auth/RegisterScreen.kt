@@ -564,6 +564,7 @@ private fun RegisterFormFields(
             placeholder = stringResource(Res.string.register_email_placeholder),
             isError = emailError != null,
             errorMessage = emailError?.let { resolveStringKey(it) },
+            enabled = state.invitationEmail == null && !state.isLoading,
         )
 
         // Password

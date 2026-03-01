@@ -80,10 +80,13 @@ fun AppNavHost(
                 val viewModel = koinViewModel<LoginViewModel>()
                 val state by viewModel.model.collectAsStateWithLifecycle()
 
-                // Set invitation token if present
-                LaunchedEffect(route.invitationToken) {
+                // Set invitation token and email if present
+                LaunchedEffect(route.invitationToken, route.invitationEmail) {
                     route.invitationToken?.let { token ->
                         viewModel.take(LoginIntent.SetInvitationToken(token))
+                    }
+                    route.invitationEmail?.let { email ->
+                        viewModel.take(LoginIntent.SetInvitationEmail(email))
                     }
                 }
 
@@ -121,10 +124,13 @@ fun AppNavHost(
                 val viewModel = koinViewModel<RegisterViewModel>()
                 val state by viewModel.model.collectAsStateWithLifecycle()
 
-                // Set invitation token if present
-                LaunchedEffect(route.invitationToken) {
+                // Set invitation token and email if present
+                LaunchedEffect(route.invitationToken, route.invitationEmail) {
                     route.invitationToken?.let { token ->
                         viewModel.take(RegisterIntent.SetInvitationToken(token))
+                    }
+                    route.invitationEmail?.let { email ->
+                        viewModel.take(RegisterIntent.SetInvitationEmail(email))
                     }
                 }
 
@@ -369,12 +375,12 @@ fun AppNavHost(
                                 }
                             }
                             is InviteAcceptEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute(invitationToken = event.token)) {
+                                navController.navigate(LoginRoute(invitationToken = event.token, invitationEmail = event.email)) {
                                     popUpTo<InviteAcceptRoute> { inclusive = true }
                                 }
                             }
                             is InviteAcceptEvent.NavigateToRegister -> {
-                                navController.navigate(RegisterRoute(invitationToken = event.token)) {
+                                navController.navigate(RegisterRoute(invitationToken = event.token, invitationEmail = event.email)) {
                                     popUpTo<InviteAcceptRoute> { inclusive = true }
                                 }
                             }

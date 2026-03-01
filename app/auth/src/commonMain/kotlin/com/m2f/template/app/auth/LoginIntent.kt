@@ -6,4 +6,5 @@ sealed interface LoginIntent {
     data class RememberMeChanged(val checked: Boolean) : LoginIntent
     data object SubmitLoginClicked : LoginIntent
     data class SetInvitationToken(val token: String?) : LoginIntent
+    data class SetInvitationEmail(val email: String?) : LoginIntent
 }
