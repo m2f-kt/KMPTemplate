@@ -128,6 +128,12 @@
     <string name="error_validation_passwords_mismatch">Las contraseñas no coinciden</string>
     <string name="error_validation_terms_not_accepted">Debes aceptar los términos</string>
 
+    <!-- Invitation errors -->
+    <string name="error_invitation_revoked">Esta invitación ha sido revocada</string>
+    <string name="error_invitation_expired">Esta invitación ha expirado</string>
+    <string name="error_invitation_already_accepted">Esta invitación ya ha sido aceptada</string>
+    <string name="error_invitation_not_found">Invitación no encontrada</string>
+
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>
 

@@ -51,6 +51,7 @@ suspend inline fun <reified T> apiCall(
  * - 403 -> [AppError.User.Forbidden]
  * - 404 -> [AppError.User.NotFound]
  * - 409 -> [AppError.Auth.UserAlreadyExists]
+ * - 410 -> [AppError.Client.ServerMapped] (preserves server's error code/message, e.g. revoked invitation)
  * - 422 -> [AppError.Client.ServerMapped] (preserves server's error code/message)
  * - 500..599 -> [AppError.Server.Internal]
  * - Other -> [AppError.Client.Unknown]
@@ -76,6 +77,11 @@ suspend fun mapHttpError(response: HttpResponse): AppError {
 
         409 -> AppError.Auth.UserAlreadyExists(
             message = errorResponse?.message ?: "Resource already exists",
+        )
+
+        410 -> AppError.Client.ServerMapped(
+            code = errorResponse?.code ?: "INVITATION_ERROR",
+            message = errorResponse?.message ?: "Resource is no longer available",
         )
 
         422 -> AppError.Client.ServerMapped(

@@ -36,6 +36,10 @@ import template.app.auth.generated.resources.error_validation_name_length
 import template.app.auth.generated.resources.error_validation_password_blank
 import template.app.auth.generated.resources.error_validation_password_too_short
 import template.app.auth.generated.resources.error_validation_passwords_mismatch
+import template.app.auth.generated.resources.error_invitation_already_accepted
+import template.app.auth.generated.resources.error_invitation_expired
+import template.app.auth.generated.resources.error_invitation_not_found
+import template.app.auth.generated.resources.error_invitation_revoked
 import template.app.auth.generated.resources.error_validation_terms_not_accepted
 
 /**
@@ -94,6 +98,12 @@ internal fun resolveStringKey(key: StringKey, vararg args: Any): String =
         StringKey.VALIDATION_FIELD_REQUIRED -> stringResource(Res.string.error_validation_field_required, *args)
         StringKey.VALIDATION_PASSWORDS_MISMATCH -> stringResource(Res.string.error_validation_passwords_mismatch, *args)
         StringKey.VALIDATION_TERMS_NOT_ACCEPTED -> stringResource(Res.string.error_validation_terms_not_accepted, *args)
+
+        // Invitation errors
+        StringKey.INVITATION_REVOKED -> stringResource(Res.string.error_invitation_revoked, *args)
+        StringKey.INVITATION_EXPIRED -> stringResource(Res.string.error_invitation_expired, *args)
+        StringKey.INVITATION_ALREADY_ACCEPTED -> stringResource(Res.string.error_invitation_already_accepted, *args)
+        StringKey.INVITATION_NOT_FOUND -> stringResource(Res.string.error_invitation_not_found, *args)
 
         // Generic fallback
         StringKey.GENERIC_ERROR -> stringResource(Res.string.error_generic, *args)

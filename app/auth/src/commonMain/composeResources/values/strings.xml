@@ -130,6 +130,12 @@
     <string name="error_validation_passwords_mismatch">Passwords do not match</string>
     <string name="error_validation_terms_not_accepted">You must accept the terms</string>
 
+    <!-- Invitation errors -->
+    <string name="error_invitation_revoked">This invitation has been revoked</string>
+    <string name="error_invitation_expired">This invitation has expired</string>
+    <string name="error_invitation_already_accepted">This invitation has already been accepted</string>
+    <string name="error_invitation_not_found">Invitation not found</string>
+
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>
 
@@ -154,5 +160,9 @@
     <!-- Invite Expired Action -->
     <string name="invite_request_new">$ request_new_invite()</string>
     <string name="invite_expired_hint">// contact the group administrator to receive a new invitation</string>
+
+    <!-- Invite Revoked State -->
+    <string name="invite_revoked">This invitation has been revoked.</string>
+    <string name="invite_revoked_hint">// the group administrator has revoked this invitation</string>
 
 </resources>

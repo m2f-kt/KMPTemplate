@@ -78,6 +78,12 @@
     <string name="error_validation_passwords_mismatch">Passwords do not match</string>
     <string name="error_validation_terms_not_accepted">You must accept the terms</string>
 
+    <!-- Invitation errors -->
+    <string name="error_invitation_revoked">This invitation has been revoked</string>
+    <string name="error_invitation_expired">This invitation has expired</string>
+    <string name="error_invitation_already_accepted">This invitation has already been accepted</string>
+    <string name="error_invitation_not_found">Invitation not found</string>
+
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>
 
