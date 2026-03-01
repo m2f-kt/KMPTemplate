@@ -52,7 +52,7 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration (completed 2026-02-23)
 - [x] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval (completed 2026-02-24)
 - [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
-- [x] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests (completed 2026-02-26)
+- [ ] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests (gap closure round 2 in progress)
 - [ ] **Phase 22: Developer Onboarding** - Setup CLI enhancements, documentation, Gradle tooling, first-run walkthrough
 
 ## Phase Details
@@ -187,7 +187,7 @@ Plans:
   3. Admin sees list of pending invitations and can revoke any of them; expired tokens are rejected
   4. User uploads a profile image → avatar URL appears in their profile; TerminalAvatar component shows image instead of initials
   5. Integration tests cover the full auth → groups → invite → accept flow end-to-end against Testcontainers PostgreSQL
-**Plans**: 6 plans in 2 waves (3 original + 3 gap closure)
+**Plans**: 8 plans in 2 waves (3 original + 3 gap closure + 2 gap closure round 2)
 
 Plans:
 - [x] 21-01-PLAN.md — Server: revokedAt migration, list/revoke endpoints, InvitationResponse isRevoked field
@@ -196,6 +196,8 @@ Plans:
 - [x] 21-04-PLAN.md — Gap fix: Spanish translations + register-with-invite navigation
 - [x] 21-05-PLAN.md — Gap fix: Revoked invitation error propagation (410 mapping, StringKey, UI)
 - [x] 21-06-PLAN.md — Gap fix: Resend invitation feature (server + SDK + admin panel)
+- [ ] 21-07-PLAN.md — Gap fix: Server email validation in acceptInvitation + delete-on-resend deduplication
+- [ ] 21-08-PLAN.md — Gap fix: Localized role badges + email pre-fill/lock in Login/Register from invitation
 
 ### Phase 22: Developer Onboarding
 **Goal**: A new developer can go from `git clone` to running the full app with all services in under 10 minutes
@@ -226,7 +228,7 @@ Plans:
 | 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
-| 21. Invitations & Profiles | v1.2 | 6/6 | Complete | 2026-03-01 |
+| 21. Invitations & Profiles | v1.2 | 6/8 | In progress | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
 **Total: 97 plans shipped across 2 milestones, 9 phases planned for v1.2**

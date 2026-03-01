@@ -18,15 +18,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 21 gap closure complete — all 6 plans shipped
+**Current focus:** Phase 21 gap closure round 2 — plans 21-07 and 21-08 created
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 21 (Group Invitations & Profiles) — COMPLETE
-Plan: 6 of 6 in Phase — ALL COMPLETE
-Status: Phase 21 fully complete including gap closure plans 21-04, 21-05, 21-06
-Last activity: 2026-03-01 — Phase 21 gap closure executed
+Phase: 21 (Group Invitations & Profiles) — GAP CLOSURE ROUND 2
+Plan: 6 of 8 completed in Phase — 2 gap closure plans pending (21-07, 21-08)
+Status: Plans 21-07 (server email validation + resend dedup) and 21-08 (role badges + email pre-fill) ready for execution
+Last activity: 2026-03-02 — Gap closure round 2 plans created
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -126,7 +126,7 @@ v1.2 decisions:
 
 ## Session Continuity
 
-Last session: 2026-03-01
-Stopped at: Phase 21 fully complete (6/6 plans, including 3 gap closure)
+Last session: 2026-03-02
+Stopped at: Phase 21 gap closure round 2 — plans 21-07 and 21-08 created, ready for execution
 Resume file: None
-Next action: Phase 20 (Multi-Agent Orchestration) or Phase 22 (Developer Onboarding)
+Next action: Execute `/gsd-execute-phase 21-group-invitations-profiles` to run plans 21-07 and 21-08
