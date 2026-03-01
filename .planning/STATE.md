@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Polish & Patterns
 status: unknown
-last_updated: "2026-02-25T19:23:28.156Z"
+last_updated: "2026-03-01T17:42:45Z"
 progress:
   total_phases: 13
   completed_phases: 13
@@ -18,15 +18,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 18.2 gap closure FULLY complete (5/5 plans), Phase 19 COMPLETE — Ready for Phase 20
+**Current focus:** Phase 21 gap closure plan 04 complete — Spanish translations + register-with-invite navigation fix
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 19 of 22 (Structured AI & RAG Pipeline) — COMPLETE
-Plan: 6 of 6 in Phase — ALL COMPLETE + VERIFIED
-Status: Phase Complete — Verification PASSED (5/5 success criteria)
-Last activity: 2026-02-24 — Phase 19 executed and verified
+Phase: 21 (Group Invitations & Profiles)
+Plan: 4 of N in Phase — COMPLETE
+Status: Plan 21-04 complete — UAT gaps 1 & 2 closed
+Last activity: 2026-03-01 — Phase 21 plan 04 executed
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -92,6 +92,9 @@ v1.2 decisions:
 - [Phase 19]: FakeEmbeddingProvider returning zero vectors for test LLMEmbedder construction
 - [Phase 19]: TextEmbedding004 is a top-level val, not Models.TextEmbedding004
 
+- [Phase 21]: Use getInvitation (read-only) instead of acceptInvitation for post-registration groupId lookup — avoids non-idempotent call
+- [Phase 21]: Fall back to NavigateToDashboard on getInvitation failure — user IS in group, navigation is best-effort
+
 ### Blockers/Concerns
 
 - Open: Ktor testApplication dispatcher issue (KTOR-7121) -- workaround exists
@@ -118,7 +121,7 @@ v1.2 decisions:
 
 ## Session Continuity
 
-Last session: 2026-02-25
-Stopped at: Completed 18.2-05-PLAN.md (gap closure: request new invitation button + docs fixes)
+Last session: 2026-03-01
+Stopped at: Completed 21-04-PLAN.md (gap closure: Spanish translations + register-with-invite navigation)
 Resume file: None
-Next action: Plan Phase 20 (Multi-Agent Orchestration)
+Next action: Continue Phase 21 remaining plans or next phase
