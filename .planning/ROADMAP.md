@@ -193,9 +193,9 @@ Plans:
 - [x] 21-01-PLAN.md — Server: revokedAt migration, list/revoke endpoints, InvitationResponse isRevoked field
 - [x] 21-02-PLAN.md — SDK listInvitations/revokeInvitation + AdminPanel pending invitations section with revoke dialog
 - [x] 21-03-PLAN.md — Integration tests: full invitation lifecycle, revoke, expiry, authorization against Testcontainers
-- [ ] 21-04-PLAN.md — Gap fix: Spanish translations + register-with-invite navigation
-- [ ] 21-05-PLAN.md — Gap fix: Revoked invitation error propagation (410 mapping, StringKey, UI)
-- [ ] 21-06-PLAN.md — Gap fix: Resend invitation feature (server + SDK + admin panel)
+- [x] 21-04-PLAN.md — Gap fix: Spanish translations + register-with-invite navigation
+- [x] 21-05-PLAN.md — Gap fix: Revoked invitation error propagation (410 mapping, StringKey, UI)
+- [x] 21-06-PLAN.md — Gap fix: Resend invitation feature (server + SDK + admin panel)
 
 ### Phase 22: Developer Onboarding
 **Goal**: A new developer can go from `git clone` to running the full app with all services in under 10 minutes
@@ -226,7 +226,7 @@ Plans:
 | 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
-| 21. Invitations & Profiles | v1.2 | 3/6 | Gap closure | - |
+| 21. Invitations & Profiles | v1.2 | 6/6 | Complete | 2026-03-01 |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
-**Total: 94 plans shipped across 2 milestones, 9 phases planned for v1.2**
+**Total: 97 plans shipped across 2 milestones, 9 phases planned for v1.2**

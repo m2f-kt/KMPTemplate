@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Polish & Patterns
 status: unknown
-last_updated: "2026-03-01T17:42:45Z"
+last_updated: "2026-03-01T18:20:00Z"
 progress:
   total_phases: 13
   completed_phases: 13
-  total_plans: 57
-  completed_plans: 57
+  total_plans: 60
+  completed_plans: 60
 ---
 
 # Project State
@@ -18,15 +18,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 21 gap closure plan 06 complete — resend invitation full stack
+**Current focus:** Phase 21 gap closure complete — all 6 plans shipped
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 21 (Group Invitations & Profiles)
-Plan: 6 of N in Phase — COMPLETE
-Status: Plan 21-06 complete — resend invitation feature shipped
-Last activity: 2026-03-01 — Phase 21 plan 06 executed
+Phase: 21 (Group Invitations & Profiles) — COMPLETE
+Plan: 6 of 6 in Phase — ALL COMPLETE
+Status: Phase 21 fully complete including gap closure plans 21-04, 21-05, 21-06
+Last activity: 2026-03-01 — Phase 21 gap closure executed
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -97,6 +97,8 @@ v1.2 decisions:
 
   - [Phase 21]: Resend = revoke old + create new invitation (not just extend expiry) for clean audit trail
   - [Phase 21]: Resend only allowed for expired/revoked invitations (active ones should be revoked first)
+  - [Phase 21]: HTTP 410 mapped to ServerMapped (same as 422) to preserve server error code for StringKey resolution
+  - [Phase 21]: All 5 StringKeyResolver files must be updated simultaneously when adding StringKey entries
 
 ### Blockers/Concerns
 
@@ -125,6 +127,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 21-06-PLAN.md (gap closure: resend invitation full stack)
+Stopped at: Phase 21 fully complete (6/6 plans, including 3 gap closure)
 Resume file: None
-Next action: Continue Phase 21 remaining gap closure plans or next phase
+Next action: Phase 20 (Multi-Agent Orchestration) or Phase 22 (Developer Onboarding)
