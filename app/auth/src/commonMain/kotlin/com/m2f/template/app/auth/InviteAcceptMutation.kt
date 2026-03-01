@@ -16,6 +16,7 @@ sealed interface InviteAcceptMutation {
         val email: String,
         val isExpired: Boolean,
         val isAlreadyAccepted: Boolean,
+        val isRevoked: Boolean,
     ) : InviteAcceptMutation
     data class SetError(val error: StringKey?) : InviteAcceptMutation
     data class SetAcceptSuccess(val groupId: String) : InviteAcceptMutation

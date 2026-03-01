@@ -16,6 +16,7 @@ data class InviteAcceptModel(
     val email: String? = null,
     val isExpired: Boolean = false,
     val isAlreadyAccepted: Boolean = false,
+    val isRevoked: Boolean = false,
     val error: StringKey? = null,
     val acceptSuccess: Boolean = false,
     val acceptedGroupId: String? = null,

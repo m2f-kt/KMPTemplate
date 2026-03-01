@@ -61,6 +61,7 @@ class InviteAcceptViewModel(
                             email = invitation.email,
                             isExpired = invitation.isExpired,
                             isAlreadyAccepted = invitation.isAccepted,
+                            isRevoked = invitation.isRevoked,
                         )
                     )
                     sendMutation(InviteAcceptMutation.SetLoadingInvitation(false))
@@ -106,6 +107,7 @@ class InviteAcceptViewModel(
                 email = mutation.email,
                 isExpired = mutation.isExpired,
                 isAlreadyAccepted = mutation.isAlreadyAccepted,
+                isRevoked = mutation.isRevoked,
             )
             is InviteAcceptMutation.SetError -> model.copy(error = mutation.error)
             is InviteAcceptMutation.SetAcceptSuccess -> model.copy(

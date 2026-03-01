@@ -42,6 +42,8 @@ import template.app.auth.generated.resources.invite_subtitle
 import template.app.auth.generated.resources.invite_success_message
 import template.app.auth.generated.resources.invite_expired_hint
 import template.app.auth.generated.resources.invite_request_new
+import template.app.auth.generated.resources.invite_revoked
+import template.app.auth.generated.resources.invite_revoked_hint
 import template.app.auth.generated.resources.invite_title
 
 /**
@@ -159,6 +161,20 @@ fun InviteAcceptScreen(
                         )
                     }
 
+                    // Revoked alert
+                    if (state.isRevoked) {
+                        TerminalAlert(
+                            message = stringResource(Res.string.invite_revoked),
+                            variant = AlertVariant.Error,
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        TerminalText(
+                            text = stringResource(Res.string.invite_revoked_hint),
+                            style = typography.sm,
+                            color = colors.textDim,
+                        )
+                    }
+
                     // Already accepted alert
                     if (state.isAlreadyAccepted) {
                         TerminalAlert(
@@ -198,8 +214,8 @@ fun InviteAcceptScreen(
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        // Action buttons (only if not expired, not already accepted, and not success)
-                        if (!state.isExpired && !state.isAlreadyAccepted && !state.acceptSuccess) {
+                        // Action buttons (only if not expired, not already accepted, not revoked, and not success)
+                        if (!state.isExpired && !state.isAlreadyAccepted && !state.isRevoked && !state.acceptSuccess) {
                             if (state.isLoggedIn) {
                                 // Authenticated user: show Accept button
                                 TerminalButton(
