@@ -1,5 +1,5 @@
 ---
-status: diagnosed
+status: planned
 phase: 21-group-invitations-profiles
 source: [21-01-SUMMARY.md, 21-02-SUMMARY.md, 21-03-SUMMARY.md]
 started: 2026-03-01T14:12:00Z
