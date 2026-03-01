@@ -69,6 +69,10 @@ import template.app.admin.generated.resources.admin_member_count
 import template.app.admin.generated.resources.admin_no_group_description
 import template.app.admin.generated.resources.admin_no_group_title
 import template.app.admin.generated.resources.admin_register_member_button
+import template.app.admin.generated.resources.admin_resend_button
+import template.app.admin.generated.resources.admin_role_admin
+import template.app.admin.generated.resources.admin_role_member
+import template.app.admin.generated.resources.admin_role_owner
 import template.app.admin.generated.resources.admin_slug_prefix
 import template.app.admin.generated.resources.admin_table_email
 import template.app.admin.generated.resources.admin_table_joined
@@ -87,7 +91,6 @@ import template.app.admin.generated.resources.admin_invitations_role
 import template.app.admin.generated.resources.admin_invitations_status
 import template.app.admin.generated.resources.admin_invitations_title
 import template.app.admin.generated.resources.admin_revoke_button
-import template.app.admin.generated.resources.admin_resend_button
 import template.app.admin.generated.resources.admin_revoke_cancel
 import template.app.admin.generated.resources.admin_revoke_confirm
 import template.app.admin.generated.resources.admin_revoke_submit
@@ -571,7 +574,14 @@ private fun InvitationsSection(
                         showBottomBorder = index < invitations.lastIndex,
                     ) {
                         TerminalTableCell(text = invitation.email)
-                        TerminalTableCell(text = invitation.role, secondary = true)
+                        TerminalTableCell(
+                            text = when (invitation.role.uppercase()) {
+                                "OWNER" -> stringResource(Res.string.admin_role_owner)
+                                "ADMIN" -> stringResource(Res.string.admin_role_admin)
+                                else -> stringResource(Res.string.admin_role_member)
+                            },
+                            secondary = true,
+                        )
                         Box(modifier = Modifier.weight(1f)) {
                             when {
                                 invitation.isAccepted -> TerminalBadge(

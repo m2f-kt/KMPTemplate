@@ -55,6 +55,11 @@
     <string name="admin_revoke_button">Revoke</string>
     <string name="admin_resend_button">Resend</string>
 
+    <!-- Admin Role Labels -->
+    <string name="admin_role_member">Member</string>
+    <string name="admin_role_admin">Admin</string>
+    <string name="admin_role_owner">Owner</string>
+
     <!-- Admin Table Headers -->
     <string name="admin_table_name">NAME</string>
     <string name="admin_table_email">EMAIL</string>
@@ -133,6 +138,7 @@
     <string name="error_invitation_expired">This invitation has expired</string>
     <string name="error_invitation_already_accepted">This invitation has already been accepted</string>
     <string name="error_invitation_not_found">Invitation not found</string>
+    <string name="error_invitation_email_mismatch">Your email does not match this invitation</string>
 
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>

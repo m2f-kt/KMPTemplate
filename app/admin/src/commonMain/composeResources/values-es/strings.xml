@@ -52,6 +52,11 @@
     <string name="admin_revoke_button">Revocar</string>
     <string name="admin_resend_button">Reenviar</string>
 
+    <!-- Admin Role Labels -->
+    <string name="admin_role_member">Miembro</string>
+    <string name="admin_role_admin">Admin</string>
+    <string name="admin_role_owner">Propietario</string>
+
     <string name="admin_no_group_title">Ningún grupo seleccionado</string>
     <string name="admin_no_group_description">Eres administrador del sistema pero no eres miembro de ningún grupo. Únete o crea un grupo para administrarlo aquí.</string>
 
@@ -133,6 +138,7 @@
     <string name="error_invitation_expired">Esta invitación ha expirado</string>
     <string name="error_invitation_already_accepted">Esta invitación ya ha sido aceptada</string>
     <string name="error_invitation_not_found">Invitación no encontrada</string>
+    <string name="error_invitation_email_mismatch">Tu correo no coincide con esta invitación</string>
 
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>
