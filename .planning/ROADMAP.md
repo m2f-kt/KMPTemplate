@@ -187,7 +187,7 @@ Plans:
   3. Admin sees list of pending invitations and can revoke any of them; expired tokens are rejected
   4. User uploads a profile image → avatar URL appears in their profile; TerminalAvatar component shows image instead of initials
   5. Integration tests cover the full auth → groups → invite → accept flow end-to-end against Testcontainers PostgreSQL
-**Plans**: 8 plans in 2 waves (3 original + 3 gap closure + 2 gap closure round 2)
+**Plans**: 10 plans (3 original + 3 gap closure + 2 gap closure round 2 + 2 gap closure round 3)
 
 Plans:
 - [x] 21-01-PLAN.md — Server: revokedAt migration, list/revoke endpoints, InvitationResponse isRevoked field
@@ -198,6 +198,8 @@ Plans:
 - [x] 21-06-PLAN.md — Gap fix: Resend invitation feature (server + SDK + admin panel)
 - [x] 21-07-PLAN.md — Gap fix: Server email validation in acceptInvitation + delete-on-resend deduplication
 - [x] 21-08-PLAN.md — Gap fix: Localized role badges + email pre-fill/lock in Login/Register from invitation
+- [ ] 21-09-PLAN.md — Gap fix: Members table role localization + Koin DI AuthService registration fix
+- [ ] 21-10-PLAN.md — Gap fix: Invitation-membership consistency (cross-check, resend guard, cleanup)
 
 ### Phase 22: Developer Onboarding
 **Goal**: A new developer can go from `git clone` to running the full app with all services in under 10 minutes
