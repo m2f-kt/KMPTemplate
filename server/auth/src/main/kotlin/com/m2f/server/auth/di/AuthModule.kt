@@ -6,7 +6,6 @@ import com.m2f.server.auth.repository.RefreshTokenRepository
 import com.m2f.server.auth.repository.UserRepository
 import com.m2f.server.auth.security.JwtTokenProvider
 import com.m2f.server.auth.security.PasswordHasher
-import com.m2f.server.auth.service.AuthService
 import com.m2f.server.auth.service.OAuthService
 import com.m2f.server.auth.service.PasswordResetService
 import com.m2f.server.auth.service.UserService
@@ -15,9 +14,9 @@ import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.koin.dsl.module
 
 /**
- * Koin module wiring all auth dependencies.
- * AuthService is registered with the default constructor (no invitation callback).
- * The server module overrides it with invitation support via allowOverride.
+ * Koin module wiring auth dependencies (repositories, security, and supporting services).
+ * AuthService is NOT registered here — it's registered in serverModule with the
+ * invitation acceptance callback properly wired (see ServerModule.kt).
  */
 val authModule = module {
     single { PasswordHasher(get<Configuration>().computeDispatcher) }
@@ -25,7 +24,6 @@ val authModule = module {
     single { UserRepository(get<R2dbcDatabase>()) }
     single { RefreshTokenRepository(get<R2dbcDatabase>()) }
     single { PasswordResetTokenRepository(get<R2dbcDatabase>()) }
-    single { AuthService(get(), get(), get(), get()) }
     single { UserService(get()) }
     single { OAuthService(get(), get(), get(), get<HttpClient>(), get()) }
     single { PasswordResetService(get(), get(), get(), get(), get(), get()) }
