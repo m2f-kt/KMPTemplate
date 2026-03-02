@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -166,6 +167,8 @@ fun TerminalTableRow(
                 text = cell,
                 modifier = Modifier.weight(1f),
                 style = typography.sm.copy(color = colors.tableRowTextPrimary),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }
@@ -197,6 +200,8 @@ fun RowScope.TerminalTableCell(
         style = typography.sm.copy(
             color = if (secondary) colors.tableRowTextSecondary else colors.tableRowTextPrimary,
         ),
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
     )
 }
 
