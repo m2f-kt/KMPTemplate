@@ -26,7 +26,7 @@ Milestone: v1.2 Polish & Patterns
 Phase: 21 (Group Invitations & Profiles) — COMPLETE
 Plan: 10 of 10 completed in Phase — all plans shipped
 Status: Phase 21 fully complete, ready for Phase 22
-Last activity: 2026-03-02 — Completed 21-10 (invitation-membership consistency)
+Last activity: 2026-03-02 - Completed quick task 3: as an admin I would like to remove users from my group
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -127,14 +127,14 @@ v1.2 decisions:
 
 ### Quick Tasks Completed
 
-| # | Description | Date | Commit | Directory |
-|---|-------------|------|--------|-----------|
-| 1 | Fix dashboard display name to show user name instead of hardcoded email | 2026-02-21 | f0e3dcc | [1-fix-dashboard-display-name-to-show-user-](./quick/1-fix-dashboard-display-name-to-show-user-/) |
-| 3 | Add remove member functionality to admin panel with confirmation dialog | 2026-03-02 | 4ff65aa | [3-as-an-admin-i-would-like-to-remove-users](./quick/3-as-an-admin-i-would-like-to-remove-users/) |
+| # | Description | Date | Commit | Status | Directory |
+|---|-------------|------|--------|--------|-----------|
+| 1 | Fix dashboard display name to show user name instead of hardcoded email | 2026-02-21 | f0e3dcc | | [1-fix-dashboard-display-name-to-show-user-](./quick/1-fix-dashboard-display-name-to-show-user-/) |
+| 3 | as an admin I would like to remove users from my group | 2026-03-02 | 4ff65aa | Verified | [3-as-an-admin-i-would-like-to-remove-users](./quick/3-as-an-admin-i-would-like-to-remove-users/) |
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed quick task 3 — Remove member from admin panel
+Stopped at: Completed quick task 3: as an admin I would like to remove users from my group
 Resume file: None
 Next action: Begin Phase 22 (Developer Onboarding) or any other priority
