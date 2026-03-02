@@ -130,10 +130,11 @@ v1.2 decisions:
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 1 | Fix dashboard display name to show user name instead of hardcoded email | 2026-02-21 | f0e3dcc | [1-fix-dashboard-display-name-to-show-user-](./quick/1-fix-dashboard-display-name-to-show-user-/) |
+| 3 | Add remove member functionality to admin panel with confirmation dialog | 2026-03-02 | 4ff65aa | [3-as-an-admin-i-would-like-to-remove-users](./quick/3-as-an-admin-i-would-like-to-remove-users/) |
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 21-10-PLAN.md — Phase 21 fully complete (10/10 plans)
+Stopped at: Completed quick task 3 — Remove member from admin panel
 Resume file: None
 Next action: Begin Phase 22 (Developer Onboarding) or any other priority
