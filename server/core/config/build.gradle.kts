@@ -7,6 +7,7 @@ group = "com.m2f.core"
 dependencies {
     api(projects.core.models)
     implementation(libs.bundles.fp)
+    implementation(libs.dotenv.kotlin)
     implementation(libs.bundles.ktor.core)
     implementation(libs.koin.core)
     implementation(libs.ktor.server.auth)

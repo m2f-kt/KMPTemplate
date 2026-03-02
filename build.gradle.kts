@@ -32,3 +32,193 @@ allprojects {
         }
     }
 }
+
+// ─────────────────────────────────────────────
+// Dev tasks
+// ─────────────────────────────────────────────
+
+fun runCommand(vararg args: String): Int {
+    val process = ProcessBuilder(*args).redirectErrorStream(true).start()
+    process.inputStream.bufferedReader().readLines()
+    return process.waitFor()
+}
+
+tasks.register("checkSetup") {
+    group = "dev"
+    description = "Check development prerequisites"
+    doLast {
+        data class Check(val name: String, val passed: Boolean, val fix: String)
+
+        val checks = mutableListOf<Check>()
+
+        // Check Docker running
+        val dockerResult = runCommand("docker", "info")
+        checks.add(
+            Check(
+                "Docker running", dockerResult == 0,
+                "Install Docker Desktop: https://docs.docker.com/get-docker/"
+            )
+        )
+
+        // Check Docker Compose available
+        val composeResult = runCommand("docker", "compose", "version")
+        checks.add(
+            Check(
+                "Docker Compose available", composeResult == 0,
+                "Docker Compose is included with Docker Desktop. Update Docker Desktop if missing."
+            )
+        )
+
+        // Check JDK version (11+)
+        val javaVersion = System.getProperty("java.version").split(".")[0].toIntOrNull() ?: 0
+        checks.add(
+            Check(
+                "JDK 11+ (found: ${System.getProperty("java.version")})", javaVersion >= 11,
+                "Install JDK 11+: https://adoptium.net/"
+            )
+        )
+
+        // Check port availability for each Docker service port
+        val ports = mapOf(
+            5436 to "PostgreSQL",
+            9002 to "MinIO API",
+            9003 to "MinIO Console",
+            1025 to "MailHog SMTP",
+            8025 to "MailHog Web",
+            8080 to "Server"
+        )
+        for ((port, service) in ports) {
+            val available = try {
+                java.net.ServerSocket(port).use { true }
+            } catch (_: Exception) {
+                false
+            }
+            checks.add(
+                Check(
+                    "Port $port ($service) available", available,
+                    "Port $port in use. Stop the process using it: lsof -ti:$port | xargs kill"
+                )
+            )
+        }
+
+        // Print results
+        println("\n  Development Environment Check\n")
+        checks.forEach { check ->
+            val icon = if (check.passed) "✅" else "❌"
+            println("  $icon ${check.name}")
+            if (!check.passed) println("     Fix: ${check.fix}")
+        }
+        println()
+
+        val failures = checks.filter { !it.passed }
+        if (failures.isNotEmpty()) {
+            throw GradleException("${failures.size} prerequisite(s) failed. Fix the issues above and re-run ./gradlew checkSetup")
+        }
+        println("  All checks passed ✅\n")
+    }
+}
+
+tasks.register<Exec>("devUp") {
+    group = "dev"
+    description = "Start all Docker services and wait for healthy"
+    commandLine("docker", "compose", "up", "-d", "--wait")
+}
+
+tasks.register<Exec>("seedData") {
+    group = "dev"
+    description = "Seed demo user (dev@example.com / password)"
+    commandLine(
+        "bash", "-c",
+        "docker exec -i template-postgres psql -U postgres -d application < init-scripts/02-seed-dev-data.sql"
+    )
+}
+
+tasks.register("devSetup") {
+    group = "dev"
+    description = "Full first-time setup: check prerequisites + start Docker services"
+    dependsOn("checkSetup")
+    finalizedBy("devUp")
+}
+
+tasks.register("testAll") {
+    group = "dev"
+    description = "Run all tests across all modules"
+    dependsOn(":server:test")
+    dependsOn(":shared:allTests")
+}
+
+tasks.register("verifySetup") {
+    group = "dev"
+    description = "Verify all services are running correctly"
+    doLast {
+        data class Check(val name: String, val passed: Boolean, val fix: String)
+
+        val checks = mutableListOf<Check>()
+
+        // Check Docker containers
+        val containers = mapOf(
+            "template-postgres" to "PostgreSQL",
+            "template-minio" to "MinIO",
+            "template-mailhog" to "MailHog",
+        )
+        for ((container, service) in containers) {
+            val process = ProcessBuilder(
+                "docker", "inspect", "--format", "{{.State.Health.Status}}", container
+            ).redirectErrorStream(true).start()
+            val output = process.inputStream.bufferedReader().readText().trim()
+            val exitCode = process.waitFor()
+            val healthy = exitCode == 0 && output == "healthy"
+            checks.add(
+                Check(
+                    "$service container ($container)", healthy,
+                    "Run: ./gradlew devUp"
+                )
+            )
+        }
+
+        // Check server /health endpoint
+        try {
+            val url = java.net.URI("http://localhost:8080/health").toURL()
+            val connection = url.openConnection() as java.net.HttpURLConnection
+            connection.connectTimeout = 3000
+            connection.readTimeout = 3000
+            connection.requestMethod = "GET"
+            val responseCode = connection.responseCode
+            val body = connection.inputStream.bufferedReader().readText()
+            connection.disconnect()
+
+            checks.add(
+                Check(
+                    "Server /health endpoint", responseCode == 200,
+                    "Start the server: ./gradlew :server:run"
+                )
+            )
+
+            if (responseCode == 200 || responseCode == 503) {
+                println("\n  Server Health Response:\n  $body\n")
+            }
+        } catch (_: Exception) {
+            checks.add(
+                Check(
+                    "Server /health endpoint", false,
+                    "Start the server: ./gradlew :server:run"
+                )
+            )
+        }
+
+        // Print results
+        println("\n  Setup Verification\n")
+        checks.forEach { check ->
+            val icon = if (check.passed) "✅" else "❌"
+            println("  $icon ${check.name}")
+            if (!check.passed) println("     Fix: ${check.fix}")
+        }
+        println()
+
+        val failures = checks.filter { !it.passed }
+        if (failures.isNotEmpty()) {
+            throw GradleException("${failures.size} service(s) not healthy. Fix the issues above.")
+        }
+        println("  All services verified ✅\n")
+    }
+}

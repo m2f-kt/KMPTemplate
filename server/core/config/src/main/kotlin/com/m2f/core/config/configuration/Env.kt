@@ -1,8 +1,15 @@
 package com.m2f.core.config.configuration
 
+import io.github.cdimascio.dotenv.Dotenv
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+
+private val dotenv: Dotenv = Dotenv.configure()
+    .ignoreIfMissing()
+    .load()
+
+private fun env(key: String): String? = dotenv[key] ?: env(key)
 
 private const val PORT: Int = 8080
 private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKeyForJWT123!@#$%^&*()"
@@ -22,21 +29,21 @@ data class Env(
     val serverConfig: ServerConfig = ServerConfig(),
 ) {
     data class Http(
-        val host: String = System.getenv("HOST") ?: "0.0.0.0",
-        val port: Int = System.getenv("PORT")?.toIntOrNull() ?: PORT,
-        val baseUrl: String = System.getenv("BASE_URL") ?: "http://localhost:$port",
+        val host: String = env("HOST") ?: "0.0.0.0",
+        val port: Int = env("PORT")?.toIntOrNull() ?: PORT,
+        val baseUrl: String = env("BASE_URL") ?: "http://localhost:$port",
         /** Frontend app URL for generating user-facing links (e.g., invitation links). */
-        val appUrl: String = System.getenv("APP_URL") ?: "http://localhost:8081",
+        val appUrl: String = env("APP_URL") ?: "http://localhost:8081",
     )
 
     data class Auth(
-        val secret: String = System.getenv("JWT_SECRET") ?: AUTH_SECRET,
-        val audience: String = System.getenv("JWT_AUDIENCE") ?: AUTH_AUDIENCE,
-        val issuer: String = System.getenv("JWT_ISSUER") ?: AUTH_ISSUER,
-        val jwtRealm: String = System.getenv("JWT_REALM") ?: REALM,
-        val accessTokenExpiry: Long = System.getenv("JWT_ACCESS_EXPIRY")?.toLongOrNull()
+        val secret: String = env("JWT_SECRET") ?: AUTH_SECRET,
+        val audience: String = env("JWT_AUDIENCE") ?: AUTH_AUDIENCE,
+        val issuer: String = env("JWT_ISSUER") ?: AUTH_ISSUER,
+        val jwtRealm: String = env("JWT_REALM") ?: REALM,
+        val accessTokenExpiry: Long = env("JWT_ACCESS_EXPIRY")?.toLongOrNull()
             ?: ACCESS_TOKEN_EXPIRY,
-        val refreshTokenExpiry: Long = System.getenv("JWT_REFRESH_EXPIRY")?.toLongOrNull()
+        val refreshTokenExpiry: Long = env("JWT_REFRESH_EXPIRY")?.toLongOrNull()
             ?: REFRESH_TOKEN_EXPIRY,
     )
 
@@ -45,19 +52,19 @@ data class Env(
      * Empty defaults mean OAuth is non-functional until env vars are configured.
      */
     data class OAuth(
-        val googleClientId: String = System.getenv("GOOGLE_CLIENT_ID") ?: "",
-        val googleClientSecret: String = System.getenv("GOOGLE_CLIENT_SECRET") ?: "",
-        val appleClientId: String = System.getenv("APPLE_CLIENT_ID") ?: "",
-        val appleClientSecret: String = System.getenv("APPLE_CLIENT_SECRET") ?: "",
-        val appleTeamId: String = System.getenv("APPLE_TEAM_ID") ?: "",
-        val appleKeyId: String = System.getenv("APPLE_KEY_ID") ?: "",
+        val googleClientId: String = env("GOOGLE_CLIENT_ID") ?: "",
+        val googleClientSecret: String = env("GOOGLE_CLIENT_SECRET") ?: "",
+        val appleClientId: String = env("APPLE_CLIENT_ID") ?: "",
+        val appleClientSecret: String = env("APPLE_CLIENT_SECRET") ?: "",
+        val appleTeamId: String = env("APPLE_TEAM_ID") ?: "",
+        val appleKeyId: String = env("APPLE_KEY_ID") ?: "",
         /** WASM app URL for OAuth callback redirect. */
-        val wasmRedirectUrl: String = System.getenv("OAUTH_WASM_REDIRECT_URL")
+        val wasmRedirectUrl: String = env("OAUTH_WASM_REDIRECT_URL")
             ?: "http://localhost:8080/auth/callback",
         /** Custom URL scheme for Android/iOS deep link callbacks. */
-        val mobileScheme: String = System.getenv("OAUTH_MOBILE_SCHEME") ?: "template",
+        val mobileScheme: String = env("OAUTH_MOBILE_SCHEME") ?: "template",
         /** Localhost port for desktop (JVM) OAuth callback. */
-        val desktopLocalhostPort: Int = System.getenv("OAUTH_DESKTOP_LOCALHOST_PORT")?.toIntOrNull()
+        val desktopLocalhostPort: Int = env("OAUTH_DESKTOP_LOCALHOST_PORT")?.toIntOrNull()
             ?: 9876,
     )
 
@@ -67,8 +74,8 @@ data class Env(
      * Set AI_ENABLED=true and GOOGLE_API_KEY to activate AI endpoints.
      */
     data class Ai(
-        val enabled: Boolean = System.getenv("AI_ENABLED")?.toBooleanStrictOrNull() ?: false,
-        val googleApiKey: String = System.getenv("GOOGLE_API_KEY") ?: "",
+        val enabled: Boolean = env("AI_ENABLED")?.toBooleanStrictOrNull() ?: false,
+        val googleApiKey: String = env("GOOGLE_API_KEY") ?: "",
     )
 
     /**
@@ -77,11 +84,11 @@ data class Env(
      * Set env vars for production S3/R2/GCS deployments.
      */
     data class S3(
-        val endpoint: String = System.getenv("S3_ENDPOINT") ?: "http://localhost:9002",
-        val bucket: String = System.getenv("S3_BUCKET") ?: "uploads",
-        val region: String = System.getenv("S3_REGION") ?: "us-east-1",
-        val accessKey: String = System.getenv("S3_ACCESS_KEY") ?: "minioadmin",
-        val secretKey: String = System.getenv("S3_SECRET_KEY") ?: "minioadmin",
+        val endpoint: String = env("S3_ENDPOINT") ?: "http://localhost:9002",
+        val bucket: String = env("S3_BUCKET") ?: "uploads",
+        val region: String = env("S3_REGION") ?: "us-east-1",
+        val accessKey: String = env("S3_ACCESS_KEY") ?: "minioadmin",
+        val secretKey: String = env("S3_SECRET_KEY") ?: "minioadmin",
     )
 
     /**
@@ -90,11 +97,11 @@ data class Env(
      * MailHog accepts any credentials, so username/password default to empty.
      */
     data class Email(
-        val host: String = System.getenv("SMTP_HOST") ?: "localhost",
-        val port: Int = System.getenv("SMTP_PORT")?.toIntOrNull() ?: 1025,
-        val username: String = System.getenv("SMTP_USERNAME") ?: "",
-        val password: String = System.getenv("SMTP_PASSWORD") ?: "",
-        val fromAddress: String = System.getenv("SMTP_FROM") ?: "noreply@template.local",
+        val host: String = env("SMTP_HOST") ?: "localhost",
+        val port: Int = env("SMTP_PORT")?.toIntOrNull() ?: 1025,
+        val username: String = env("SMTP_USERNAME") ?: "",
+        val password: String = env("SMTP_PASSWORD") ?: "",
+        val fromAddress: String = env("SMTP_FROM") ?: "noreply@template.local",
     )
 
     data class ServerConfig(

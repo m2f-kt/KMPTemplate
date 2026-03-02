@@ -35,6 +35,7 @@ import com.m2f.server.auth.service.UserService
 import com.m2f.template.di.serverModule
 import com.m2f.template.models.dto.ErrorResponse
 import com.m2f.template.routes.avatarRoutes
+import com.m2f.template.routes.healthRoutes
 import com.m2f.template.startup.config
 import com.m2f.template.startup.startServer
 import io.ktor.client.HttpClient
@@ -129,6 +130,8 @@ fun Application.module() {
     configureSecurity()
     configureOAuth()
     routing {
+        // Unauthenticated health check endpoint
+        healthRoutes(database, config.env)
         val authService: AuthService by inject()
         val passwordResetService: PasswordResetService by inject()
         val userService: UserService by inject()
