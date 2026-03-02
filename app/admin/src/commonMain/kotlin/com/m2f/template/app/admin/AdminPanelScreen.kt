@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.components.button.ButtonVariant
 import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.TerminalIconButton
 import com.m2f.template.designsystem.components.card.CardVariant
 import com.m2f.template.designsystem.components.card.TerminalCard
 import com.m2f.template.designsystem.components.data.TerminalTable
@@ -34,6 +36,7 @@ import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
+import com.m2f.template.designsystem.components.feedback.TerminalTooltip
 import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.GroupRole
@@ -149,13 +152,15 @@ fun AdminPanelScreen(
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
-    Box(modifier = modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
+        val isMobile = maxWidth < 600.dp
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(colors.bg)
                 .verticalScroll(rememberScrollState())
-                .padding(32.dp),
+                .padding(if (isMobile) 16.dp else 32.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             // Top bar: back button + title
@@ -258,14 +263,15 @@ fun AdminPanelScreen(
 
             // Members table
             if (state.members.isNotEmpty()) {
+                val memberHeaders = buildList {
+                    add(stringResource(Res.string.admin_table_name))
+                    if (!isMobile) add(stringResource(Res.string.admin_table_email))
+                    add(stringResource(Res.string.admin_table_role))
+                    if (!isMobile) add(stringResource(Res.string.admin_table_joined))
+                    add(stringResource(Res.string.admin_table_actions))
+                }
                 TerminalTable(
-                    headers = listOf(
-                        stringResource(Res.string.admin_table_name),
-                        stringResource(Res.string.admin_table_email),
-                        stringResource(Res.string.admin_table_role),
-                        stringResource(Res.string.admin_table_joined),
-                        stringResource(Res.string.admin_table_actions),
-                    ),
+                    headers = memberHeaders,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     state.members.forEachIndexed { index, member ->
@@ -273,7 +279,9 @@ fun AdminPanelScreen(
                             showBottomBorder = index < state.members.lastIndex,
                         ) {
                             TerminalTableCell(text = member.name)
-                            TerminalTableCell(text = member.email, secondary = true)
+                            if (!isMobile) {
+                                TerminalTableCell(text = member.email, secondary = true)
+                            }
                             Box(modifier = Modifier.weight(1f)) {
                                 TerminalBadge(
                                     text = when (member.role) {
@@ -287,17 +295,34 @@ fun AdminPanelScreen(
                                     },
                                 )
                             }
-                            TerminalTableCell(
-                                text = formatJoinedDate(member.joinedAt),
-                                secondary = true,
-                            )
+                            if (!isMobile) {
+                                TerminalTableCell(
+                                    text = formatJoinedDate(member.joinedAt),
+                                    secondary = true,
+                                )
+                            }
                             Box(modifier = Modifier.weight(1f)) {
                                 if (member.role != GroupRole.Owner) {
-                                    TerminalButton(
-                                        text = stringResource(Res.string.admin_remove_button),
-                                        onClick = { onConfirmRemoveMember(member) },
-                                        variant = ButtonVariant.Destructive,
-                                    )
+                                    if (isMobile) {
+                                        TerminalTooltip(text = stringResource(Res.string.admin_remove_button)) {
+                                            TerminalIconButton(
+                                                onClick = { onConfirmRemoveMember(member) },
+                                                variant = ButtonVariant.Destructive,
+                                            ) {
+                                                TerminalText(
+                                                    "\u2715",
+                                                    style = TerminalTheme.typography.sm,
+                                                    color = TerminalTheme.colors.btnDestructiveText,
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        TerminalButton(
+                                            text = stringResource(Res.string.admin_remove_button),
+                                            onClick = { onConfirmRemoveMember(member) },
+                                            variant = ButtonVariant.Destructive,
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -326,6 +351,7 @@ fun AdminPanelScreen(
                 InvitationsSection(
                     invitations = state.invitations,
                     isLoading = state.isLoadingInvitations,
+                    isMobile = isMobile,
                     onConfirmRevoke = onConfirmRevoke,
                     onResend = onResend,
                 )
@@ -554,14 +580,14 @@ private fun InviteDialog(
  * Section displaying pending group invitations in a table.
  *
  * Shows a TerminalCard with header "Pending Invitations" and a table with
- * Email, Role, Status, and Actions columns. Status shows badges for
- * Accepted/Revoked/Expired states or an expiry countdown for active invitations.
- * A Revoke button is shown for active (non-accepted, non-revoked, non-expired) invitations.
+ * Email, Role, Status, and Actions columns. On mobile, the Role column is hidden
+ * and action text buttons become icon buttons with tooltips.
  */
 @Composable
 private fun InvitationsSection(
     invitations: List<InvitationResponse>,
     isLoading: Boolean,
+    isMobile: Boolean,
     onConfirmRevoke: (InvitationResponse) -> Unit,
     onResend: (InvitationResponse) -> Unit,
 ) {
@@ -585,13 +611,14 @@ private fun InvitationsSection(
                 color = colors.textMuted,
             )
         } else {
+            val invitationHeaders = buildList {
+                add(stringResource(Res.string.admin_invitations_email))
+                if (!isMobile) add(stringResource(Res.string.admin_invitations_role))
+                add(stringResource(Res.string.admin_invitations_status))
+                add(stringResource(Res.string.admin_invitations_actions))
+            }
             TerminalTable(
-                headers = listOf(
-                    stringResource(Res.string.admin_invitations_email),
-                    stringResource(Res.string.admin_invitations_role),
-                    stringResource(Res.string.admin_invitations_status),
-                    stringResource(Res.string.admin_invitations_actions),
-                ),
+                headers = invitationHeaders,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 invitations.forEachIndexed { index, invitation ->
@@ -599,14 +626,16 @@ private fun InvitationsSection(
                         showBottomBorder = index < invitations.lastIndex,
                     ) {
                         TerminalTableCell(text = invitation.email)
-                        TerminalTableCell(
-                            text = when (invitation.role.uppercase()) {
-                                "OWNER" -> stringResource(Res.string.admin_role_owner)
-                                "ADMIN" -> stringResource(Res.string.admin_role_admin)
-                                else -> stringResource(Res.string.admin_role_member)
-                            },
-                            secondary = true,
-                        )
+                        if (!isMobile) {
+                            TerminalTableCell(
+                                text = when (invitation.role.uppercase()) {
+                                    "OWNER" -> stringResource(Res.string.admin_role_owner)
+                                    "ADMIN" -> stringResource(Res.string.admin_role_admin)
+                                    else -> stringResource(Res.string.admin_role_member)
+                                },
+                                secondary = true,
+                            )
+                        }
                         Box(modifier = Modifier.weight(1f)) {
                             when {
                                 invitation.isAccepted -> TerminalBadge(
@@ -638,18 +667,48 @@ private fun InvitationsSection(
                         Box(modifier = Modifier.weight(1f)) {
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 if (!invitation.isAccepted && !invitation.isRevoked && !invitation.isExpired) {
-                                    TerminalButton(
-                                        text = stringResource(Res.string.admin_revoke_button),
-                                        onClick = { onConfirmRevoke(invitation) },
-                                        variant = ButtonVariant.Destructive,
-                                    )
+                                    if (isMobile) {
+                                        TerminalTooltip(text = stringResource(Res.string.admin_revoke_button)) {
+                                            TerminalIconButton(
+                                                onClick = { onConfirmRevoke(invitation) },
+                                                variant = ButtonVariant.Destructive,
+                                            ) {
+                                                TerminalText(
+                                                    "\u2715",
+                                                    style = TerminalTheme.typography.sm,
+                                                    color = TerminalTheme.colors.btnDestructiveText,
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        TerminalButton(
+                                            text = stringResource(Res.string.admin_revoke_button),
+                                            onClick = { onConfirmRevoke(invitation) },
+                                            variant = ButtonVariant.Destructive,
+                                        )
+                                    }
                                 }
                                 if (invitation.isExpired || invitation.isRevoked) {
-                                    TerminalButton(
-                                        text = stringResource(Res.string.admin_resend_button),
-                                        onClick = { onResend(invitation) },
-                                        variant = ButtonVariant.Secondary,
-                                    )
+                                    if (isMobile) {
+                                        TerminalTooltip(text = stringResource(Res.string.admin_resend_button)) {
+                                            TerminalIconButton(
+                                                onClick = { onResend(invitation) },
+                                                variant = ButtonVariant.Secondary,
+                                            ) {
+                                                TerminalText(
+                                                    "\u21BB",
+                                                    style = TerminalTheme.typography.sm,
+                                                    color = TerminalTheme.colors.btnSecondaryText,
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        TerminalButton(
+                                            text = stringResource(Res.string.admin_resend_button),
+                                            onClick = { onResend(invitation) },
+                                            variant = ButtonVariant.Secondary,
+                                        )
+                                    }
                                 }
                             }
                         }
