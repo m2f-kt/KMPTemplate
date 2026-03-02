@@ -179,11 +179,12 @@ fun TerminalButton(
 /**
  * A square icon-only button styled from [TerminalTheme].
  *
- * Uses Secondary styling (surface background with border) and hover states.
+ * Supports multiple visual variants via [ButtonVariant] (defaults to Secondary).
  * Built exclusively with Foundation primitives (no Material3 dependencies).
  *
  * @param onClick Callback invoked when the button is clicked.
  * @param modifier Modifier applied to the root container.
+ * @param variant The visual variant controlling colors and borders.
  * @param enabled Whether the button is interactive.
  * @param content The icon composable rendered inside the button.
  */
@@ -191,6 +192,7 @@ fun TerminalButton(
 fun TerminalIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    variant: ButtonVariant = ButtonVariant.Secondary,
     enabled: Boolean = true,
     content: @Composable () -> Unit,
 ) {
@@ -202,18 +204,60 @@ fun TerminalIconButton(
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
+    // Resolve variant colors
+    val variantBg: Color
+    val variantBorderColor: Color
+    val variantHoverBg: Color
+    val variantHasBorder: Boolean
+
+    when (variant) {
+        ButtonVariant.Default -> {
+            variantBg = colors.btnPrimaryBg
+            variantBorderColor = Color.Transparent
+            variantHoverBg = colors.btnPrimaryHoverBg
+            variantHasBorder = false
+        }
+        ButtonVariant.Secondary -> {
+            variantBg = colors.btnSecondaryBg
+            variantBorderColor = colors.btnSecondaryBorder
+            variantHoverBg = colors.btnSecondaryHoverBg
+            variantHasBorder = true
+        }
+        ButtonVariant.Ghost -> {
+            variantBg = Color.Transparent
+            variantBorderColor = Color.Transparent
+            variantHoverBg = colors.btnGhostHoverBg
+            variantHasBorder = false
+        }
+        ButtonVariant.Destructive -> {
+            variantBg = colors.btnDestructiveBg
+            variantBorderColor = Color.Transparent
+            variantHoverBg = colors.btnDestructiveHoverBg
+            variantHasBorder = false
+        }
+        ButtonVariant.Success -> {
+            variantBg = colors.btnSuccessBg
+            variantBorderColor = Color.Transparent
+            variantHoverBg = colors.btnSuccessHoverBg
+            variantHasBorder = false
+        }
+    }
+
     val backgroundColor: Color
     val borderColor: Color
     val hoverBg: Color
+    val hasBorder: Boolean
 
     if (!enabled) {
         backgroundColor = colors.btnDisabledBg
         borderColor = colors.btnDisabledBorder
         hoverBg = colors.btnDisabledBg
+        hasBorder = true
     } else {
-        backgroundColor = colors.btnSecondaryBg
-        borderColor = colors.btnSecondaryBorder
-        hoverBg = colors.btnSecondaryHoverBg
+        backgroundColor = variantBg
+        borderColor = variantBorderColor
+        hoverBg = variantHoverBg
+        hasBorder = variantHasBorder
     }
 
     val resolvedBg = if (isHovered && enabled) hoverBg else backgroundColor
@@ -223,7 +267,13 @@ fun TerminalIconButton(
     Box(
         modifier = modifier
             .clip(shape)
-            .border(borders.thin, borderColor, shape)
+            .then(
+                if (hasBorder) {
+                    Modifier.border(borders.thin, borderColor, shape)
+                } else {
+                    Modifier
+                },
+            )
             .background(resolvedBg)
             .clickable(
                 interactionSource = interactionSource,
