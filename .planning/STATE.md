@@ -26,7 +26,7 @@ Milestone: v1.2 Polish & Patterns
 Phase: 21 (Group Invitations & Profiles) — COMPLETE
 Plan: 10 of 10 completed in Phase — all plans shipped
 Status: Phase 21 fully complete, ready for Phase 22
-Last activity: 2026-03-02 - Completed quick task 6: make admin panel tables mobile-responsive
+Last activity: 2026-03-02 - Completed quick task 7: hide resend action for accepted invitations
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -134,10 +134,11 @@ v1.2 decisions:
 | 4 | Fix admin group member view: translate remove member, remove register CTA, format dates | 2026-03-02 | aa6623a | Verified | [4-fix-admin-group-member-view-translate-re](./quick/4-fix-admin-group-member-view-translate-re/) |
 | 5 | Fix date format to use numeric month (DD/MM/YYYY) | 2026-03-02 | 105dc4e | Verified | [5-fix-date-format-to-use-numeric-month-dd-](./quick/5-fix-date-format-to-use-numeric-month-dd-/) |
 | 6 | Make admin panel tables mobile-responsive | 2026-03-02 | 6dcf1e8 | Complete | [6-make-admin-panel-tables-mobile-responsiv](./quick/6-make-admin-panel-tables-mobile-responsiv/) |
+| 7 | Hide resend action for accepted invitations | 2026-03-02 | b13c283 | Complete | [7-hide-resend-action-for-accepted-invitati](./quick/7-hide-resend-action-for-accepted-invitati/) |
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed quick task 6: make admin panel tables mobile-responsive
+Stopped at: Completed quick task 7: hide resend action for accepted invitations
 Resume file: None
 Next action: Begin Phase 22 (Developer Onboarding) or any other priority
