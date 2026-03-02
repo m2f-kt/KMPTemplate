@@ -38,6 +38,7 @@ import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.GroupRole
 import com.m2f.template.models.dto.InvitationResponse
+import com.m2f.template.models.dto.MemberResponse
 import com.m2f.template.models.localization.StringKey
 import kotlin.time.Clock
 import kotlinx.datetime.LocalDateTime
@@ -69,11 +70,17 @@ import template.app.admin.generated.resources.admin_member_count
 import template.app.admin.generated.resources.admin_no_group_description
 import template.app.admin.generated.resources.admin_no_group_title
 import template.app.admin.generated.resources.admin_register_member_button
+import template.app.admin.generated.resources.admin_remove_button
+import template.app.admin.generated.resources.admin_remove_member_cancel
+import template.app.admin.generated.resources.admin_remove_member_confirm
+import template.app.admin.generated.resources.admin_remove_member_submit
+import template.app.admin.generated.resources.admin_remove_member_title
 import template.app.admin.generated.resources.admin_resend_button
 import template.app.admin.generated.resources.admin_role_admin
 import template.app.admin.generated.resources.admin_role_member
 import template.app.admin.generated.resources.admin_role_owner
 import template.app.admin.generated.resources.admin_slug_prefix
+import template.app.admin.generated.resources.admin_table_actions
 import template.app.admin.generated.resources.admin_table_email
 import template.app.admin.generated.resources.admin_table_joined
 import template.app.admin.generated.resources.admin_table_name
@@ -135,6 +142,9 @@ fun AdminPanelScreen(
     onCancelRevoke: () -> Unit,
     onExecuteRevoke: () -> Unit,
     onResend: (InvitationResponse) -> Unit,
+    onConfirmRemoveMember: (MemberResponse) -> Unit,
+    onCancelRemoveMember: () -> Unit,
+    onExecuteRemoveMember: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = TerminalTheme.colors
@@ -263,6 +273,7 @@ fun AdminPanelScreen(
                         stringResource(Res.string.admin_table_email),
                         stringResource(Res.string.admin_table_role),
                         stringResource(Res.string.admin_table_joined),
+                        stringResource(Res.string.admin_table_actions),
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -289,6 +300,15 @@ fun AdminPanelScreen(
                                 text = member.joinedAt.ifBlank { "-" },
                                 secondary = true,
                             )
+                            Box(modifier = Modifier.weight(1f)) {
+                                if (member.role != GroupRole.Owner) {
+                                    TerminalButton(
+                                        text = stringResource(Res.string.admin_remove_button),
+                                        onClick = { onConfirmRemoveMember(member) },
+                                        variant = ButtonVariant.Destructive,
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -355,6 +375,16 @@ fun AdminPanelScreen(
                 isRevoking = state.isRevoking,
                 onRevoke = onExecuteRevoke,
                 onCancel = onCancelRevoke,
+            )
+        }
+
+        // Remove Member Confirmation Dialog overlay
+        if (state.showRemoveMemberDialog && state.removeMemberTarget != null) {
+            RemoveMemberDialog(
+                memberName = state.removeMemberTarget.name,
+                isRemoving = state.isRemovingMember,
+                onRemove = onExecuteRemoveMember,
+                onCancel = onCancelRemoveMember,
             )
         }
     }
@@ -695,6 +725,69 @@ private fun RevokeDialog(
                         onClick = onRevoke,
                         variant = ButtonVariant.Destructive,
                         enabled = !isRevoking,
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * Modal confirmation dialog for removing a member from the group.
+ *
+ * Displays a dark overlay with a centered card containing a confirmation message
+ * and Remove/Cancel buttons.
+ */
+@Composable
+private fun RemoveMemberDialog(
+    memberName: String,
+    isRemoving: Boolean,
+    onRemove: () -> Unit,
+    onCancel: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onCancel,
+            ),
+        contentAlignment = Alignment.Center,
+    ) {
+        TerminalCard(
+            title = stringResource(Res.string.admin_remove_member_title),
+            modifier = Modifier
+                .widthIn(max = 400.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {}, // Prevent click through to overlay
+                ),
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                TerminalText(
+                    text = stringResource(Res.string.admin_remove_member_confirm, memberName),
+                    style = TerminalTheme.typography.sm,
+                    color = TerminalTheme.colors.text,
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    TerminalButton(
+                        text = stringResource(Res.string.admin_remove_member_cancel),
+                        onClick = onCancel,
+                        variant = ButtonVariant.Ghost,
+                        enabled = !isRemoving,
+                    )
+                    TerminalButton(
+                        text = if (isRemoving) "..." else stringResource(Res.string.admin_remove_member_submit),
+                        onClick = onRemove,
+                        variant = ButtonVariant.Destructive,
+                        enabled = !isRemoving,
                     )
                 }
             }
