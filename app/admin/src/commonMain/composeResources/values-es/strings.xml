@@ -52,6 +52,14 @@
     <string name="admin_revoke_button">Revocar</string>
     <string name="admin_resend_button">Reenviar</string>
 
+    <!-- Remove Member Dialog -->
+    <string name="admin_remove_member_title">Eliminar Miembro</string>
+    <string name="admin_remove_member_confirm">¿Eliminar a %1$s de este grupo?</string>
+    <string name="admin_remove_member_cancel">Cancelar</string>
+    <string name="admin_remove_member_submit">Eliminar</string>
+    <string name="admin_remove_button">Eliminar</string>
+    <string name="admin_table_actions">ACCIONES</string>
+
     <!-- Admin Role Labels -->
     <string name="admin_role_member">Miembro</string>
     <string name="admin_role_admin">Admin</string>

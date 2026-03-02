@@ -69,7 +69,6 @@ import template.app.admin.generated.resources.admin_loading
 import template.app.admin.generated.resources.admin_member_count
 import template.app.admin.generated.resources.admin_no_group_description
 import template.app.admin.generated.resources.admin_no_group_title
-import template.app.admin.generated.resources.admin_register_member_button
 import template.app.admin.generated.resources.admin_remove_button
 import template.app.admin.generated.resources.admin_remove_member_cancel
 import template.app.admin.generated.resources.admin_remove_member_confirm
@@ -248,22 +247,14 @@ fun AdminPanelScreen(
                 }
             }
 
-            // Action buttons row: Invite Member + Register Member
+            // Action buttons row: Invite Member
             // Note: Create Group is intentionally hidden when a group exists.
             // Multi-group support deferred to future iteration.
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                TerminalButton(
-                    text = stringResource(Res.string.admin_invite_member),
-                    onClick = onOpenInvite,
-                    variant = ButtonVariant.Secondary,
-                )
-                TerminalButton(
-                    text = stringResource(Res.string.admin_register_member_button),
-                    onClick = onRegisterMember,
-                )
-            }
+            TerminalButton(
+                text = stringResource(Res.string.admin_invite_member),
+                onClick = onOpenInvite,
+                variant = ButtonVariant.Secondary,
+            )
 
             // Members table
             if (state.members.isNotEmpty()) {
@@ -297,7 +288,7 @@ fun AdminPanelScreen(
                                 )
                             }
                             TerminalTableCell(
-                                text = member.joinedAt.ifBlank { "-" },
+                                text = formatJoinedDate(member.joinedAt),
                                 secondary = true,
                             )
                             Box(modifier = Modifier.weight(1f)) {
@@ -792,6 +783,23 @@ private fun RemoveMemberDialog(
                 }
             }
         }
+    }
+}
+
+/**
+ * Formats an ISO-8601 date string (e.g. "2026-03-02T12:34:56") as "DD/MM/YYYY".
+ * Returns "-" if the string is blank or parsing fails.
+ */
+private fun formatJoinedDate(isoDate: String): String {
+    if (isoDate.isBlank()) return "-"
+    return try {
+        val dateTime = LocalDateTime.parse(isoDate)
+        val day = dateTime.day.toString().padStart(2, '0')
+        val month = dateTime.month.toString().padStart(2, '0')
+        val year = dateTime.year.toString()
+        "$day/$month/$year"
+    } catch (_: Exception) {
+        "-"
     }
 }
 
