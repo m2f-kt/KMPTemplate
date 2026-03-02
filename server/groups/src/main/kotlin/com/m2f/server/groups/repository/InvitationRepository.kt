@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.toKotlinLocalDateTime
 import org.jetbrains.exposed.v1.core.ResultRow
+import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.jetbrains.exposed.v1.r2dbc.insert
@@ -127,6 +128,27 @@ class InvitationRepository(private val db: R2dbcDatabase) {
             it[revokedAt] = now
         }
         rowsUpdated > 0
+    }
+
+    /**
+     * Mark all non-accepted invitations for a given email+group as accepted.
+     * Used for cleanup when a user joins a group via any invitation.
+     * Returns the number of rows updated.
+     */
+    suspend fun markAcceptedByGroupAndEmail(
+        groupId: Uuid,
+        email: String,
+        acceptedBy: Uuid,
+    ): Int = suspendTransaction(db = db) {
+        val now = java.time.LocalDateTime.now().toKotlinLocalDateTime()
+        InvitationsTable.update({
+            (InvitationsTable.groupId eq groupId) and
+                (InvitationsTable.email.lowerCase() eq email.lowercase()) and
+                (InvitationsTable.acceptedAt.isNull())
+        }) {
+            it[acceptedAt] = now
+            it[InvitationsTable.acceptedBy] = acceptedBy
+        }
     }
 
     /**
