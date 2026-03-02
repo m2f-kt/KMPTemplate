@@ -795,7 +795,7 @@ private fun formatJoinedDate(isoDate: String): String {
     return try {
         val dateTime = LocalDateTime.parse(isoDate)
         val day = dateTime.day.toString().padStart(2, '0')
-        val month = dateTime.month.toString().padStart(2, '0')
+        val month = dateTime.monthNumber.toString().padStart(2, '0')
         val year = dateTime.year.toString()
         "$day/$month/$year"
     } catch (_: Exception) {
