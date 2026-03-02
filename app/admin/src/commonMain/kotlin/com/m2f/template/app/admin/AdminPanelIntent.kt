@@ -1,6 +1,7 @@
 package com.m2f.template.app.admin
 
 import com.m2f.template.models.dto.InvitationResponse
+import com.m2f.template.models.dto.MemberResponse
 
 sealed interface AdminPanelIntent {
     data class LoadAdminPanel(val groupId: String) : AdminPanelIntent
@@ -21,4 +22,8 @@ sealed interface AdminPanelIntent {
     data object CancelRevoke : AdminPanelIntent
     data object ExecuteRevoke : AdminPanelIntent
     data class ResendInvitation(val invitation: InvitationResponse) : AdminPanelIntent
+    // Remove member intents
+    data class ConfirmRemoveMember(val member: MemberResponse) : AdminPanelIntent
+    data object CancelRemoveMember : AdminPanelIntent
+    data object ExecuteRemoveMember : AdminPanelIntent
 }

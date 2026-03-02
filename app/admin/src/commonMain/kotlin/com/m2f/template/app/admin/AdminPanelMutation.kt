@@ -46,4 +46,9 @@ sealed interface AdminPanelMutation {
     data object HideRevokeDialog : AdminPanelMutation
     data class SetRevoking(val revoking: Boolean) : AdminPanelMutation
     data class SetResending(val resending: Boolean) : AdminPanelMutation
+    // Remove member mutations
+    data class ShowRemoveMemberDialog(val member: MemberResponse) : AdminPanelMutation
+    data object HideRemoveMemberDialog : AdminPanelMutation
+    data class SetRemovingMember(val removing: Boolean) : AdminPanelMutation
+    data class RemoveMemberFromList(val userId: String) : AdminPanelMutation
 }

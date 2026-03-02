@@ -35,4 +35,8 @@ data class AdminPanelModel(
     val revokeTarget: InvitationResponse? = null,
     val isRevoking: Boolean = false,
     val isResending: Boolean = false,
+    // Remove member dialog state
+    val showRemoveMemberDialog: Boolean = false,
+    val removeMemberTarget: MemberResponse? = null,
+    val isRemovingMember: Boolean = false,
 )

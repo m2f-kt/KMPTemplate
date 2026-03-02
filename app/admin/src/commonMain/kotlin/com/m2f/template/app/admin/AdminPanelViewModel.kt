@@ -40,6 +40,10 @@ class AdminPanelViewModel(
                 is AdminPanelIntent.CancelRevoke -> sendMutation(AdminPanelMutation.HideRevokeDialog)
                 is AdminPanelIntent.ExecuteRevoke -> handleRevokeInvitation()
                 is AdminPanelIntent.ResendInvitation -> handleResendInvitation(intent.invitation)
+                // Remove member handling
+                is AdminPanelIntent.ConfirmRemoveMember -> sendMutation(AdminPanelMutation.ShowRemoveMemberDialog(intent.member))
+                is AdminPanelIntent.CancelRemoveMember -> sendMutation(AdminPanelMutation.HideRemoveMemberDialog)
+                is AdminPanelIntent.ExecuteRemoveMember -> handleRemoveMember()
             }
         }
     }
@@ -198,6 +202,23 @@ class AdminPanelViewModel(
         )
     }
 
+    private suspend fun handleRemoveMember() {
+        val target = model.value.removeMemberTarget ?: return
+        sendMutation(AdminPanelMutation.SetRemovingMember(true))
+        sdk.removeMember(model.value.groupId, target.userId).fold(
+            ifLeft = { error ->
+                sendMutation(AdminPanelMutation.SetRemovingMember(false))
+                sendMutation(AdminPanelMutation.HideRemoveMemberDialog)
+                sendMutation(AdminPanelMutation.SetError(StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR))
+            },
+            ifRight = {
+                sendMutation(AdminPanelMutation.SetRemovingMember(false))
+                sendMutation(AdminPanelMutation.HideRemoveMemberDialog)
+                sendMutation(AdminPanelMutation.RemoveMemberFromList(target.userId))
+            },
+        )
+    }
+
     override suspend fun reduce(
         model: AdminPanelModel,
         mutation: AdminPanelMutation,
@@ -265,5 +286,13 @@ class AdminPanelViewModel(
         is AdminPanelMutation.HideRevokeDialog -> model.copy(showRevokeDialog = false, revokeTarget = null, isRevoking = false)
         is AdminPanelMutation.SetRevoking -> model.copy(isRevoking = mutation.revoking)
         is AdminPanelMutation.SetResending -> model.copy(isResending = mutation.resending)
+        // Remove member mutations
+        is AdminPanelMutation.ShowRemoveMemberDialog -> model.copy(showRemoveMemberDialog = true, removeMemberTarget = mutation.member)
+        is AdminPanelMutation.HideRemoveMemberDialog -> model.copy(showRemoveMemberDialog = false, removeMemberTarget = null, isRemovingMember = false)
+        is AdminPanelMutation.SetRemovingMember -> model.copy(isRemovingMember = mutation.removing)
+        is AdminPanelMutation.RemoveMemberFromList -> model.copy(
+            members = model.members.filter { it.userId != mutation.userId },
+            memberCount = model.memberCount - 1,
+        )
     }
 }

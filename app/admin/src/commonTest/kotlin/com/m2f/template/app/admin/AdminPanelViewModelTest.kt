@@ -107,6 +107,188 @@ class AdminPanelViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `ExecuteRemoveMember success removes member from list`() {
+        val sdk = fakeSdk {
+            group {
+                getGroup { Either.Right(testGroup) }
+                getMembers { _, _, _ -> Either.Right(testMembers) }
+                removeMember { _, _ -> Either.Right(Unit) }
+            }
+        }
+        val viewModel = AdminPanelViewModel(sdk)
+        viewModel.test {
+            intent(AdminPanelIntent.LoadAdminPanel("g1"))
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                ),
+            )
+            intent(AdminPanelIntent.ConfirmRemoveMember(testMembers.items[1]))
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                    showRemoveMemberDialog = true,
+                    removeMemberTarget = testMembers.items[1],
+                ),
+            )
+            intent(AdminPanelIntent.ExecuteRemoveMember)
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 1,
+                    members = listOf(testMembers.items[0]),
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                    showRemoveMemberDialog = false,
+                    removeMemberTarget = null,
+                    isRemovingMember = false,
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun `ExecuteRemoveMember failure closes dialog and sets error`() {
+        val sdk = fakeSdk {
+            group {
+                getGroup { Either.Right(testGroup) }
+                getMembers { _, _, _ -> Either.Right(testMembers) }
+                removeMember { _, _ -> Either.Left(AppError.Group.Forbidden(message = "Cannot remove owner")) }
+            }
+        }
+        val viewModel = AdminPanelViewModel(sdk)
+        viewModel.test {
+            intent(AdminPanelIntent.LoadAdminPanel("g1"))
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                ),
+            )
+            intent(AdminPanelIntent.ConfirmRemoveMember(testMembers.items[1]))
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                    showRemoveMemberDialog = true,
+                    removeMemberTarget = testMembers.items[1],
+                ),
+            )
+            intent(AdminPanelIntent.ExecuteRemoveMember)
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                    showRemoveMemberDialog = false,
+                    removeMemberTarget = null,
+                    isRemovingMember = false,
+                    error = StringKey.GROUP_FORBIDDEN,
+                ),
+            )
+        }
+    }
+
+    @Test
+    fun `CancelRemoveMember hides dialog`() {
+        val sdk = fakeSdk {
+            group {
+                getGroup { Either.Right(testGroup) }
+                getMembers { _, _, _ -> Either.Right(testMembers) }
+            }
+        }
+        val viewModel = AdminPanelViewModel(sdk)
+        viewModel.test {
+            intent(AdminPanelIntent.LoadAdminPanel("g1"))
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                ),
+            )
+            intent(AdminPanelIntent.ConfirmRemoveMember(testMembers.items[1]))
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                    showRemoveMemberDialog = true,
+                    removeMemberTarget = testMembers.items[1],
+                ),
+            )
+            intent(AdminPanelIntent.CancelRemoveMember)
+            model(
+                AdminPanelModel(
+                    isLoading = false,
+                    groupId = "g1",
+                    groupName = "Test Group",
+                    groupSlug = "test-group",
+                    groupDescription = "A test group",
+                    memberCount = 2,
+                    members = testMembers.items,
+                    membersCursor = null,
+                    hasMoreMembers = false,
+                    showRemoveMemberDialog = false,
+                    removeMemberTarget = null,
+                ),
+            )
+        }
+    }
+
+    @Test
     fun `LoadMoreMembers appends to member list`() {
         val firstPage = PaginatedMemberResponse(
             items = listOf(testMembers.items.first()),
