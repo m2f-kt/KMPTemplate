@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Polish & Patterns
 status: in-progress
-last_updated: "2026-03-02T00:34:43.000Z"
+last_updated: "2026-03-02T00:37:08.000Z"
 progress:
   total_phases: 14
   completed_phases: 14
-  total_plans: 66
-  completed_plans: 66
+  total_plans: 67
+  completed_plans: 67
 ---
 
 # Project State
@@ -18,20 +18,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-02-21)
 
 **Core value:** A developer can clone this template, run the setup CLI, and immediately have a working full-stack app with auth, database, DI, AI agents, and a component library -- no infrastructure decisions required.
-**Current focus:** Phase 21 — plan 09 (gap closure) complete, 1 plan remaining
+**Current focus:** Phase 21 complete — all 10 plans shipped including gap closure round 2
 
 ## Current Position
 
 Milestone: v1.2 Polish & Patterns
-Phase: 21 (Group Invitations & Profiles) — IN PROGRESS
-Plan: 9 of 10 completed in Phase
-Status: Plan 21-09 complete (UAT gap closure), 1 plan remaining
-Last activity: 2026-03-02 — Completed 21-09 (role badge localization + DI fix)
+Phase: 21 (Group Invitations & Profiles) — COMPLETE
+Plan: 10 of 10 completed in Phase — all plans shipped
+Status: Phase 21 fully complete, ready for Phase 22
+Last activity: 2026-03-02 — Completed 21-10 (invitation-membership consistency)
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
 - v1.1 Architecture: [████████████████████] 100% (34 plans) -- shipped 2026-02-21
-- v1.2 Polish & Patterns: [████████████████░░░░] 23/TBD plans
+- v1.2 Polish & Patterns: [████████████████░░░░] 24/TBD plans
 
 ## Performance Metrics
 
@@ -104,6 +104,8 @@ v1.2 decisions:
   - [Phase 21]: HTTP 422 (unprocessable) for email mismatch — validation error, not auth/gone
   - [Phase 21]: Resend = delete old + create new (not revoke old) to eliminate duplicate invitation rows
   - [Phase 21]: Remove duplicate AuthService from authModule — serverModule is sole registrar with invitation callback (single-registration pattern)
+  - [Phase 21]: Cross-reference member emails at query time in listInvitations — override stale invitation status for existing members
+  - [Phase 21]: markAcceptedByGroupAndEmail uses case-insensitive email matching via Exposed lowerCase()
 
 ### Blockers/Concerns
 
@@ -132,6 +134,6 @@ v1.2 decisions:
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed 21-09-PLAN.md — UAT gap closure (role badge localization + DI fix)
+Stopped at: Completed 21-10-PLAN.md — Phase 21 fully complete (10/10 plans)
 Resume file: None
-Next action: Execute plan 21-10 or complete Phase 21
+Next action: Begin Phase 22 (Developer Onboarding) or any other priority

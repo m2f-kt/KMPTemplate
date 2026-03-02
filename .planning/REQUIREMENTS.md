@@ -54,7 +54,7 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 
 - [x] **INVITE-01**: Admin can invite a user to a group by email — server generates token, sends invite email with link
 - [x] **INVITE-02**: Recipient can accept invite via token link — creates/activates account and joins group with specified role -- Phase 18.2
-- [ ] **INVITE-03**: Admin can view pending invitations for their group and revoke them
+- [x] **INVITE-03**: Admin can view pending invitations for their group and revoke them
 - [x] **INVITE-04**: Invite tokens expire after configurable duration and cannot be reused -- Phase 18.2
 
 ### Tech Debt
@@ -139,7 +139,7 @@ Deferred to future milestone. Tracked but not in v1.2 roadmap.
 | EMAIL-04 | Phase 18 | Pending |
 | INVITE-01 | Phase 21 | Complete |
 | INVITE-02 | Phase 18.2 | Complete |
-| INVITE-03 | Phase 21 | Pending |
+| INVITE-03 | Phase 21 | Complete |
 | INVITE-04 | Phase 18.2 | Complete |
 | DEBT-01 | Phase 21 | Pending |
 | DEBT-02 | Phase 18 | Pending |
