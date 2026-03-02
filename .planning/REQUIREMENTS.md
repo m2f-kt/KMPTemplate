@@ -41,7 +41,7 @@ Requirements for v1.2 Polish & Patterns milestone. Each maps to roadmap phases.
 - [x] **PROF-01**: UsersTable has avatarUrl column and UserResponse DTO includes avatarUrl field
 - [x] **PROF-02**: User can upload a profile image via PUT /api/users/me/avatar endpoint
 - [ ] **PROF-03**: TerminalAvatar component displays image when avatarUrl is present, falls back to initials
-- [ ] **PROF-04**: ProfileViewModel supports avatar upload intent and reflects avatar URL in state
+- [x] **PROF-04**: ProfileViewModel supports avatar upload intent and reflects avatar URL in state
 
 ### Email Infrastructure
 
@@ -132,7 +132,7 @@ Deferred to future milestone. Tracked but not in v1.2 roadmap.
 | PROF-01 | Phase 21 | Complete |
 | PROF-02 | Phase 21 | Complete |
 | PROF-03 | Phase 21 | Pending |
-| PROF-04 | Phase 21 | Pending |
+| PROF-04 | Phase 21 | Complete |
 | EMAIL-01 | Phase 18 | Pending |
 | EMAIL-02 | Phase 17 | Pending |
 | EMAIL-03 | Phase 17 | Pending |
