@@ -274,7 +274,11 @@ fun AdminPanelScreen(
                             TerminalTableCell(text = member.email, secondary = true)
                             Box(modifier = Modifier.weight(1f)) {
                                 TerminalBadge(
-                                    text = member.role.value,
+                                    text = when (member.role) {
+                                        is GroupRole.Owner -> stringResource(Res.string.admin_role_owner)
+                                        is GroupRole.Admin -> stringResource(Res.string.admin_role_admin)
+                                        is GroupRole.Member -> stringResource(Res.string.admin_role_member)
+                                    },
                                     variant = when (member.role) {
                                         is GroupRole.Owner, is GroupRole.Admin -> BadgeVariant.Success
                                         is GroupRole.Member -> BadgeVariant.Default
