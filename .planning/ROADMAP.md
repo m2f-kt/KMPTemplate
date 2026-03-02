@@ -210,10 +210,13 @@ Plans:
   2. `./gradlew devUp` starts all Docker services, runs migrations, and seeds sample data in one command
   3. Architecture overview document exists explaining modules, data flow, and how to add a new feature
   4. First-run walkthrough guides developer from clone → configure → run → verify all services (auth, AI, files, email)
-**Plans**: TBD
+**Plans**: 4 plans in 3 waves
 
 Plans:
-- [ ] 22-01: TBD
+- [ ] 22-01-PLAN.md — Dotenv integration + .env.example
+- [ ] 22-02-PLAN.md — Gradle dev tasks (checkSetup, devUp, seedData, devSetup, testAll)
+- [ ] 22-03-PLAN.md — Health endpoint + verifySetup task
+- [ ] 22-04-PLAN.md — Documentation (README, architecture, getting started walkthrough)
 
 ## Progress
 
