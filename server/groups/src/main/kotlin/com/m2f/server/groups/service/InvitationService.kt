@@ -175,6 +175,13 @@ class InvitationService(
         // Mark invitation as accepted
         invitationRepository.markAccepted(request.token, uid)
 
+        // Clean up: mark all other invitations for same email+group as accepted
+        invitationRepository.markAcceptedByGroupAndEmail(
+            groupId = invitation.groupId,
+            email = invitation.email,
+            acceptedBy = uid,
+        )
+
         return AcceptInvitationResponse(
             groupId = invitation.groupId.toString(),
             groupSlug = group.slug,
@@ -205,6 +212,10 @@ class InvitationService(
 
         val invitations = invitationRepository.findByGroupId(gid)
 
+        // Cross-reference: get all member emails to detect stale invitations
+        val members = membershipRepository.listByGroupWithUsers(gid, cursor = null, limit = Int.MAX_VALUE)
+        val memberEmails = members.map { it.email.lowercase() }.toSet()
+
         // Cache inviter names to avoid repeated DB lookups
         val inviterNameCache = mutableMapOf<Uuid, String>()
 
@@ -212,7 +223,13 @@ class InvitationService(
             val inviterName = inviterNameCache.getOrPut(invitation.invitedBy) {
                 userRepository.findById(invitation.invitedBy)?.name ?: "A team member"
             }
-            invitation.toResponse(groupName = group.name, inviterName = inviterName)
+            val response = invitation.toResponse(groupName = group.name, inviterName = inviterName)
+            // If the invited email belongs to an existing member, show as accepted
+            if (invitation.email.lowercase() in memberEmails && !response.isAccepted) {
+                response.copy(isAccepted = true, isRevoked = false)
+            } else {
+                response
+            }
         }
     }
 
@@ -285,6 +302,13 @@ class InvitationService(
         val oldInvitation = invitationRepository.findById(iid)
         raise.ensure(oldInvitation != null) { InvitationNotFound() }
         raise.ensure(oldInvitation.groupId == gid) { InvitationNotFound() }
+
+        // Guard: reject resend if invitation email already belongs to a group member
+        val existingUser = userRepository.findByEmail(oldInvitation.email)
+        if (existingUser != null) {
+            val existingMembership = membershipRepository.findByUserAndGroup(existingUser.id, gid)
+            raise.ensure(existingMembership == null) { MemberAlreadyInGroup() }
+        }
 
         // Can only resend expired or revoked invitations
         val isExpiredOrRevoked = oldInvitation.revokedAt != null || run {
