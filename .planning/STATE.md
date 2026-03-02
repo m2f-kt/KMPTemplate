@@ -26,7 +26,7 @@ Milestone: v1.2 Polish & Patterns
 Phase: 21 (Group Invitations & Profiles) — COMPLETE
 Plan: 10 of 10 completed in Phase — all plans shipped
 Status: Phase 21 fully complete, ready for Phase 22
-Last activity: 2026-03-02 - Completed quick task 3: as an admin I would like to remove users from my group
+Last activity: 2026-03-02 - Completed quick task 4: fix admin group member view translate/remove/format
 
 Progress:
 - v1.0 MVP: [████████████████████] 100% (39 plans) -- shipped 2026-02-17
@@ -131,10 +131,11 @@ v1.2 decisions:
 |---|-------------|------|--------|--------|-----------|
 | 1 | Fix dashboard display name to show user name instead of hardcoded email | 2026-02-21 | f0e3dcc | | [1-fix-dashboard-display-name-to-show-user-](./quick/1-fix-dashboard-display-name-to-show-user-/) |
 | 3 | as an admin I would like to remove users from my group | 2026-03-02 | 4ff65aa | Verified | [3-as-an-admin-i-would-like-to-remove-users](./quick/3-as-an-admin-i-would-like-to-remove-users/) |
+| 4 | Fix admin group member view: translate remove member, remove register CTA, format dates | 2026-03-02 | aa6623a | Verified | [4-fix-admin-group-member-view-translate-re](./quick/4-fix-admin-group-member-view-translate-re/) |
 
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Completed quick task 3: as an admin I would like to remove users from my group
+Stopped at: Completed quick task 4: fix admin group member view translate/remove/format
 Resume file: None
 Next action: Begin Phase 22 (Developer Onboarding) or any other priority
