@@ -122,6 +122,7 @@ fun TerminalTableRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
             content = content,
         )
 
@@ -192,7 +193,7 @@ fun RowScope.TerminalTableCell(
 
     BasicText(
         text = text,
-        modifier = modifier.weight(1f),
+        modifier = modifier.weight(1f).padding(end = 8.dp),
         style = typography.sm.copy(
             color = if (secondary) colors.tableRowTextSecondary else colors.tableRowTextPrimary,
         ),
