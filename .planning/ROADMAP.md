@@ -230,7 +230,7 @@ Plans:
 | 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
 | 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
-| 21. Invitations & Profiles | 10/10 | Complete   | 2026-03-02 | - |
+| 21. Invitations & Profiles | 10/10 | Complete    | 2026-03-02 | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
 **Total: 97 plans shipped across 2 milestones, 9 phases planned for v1.2**

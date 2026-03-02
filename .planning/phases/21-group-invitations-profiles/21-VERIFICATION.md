@@ -1,11 +1,11 @@
 ---
 phase: 21-group-invitations-profiles
-verified: 2026-03-02T10:15:00Z
+verified: 2026-03-02T00:41:35Z
 status: passed
 score: 5/5 success criteria verified
 re_verification:
   previous_status: passed
-  previous_score: 10/10
+  previous_score: 5/5
   gaps_closed: []
   gaps_remaining: []
   regressions: []
@@ -13,14 +13,30 @@ requirements_coverage:
   satisfied: [INVITE-01, INVITE-02, INVITE-03, INVITE-04, PROF-01, PROF-02, PROF-03, PROF-04, DEBT-01]
   blocked: []
   orphaned: []
+human_verification:
+  - test: "Admin creates invitation → check MailHog for email with acceptance link"
+    expected: "Email arrives with correct subject and token URL"
+    why_human: "Requires running MailHog + full SMTP stack"
+  - test: "Profile → click avatar → select image → confirm crop → avatar renders"
+    expected: "Avatar image replaces initials in Profile, Dashboard, and Sidebar"
+    why_human: "Involves file picker, image cropping, visual rendering"
+  - test: "Admin Panel → pending invitations table → revoke → resend"
+    expected: "Table shows email, localized role, status, action buttons"
+    why_human: "Visual layout and interaction verification"
+  - test: "Open invite link → Login/Register → verify email pre-filled and locked"
+    expected: "Email field shows invitation email, cannot be edited"
+    why_human: "Multi-screen navigation flow"
+  - test: "Invite email → user accepts → admin views list → stale invite shows accepted"
+    expected: "No action buttons for existing members; resend returns 409"
+    why_human: "Multi-user workflow with database state transitions"
 ---
 
 # Phase 21: Group Invitations & Profiles — Verification Report
 
 **Phase Goal:** Admins can invite users by email, users can accept invites and upload profile avatars — the complete user lifecycle
-**Verified:** 2026-03-02T10:15:00Z
+**Verified:** 2026-03-02T00:41:35Z
 **Status:** passed
-**Re-verification:** Yes — full phase verification (previous VERIFICATION.md covered gap closure plans 21-04 through 21-06 only)
+**Re-verification:** Yes — full codebase re-verification after plans 21-09 and 21-10 completed
 
 ## Goal Achievement
 
@@ -28,11 +44,11 @@ requirements_coverage:
 
 | # | Truth (Success Criterion) | Status | Evidence |
 |---|---------------------------|--------|----------|
-| 1 | Admin invites user@example.com → invite email arrives in MailHog with acceptance link containing token | ✓ VERIFIED | `InvitationService.kt:107-112` calls `sendInvitationEmail()` with token in URL → `emailService.sendEmail()` at line 363. Link format: `{appUrl}/invite/accept?token={token}` |
-| 2 | Recipient clicks invite link → account is created/activated and user joins the group with specified role | ✓ VERIFIED | `InvitationService.kt:141-183` validates token, checks revoked/accepted/expired/email-match, calls `membershipRepository.insert()` at line 173 + `markAccepted()` at line 176. Returns `AcceptInvitationResponse` with groupId/role. `RegisterViewModel.kt:96-109` handles post-registration invite flow, navigating to the group. |
-| 3 | Admin sees list of pending invitations and can revoke any of them; expired tokens are rejected | ✓ VERIFIED | **List:** `InvitationRoutes.kt:44-48` GET route → `InvitationService.listInvitations()` at line 190. **Revoke:** `InvitationRoutes.kt:52-56` POST route → `InvitationService.revokeInvitation()` at line 225. **UI:** `AdminPanelScreen.kt:537` `InvitationsSection` composable renders table with email/role/status/actions. **Expired rejection:** `InvitationService.kt:158` raises `InvitationExpired()` when `nowLocal >= expiresAt`. |
-| 4 | User uploads a profile image → avatar URL appears in their profile; TerminalAvatar component shows image instead of initials | ✓ VERIFIED | **Upload:** `AvatarRoutes.kt:34-79` PUT `/api/users/me/avatar` receives multipart, uploads via FileService, updates `userRepository.updateAvatarUrl()`. **DTO:** `UserDtos.kt:13` has `avatarUrl: String?`. **ProfileVM:** `ProfileViewModel.kt:110` calls `sdk.uploadAvatar()`, line 120 sets `SetAvatarUrl(user.avatarUrl)`. **TerminalAvatar:** `TerminalAvatar.kt:47-58` renders `AsyncImage` when `imageUrl != null`, falls back to initials on error. **Wired:** `ProfileScreen.kt:359` passes `imageUrl = state.avatarUrl`, `DashboardScreen.kt:257,309` and `DashboardSidebar.kt:163` also pass `imageUrl = avatarUrl`. |
-| 5 | Integration tests cover the full auth → groups → invite → accept flow end-to-end against Testcontainers PostgreSQL | ✓ VERIFIED | `InvitationRoutesTest.kt` (378 lines, 6 tests): lifecycle (create→register→accept→verify membership), list, revoke+verify-cannot-accept, expired rejection, non-admin 403 on list, non-admin 403 on revoke. Uses `TestDatabase` with `PostgreSQLContainer("postgres:16-alpine")` and `invitationTestApp()` helper. Avatar test deferred (covered by FileRoutesTest in server/files). |
+| 1 | Admin invites user@example.com → invite email arrives in MailHog with acceptance link containing token | ✓ VERIFIED | `InvitationService.kt:107-112` calls `sendInvitationEmail()` → `emailService.sendEmail()` at line 387. Link format uses `{appUrl}/invite/accept?token={token}`. INVITATION_EXPIRY = 7.days (line 56). |
+| 2 | Recipient clicks invite link → account is created/activated and user joins the group with specified role | ✓ VERIFIED | `InvitationService.kt:140-183` validates token, checks revoked (line 151), expired (line 158), email match (line 170), inserts membership (line 173), marks accepted (line 176), cleans up other invitations (line 179 `markAcceptedByGroupAndEmail`). `RegisterViewModel.kt:99-107` handles post-registration invite navigation via `getInvitation` → `NavigateToGroup`. AuthService registered ONCE in serverModule with `onRegistered` callback (authModule confirmed clean — no duplicate). |
+| 3 | Admin sees list of pending invitations and can revoke any of them; expired tokens are rejected | ✓ VERIFIED | **List:** `InvitationRoutes.kt:44` GET route → `InvitationService.listInvitations()` with membership cross-reference (memberEmails at line 217, stale override at line 228). **Revoke:** `InvitationRoutes.kt:52` POST route → `InvitationService.revokeInvitation()`. **Resend:** `InvitationRoutes.kt:60` POST route. **UI:** `AdminPanelScreen.kt:537` InvitationsSection with localized role badges (lines 583-585). **Expired rejection:** `InvitationService.kt:158` raises `InvitationExpired()`. **Resend guard:** `InvitationService.kt:310` rejects with `MemberAlreadyInGroup` if email is existing member. |
+| 4 | User uploads a profile image → avatar URL appears in their profile; TerminalAvatar component shows image instead of initials | ✓ VERIFIED | **Upload:** `AvatarRoutes.kt` PUT (81 lines) — multipart → FileService → `updateAvatarUrl()`. **DB:** `UsersTable.kt:24` avatarUrl column. **DTO:** `UserDtos.kt:13` avatarUrl field. **ProfileVM:** `ProfileViewModel.kt:110` calls `sdk.uploadAvatar()`, line 120 `SetAvatarUrl(user.avatarUrl)`. **TerminalAvatar:** `TerminalAvatar.kt:47-50` renders `AsyncImage` when `imageUrl != null`, falls back to initials on error (line 48 `showFallback`). **Wired:** ProfileScreen:359 `imageUrl = state.avatarUrl`, DashboardScreen:257,309, DashboardSidebar:163 all pass `imageUrl = avatarUrl`. |
+| 5 | Integration tests cover the full auth → groups → invite → accept flow end-to-end against Testcontainers PostgreSQL | ✓ VERIFIED | `InvitationRoutesTest.kt` — 378 lines, 8 test methods, 6 `invitationTestApp(database)` calls. Uses `PostgreSQLContainer("postgres:16-alpine")` via `TestHelpers.kt:48`. Tests cover: lifecycle, list, revoke, expired, authorization (2 tests), and consistency. |
 
 **Score:** 5/5 success criteria verified
 
@@ -40,74 +56,74 @@ requirements_coverage:
 
 | Artifact | Expected | Status | Details |
 |----------|----------|--------|---------|
-| `server/groups/.../InvitationsTable.kt` | revokedAt column | ✓ VERIFIED | Line 30: `val revokedAt = datetime("revoked_at").nullable()` |
-| `server/groups/.../InvitationRepository.kt` | findByGroupId, findById, revokeById, deleteById | ✓ VERIFIED | All methods present, used by service |
-| `server/groups/.../InvitationService.kt` | create, get, accept, list, revoke, resend | ✓ VERIFIED | 382 lines, all 6 methods with auth checks |
-| `server/groups/.../InvitationRoutes.kt` | GET list, POST create/revoke/resend, POST accept, GET byToken | ✓ VERIFIED | All routes wired inside admin-protected block |
-| `server/groups/.../InvitationErrors.kt` | InvitationRevoked, InvitationEmailMismatch | ✓ VERIFIED | Both error classes exist |
-| `core/models/.../InvitationDtos.kt` | isRevoked field | ✓ VERIFIED | Line 31: `val isRevoked: Boolean = false` |
-| `core/models/.../ApiRoutes.kt` | ListInvitations, RevokeInvitation, ResendInvitation | ✓ VERIFIED | Lines 93, 96, 99 |
-| `core/models/.../AppError.kt` | Invitation.Revoked, Invitation.EmailMismatch | ✓ VERIFIED | Both variants in sealed class |
-| `core/models/.../StringKey.kt` | 5 INVITATION_* entries | ✓ VERIFIED | Lines 66-70: REVOKED, EXPIRED, ALREADY_ACCEPTED, NOT_FOUND, EMAIL_MISMATCH |
-| `core/sdk/.../InvitationApi.kt` | 6 interface methods | ✓ VERIFIED | create, get, accept, list, revoke, resend |
-| `core/sdk/.../InvitationApiImpl.kt` | 6 implementations | ✓ VERIFIED | All 6 methods call correct type-safe resources |
+| `server/groups/.../tables/InvitationsTable.kt` | revokedAt column | ✓ VERIFIED | Line 30: `val revokedAt = datetime("revoked_at").nullable()` |
+| `server/groups/.../repository/InvitationRepository.kt` | findByGroupId, findById, revokeById, deleteById, markAcceptedByGroupAndEmail | ✓ VERIFIED | Lines 104, 115, 127, 160, 140. All with proper Exposed imports (and, isNull, lowerCase). |
+| `server/groups/.../service/InvitationService.kt` | create, accept, list, revoke, resend + consistency logic | ✓ VERIFIED | Full service with membership cross-reference (line 217), resend guard (line 310), accept cleanup (line 179). |
+| `server/groups/.../routes/InvitationRoutes.kt` | GET list, POST create/revoke/resend | ✓ VERIFIED | Lines 44, 52, 60 — all type-safe routes. |
+| `server/groups/.../errors/InvitationErrors.kt` | InvitationExpired, InvitationRevoked, InvitationEmailMismatch | ✓ VERIFIED | Lines 26, 54, 68. |
+| `core/models/.../dto/InvitationDtos.kt` | isRevoked field | ✓ VERIFIED | Line 31: `val isRevoked: Boolean = false` |
+| `core/models/.../routes/ApiRoutes.kt` | ListInvitations, RevokeInvitation, ResendInvitation | ✓ VERIFIED | Lines 93, 96, 99. |
+| `core/models/.../AppError.kt` | Invitation.Revoked, Invitation.EmailMismatch | ✓ VERIFIED | Lines 184, 190. |
+| `core/models/.../i18n/StringKey.kt` | 5 INVITATION_* entries | ✓ VERIFIED | Lines 66-70: REVOKED, EXPIRED, ALREADY_ACCEPTED, NOT_FOUND, EMAIL_MISMATCH. |
+| `core/sdk/.../InvitationApi.kt` | 6 interface methods | ✓ VERIFIED | 53 lines, 6 suspend functions. |
+| `core/sdk/.../InvitationApiImpl.kt` | 6 implementations | ✓ VERIFIED | 51 lines, 6 override methods. |
 | `core/sdk/.../ErrorMapper.kt` | HTTP 410 → ServerMapped | ✓ VERIFIED | Line 82: `410 -> AppError.Client.ServerMapped(...)` |
-| `core/testing/.../FakeInvitationApiBuilder.kt` | All 6 fakes | ✓ VERIFIED | Lines 39-92 |
-| `app/admin/.../AdminPanelScreen.kt` | InvitationsSection with revoke/resend | ✓ VERIFIED | Line 537 composable, line 612 resend button |
-| `app/admin/.../AdminPanelViewModel.kt` | Load/Revoke/Resend handlers | ✓ VERIFIED | Lines 161, 172, 188 |
-| `app/admin/.../AdminPanelModel.kt` | invitations state | ✓ VERIFIED | Line 32: `val invitations: List<InvitationResponse>` |
-| `app/auth/.../InviteAcceptViewModel.kt` | Load + Accept + GoToLogin/Register with email | ✓ VERIFIED | 126 lines, full MVI, passes email in events |
-| `app/auth/.../InviteAcceptScreen.kt` | Revoked-state UI | ✓ VERIFIED | isRevoked guard with warning alert |
-| `app/auth/.../RegisterViewModel.kt` | Post-registration invite navigation | ✓ VERIFIED | Lines 96-112: getInvitation → NavigateToGroup or fallback |
-| `app/auth/.../LoginModel.kt` + `RegisterModel.kt` | invitationEmail field | ✓ VERIFIED | Both have `invitationEmail: String? = null` |
-| `app/designsystem/.../TerminalAvatar.kt` | imageUrl param with AsyncImage | ✓ VERIFIED | Lines 39-58: AsyncImage with error fallback to initials |
-| `server/src/main/.../AvatarRoutes.kt` | PUT avatar upload | ✓ VERIFIED | 81 lines, multipart → FileService → updateAvatarUrl |
-| `server/auth/.../UsersTable.kt` | avatarUrl column | ✓ VERIFIED | Line 24: `val avatarUrl = varchar("avatar_url"...)` |
-| `server/auth/.../UserRepository.kt` | updateAvatarUrl method | ✓ VERIFIED | Line 107 |
-| `server/groups/test/.../InvitationRoutesTest.kt` | 6 integration tests | ✓ VERIFIED | 378 lines, Testcontainers PostgreSQL |
-| Navigation `Routes.kt` | invitationEmail params | ✓ VERIFIED | Lines 6, 9: LoginRoute + RegisterRoute with invitationEmail |
-| Navigation `AppNavHost.kt` | SetInvitationEmail on launch | ✓ VERIFIED | Lines 84-89, 128-133: LaunchedEffect sets email from route |
-| `values-es/strings.xml` (admin) | Spanish translations | ✓ VERIFIED | 17 invitation keys + 3 role keys |
-| `values/strings.xml` (admin) | EN role translations | ✓ VERIFIED | Lines 59-61: admin_role_member/admin/owner |
+| `core/testing/.../FakeInvitationApiBuilder.kt` | All 6 fakes | ✓ VERIFIED | 94 lines. |
+| `app/admin/.../AdminPanelScreen.kt` | InvitationsSection + localized role badges | ✓ VERIFIED | Line 537 InvitationsSection, lines 278-280 and 583-585 `stringResource(Res.string.admin_role_*)`. No `member.role.value` found (raw string removed). |
+| `app/auth/.../InviteAcceptViewModel.kt` | Load + Accept + GoToLogin/Register with email | ✓ VERIFIED | 126 lines, full MVI, passes email in events (lines 28-36). |
+| `app/auth/.../InviteAcceptScreen.kt` | Revoked-state UI | ✓ VERIFIED | `isRevoked` guard at line 165, conditional UI at line 218. |
+| `app/auth/.../RegisterViewModel.kt` | Post-registration invite navigation | ✓ VERIFIED | Lines 99-107: `getInvitation` → `NavigateToGroup(invitation.groupId)`. |
+| `app/auth/.../LoginModel.kt` + `RegisterModel.kt` | invitationEmail field | ✓ VERIFIED | LoginModel:14, RegisterModel:16 — both have `invitationEmail: String? = null`. Email disables input: LoginScreen:462, RegisterScreen:567. |
+| `app/designsystem/.../TerminalAvatar.kt` | imageUrl param with AsyncImage | ✓ VERIFIED | Lines 39-50: `imageUrl` param, `AsyncImage` with coil3, error fallback to initials. |
+| `server/.../AvatarRoutes.kt` | PUT avatar upload | ✓ VERIFIED | 81 lines, multipart → FileService → updateAvatarUrl. |
+| `server/auth/.../tables/UsersTable.kt` | avatarUrl column | ✓ VERIFIED | Line 24: `val avatarUrl = varchar("avatar_url"...)`. |
+| `server/auth/.../UserRepository.kt` | updateAvatarUrl method | ✓ VERIFIED | Line 107. |
+| `server/groups/test/.../InvitationRoutesTest.kt` | Integration tests | ✓ VERIFIED | 378 lines, 8 test methods, Testcontainers PostgreSQL 16-alpine. |
+| `server/auth/.../di/AuthModule.kt` | NO duplicate AuthService | ✓ VERIFIED | AuthService NOT registered here (line 18 comment confirms intent, line 28 only has OAuthService). |
+| `server/.../di/ServerModule.kt` | AuthService with onRegistered | ✓ VERIFIED | Lines 39-43: single registration with invitation acceptance callback. |
+| `values/strings.xml` (admin) | EN role translations | ✓ VERIFIED | Lines 59-61: admin_role_member/admin/owner. |
+| `values-es/strings.xml` (admin) | Spanish translations | ✓ VERIFIED | Lines 56-58: Miembro/Admin/Propietario. |
 
 ### Key Link Verification
 
 | From | To | Via | Status | Details |
 |------|----|-----|--------|---------|
-| InvitationRoutes.ListInvitations | InvitationService.listInvitations() | Ktor type-safe resource route | ✓ WIRED | Line 47 |
-| InvitationRoutes.RevokeInvitation | InvitationService.revokeInvitation() | Ktor type-safe resource route | ✓ WIRED | Line 55 |
-| InvitationRoutes.ResendInvitation | InvitationService.resendInvitation() | Ktor type-safe resource route | ✓ WIRED | Line 63 |
-| InvitationService.listInvitations | invitationRepository.findByGroupId() | Direct repo call | ✓ WIRED | Line 206 |
-| InvitationService.resendInvitation | invitationRepository.deleteById() | Delete-on-resend | ✓ WIRED | Line 297 |
-| InvitationService.acceptInvitation | revokedAt null check | Revoke guard | ✓ WIRED | Line 151 |
+| InvitationRoutes | InvitationService.listInvitations() | Type-safe GET route | ✓ WIRED | Line 44 |
+| InvitationRoutes | InvitationService.revokeInvitation() | Type-safe POST route | ✓ WIRED | Line 52 |
+| InvitationRoutes | InvitationService.resendInvitation() | Type-safe POST route | ✓ WIRED | Line 60 |
+| InvitationService.listInvitations | membershipRepository + memberEmails | Cross-reference member emails | ✓ WIRED | Lines 217, 228 — stale invitations for existing members overridden to isAccepted=true |
+| InvitationService.resendInvitation | MemberAlreadyInGroup guard | Reject resend for existing members | ✓ WIRED | Line 310 |
+| InvitationService.acceptInvitation | markAcceptedByGroupAndEmail() | Cleanup all same-email+group invitations | ✓ WIRED | Line 179 |
 | InvitationService.acceptInvitation | email mismatch check | Security validation | ✓ WIRED | Line 170 |
-| InvitationApiImpl.listInvitations | Groups.ListInvitations | HTTP GET | ✓ WIRED | Line 44 |
-| InvitationApiImpl.revokeInvitation | Groups.RevokeInvitation | HTTP POST | ✓ WIRED | Line 47 |
-| InvitationApiImpl.resendInvitation | Groups.ResendInvitation | HTTP POST | ✓ WIRED | Line 50 |
-| AdminPanelViewModel.handleLoadInvitations | sdk.listInvitations() | SDK call | ✓ WIRED | Line 163 |
-| AdminPanelViewModel.handleRevokeInvitation | sdk.revokeInvitation() | SDK call | ✓ WIRED | Line 175 |
-| AdminPanelViewModel.handleResendInvitation | sdk.resendInvitation() | SDK call | ✓ WIRED | Line 192 |
-| InviteAcceptViewModel.GoToLogin | NavigateToLogin(token, email) | Event emission | ✓ WIRED | Line 28-31 |
-| AppNavHost.LoginRoute | LoginIntent.SetInvitationEmail | LaunchedEffect | ✓ WIRED | Lines 84-89 |
-| AppNavHost.RegisterRoute | RegisterIntent.SetInvitationEmail | LaunchedEffect | ✓ WIRED | Lines 128-133 |
-| RegisterViewModel.handleRegister | sdk.getInvitation(token) | Post-reg navigation | ✓ WIRED | Lines 97-109 |
-| ProfileViewModel.handleCropConfirmed | sdk.uploadAvatar() | SDK upload | ✓ WIRED | Line 110 |
+| InvitationService.acceptInvitation | revokedAt null check | Revoke guard | ✓ WIRED | Line 151 |
+| InvitationApiImpl | Groups.ListInvitations/RevokeInvitation/ResendInvitation | HTTP calls | ✓ WIRED | All 6 methods |
+| AdminPanelScreen Members | stringResource(admin_role_*) | Localized role badges | ✓ WIRED | Lines 278-280 (members table), 583-585 (invitations table) |
+| InviteAcceptVM.GoToLogin | NavigateToLogin(token, email) | Event emission | ✓ WIRED | Lines 28-30 |
+| InviteAcceptVM.GoToRegister | NavigateToRegister(token, email) | Event emission | ✓ WIRED | Lines 34-36 |
+| RegisterVM.handleRegister | sdk.getInvitation(token) → NavigateToGroup | Post-registration | ✓ WIRED | Lines 99-107 |
+| ProfileVM.handleCropConfirmed | sdk.uploadAvatar() → SetAvatarUrl | SDK upload chain | ✓ WIRED | Lines 110, 120 |
 | ProfileScreen | TerminalAvatar(imageUrl = state.avatarUrl) | Compose render | ✓ WIRED | Line 359 |
-| DashboardScreen/Sidebar | TerminalAvatar(imageUrl = avatarUrl) | Compose render | ✓ WIRED | Lines 257, 309, 163 |
+| DashboardScreen | TerminalAvatar(imageUrl = avatarUrl) | Compose render | ✓ WIRED | Lines 257, 309 |
+| DashboardSidebar | TerminalAvatar(imageUrl = avatarUrl) | Compose render | ✓ WIRED | Line 163 |
+| ServerModule | AuthService with onRegistered callback | Single DI registration | ✓ WIRED | Lines 39-43 (authModule confirmed clean — no duplicate) |
+| LoginScreen | invitationEmail → disabled email field | Pre-fill and lock | ✓ WIRED | Line 462: `enabled = state.invitationEmail == null` |
+| RegisterScreen | invitationEmail → disabled email field | Pre-fill and lock | ✓ WIRED | Line 567: `enabled = state.invitationEmail == null` |
 
 ### Requirements Coverage
 
 | Requirement | Source Plan(s) | Description | Status | Evidence |
 |-------------|---------------|-------------|--------|----------|
 | INVITE-01 | 21-03 | Admin can invite a user to a group by email — server generates token, sends invite email with link | ✓ SATISFIED | `InvitationService.createInvitation()` generates token, `sendInvitationEmail()` sends email. Lifecycle test verifies end-to-end. |
-| INVITE-02 | 21-03 | Recipient can accept invite via token link — creates/activates account and joins group with specified role | ✓ SATISFIED | `InvitationService.acceptInvitation()` validates + adds member. `RegisterViewModel` handles post-registration flow. Lifecycle test verifies membership. |
-| INVITE-03 | 21-01, 21-02 | Admin can view pending invitations for their group and revoke them | ✓ SATISFIED | Server: list+revoke endpoints. SDK: listInvitations/revokeInvitation. UI: AdminPanelScreen InvitationsSection with revoke dialog. Tests: 3 integration tests. |
-| INVITE-04 | 21-03 | Invite tokens expire after configurable duration and cannot be reused | ✓ SATISFIED | `INVITATION_EXPIRY = 7.days` (line 56). Expiry check at line 158. Expired test verifies 410 Gone response. |
-| PROF-01 | 21-03 | UsersTable has avatarUrl column and UserResponse DTO includes avatarUrl field | ✓ SATISFIED | `UsersTable.kt:24` avatarUrl column. `UserDtos.kt:13` avatarUrl field. `UserRepository.kt:107` updateAvatarUrl method. |
-| PROF-02 | 21-03 | User can upload a profile image via PUT /api/users/me/avatar endpoint | ✓ SATISFIED | `AvatarRoutes.kt:34` PUT handler, multipart upload → FileService → updateAvatarUrl. Returns updated UserResponse. |
-| PROF-03 | 21-02 | TerminalAvatar component displays image when avatarUrl is present, falls back to initials | ✓ SATISFIED | `TerminalAvatar.kt:47-58` renders AsyncImage when imageUrl != null, falls back to initials on error. Used in ProfileScreen, DashboardScreen, DashboardSidebar. |
-| PROF-04 | 21-02 | ProfileViewModel supports avatar upload intent and reflects avatar URL in state | ✓ SATISFIED | `ProfileIntent.ImageSelected` → `handleImageSelected()` → `CropConfirmed` → `sdk.uploadAvatar()` → `SetAvatarUrl(user.avatarUrl)`. Full MVI chain wired. |
-| DEBT-01 | 21-03 | Integration tests cover auth + groups + invite flow end-to-end with Testcontainers PostgreSQL | ✓ SATISFIED | `InvitationRoutesTest.kt` — 6 tests (378 lines) covering lifecycle, list, revoke, expired, authorization. Testcontainers PostgreSQL 16-alpine. Avatar test deferred (covered by existing FileRoutesTest). |
+| INVITE-02 | 21-03, 21-09 | Recipient can accept invite via token link — creates/activates account and joins group with specified role | ✓ SATISFIED | `InvitationService.acceptInvitation()` validates + adds member + cleans up duplicates. RegisterVM handles post-reg flow. AuthService DI fix (plan 09) ensures `onRegistered` callback fires. |
+| INVITE-03 | 21-01, 21-02, 21-10 | Admin can view pending invitations for their group and revoke them | ✓ SATISFIED | Server: list+revoke+resend endpoints with membership consistency cross-reference. SDK: 6 methods. UI: AdminPanelScreen InvitationsSection with revoke/resend. Stale invitations for existing members shown as accepted. |
+| INVITE-04 | 21-03, 21-10 | Invite tokens expire after configurable duration and cannot be reused | ✓ SATISFIED | `INVITATION_EXPIRY = 7.days` (line 56). Expiry check at line 158. Expired test in InvitationRoutesTest. Resend guard prevents resending to existing members. |
+| PROF-01 | 21-03 | UsersTable has avatarUrl column and UserResponse DTO includes avatarUrl field | ✓ SATISFIED | `UsersTable.kt:24` avatarUrl column. `UserDtos.kt:13` avatarUrl field. `UserRepository.kt:107` updateAvatarUrl. |
+| PROF-02 | 21-03 | User can upload a profile image via PUT /api/users/me/avatar endpoint | ✓ SATISFIED | `AvatarRoutes.kt` 81-line PUT handler: multipart → FileService → updateAvatarUrl → UserResponse. |
+| PROF-03 | 21-02 | TerminalAvatar component displays image when avatarUrl is present, falls back to initials | ✓ SATISFIED | `TerminalAvatar.kt:47-50` AsyncImage when imageUrl != null, falls back on error. Wired in ProfileScreen:359, DashboardScreen:257,309, DashboardSidebar:163. **Note:** REQUIREMENTS.md tracking shows `[ ]` Pending — this is a tracking gap, not an implementation gap. |
+| PROF-04 | 21-02, 21-09 | ProfileViewModel supports avatar upload intent and reflects avatar URL in state | ✓ SATISFIED | ProfileVM:110 `sdk.uploadAvatar()`, line 120 `SetAvatarUrl(user.avatarUrl)`, line 173 mutation reducer. |
+| DEBT-01 | 21-03 | Integration tests cover auth + groups + invite flow end-to-end with Testcontainers PostgreSQL | ✓ SATISFIED | `InvitationRoutesTest.kt` — 378 lines, 8 test methods, `PostgreSQLContainer("postgres:16-alpine")`. **Note:** REQUIREMENTS.md tracking shows `[ ]` Pending — this is a tracking gap, not an implementation gap. |
+
+**Tracking notes:** PROF-03 and DEBT-01 are marked `[ ] Pending` in REQUIREMENTS.md but are fully implemented and verified in the codebase. The REQUIREMENTS.md status tracking should be updated to `[x] Complete`.
 
 ### Anti-Patterns Found
 
@@ -115,7 +131,7 @@ requirements_coverage:
 |------|------|---------|----------|--------|
 | — | — | No anti-patterns found | — | — |
 
-All "placeholder" references in AdminPanelScreen and ProfileScreen are legitimate UI input field placeholder text (e.g., `admin_invite_email_placeholder`). No TODO/FIXME/XXX/HACK markers in any key modified file.
+No TODO/FIXME/XXX/HACK/PLACEHOLDER markers in any key file. No empty implementations or stub returns. All Exposed imports (and, isNull, lowerCase) properly present. No `member.role.value` raw string remnants.
 
 ### Human Verification Required
 
@@ -143,7 +159,13 @@ All "placeholder" references in AdminPanelScreen and ProfileScreen are legitimat
 **Expected:** Email field shows invitation email, field is disabled (cannot edit)
 **Why human:** Requires navigating through InviteAcceptScreen → Login/Register flow
 
+#### 5. Membership Consistency Behavior
+
+**Test:** Invite email → user accepts → admin views invitations list → verify stale invite shows as accepted
+**Expected:** No action buttons (revoke/resend) for users already in group; resend for existing member returns 409
+**Why human:** Requires full multi-user workflow with database state transitions
+
 ---
 
-_Verified: 2026-03-02T10:15:00Z_
+_Verified: 2026-03-02T00:41:35Z_
 _Verifier: Claude (gsd-verifier)_
