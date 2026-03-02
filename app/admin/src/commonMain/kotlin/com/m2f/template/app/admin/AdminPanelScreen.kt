@@ -688,7 +688,7 @@ private fun InvitationsSection(
                                         )
                                     }
                                 }
-                                if (invitation.isExpired || invitation.isRevoked) {
+                                if (!invitation.isAccepted && (invitation.isExpired || invitation.isRevoked)) {
                                     if (isMobile) {
                                         TerminalTooltip(text = stringResource(Res.string.admin_resend_button)) {
                                             TerminalIconButton(
