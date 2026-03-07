@@ -79,6 +79,25 @@ tasks.register("checkSetup") {
         )
 
         // Check port availability for each Docker service port
+        // Ports used by our own Docker containers are considered OK
+        val ownContainerPrefixes = listOf("template-")
+
+        fun isOwnDockerContainer(port: Int): Boolean {
+            val process = ProcessBuilder("lsof", "-ti:$port")
+                .redirectErrorStream(true).start()
+            val pids = process.inputStream.bufferedReader().readLines()
+                .mapNotNull { it.trim().toIntOrNull() }
+            process.waitFor()
+            if (pids.isEmpty()) return false
+            return pids.any { pid ->
+                val cmdProc = ProcessBuilder("ps", "-p", "$pid", "-o", "command=")
+                    .redirectErrorStream(true).start()
+                val cmd = cmdProc.inputStream.bufferedReader().readText().trim()
+                cmdProc.waitFor()
+                cmd.contains("docker") || cmd.contains("com.docker")
+            }
+        }
+
         val ports = mapOf(
             5436 to "PostgreSQL",
             9002 to "MinIO API",
@@ -93,12 +112,18 @@ tasks.register("checkSetup") {
             } catch (_: Exception) {
                 false
             }
-            checks.add(
-                Check(
-                    "Port $port ($service) available", available,
-                    "Port $port in use. Stop the process using it: lsof -ti:$port | xargs kill"
+            if (available) {
+                checks.add(Check("Port $port ($service) available", true, ""))
+            } else if (isOwnDockerContainer(port)) {
+                checks.add(Check("Port $port ($service) in use by dev container ✓", true, ""))
+            } else {
+                checks.add(
+                    Check(
+                        "Port $port ($service) available", false,
+                        "Port $port in use by another process. Stop it: lsof -ti:$port | xargs kill"
+                    )
                 )
-            )
+            }
         }
 
         // Print results
@@ -121,7 +146,7 @@ tasks.register("checkSetup") {
 tasks.register<Exec>("devUp") {
     group = "dev"
     description = "Start all Docker services and wait for healthy"
-    commandLine("docker", "compose", "up", "-d", "--wait")
+    commandLine("docker", "compose", "up", "-d", "--wait", "postgres", "minio", "mailhog")
 }
 
 tasks.register<Exec>("seedData") {

@@ -9,7 +9,7 @@ private val dotenv: Dotenv = Dotenv.configure()
     .ignoreIfMissing()
     .load()
 
-private fun env(key: String): String? = dotenv[key] ?: env(key)
+private fun env(key: String): String? = dotenv[key]
 
 private const val PORT: Int = 8080
 private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKeyForJWT123!@#$%^&*()"
