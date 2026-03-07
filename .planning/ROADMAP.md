@@ -4,7 +4,7 @@
 
 - ✅ **v1.0 MVP** -- Phases 1-9 (shipped 2026-02-17)
 - ✅ **v1.1 Architecture** -- Phases 10-15 (shipped 2026-02-21)
-- 🚧 **v1.2 Polish & Patterns** -- Phases 16-22 (in progress)
+- 🚧 **v1.2 Polish & Patterns** -- Phases 16-22 excl. 20 (in progress)
 
 ## Phases
 
@@ -51,7 +51,6 @@ Full details: milestones/v1.1-ROADMAP.md
 - [x] **Phase 18.1: Profile Uploads, Group Creation & Email Invitations** - Profile picture uploads from UI, group creation from admin panel, email invitations (completed 2026-02-22)
 - [x] **Phase 18.2: Invitation Acceptance Flow** - Complete invitation flow for unauthenticated users with login/register integration (completed 2026-02-23)
 - [x] **Phase 19: Structured AI & RAG Pipeline** - Structured output endpoint, Koog-exclusive RAG with pgvector, group-scoped retrieval (completed 2026-02-24)
-- [ ] **Phase 20: Multi-Agent Orchestration** - Router agent delegating to specialist agents with streaming API
 - [x] **Phase 21: Group Invitations & Profiles** - Email-based invite flow, profile avatars, SDK + client UI, end-to-end integration tests (gap closure round 2 in progress) (completed 2026-03-01)
 - [ ] **Phase 22: Developer Onboarding** - Setup CLI enhancements, documentation, Gradle tooling, first-run walkthrough
 
@@ -164,19 +163,6 @@ Plans:
 - [x] 19-05-PLAN.md -- Client SDK + Documents UI (DocumentApi, DocumentsViewModel, DocumentsScreen)
 - [x] 19-06-PLAN.md -- Integration tests (StructuredOutputTest, DocumentRoutesTest)
 
-### Phase 20: Multi-Agent Orchestration
-**Goal**: AI chat supports multi-agent routing — user messages are analyzed and delegated to specialist agents
-**Depends on**: Phase 19 (structured output + RAG agents exist as potential specialists)
-**Requirements**: AGENT-01, AGENT-02, AGENT-03
-**Success Criteria** (what must be TRUE):
-  1. User sends a message and the router agent delegates to the correct specialist (at least 2 specialists with distinct behaviors)
-  2. Each specialist agent has its own system prompt, tool set, and optionally different LLM configuration
-  3. Multi-agent responses stream to the client via the existing streaming API endpoint
-**Plans**: TBD
-
-Plans:
-- [ ] 20-01: TBD
-
 ### Phase 21: Group Invitations & Profiles
 **Goal**: Admins can invite users by email, users can accept invites and upload profile avatars — the complete user lifecycle
 **Depends on**: Phase 18 (email service for invites, file upload for avatars)
@@ -220,7 +206,7 @@ Plans:
 
 ## Progress
 
-**Execution Order:** 16 → 17 → 18 → 18.1 → **18.2** → 19 → 20 → 21 → 22
+**Execution Order:** 16 → 17 → 18 → 18.1 → **18.2** → 19 → 21 → 22
 
 | Phase | Milestone | Plans | Status | Completed |
 |-------|-----------|-------|--------|-----------|
@@ -232,7 +218,6 @@ Plans:
 | 18.1 Profile Uploads, Group Creation & Invitations | v1.2 | 5/5 | Complete | 2026-02-22 |
 | 18.2 Invitation Acceptance Flow | v1.2 | Complete    | 2026-02-25 | 2026-02-25 |
 | 19. Structured AI & RAG | v1.2 | 6/6 | Complete | 2026-02-24 |
-| 20. Multi-Agent Orchestration | v1.2 | 0/TBD | Not started | - |
 | 21. Invitations & Profiles | 10/10 | Complete    | 2026-03-02 | - |
 | 22. Developer Onboarding | v1.2 | 0/TBD | Not started | - |
 
