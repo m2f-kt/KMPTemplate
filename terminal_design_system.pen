@@ -113,7 +113,7 @@
                       "name": "btnDefaultLabel",
                       "fill": "$--btn-primary-text",
                       "content": "$ execute()",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": "$--btn-font-size",
                       "fontWeight": "500"
                     }
@@ -154,7 +154,7 @@
                       "name": "btnSecLabel",
                       "fill": "$--btn-secondary-text",
                       "content": "compile()",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": "$--btn-font-size",
                       "fontWeight": "500"
                     }
@@ -190,7 +190,7 @@
                       "name": "btnGhostLabel",
                       "fill": "$--btn-ghost-text",
                       "content": "browse()",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": "$--btn-font-size",
                       "fontWeight": "500"
                     }
@@ -226,7 +226,7 @@
                       "name": "btnDestLabel",
                       "fill": "$--btn-destructive-text",
                       "content": "$ rm -rf",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": "$--btn-font-size",
                       "fontWeight": "500"
                     }
@@ -571,7 +571,7 @@
                       "name": "inputLabel",
                       "fill": "#525252",
                       "content": "username",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     },
@@ -600,7 +600,7 @@
                           "name": "inputPrefix",
                           "fill": "#525252",
                           "content": ">",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "700"
                         },
@@ -610,7 +610,7 @@
                           "name": "inputPlaceholder",
                           "fill": "#737373",
                           "content": "enter_value",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         }
@@ -633,7 +633,7 @@
                       "name": "inputLabelFilled",
                       "fill": "#525252",
                       "content": "password",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     },
@@ -657,7 +657,7 @@
                           "name": "inputPrefixFilled",
                           "fill": "#3D7A4A",
                           "content": ">",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "700"
                         },
@@ -669,7 +669,7 @@
                           "textGrowth": "fixed-width",
                           "width": "fill_container",
                           "content": "••••••••",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -702,7 +702,7 @@
                       "name": "textareaLabel",
                       "fill": "#525252",
                       "content": "message",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     },
@@ -732,7 +732,7 @@
                           "width": "fill_container",
                           "content": "> Enter your message here...\n> Multiple lines supported",
                           "lineHeight": 1.5,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -818,7 +818,7 @@
                               "name": "cardTitle",
                               "fill": "$--terminal-text",
                               "content": "process_info",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 14,
                               "fontWeight": "500"
                             },
@@ -828,7 +828,7 @@
                               "name": "cardDesc",
                               "fill": "$--terminal-text-dim",
                               "content": "// system process details",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             }
@@ -865,7 +865,7 @@
                           "width": "fill_container",
                           "content": "PID: 1337\nCPU: 12.4%\nMEM: 256MB\nSTATUS: running",
                           "lineHeight": 1.6,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -960,7 +960,7 @@
                               "name": "card2Title",
                               "fill": "$--card-accent-header-text",
                               "content": "active_session",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 14,
                               "fontWeight": "500"
                             },
@@ -971,7 +971,7 @@
                               "opacity": 0.7,
                               "fill": "$--card-accent-header-text",
                               "content": "// current connection",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             }
@@ -1008,7 +1008,7 @@
                           "width": "fill_container",
                           "content": "HOST: 192.168.1.42\nPORT: 8080\nLATENCY: 12ms",
                           "lineHeight": 1.6,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -1369,7 +1369,7 @@
                           "name": "alertInfoTitle",
                           "fill": "#3D6080",
                           "content": "[INFO]",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "700"
                         },
@@ -1382,7 +1382,7 @@
                           "width": "fill_container",
                           "content": "System update available",
                           "lineHeight": 1.4,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -1425,7 +1425,7 @@
                           "name": "alertSuccessTitle",
                           "fill": "#3D7A4A",
                           "content": "[SUCCESS]",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "700"
                         },
@@ -1438,7 +1438,7 @@
                           "width": "fill_container",
                           "content": "Build completed successfully",
                           "lineHeight": 1.4,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -1490,7 +1490,7 @@
                           "name": "alertWarningTitle",
                           "fill": "#8A7030",
                           "content": "[WARN]",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "700"
                         },
@@ -1503,7 +1503,7 @@
                           "width": "fill_container",
                           "content": "Memory usage exceeds 80%",
                           "lineHeight": 1.4,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -1546,7 +1546,7 @@
                           "name": "alertErrorTitle",
                           "fill": "#9A4444",
                           "content": "[ERROR]",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "700"
                         },
@@ -1559,7 +1559,7 @@
                           "width": "fill_container",
                           "content": "Connection refused: ECONNREFUSED",
                           "lineHeight": 1.4,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -1623,7 +1623,7 @@
                       "name": "badgeDefaultLabel",
                       "fill": "$--badge-default-text",
                       "content": "v1.0.0",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "500"
                     }
@@ -1649,7 +1649,7 @@
                       "name": "badgeAccentLabel",
                       "fill": "$--badge-accent-text",
                       "content": "RUNNING",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     }
@@ -1675,7 +1675,7 @@
                       "name": "badgeSuccessIcon",
                       "fill": "$--badge-success-text",
                       "content": "✓",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     },
@@ -1685,7 +1685,7 @@
                       "name": "badgeSuccessLabel",
                       "fill": "$--badge-success-text",
                       "content": "PASSED",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     }
@@ -1711,7 +1711,7 @@
                       "name": "badgeWarningIcon",
                       "fill": "$--badge-warning-text",
                       "content": "◐",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     },
@@ -1721,7 +1721,7 @@
                       "name": "badgeWarningLabel",
                       "fill": "$--badge-warning-text",
                       "content": "PENDING",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     }
@@ -1747,7 +1747,7 @@
                       "name": "badgeErrorIcon",
                       "fill": "$--badge-error-text",
                       "content": "✕",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     },
@@ -1757,7 +1757,7 @@
                       "name": "badgeErrorLabel",
                       "fill": "$--badge-error-text",
                       "content": "FAILED",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600"
                     }
@@ -1825,7 +1825,7 @@
                       "name": "checkboxUncheckedLabel",
                       "fill": "$--terminal-text",
                       "content": "--verbose",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -1857,7 +1857,7 @@
                           "name": "checkboxCheckedIcon",
                           "fill": "$--btn-primary-text",
                           "content": "✓",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "700"
                         }
@@ -1869,7 +1869,7 @@
                       "name": "checkboxCheckedLabel",
                       "fill": "$--terminal-text",
                       "content": "--debug",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -1955,7 +1955,7 @@
                       "name": "switchOffLabel",
                       "fill": "#525252",
                       "content": "--silent",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -1999,7 +1999,7 @@
                       "name": "switchOnLabel",
                       "fill": "#171717",
                       "content": "--watch",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -2039,7 +2039,7 @@
                           "name": "radioUncheckedLabel",
                           "fill": "#525252",
                           "content": "json",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2083,7 +2083,7 @@
                           "name": "radioCheckedLabel",
                           "fill": "#171717",
                           "content": "yaml",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2166,7 +2166,7 @@
                               "name": "hdrIcon",
                               "fill": "$--btn-primary-text",
                               "content": "—",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 9,
                               "fontWeight": "700"
                             }
@@ -2186,7 +2186,7 @@
                           "name": "tableHeaderText1",
                           "fill": "$--table-header-text",
                           "content": "PID",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500",
                           "letterSpacing": 0.5
@@ -2205,7 +2205,7 @@
                           "name": "tableHeaderText2",
                           "fill": "$--table-header-text",
                           "content": "PROCESS",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500",
                           "letterSpacing": 0.5
@@ -2224,7 +2224,7 @@
                           "name": "tableHeaderText3",
                           "fill": "$--table-header-text",
                           "content": "CPU",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500",
                           "letterSpacing": 0.5
@@ -2243,7 +2243,7 @@
                           "name": "tableHeaderText4",
                           "fill": "$--table-header-text",
                           "content": "STATUS",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500",
                           "letterSpacing": 0.5
@@ -2296,7 +2296,7 @@
                               "name": "r1Icon",
                               "fill": "$--btn-primary-text",
                               "content": "✓",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 9,
                               "fontWeight": "700"
                             }
@@ -2316,7 +2316,7 @@
                           "name": "tableRow1Text1",
                           "fill": "$--table-row-text-secondary",
                           "content": "1337",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2334,7 +2334,7 @@
                           "name": "tableRow1Text2",
                           "fill": "$--table-row-text-primary",
                           "content": "node server.js",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2352,7 +2352,7 @@
                           "name": "tableRow1Text3",
                           "fill": "$--table-row-text-secondary",
                           "content": "12.4%",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2422,7 +2422,7 @@
                               "name": "r2Icon",
                               "fill": "$--btn-primary-text",
                               "content": "✓",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 9,
                               "fontWeight": "700"
                             }
@@ -2442,7 +2442,7 @@
                           "name": "tableRow2Text1",
                           "fill": "$--table-row-text-secondary",
                           "content": "2048",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2460,7 +2460,7 @@
                           "name": "tableRow2Text2",
                           "fill": "$--table-row-text-primary",
                           "content": "postgres",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2478,7 +2478,7 @@
                           "name": "tableRow2Text3",
                           "fill": "$--table-row-text-secondary",
                           "content": "3.2%",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2556,7 +2556,7 @@
                           "name": "tableRow3Text1",
                           "fill": "$--table-row-text-secondary",
                           "content": "4096",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2574,7 +2574,7 @@
                           "name": "tableRow3Text2",
                           "fill": "$--table-row-text-primary",
                           "content": "redis-server",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2592,7 +2592,7 @@
                           "name": "tableRow3Text3",
                           "fill": "$--table-row-text-secondary",
                           "content": "0.8%",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -2675,7 +2675,7 @@
                           "name": "progressBarLabelText",
                           "fill": "#525252",
                           "content": "downloading...",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         },
@@ -2685,7 +2685,7 @@
                           "name": "progressBarLabelValue",
                           "fill": "#525252",
                           "content": "67%",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "600"
                         }
@@ -2732,7 +2732,7 @@
                       "name": "progressBarIndetLabel",
                       "fill": "#525252",
                       "content": "compiling assets...",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "normal"
                     },
@@ -3826,7 +3826,7 @@
                       "name": "tooltipText",
                       "fill": "#E5E5E5",
                       "content": "Press Ctrl+C to copy",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "normal"
                     }
@@ -3856,7 +3856,7 @@
                       "name": "kbdText",
                       "fill": "#171717",
                       "content": "⌘ + K",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     }
@@ -3880,7 +3880,7 @@
                       "name": "avatarText",
                       "fill": "#FAFAFA",
                       "content": "JD",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     }
@@ -10083,7 +10083,7 @@
                               "name": "infoTitle",
                               "fill": "$--terminal-info",
                               "content": "system_info",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 14,
                               "fontWeight": "500"
                             },
@@ -10093,7 +10093,7 @@
                               "name": "infoDesc",
                               "fill": "$--terminal-text-muted",
                               "content": "// important notice",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             }
@@ -10130,7 +10130,7 @@
                           "width": "fill_container",
                           "content": "System update available.\nVersion: 2.4.1\nSize: 145MB",
                           "lineHeight": 1.6,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -10179,7 +10179,7 @@
                               "name": "highlightTitle",
                               "fill": "$--terminal-accent",
                               "content": "featured_process",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 14,
                               "fontWeight": "600"
                             },
@@ -10189,7 +10189,7 @@
                               "name": "highlightDesc",
                               "fill": "$--terminal-text-muted",
                               "content": "// high priority",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             }
@@ -10226,7 +10226,7 @@
                           "width": "fill_container",
                           "content": "Priority: HIGH\nCPU: 45.2%\nThreads: 12",
                           "lineHeight": 1.6,
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -10284,7 +10284,7 @@
                               "name": "compactTitle",
                               "fill": "$--terminal-text",
                               "content": "process.log",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 13,
                               "fontWeight": "500"
                             },
@@ -10294,7 +10294,7 @@
                               "name": "compactDetails",
                               "fill": "$--terminal-text-dim",
                               "content": "2.4MB • Modified 2h ago",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             }
@@ -10399,7 +10399,7 @@
                           "name": "listTitle",
                           "fill": "$--terminal-text",
                           "content": "process_list",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "500"
                         },
@@ -10409,7 +10409,7 @@
                           "name": "listCount",
                           "fill": "$--terminal-text-muted",
                           "content": "[4 items]",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
@@ -10493,7 +10493,7 @@
                           "name": "itemTitle",
                           "fill": "$--terminal-text",
                           "content": "node_process",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -10503,7 +10503,7 @@
                           "name": "itemDesc",
                           "fill": "$--terminal-text-dim",
                           "content": "PID: 1234 • Running",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
@@ -10559,7 +10559,7 @@
                           "name": "itemTitleHover",
                           "fill": "$--terminal-text",
                           "content": "node_process",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -10569,7 +10569,7 @@
                           "name": "itemDescHover",
                           "fill": "$--terminal-text-muted",
                           "content": "PID: 1234 • Running",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
@@ -10632,7 +10632,7 @@
                           "name": "itemTitleSelected",
                           "fill": "$--terminal-accent",
                           "content": "node_process",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "500"
                         },
@@ -10642,7 +10642,7 @@
                           "name": "itemDescSelected",
                           "fill": "$--terminal-text-muted",
                           "content": "PID: 1234 • Running",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
@@ -10698,7 +10698,7 @@
                           "name": "itemTitleDisabled",
                           "fill": "$--terminal-text-dim",
                           "content": "node_process",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -10708,7 +10708,7 @@
                           "name": "itemDescDisabled",
                           "fill": "$--terminal-text-dim",
                           "content": "PID: 1234 • Stopped",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
@@ -14155,9 +14155,10 @@
       "type": "frame",
       "id": "EnD7X",
       "x": 0,
-      "y": 9600,
+      "y": 9200,
       "name": "Profile / Free Tier",
       "width": 1440,
+      "height": "fit_content(0)",
       "fill": "$--terminal-bg",
       "children": [
         {
@@ -14410,7 +14411,7 @@
                       "name": "title",
                       "fill": "$--terminal-text",
                       "content": "user_profile",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 20,
                       "fontWeight": "600"
                     },
@@ -14420,7 +14421,7 @@
                       "name": "subtitle",
                       "fill": "$--terminal-text-dim",
                       "content": "// free tier account • limited access",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -14695,9 +14696,10 @@
       "type": "frame",
       "id": "ENKv0",
       "x": 1640,
-      "y": 9600,
+      "y": 9200,
       "name": "Profile / Paid User",
       "width": 1440,
+      "height": "fit_content(0)",
       "fill": "$--terminal-bg",
       "children": [
         {
@@ -14756,7 +14758,7 @@
                       "name": "headerName2",
                       "fill": "$--terminal-text",
                       "content": "paid_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -14800,7 +14802,7 @@
                   "name": "navLbl2",
                   "fill": "$--terminal-text-dim",
                   "content": "// navigation",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "normal"
                 },
@@ -14998,7 +15000,7 @@
                       "name": "t2",
                       "fill": "$--terminal-text",
                       "content": "user_profile",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 20,
                       "fontWeight": "600"
                     },
@@ -15008,7 +15010,7 @@
                       "name": "st2",
                       "fill": "$--terminal-text-dim",
                       "content": "// paid account • extended access",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -15305,9 +15307,10 @@
       "type": "frame",
       "id": "d4oDS",
       "x": 3280,
-      "y": 9600,
+      "y": 9200,
       "name": "Profile / Premium User",
       "width": 1440,
+      "height": "fit_content(0)",
       "fill": "$--terminal-bg",
       "children": [
         {
@@ -15366,7 +15369,7 @@
                       "name": "hn3",
                       "fill": "$--terminal-text",
                       "content": "premium_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -15413,7 +15416,7 @@
                   "name": "nl3",
                   "fill": "$--terminal-text-dim",
                   "content": "// navigation",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "normal"
                 },
@@ -15615,7 +15618,7 @@
                       "name": "tt3",
                       "fill": "$--terminal-text",
                       "content": "user_profile",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 20,
                       "fontWeight": "600"
                     },
@@ -15625,7 +15628,7 @@
                       "name": "st3",
                       "fill": "$--terminal-text-dim",
                       "content": "// premium account • full access",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -15891,7 +15894,7 @@
       "type": "frame",
       "id": "uGWqD",
       "x": 4920,
-      "y": 9600,
+      "y": 9200,
       "name": "Profile / Admin User",
       "width": 1440,
       "height": 1152,
@@ -15953,7 +15956,7 @@
                       "name": "hn4",
                       "fill": "$--terminal-text",
                       "content": "admin_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -16000,7 +16003,7 @@
                   "name": "nl4",
                   "fill": "$--terminal-text-dim",
                   "content": "// management",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "normal"
                 },
@@ -16157,7 +16160,7 @@
                   "name": "nlToolsLbl",
                   "fill": "$--terminal-text-dim",
                   "content": "// tools",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "normal"
                 },
@@ -16232,7 +16235,7 @@
                       "name": "tt4",
                       "fill": "$--terminal-text",
                       "content": "admin_profile",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 20,
                       "fontWeight": "600"
                     },
@@ -16242,7 +16245,7 @@
                       "name": "st4",
                       "fill": "$--terminal-text-dim",
                       "content": "// organization admin • user cluster management",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -16577,7 +16580,7 @@
       "type": "frame",
       "id": "QFwfO",
       "x": 6560,
-      "y": 9600,
+      "y": 9200,
       "name": "Profile / PowerAdmin",
       "width": 1582,
       "height": 1152,
@@ -16639,7 +16642,7 @@
                       "name": "hn5",
                       "fill": "$--terminal-text",
                       "content": "power_admin",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "600"
                     },
@@ -16686,7 +16689,7 @@
                   "name": "nlCRM",
                   "fill": "$--terminal-text-dim",
                   "content": "// CRM & management",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "normal"
                 },
@@ -16825,7 +16828,7 @@
                   "name": "nlSys",
                   "fill": "$--terminal-text-dim",
                   "content": "// system",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "normal"
                 },
@@ -16954,7 +16957,7 @@
                       "name": "tt5",
                       "fill": "$--terminal-text",
                       "content": "power_admin_console",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 20,
                       "fontWeight": "600"
                     },
@@ -16964,7 +16967,7 @@
                       "name": "st5",
                       "fill": "$--terminal-text-dim",
                       "content": "// root access • full system control • CRM enabled",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -17169,7 +17172,7 @@
                               "name": "tlTitle",
                               "fill": "$--terminal-text",
                               "content": "user_directory",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "$--terminal-font",
                               "fontSize": 14,
                               "fontWeight": "500"
                             },
@@ -17179,7 +17182,7 @@
                               "name": "tlDesc",
                               "fill": "$--terminal-text-dim",
                               "content": "// CRM • all platform users",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             }
@@ -17262,7 +17265,7 @@
                                   "name": "th1t",
                                   "fill": "$--table-header-text",
                                   "content": "USER",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 10,
                                   "fontWeight": "500",
                                   "letterSpacing": 0.5
@@ -17281,7 +17284,7 @@
                                   "name": "th2t",
                                   "fill": "$--table-header-text",
                                   "content": "EMAIL",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 10,
                                   "fontWeight": "500",
                                   "letterSpacing": 0.5
@@ -17300,7 +17303,7 @@
                                   "name": "th3t",
                                   "fill": "$--table-header-text",
                                   "content": "ORG",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 10,
                                   "fontWeight": "500",
                                   "letterSpacing": 0.5
@@ -17319,7 +17322,7 @@
                                   "name": "th4t",
                                   "fill": "$--table-header-text",
                                   "content": "PLAN",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 10,
                                   "fontWeight": "500",
                                   "letterSpacing": 0.5
@@ -17338,7 +17341,7 @@
                                   "name": "th5t",
                                   "fill": "$--table-header-text",
                                   "content": "STATUS",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 10,
                                   "fontWeight": "500",
                                   "letterSpacing": 0.5
@@ -17378,7 +17381,7 @@
                                   "name": "r1t1",
                                   "fill": "$--table-row-text-primary",
                                   "content": "john_doe",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17396,7 +17399,7 @@
                                   "name": "r1t2",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "john@acme.com",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17414,7 +17417,7 @@
                                   "name": "r1t3",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "Acme Corp",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17493,7 +17496,7 @@
                                   "name": "r2t1",
                                   "fill": "$--table-row-text-primary",
                                   "content": "jane_smith",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17511,7 +17514,7 @@
                                   "name": "r2t2",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "jane@startup.io",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17529,7 +17532,7 @@
                                   "name": "r2t3",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "StartupIO",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17605,7 +17608,7 @@
                                   "name": "r3t1",
                                   "fill": "$--table-row-text-primary",
                                   "content": "bob_chen",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17623,7 +17626,7 @@
                                   "name": "r3t2",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "bob@devhub.co",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17641,7 +17644,7 @@
                                   "name": "r3t3",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "DevHub",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17710,7 +17713,7 @@
                                   "name": "r4t1",
                                   "fill": "$--table-row-text-primary",
                                   "content": "alice_wong",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17728,7 +17731,7 @@
                                   "name": "r4t2",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "alice@bigcorp.net",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17746,7 +17749,7 @@
                                   "name": "r4t3",
                                   "fill": "$--table-row-text-secondary",
                                   "content": "BigCorp",
-                                  "fontFamily": "JetBrains Mono",
+                                  "fontFamily": "$--terminal-font",
                                   "fontSize": 12,
                                   "fontWeight": "normal"
                                 }
@@ -17943,7 +17946,7 @@
       "type": "frame",
       "id": "rCzUG",
       "x": 0,
-      "y": 11200,
+      "y": 10800,
       "name": "Mobile / Profile / Free Tier",
       "clip": true,
       "width": 402,
@@ -17984,7 +17987,8 @@
                   "name": "mAvatar1",
                   "descendants": {
                     "kkaQi": {
-                      "content": "FU"
+                      "content": "FU",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 },
@@ -18001,7 +18005,7 @@
                       "name": "mhName",
                       "fill": "$--terminal-text",
                       "content": "free_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -18012,7 +18016,8 @@
                       "name": "mhBadge",
                       "descendants": {
                         "Yw6Ic": {
-                          "content": "FREE"
+                          "content": "FREE",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -18075,7 +18080,7 @@
                   "name": "mt1",
                   "fill": "$--terminal-text",
                   "content": "user_profile",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 18,
                   "fontWeight": "600"
                 },
@@ -18085,7 +18090,7 @@
                   "name": "ms1",
                   "fill": "$--terminal-text-dim",
                   "content": "// free tier • limited access",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 11,
                   "fontWeight": "normal"
                 }
@@ -18099,19 +18104,28 @@
               "name": "mPC1",
               "descendants": {
                 "AH7t3": {
-                  "content": "account_info"
+                  "content": "account_info",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// personal details"
+                  "content": "// personal details",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "user"
                 },
                 "AMoro": {
-                  "content": "NAME:   John Doe\nEMAIL:  john@example.com\nJOINED: 2024-01-15\nPLAN:   free_tier"
+                  "content": "NAME:   John Doe\nEMAIL:  john@example.com\nJOINED: 2024-01-15\nPLAN:   free_tier",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18123,16 +18137,19 @@
               "name": "mLimits1",
               "descendants": {
                 "OunBQ": {
-                  "content": "usage_limits"
+                  "content": "usage_limits",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bKRTQ": {
-                  "content": "// current period"
+                  "content": "// current period",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "tmG18": {
                   "iconFontName": "bar-chart-2"
                 },
                 "mntgn": {
-                  "content": "API CALLS:  142 / 500\nSTORAGE:    1.2GB / 2GB\nPROJECTS:   2 / 3\nEXPORTS:    0 / 0 (locked)"
+                  "content": "API CALLS:  142 / 500\nSTORAGE:    1.2GB / 2GB\nPROJECTS:   2 / 3\nEXPORTS:    0 / 0 (locked)",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18144,10 +18161,12 @@
               "name": "mWarn1",
               "descendants": {
                 "GcYNq": {
-                  "content": "[WARN]"
+                  "content": "[WARN]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NMzKg": {
-                  "content": "Free tier limits approaching. Upgrade for unlimited access."
+                  "content": "Free tier limits approaching. Upgrade for unlimited access.",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18159,19 +18178,28 @@
               "name": "mPrefs1",
               "descendants": {
                 "AH7t3": {
-                  "content": "preferences"
+                  "content": "preferences",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// display settings"
+                  "content": "// display settings",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "settings"
                 },
                 "AMoro": {
-                  "content": "THEME:     dark\nLANGUAGE:  en-US\nTIMEZONE:  UTC-5"
+                  "content": "THEME:     dark\nLANGUAGE:  en-US\nTIMEZONE:  UTC-5",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18183,10 +18211,12 @@
               "name": "mLocked1",
               "descendants": {
                 "0DEih": {
-                  "content": "locked_features"
+                  "content": "locked_features",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[5 items]"
+                  "content": "[5 items]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -18201,10 +18231,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "advanced_analytics"
+                          "content": "advanced_analytics",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires paid"
+                          "content": "// requires paid",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18219,10 +18251,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "team_collaboration"
+                          "content": "team_collaboration",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires paid"
+                          "content": "// requires paid",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18237,10 +18271,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "custom_exports"
+                          "content": "custom_exports",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires premium"
+                          "content": "// requires premium",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18255,10 +18291,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "api_webhooks"
+                          "content": "api_webhooks",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires premium"
+                          "content": "// requires premium",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18273,10 +18311,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "priority_support"
+                          "content": "priority_support",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires premium"
+                          "content": "// requires premium",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -18292,16 +18332,19 @@
               "name": "mUpgrade1",
               "descendants": {
                 "AjZyA": {
-                  "content": "upgrade_plan"
+                  "content": "upgrade_plan",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "ErgyB": {
-                  "content": "// unlock more features"
+                  "content": "// unlock more features",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "3Dc2d": {
                   "iconFontName": "arrow-up-circle"
                 },
                 "Pea0Z": {
-                  "content": "Upgrade to Paid or\nPremium for advanced\ntools and integrations."
+                  "content": "Upgrade to Paid or\nPremium for advanced\ntools and integrations.",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18316,7 +18359,8 @@
                   "iconFontName": "zap"
                 },
                 "nAHIz": {
-                  "content": "$ upgrade()"
+                  "content": "$ upgrade()",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             }
@@ -18328,7 +18372,7 @@
       "type": "frame",
       "id": "k6yQw",
       "x": 600,
-      "y": 11200,
+      "y": 10800,
       "name": "Mobile / Profile / Paid User",
       "clip": true,
       "width": 402,
@@ -18369,7 +18413,8 @@
                   "name": "mh2av",
                   "descendants": {
                     "kkaQi": {
-                      "content": "PU"
+                      "content": "PU",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 },
@@ -18386,7 +18431,7 @@
                       "name": "mh2n",
                       "fill": "$--terminal-text",
                       "content": "paid_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -18397,7 +18442,8 @@
                       "name": "mh2b",
                       "descendants": {
                         "IsYRT": {
-                          "content": "PAID"
+                          "content": "PAID",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -18460,7 +18506,7 @@
                   "name": "mc2tt",
                   "fill": "$--terminal-text",
                   "content": "user_profile",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 18,
                   "fontWeight": "600"
                 },
@@ -18470,7 +18516,7 @@
                   "name": "mc2ts",
                   "fill": "$--terminal-text-dim",
                   "content": "// paid account • extended access",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 11,
                   "fontWeight": "normal"
                 }
@@ -18484,19 +18530,28 @@
               "name": "mpc2",
               "descendants": {
                 "AH7t3": {
-                  "content": "account_info"
+                  "content": "account_info",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// personal details"
+                  "content": "// personal details",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "user"
                 },
                 "AMoro": {
-                  "content": "NAME:    Jane Smith\nEMAIL:   jane@company.com\nJOINED:  2023-08-22\nPLAN:    paid_tier\nTEAM:    engineering (5)"
+                  "content": "NAME:    Jane Smith\nEMAIL:   jane@company.com\nJOINED:  2023-08-22\nPLAN:    paid_tier\nTEAM:    engineering (5)",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18508,19 +18563,28 @@
               "name": "mu2",
               "descendants": {
                 "AH7t3": {
-                  "content": "usage_metrics"
+                  "content": "usage_metrics",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// current period"
+                  "content": "// current period",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "activity"
                 },
                 "AMoro": {
-                  "content": "API CALLS:     8,432 / 50,000\nSTORAGE:       12.5GB / 50GB\nPROJECTS:      14 / 25\nTEAM MEMBERS:  5 / 10\nEXPORTS:       23 / 100"
+                  "content": "API CALLS:     8,432 / 50,000\nSTORAGE:       12.5GB / 50GB\nPROJECTS:      14 / 25\nTEAM MEMBERS:  5 / 10\nEXPORTS:       23 / 100",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18532,10 +18596,12 @@
               "name": "ms2",
               "descendants": {
                 "NMpvn": {
-                  "content": "[SUCCESS]"
+                  "content": "[SUCCESS]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "1mfIx": {
-                  "content": "Paid plan active. Team features and exports enabled."
+                  "content": "Paid plan active. Team features and exports enabled.",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18547,10 +18613,12 @@
               "name": "mTeam2",
               "descendants": {
                 "0DEih": {
-                  "content": "team_members"
+                  "content": "team_members",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[3 shown]"
+                  "content": "[3 shown]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -18565,10 +18633,12 @@
                           "iconFontName": "user"
                         },
                         "87Fol": {
-                          "content": "jane_smith"
+                          "content": "jane_smith",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "ch25q": {
-                          "content": "// owner"
+                          "content": "// owner",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18583,10 +18653,12 @@
                           "iconFontName": "user"
                         },
                         "uevTy": {
-                          "content": "bob_chen"
+                          "content": "bob_chen",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// member"
+                          "content": "// member",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18601,10 +18673,12 @@
                           "iconFontName": "user"
                         },
                         "uevTy": {
-                          "content": "alice_wong"
+                          "content": "alice_wong",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// member"
+                          "content": "// member",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -18620,19 +18694,28 @@
               "name": "mbill2",
               "descendants": {
                 "AH7t3": {
-                  "content": "billing_info"
+                  "content": "billing_info",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// payment"
+                  "content": "// payment",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "credit-card"
                 },
                 "AMoro": {
-                  "content": "PLAN:     $29/mo\nNEXT:     2024-04-01\nMETHOD:   •••• 4242\nSTATUS:   active"
+                  "content": "PLAN:     $29/mo\nNEXT:     2024-04-01\nMETHOD:   •••• 4242\nSTATUS:   active",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18644,10 +18727,12 @@
               "name": "mlock2",
               "descendants": {
                 "0DEih": {
-                  "content": "locked_features"
+                  "content": "locked_features",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[2 items]"
+                  "content": "[2 items]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -18662,10 +18747,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "api_webhooks"
+                          "content": "api_webhooks",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires premium"
+                          "content": "// requires premium",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18680,10 +18767,12 @@
                           "iconFontName": "lock"
                         },
                         "Jnsfg": {
-                          "content": "priority_support"
+                          "content": "priority_support",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "Ib76E": {
-                          "content": "// requires premium"
+                          "content": "// requires premium",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -18699,10 +18788,12 @@
               "name": "mupInfo2",
               "descendants": {
                 "5RWUl": {
-                  "content": "[INFO]"
+                  "content": "[INFO]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "dCC7d": {
-                  "content": "Premium unlocks webhooks, priority support & more."
+                  "content": "Premium unlocks webhooks, priority support & more.",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18717,7 +18808,8 @@
                   "iconFontName": "arrow-up-circle"
                 },
                 "nAHIz": {
-                  "content": "$ upgrade_premium()"
+                  "content": "$ upgrade_premium()",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             }
@@ -18729,7 +18821,7 @@
       "type": "frame",
       "id": "qgU7x",
       "x": 1200,
-      "y": 11200,
+      "y": 10800,
       "name": "Mobile / Profile / Premium User",
       "clip": true,
       "width": 402,
@@ -18770,7 +18862,8 @@
                   "name": "mh3av",
                   "descendants": {
                     "kkaQi": {
-                      "content": "PR"
+                      "content": "PR",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 },
@@ -18787,7 +18880,7 @@
                       "name": "mh3n",
                       "fill": "$--terminal-text",
                       "content": "premium_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -18798,10 +18891,12 @@
                       "name": "mh3b",
                       "descendants": {
                         "gR7JE": {
-                          "content": "★"
+                          "content": "★",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "dkz5n": {
-                          "content": "PREMIUM"
+                          "content": "PREMIUM",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -18864,7 +18959,7 @@
                   "name": "mc3tt",
                   "fill": "$--terminal-text",
                   "content": "user_profile",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 18,
                   "fontWeight": "600"
                 },
@@ -18874,7 +18969,7 @@
                   "name": "mc3ts",
                   "fill": "$--terminal-text-dim",
                   "content": "// premium account • full access",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 11,
                   "fontWeight": "normal"
                 }
@@ -18888,19 +18983,28 @@
               "name": "mpc3",
               "descendants": {
                 "AH7t3": {
-                  "content": "account_info"
+                  "content": "account_info",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// personal details"
+                  "content": "// personal details",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "user"
                 },
                 "AMoro": {
-                  "content": "NAME:      Alex Rivera\nEMAIL:     alex@startup.io\nJOINED:    2023-03-10\nPLAN:      premium_tier\nTEAM:      product (12)\nROLE:      team_lead"
+                  "content": "NAME:      Alex Rivera\nEMAIL:     alex@startup.io\nJOINED:    2023-03-10\nPLAN:      premium_tier\nTEAM:      product (12)\nROLE:      team_lead",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18912,19 +19016,28 @@
               "name": "mu3",
               "descendants": {
                 "AH7t3": {
-                  "content": "usage_metrics"
+                  "content": "usage_metrics",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// current period"
+                  "content": "// current period",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "activity"
                 },
                 "AMoro": {
-                  "content": "API CALLS:   45,230 / unlimited\nSTORAGE:     89.2GB / 500GB\nPROJECTS:    42 / unlimited\nTEAM:        12 / 50\nEXPORTS:     187 / unlimited\nWEBHOOKS:    8 active"
+                  "content": "API CALLS:   45,230 / unlimited\nSTORAGE:     89.2GB / 500GB\nPROJECTS:    42 / unlimited\nTEAM:        12 / 50\nEXPORTS:     187 / unlimited\nWEBHOOKS:    8 active",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18936,16 +19049,19 @@
               "name": "mbill3",
               "descendants": {
                 "nlhS7": {
-                  "content": "billing_info"
+                  "content": "billing_info",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "pnr3X": {
-                  "content": "// premium plan"
+                  "content": "// premium plan",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "32AYO": {
                   "iconFontName": "credit-card"
                 },
                 "xBAMp": {
-                  "content": "PLAN:     $99/mo\nNEXT:     2024-04-01\nMETHOD:   •••• 8811\nSTATUS:   active"
+                  "content": "PLAN:     $99/mo\nNEXT:     2024-04-01\nMETHOD:   •••• 8811\nSTATUS:   active",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -18957,10 +19073,12 @@
               "name": "mint3",
               "descendants": {
                 "0DEih": {
-                  "content": "integrations"
+                  "content": "integrations",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[4 items]"
+                  "content": "[4 items]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -18975,10 +19093,12 @@
                           "iconFontName": "git-branch"
                         },
                         "87Fol": {
-                          "content": "github"
+                          "content": "github",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "ch25q": {
-                          "content": "// connected"
+                          "content": "// connected",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -18993,10 +19113,12 @@
                           "iconFontName": "cloud"
                         },
                         "uevTy": {
-                          "content": "aws_s3"
+                          "content": "aws_s3",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// connected"
+                          "content": "// connected",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19011,10 +19133,12 @@
                           "iconFontName": "message-square"
                         },
                         "uevTy": {
-                          "content": "slack"
+                          "content": "slack",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// connected"
+                          "content": "// connected",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19029,10 +19153,12 @@
                           "iconFontName": "mail"
                         },
                         "uevTy": {
-                          "content": "sendgrid"
+                          "content": "sendgrid",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// connected"
+                          "content": "// connected",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19048,19 +19174,28 @@
               "name": "msec3",
               "descendants": {
                 "AH7t3": {
-                  "content": "security"
+                  "content": "security",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// account protection"
+                  "content": "// account protection",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "shield"
                 },
                 "AMoro": {
-                  "content": "2FA:       enabled\nSSO:       configured\nSESSIONS:  3 active\nLAST_LOGIN: 2h ago"
+                  "content": "2FA:       enabled\nSSO:       configured\nSESSIONS:  3 active\nLAST_LOGIN: 2h ago",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             }
@@ -19072,7 +19207,7 @@
       "type": "frame",
       "id": "jiyew",
       "x": 1800,
-      "y": 11200,
+      "y": 10800,
       "name": "Mobile / Profile / Admin User",
       "clip": true,
       "width": 402,
@@ -19113,7 +19248,8 @@
                   "name": "mh4av",
                   "descendants": {
                     "kkaQi": {
-                      "content": "AD"
+                      "content": "AD",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 },
@@ -19130,7 +19266,7 @@
                       "name": "mh4n",
                       "fill": "$--terminal-text",
                       "content": "admin_user",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -19141,10 +19277,12 @@
                       "name": "mh4b",
                       "descendants": {
                         "QdFuj": {
-                          "content": "◆"
+                          "content": "◆",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "f7OYH": {
-                          "content": "ADMIN"
+                          "content": "ADMIN",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19207,7 +19345,7 @@
                   "name": "mc4tt",
                   "fill": "$--terminal-text",
                   "content": "admin_profile",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 18,
                   "fontWeight": "600"
                 },
@@ -19217,7 +19355,7 @@
                   "name": "mc4ts",
                   "fill": "$--terminal-text-dim",
                   "content": "// org admin • cluster management",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 11,
                   "fontWeight": "normal"
                 }
@@ -19231,16 +19369,19 @@
               "name": "mpc4",
               "descendants": {
                 "nlhS7": {
-                  "content": "admin_info"
+                  "content": "admin_info",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "pnr3X": {
-                  "content": "// org administrator"
+                  "content": "// org administrator",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "32AYO": {
                   "iconFontName": "shield"
                 },
                 "xBAMp": {
-                  "content": "NAME:   Sarah Chen\nEMAIL:  sarah@corp.com\nORG:    Acme Corp\nROLE:   admin\nGROUPS: 4 managed"
+                  "content": "NAME:   Sarah Chen\nEMAIL:  sarah@corp.com\nORG:    Acme Corp\nROLE:   admin\nGROUPS: 4 managed",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -19252,10 +19393,12 @@
               "name": "mgrp4",
               "descendants": {
                 "0DEih": {
-                  "content": "managed_groups"
+                  "content": "managed_groups",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[4 clusters]"
+                  "content": "[4 clusters]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -19270,10 +19413,12 @@
                           "iconFontName": "folder"
                         },
                         "87Fol": {
-                          "content": "engineering"
+                          "content": "engineering",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "ch25q": {
-                          "content": "// 24 members"
+                          "content": "// 24 members",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19288,10 +19433,12 @@
                           "iconFontName": "folder"
                         },
                         "uevTy": {
-                          "content": "design"
+                          "content": "design",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// 8 members"
+                          "content": "// 8 members",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19306,10 +19453,12 @@
                           "iconFontName": "folder"
                         },
                         "uevTy": {
-                          "content": "marketing"
+                          "content": "marketing",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// 12 members"
+                          "content": "// 12 members",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19324,10 +19473,12 @@
                           "iconFontName": "folder"
                         },
                         "uevTy": {
-                          "content": "sales"
+                          "content": "sales",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// 15 members"
+                          "content": "// 15 members",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19343,19 +19494,28 @@
               "name": "mperm4",
               "descendants": {
                 "AH7t3": {
-                  "content": "permissions"
+                  "content": "permissions",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// access scope"
+                  "content": "// access scope",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "key"
                 },
                 "AMoro": {
-                  "content": "USER_MGMT:     read, write\nGROUP_MGMT:    read, write\nBILLING:       read_only\nAUDIT_LOG:     read\nORG_SETTINGS:  read, write\nSYSTEM:        denied"
+                  "content": "USER_MGMT:     read, write\nGROUP_MGMT:    read, write\nBILLING:       read_only\nAUDIT_LOG:     read\nORG_SETTINGS:  read, write\nSYSTEM:        denied",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -19367,10 +19527,12 @@
               "name": "mact4",
               "descendants": {
                 "0DEih": {
-                  "content": "recent_activity"
+                  "content": "recent_activity",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[latest]"
+                  "content": "[latest]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -19385,10 +19547,12 @@
                           "iconFontName": "user-plus"
                         },
                         "uevTy": {
-                          "content": "added user m.jones"
+                          "content": "added user m.jones",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// 2h ago"
+                          "content": "// 2h ago",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19403,10 +19567,12 @@
                           "iconFontName": "shield"
                         },
                         "uevTy": {
-                          "content": "updated role: editor"
+                          "content": "updated role: editor",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// 4h ago"
+                          "content": "// 4h ago",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19421,10 +19587,12 @@
                           "iconFontName": "folder-plus"
                         },
                         "uevTy": {
-                          "content": "created group: QA"
+                          "content": "created group: QA",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// 1d ago"
+                          "content": "// 1d ago",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19440,10 +19608,12 @@
               "name": "mwarn4",
               "descendants": {
                 "GcYNq": {
-                  "content": "[RESTRICTED]"
+                  "content": "[RESTRICTED]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NMzKg": {
-                  "content": "System-level settings require PowerAdmin role."
+                  "content": "System-level settings require PowerAdmin role.",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             }
@@ -19455,7 +19625,7 @@
       "type": "frame",
       "id": "OSLp4",
       "x": 2400,
-      "y": 11200,
+      "y": 10800,
       "name": "Mobile / Profile / PowerAdmin",
       "clip": true,
       "width": 402,
@@ -19496,7 +19666,8 @@
                   "name": "mh5av",
                   "descendants": {
                     "kkaQi": {
-                      "content": "PA"
+                      "content": "PA",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 },
@@ -19513,7 +19684,7 @@
                       "name": "mh5n",
                       "fill": "$--terminal-text",
                       "content": "power_admin",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "600"
                     },
@@ -19524,10 +19695,12 @@
                       "name": "mh5b",
                       "descendants": {
                         "YbeWq": {
-                          "content": "⚡"
+                          "content": "⚡",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "q5JEX": {
-                          "content": "POWERADMIN"
+                          "content": "POWERADMIN",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19590,7 +19763,7 @@
                   "name": "mc5tt",
                   "fill": "$--terminal-text",
                   "content": "power_admin_console",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 16,
                   "fontWeight": "600"
                 },
@@ -19600,7 +19773,7 @@
                   "name": "mc5ts",
                   "fill": "$--terminal-text-dim",
                   "content": "// root access • full control",
-                  "fontFamily": "JetBrains Mono",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 11,
                   "fontWeight": "normal"
                 }
@@ -19629,16 +19802,19 @@
                       "name": "ms5a",
                       "descendants": {
                         "AjZyA": {
-                          "content": "total_users"
+                          "content": "total_users",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "ErgyB": {
-                          "content": "// platform"
+                          "content": "// platform",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "3Dc2d": {
                           "iconFontName": "users"
                         },
                         "Pea0Z": {
-                          "content": "12,847\n+340 this mo"
+                          "content": "12,847\n+340 this mo",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19650,19 +19826,28 @@
                       "name": "ms5b",
                       "descendants": {
                         "AH7t3": {
-                          "content": "active_orgs"
+                          "content": "active_orgs",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "GCsID": {
-                          "content": "// companies"
+                          "content": "// companies",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "xP1gG": {
                           "iconFontName": "building"
                         },
                         "AMoro": {
-                          "content": "342\n98.2% retain"
+                          "content": "342\n98.2% retain",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "NeC8k": {
                           "enabled": false
+                        },
+                        "jVNaP/jHan8": {
+                          "fontFamily": "\\$--terminal-font"
+                        },
+                        "7UZTL/nAHIz": {
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19683,19 +19868,28 @@
                       "name": "ms5c",
                       "descendants": {
                         "AH7t3": {
-                          "content": "revenue_mrr"
+                          "content": "revenue_mrr",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "GCsID": {
-                          "content": "// monthly"
+                          "content": "// monthly",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "xP1gG": {
                           "iconFontName": "trending-up"
                         },
                         "AMoro": {
-                          "content": "$284,500\n+12.3% MoM"
+                          "content": "$284,500\n+12.3% MoM",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "NeC8k": {
                           "enabled": false
+                        },
+                        "jVNaP/jHan8": {
+                          "fontFamily": "\\$--terminal-font"
+                        },
+                        "7UZTL/nAHIz": {
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19707,19 +19901,28 @@
                       "name": "ms5d",
                       "descendants": {
                         "AH7t3": {
-                          "content": "sys_health"
+                          "content": "sys_health",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "GCsID": {
-                          "content": "// infra"
+                          "content": "// infra",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "xP1gG": {
                           "iconFontName": "heart-pulse"
                         },
                         "AMoro": {
-                          "content": "99.97% up\n3ms latency"
+                          "content": "99.97% up\n3ms latency",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "NeC8k": {
                           "enabled": false
+                        },
+                        "jVNaP/jHan8": {
+                          "fontFamily": "\\$--terminal-font"
+                        },
+                        "7UZTL/nAHIz": {
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19748,7 +19951,7 @@
                       "name": "mDirT",
                       "fill": "$--terminal-text",
                       "content": "user_directory",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 14,
                       "fontWeight": "500"
                     },
@@ -19758,7 +19961,7 @@
                       "name": "mDirS",
                       "fill": "$--terminal-text-dim",
                       "content": "// CRM • tap to manage",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "normal"
                     }
@@ -19785,10 +19988,12 @@
               "name": "mDir",
               "descendants": {
                 "0DEih": {
-                  "content": "users"
+                  "content": "users",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "bWtOr": {
-                  "content": "[4 shown]"
+                  "content": "[4 shown]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "i2wap": {
                   "children": [
@@ -19803,10 +20008,12 @@
                           "iconFontName": "user"
                         },
                         "87Fol": {
-                          "content": "john_doe • PREMIUM"
+                          "content": "john_doe • PREMIUM",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "ch25q": {
-                          "content": "// Acme Corp • active"
+                          "content": "// Acme Corp • active",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19821,10 +20028,12 @@
                           "iconFontName": "user"
                         },
                         "uevTy": {
-                          "content": "jane_smith • PAID"
+                          "content": "jane_smith • PAID",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// StartupIO • active"
+                          "content": "// StartupIO • active",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19839,10 +20048,12 @@
                           "iconFontName": "user"
                         },
                         "uevTy": {
-                          "content": "bob_chen • FREE"
+                          "content": "bob_chen • FREE",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "bnoPG": {
-                          "content": "// DevHub • active"
+                          "content": "// DevHub • active",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     },
@@ -19857,10 +20068,12 @@
                           "iconFontName": "user"
                         },
                         "Uybq4": {
-                          "content": "alice_wong • TRIAL"
+                          "content": "alice_wong • TRIAL",
+                          "fontFamily": "\\$--terminal-font"
                         },
                         "TrSFZ": {
-                          "content": "// BigCorp • expiring"
+                          "content": "// BigCorp • expiring",
+                          "fontFamily": "\\$--terminal-font"
                         }
                       }
                     }
@@ -19876,16 +20089,19 @@
               "name": "mAdmin5",
               "descendants": {
                 "nlhS7": {
-                  "content": "admin_identity"
+                  "content": "admin_identity",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "pnr3X": {
-                  "content": "// product owner"
+                  "content": "// product owner",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "32AYO": {
                   "iconFontName": "crown"
                 },
                 "xBAMp": {
-                  "content": "NAME:   Marcus Admin\nEMAIL:  marcus@platform.com\nROLE:   power_admin\nACCESS: root (unrestricted)"
+                  "content": "NAME:   Marcus Admin\nEMAIL:  marcus@platform.com\nROLE:   power_admin\nACCESS: root (unrestricted)",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -19897,19 +20113,28 @@
               "name": "mPerm5",
               "descendants": {
                 "AH7t3": {
-                  "content": "access_matrix"
+                  "content": "access_matrix",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// full permissions"
+                  "content": "// full permissions",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "key"
                 },
                 "AMoro": {
-                  "content": "USER_MGMT:   full_access\nORG_MGMT:    full_access\nBILLING:     full_access\nSYSTEM:      full_access\nINFRA:       full_access\nDATA:        full_access"
+                  "content": "USER_MGMT:   full_access\nORG_MGMT:    full_access\nBILLING:     full_access\nSYSTEM:      full_access\nINFRA:       full_access\nDATA:        full_access",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -19921,19 +20146,28 @@
               "name": "mSys5",
               "descendants": {
                 "AH7t3": {
-                  "content": "system_status"
+                  "content": "system_status",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "GCsID": {
-                  "content": "// live monitoring"
+                  "content": "// live monitoring",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "xP1gG": {
                   "iconFontName": "server"
                 },
                 "AMoro": {
-                  "content": "SERVERS:  12 healthy\nDB_POOL:  24/50 conns\nCACHE:    94% hit rate\nQUEUE:    3 pending\nDEPLOY:   v3.14.2"
+                  "content": "SERVERS:  12 healthy\nDB_POOL:  24/50 conns\nCACHE:    94% hit rate\nQUEUE:    3 pending\nDEPLOY:   v3.14.2",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "NeC8k": {
                   "enabled": false
+                },
+                "jVNaP/jHan8": {
+                  "fontFamily": "\\$--terminal-font"
+                },
+                "7UZTL/nAHIz": {
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -19945,10 +20179,12 @@
               "name": "mDanger5",
               "descendants": {
                 "BJ2jt": {
-                  "content": "[DANGER ZONE]"
+                  "content": "[DANGER ZONE]",
+                  "fontFamily": "\\$--terminal-font"
                 },
                 "3rbPp": {
-                  "content": "Destructive actions. Proceed with caution."
+                  "content": "Destructive actions. Proceed with caution.",
+                  "fontFamily": "\\$--terminal-font"
                 }
               }
             },
@@ -19970,7 +20206,8 @@
                       "iconFontName": "rotate-ccw"
                     },
                     "0D1or": {
-                      "content": "$ reset()"
+                      "content": "$ reset()",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 },
@@ -19985,7 +20222,8 @@
                       "iconFontName": "trash-2"
                     },
                     "0D1or": {
-                      "content": "$ purge()"
+                      "content": "$ purge()",
+                      "fontFamily": "\\$--terminal-font"
                     }
                   }
                 }
@@ -19999,7 +20237,7 @@
       "type": "frame",
       "id": "9JbaX",
       "x": 0,
-      "y": 8200,
+      "y": 7800,
       "name": "Dashboard — Desktop",
       "clip": true,
       "width": 1440,
@@ -20062,7 +20300,7 @@
                       "name": "brandText",
                       "fill": "$--terminal-text",
                       "content": "terminal",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 18,
                       "fontWeight": "700"
                     }
@@ -20082,7 +20320,7 @@
                       "name": "navLabel",
                       "fill": "$--terminal-text-dim",
                       "content": "NAVIGATION",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600",
                       "letterSpacing": 1.5
@@ -20117,7 +20355,7 @@
                           "name": "navActiveText",
                           "fill": "$--terminal-accent",
                           "content": "dashboard",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "600"
                         }
@@ -20152,7 +20390,7 @@
                           "name": "npText",
                           "fill": "$--terminal-text-muted",
                           "content": "processes",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -20187,7 +20425,7 @@
                           "name": "nlText",
                           "fill": "$--terminal-text-muted",
                           "content": "logs",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -20222,7 +20460,7 @@
                           "name": "ndText",
                           "fill": "$--terminal-text-muted",
                           "content": "deployments",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -20257,7 +20495,7 @@
                           "name": "nsText",
                           "fill": "$--terminal-text-muted",
                           "content": "settings",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -20315,7 +20553,7 @@
                           "name": "userName",
                           "fill": "$--terminal-text",
                           "content": "jane_doe",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "500"
                         },
@@ -20325,7 +20563,7 @@
                           "name": "userRole",
                           "fill": "$--terminal-text-dim",
                           "content": "admin",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "normal"
                         }
@@ -20368,7 +20606,7 @@
                       "name": "headerTitle",
                       "fill": "$--terminal-text",
                       "content": "$ system_overview",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 22,
                       "fontWeight": "700"
                     },
@@ -20378,7 +20616,7 @@
                       "name": "headerSub",
                       "fill": "$--terminal-text-dim",
                       "content": "// all systems operational — last sync: 2m ago",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 12,
                       "fontWeight": "normal"
                     }
@@ -20460,7 +20698,7 @@
                       "name": "m1label",
                       "fill": "$--terminal-text-dim",
                       "content": "UPTIME",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600",
                       "letterSpacing": 1.5
@@ -20471,7 +20709,7 @@
                       "name": "m1val",
                       "fill": "$--terminal-text",
                       "content": "99.98%",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 28,
                       "fontWeight": "700"
                     },
@@ -20481,7 +20719,7 @@
                       "name": "m1change",
                       "fill": "$--terminal-success",
                       "content": "+0.02% ↑",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     }
@@ -20509,7 +20747,7 @@
                       "name": "m2label",
                       "fill": "$--terminal-text-dim",
                       "content": "REQUESTS",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600",
                       "letterSpacing": 1.5
@@ -20520,7 +20758,7 @@
                       "name": "m2val",
                       "fill": "$--terminal-text",
                       "content": "1.2M",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 28,
                       "fontWeight": "700"
                     },
@@ -20530,7 +20768,7 @@
                       "name": "m2change",
                       "fill": "$--terminal-success",
                       "content": "+18.3% ↑",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     }
@@ -20558,7 +20796,7 @@
                       "name": "m3label",
                       "fill": "$--terminal-text-dim",
                       "content": "AVG LATENCY",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600",
                       "letterSpacing": 1.5
@@ -20569,7 +20807,7 @@
                       "name": "m3val",
                       "fill": "$--terminal-accent",
                       "content": "42ms",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 28,
                       "fontWeight": "700"
                     },
@@ -20579,7 +20817,7 @@
                       "name": "m3change",
                       "fill": "$--terminal-success",
                       "content": "-8ms ↓",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     }
@@ -20607,7 +20845,7 @@
                       "name": "m4label",
                       "fill": "$--terminal-text-dim",
                       "content": "ERROR RATE",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 10,
                       "fontWeight": "600",
                       "letterSpacing": 1.5
@@ -20618,7 +20856,7 @@
                       "name": "m4val",
                       "fill": "$--terminal-text",
                       "content": "0.03%",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 28,
                       "fontWeight": "700"
                     },
@@ -20628,7 +20866,7 @@
                       "name": "m4change",
                       "fill": "$--terminal-success",
                       "content": "-0.01% ↓",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "500"
                     }
@@ -20672,7 +20910,7 @@
                           "name": "tableTitleText",
                           "fill": "$--terminal-text",
                           "content": "active_processes",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 14,
                           "fontWeight": "600"
                         },
@@ -20845,7 +21083,7 @@
                               "name": "deployTitle",
                               "fill": "$--terminal-text",
                               "content": "deployment_status",
-                              "fontFamily": "$--terminal-font",
+                              "fontFamily": "\\$--terminal-font",
                               "fontSize": 13,
                               "fontWeight": "500"
                             },
@@ -20951,7 +21189,7 @@
       "type": "frame",
       "id": "dezbz",
       "x": 1640,
-      "y": 8200,
+      "y": 7800,
       "name": "Dashboard — Mobile",
       "clip": true,
       "width": 402,
@@ -21001,7 +21239,7 @@
                       "name": "mBrandText",
                       "fill": "$--terminal-text",
                       "content": "terminal",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 16,
                       "fontWeight": "700"
                     }
@@ -21058,7 +21296,7 @@
                   "name": "mTitle",
                   "fill": "$--terminal-text",
                   "content": "$ system_overview",
-                  "fontFamily": "$--terminal-font",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 18,
                   "fontWeight": "700"
                 },
@@ -21068,7 +21306,7 @@
                   "name": "mSub",
                   "fill": "$--terminal-text-dim",
                   "content": "// all systems operational",
-                  "fontFamily": "$--terminal-font",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 11,
                   "fontWeight": "normal"
                 }
@@ -21111,7 +21349,7 @@
                           "name": "mm1l",
                           "fill": "$--terminal-text-dim",
                           "content": "UPTIME",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 9,
                           "fontWeight": "600",
                           "letterSpacing": 1.5
@@ -21122,7 +21360,7 @@
                           "name": "mm1v",
                           "fill": "$--terminal-text",
                           "content": "99.98%",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 22,
                           "fontWeight": "700"
                         },
@@ -21132,7 +21370,7 @@
                           "name": "mm1c",
                           "fill": "$--terminal-success",
                           "content": "+0.02% ↑",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500"
                         }
@@ -21160,7 +21398,7 @@
                           "name": "mm2l",
                           "fill": "$--terminal-text-dim",
                           "content": "LATENCY",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 9,
                           "fontWeight": "600",
                           "letterSpacing": 1.5
@@ -21171,7 +21409,7 @@
                           "name": "mm2v",
                           "fill": "$--terminal-accent",
                           "content": "42ms",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 22,
                           "fontWeight": "700"
                         },
@@ -21181,7 +21419,7 @@
                           "name": "mm2c",
                           "fill": "$--terminal-success",
                           "content": "-8ms ↓",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500"
                         }
@@ -21218,7 +21456,7 @@
                           "name": "mm3l",
                           "fill": "$--terminal-text-dim",
                           "content": "REQUESTS",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 9,
                           "fontWeight": "600",
                           "letterSpacing": 1.5
@@ -21229,7 +21467,7 @@
                           "name": "mm3v",
                           "fill": "$--terminal-text",
                           "content": "1.2M",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 22,
                           "fontWeight": "700"
                         },
@@ -21239,7 +21477,7 @@
                           "name": "mm3c",
                           "fill": "$--terminal-success",
                           "content": "+18.3% ↑",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500"
                         }
@@ -21267,7 +21505,7 @@
                           "name": "mm4l",
                           "fill": "$--terminal-text-dim",
                           "content": "ERRORS",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 9,
                           "fontWeight": "600",
                           "letterSpacing": 1.5
@@ -21278,7 +21516,7 @@
                           "name": "mm4v",
                           "fill": "$--terminal-text",
                           "content": "0.03%",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 22,
                           "fontWeight": "700"
                         },
@@ -21288,7 +21526,7 @@
                           "name": "mm4c",
                           "fill": "$--terminal-success",
                           "content": "-0.01% ↓",
-                          "fontFamily": "$--terminal-font",
+                          "fontFamily": "\\$--terminal-font",
                           "fontSize": 10,
                           "fontWeight": "500"
                         }
@@ -21320,7 +21558,7 @@
                       "name": "mProcTitle",
                       "fill": "$--terminal-text",
                       "content": "active_processes",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "600"
                     },
@@ -21442,7 +21680,7 @@
                       "name": "mDeployTitle",
                       "fill": "$--terminal-text",
                       "content": "deployment_status",
-                      "fontFamily": "$--terminal-font",
+                      "fontFamily": "\\$--terminal-font",
                       "fontSize": 13,
                       "fontWeight": "500"
                     },
@@ -21660,7 +21898,7 @@
                   "name": "tab1Label",
                   "fill": "$--terminal-accent",
                   "content": "home",
-                  "fontFamily": "$--terminal-font",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "600"
                 }
@@ -21690,7 +21928,7 @@
                   "name": "tab2Label",
                   "fill": "$--terminal-text-dim",
                   "content": "processes",
-                  "fontFamily": "$--terminal-font",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "500"
                 }
@@ -21720,7 +21958,7 @@
                   "name": "tab3Label",
                   "fill": "$--terminal-text-dim",
                   "content": "logs",
-                  "fontFamily": "$--terminal-font",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "500"
                 }
@@ -21750,7 +21988,7 @@
                   "name": "tab4Label",
                   "fill": "$--terminal-text-dim",
                   "content": "settings",
-                  "fontFamily": "$--terminal-font",
+                  "fontFamily": "\\$--terminal-font",
                   "fontSize": 10,
                   "fontWeight": "500"
                 }
@@ -21764,14 +22002,14 @@
       "type": "group",
       "id": "qhKMt",
       "x": 0,
-      "y": 7000,
+      "y": 12700,
       "name": "Auth",
       "children": [
         {
           "type": "frame",
           "id": "KXp69",
-          "x": 8831,
-          "y": -161,
+          "x": 1540,
+          "y": 0,
           "name": "Register Screen",
           "width": 480,
           "fill": "$--terminal-bg",
@@ -22169,8 +22407,8 @@
         {
           "type": "frame",
           "id": "xNUU3",
-          "x": 7291,
-          "y": -161,
+          "x": 0,
+          "y": 0,
           "name": "Login Screen",
           "width": 1440,
           "height": 900,
@@ -22200,7 +22438,7 @@
                       "name": "logoPrompt",
                       "fill": "$--terminal-accent",
                       "content": ">",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 22,
                       "fontWeight": "700"
                     },
@@ -22210,7 +22448,7 @@
                       "name": "logoText",
                       "fill": "$--terminal-text",
                       "content": "terminal",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 20,
                       "fontWeight": "500"
                     }
@@ -22230,7 +22468,7 @@
                       "name": "statusLine",
                       "fill": "$--terminal-text-dim",
                       "content": "$ uptime: 99.98%  |  latency: 12ms  |  nodes: 42",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "normal"
                     },
@@ -22247,7 +22485,7 @@
                           "name": "asciiLine1",
                           "fill": "$--terminal-text-dim",
                           "content": "┌─────────────────────────────────┐",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -22257,7 +22495,7 @@
                           "name": "asciiLine2",
                           "fill": "$--terminal-accent",
                           "content": "│  $ ssh user@system              │",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -22267,7 +22505,7 @@
                           "name": "asciiLine3",
                           "fill": "$--terminal-text-dim",
                           "content": "│  connecting...                  │",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -22277,7 +22515,7 @@
                           "name": "asciiLine4",
                           "fill": "$--terminal-success",
                           "content": "│  connection established ✓       │",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -22287,7 +22525,7 @@
                           "name": "asciiLine5",
                           "fill": "$--terminal-text",
                           "content": "│  welcome to the system.         │",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         },
@@ -22297,7 +22535,7 @@
                           "name": "asciiLine6",
                           "fill": "$--terminal-text-dim",
                           "content": "└─────────────────────────────────┘",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 13,
                           "fontWeight": "normal"
                         }
@@ -22317,7 +22555,7 @@
                           "name": "quoteLine",
                           "fill": "$--terminal-text-dim",
                           "content": "// the best way to predict the future",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 14,
                           "fontWeight": "normal"
                         },
@@ -22327,7 +22565,7 @@
                           "name": "quoteLine2",
                           "fill": "$--terminal-text-dim",
                           "content": "// is to build it.",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 14,
                           "fontWeight": "normal"
                         },
@@ -22337,7 +22575,7 @@
                           "name": "quoteAttr",
                           "fill": "$--terminal-accent",
                           "content": "— alan_kay",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "500"
                         }
@@ -22359,7 +22597,7 @@
                       "name": "footerVersion",
                       "fill": "$--terminal-text-dim",
                       "content": "v2.4.1",
-                      "fontFamily": "JetBrains Mono",
+                      "fontFamily": "$--terminal-font",
                       "fontSize": 11,
                       "fontWeight": "normal"
                     },
@@ -22384,7 +22622,7 @@
                           "name": "statusText",
                           "fill": "$--terminal-text-dim",
                           "content": "all_systems_operational",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 11,
                           "fontWeight": "normal"
                         }
@@ -22437,7 +22675,7 @@
                           "name": "headerTitle",
                           "fill": "$--terminal-text",
                           "content": "$ authenticate",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 24,
                           "fontWeight": "700"
                         },
@@ -22447,7 +22685,7 @@
                           "name": "headerDesc",
                           "fill": "$--terminal-text-dim",
                           "content": "// enter your credentials to continue",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -22487,7 +22725,7 @@
                               "content": "password"
                             },
                             "fQggU": {
-                              "content": "•"
+                              "content": ">"
                             },
                             "WdLiP": {
                               "content": "••••••••••••"
@@ -22521,7 +22759,7 @@
                           "name": "forgotLink",
                           "fill": "$--terminal-accent",
                           "content": "$ reset_password",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         }
@@ -22573,7 +22811,7 @@
                               "name": "divText",
                               "fill": "$--terminal-text-dim",
                               "content": "or",
-                              "fontFamily": "JetBrains Mono",
+                              "fontFamily": "$--terminal-font",
                               "fontSize": 11,
                               "fontWeight": "normal"
                             },
@@ -22619,7 +22857,7 @@
                           "name": "signupText",
                           "fill": "$--terminal-text-dim",
                           "content": "// new user?",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "normal"
                         },
@@ -22629,7 +22867,7 @@
                           "name": "signupLink",
                           "fill": "$--terminal-accent",
                           "content": "$ create_account()",
-                          "fontFamily": "JetBrains Mono",
+                          "fontFamily": "$--terminal-font",
                           "fontSize": 12,
                           "fontWeight": "500"
                         }
@@ -22644,8 +22882,8 @@
         {
           "type": "frame",
           "id": "B1nWB",
-          "x": 9422,
-          "y": -161,
+          "x": 2120,
+          "y": 0,
           "name": "Register — Desktop",
           "clip": true,
           "width": 1200,
@@ -23183,8 +23421,8 @@
         {
           "type": "frame",
           "id": "9UXn1",
-          "x": 10718,
-          "y": -161,
+          "x": 3420,
+          "y": 0,
           "name": "Login — Mobile",
           "clip": true,
           "width": 402,
@@ -23538,6 +23776,212 @@
               ]
             }
           ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "o27JU",
+      "x": 0,
+      "y": -80,
+      "name": "— DESIGN SYSTEM —",
+      "gap": 16,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon_font",
+          "id": "h2reT",
+          "name": "dsIcon",
+          "width": 24,
+          "height": 24,
+          "iconFontName": "layers",
+          "iconFontFamily": "lucide",
+          "fill": "#525252"
+        },
+        {
+          "type": "text",
+          "id": "I7Jds",
+          "name": "dsText",
+          "fill": "#525252",
+          "content": "DESIGN SYSTEM",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 20,
+          "fontWeight": "700",
+          "letterSpacing": 4
+        },
+        {
+          "type": "frame",
+          "id": "Pf0RI",
+          "name": "dsLine",
+          "width": 600,
+          "height": 2,
+          "fill": "#D4D4D4"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "eYCXh",
+      "x": 0,
+      "y": 7600,
+      "name": "— SCREEN DESIGNS —",
+      "gap": 16,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "icon_font",
+          "id": "wQtxX",
+          "name": "scIcon",
+          "width": 24,
+          "height": 24,
+          "iconFontName": "monitor",
+          "iconFontFamily": "lucide",
+          "fill": "#525252"
+        },
+        {
+          "type": "text",
+          "id": "LShUb",
+          "name": "scText",
+          "fill": "#525252",
+          "content": "SCREEN DESIGNS",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 20,
+          "fontWeight": "700",
+          "letterSpacing": 4
+        },
+        {
+          "type": "frame",
+          "id": "n32qh",
+          "name": "scLine",
+          "width": 600,
+          "height": 2,
+          "fill": "#D4D4D4"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "LW27j",
+      "x": 0,
+      "y": 7720,
+      "name": "Dashboard",
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "IGGkB",
+          "name": "dashTag",
+          "fill": "#737373",
+          "content": "// dashboard",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "GWBQd",
+      "x": 0,
+      "y": 9120,
+      "name": "Desktop Profiles",
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "JKCb8",
+          "name": "profTag",
+          "fill": "#737373",
+          "content": "// desktop profiles",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "EJVLr",
+      "x": 0,
+      "y": 10720,
+      "name": "Mobile Profiles",
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "rRmg8",
+          "name": "mobTag",
+          "fill": "#737373",
+          "content": "// mobile profiles",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "40sQ9",
+      "x": 0,
+      "y": 12600,
+      "name": "Auth Screens",
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "n9Qhv",
+          "name": "authTag",
+          "fill": "#737373",
+          "content": "// authentication",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "drIh6",
+      "x": 0,
+      "y": -40,
+      "name": "Component Showcase",
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "ZhBcv",
+          "name": "showcaseTag",
+          "fill": "#737373",
+          "content": "// component showcase (light + dark)",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 14,
+          "fontWeight": "500"
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "TkFLL",
+      "x": 0,
+      "y": 3900,
+      "name": "Design Tokens & Library",
+      "gap": 12,
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "text",
+          "id": "G5Hvz",
+          "name": "tokensTag",
+          "fill": "#737373",
+          "content": "// design tokens + component library",
+          "fontFamily": "JetBrains Mono",
+          "fontSize": 14,
+          "fontWeight": "500"
         }
       ]
     }

@@ -46,6 +46,7 @@ fun runCommand(vararg args: String): Int {
 tasks.register("checkSetup") {
     group = "dev"
     description = "Check development prerequisites"
+    notCompatibleWithConfigurationCache("uses runtime system checks")
     doLast {
         data class Check(val name: String, val passed: Boolean, val fix: String)
 
@@ -78,11 +79,9 @@ tasks.register("checkSetup") {
             )
         )
 
-        // Check port availability for each Docker service port
-        // Ports used by our own Docker containers are considered OK
-        val ownContainerPrefixes = listOf("template-")
-
-        fun isOwnDockerContainer(port: Int): Boolean {
+        // Check port availability for each service port
+        // Ports used by our own Docker containers or our server are considered OK
+        fun isOwnProcess(port: Int): Boolean {
             val process = ProcessBuilder("lsof", "-ti:$port")
                 .redirectErrorStream(true).start()
             val pids = process.inputStream.bufferedReader().readLines()
@@ -95,6 +94,7 @@ tasks.register("checkSetup") {
                 val cmd = cmdProc.inputStream.bufferedReader().readText().trim()
                 cmdProc.waitFor()
                 cmd.contains("docker") || cmd.contains("com.docker")
+                    || cmd.contains("com.m2f.template") || cmd.contains("server:run")
             }
         }
 
@@ -114,8 +114,8 @@ tasks.register("checkSetup") {
             }
             if (available) {
                 checks.add(Check("Port $port ($service) available", true, ""))
-            } else if (isOwnDockerContainer(port)) {
-                checks.add(Check("Port $port ($service) in use by dev container ✓", true, ""))
+            } else if (isOwnProcess(port)) {
+                checks.add(Check("Port $port ($service) in use by this project ✓", true, ""))
             } else {
                 checks.add(
                     Check(
@@ -154,7 +154,7 @@ tasks.register<Exec>("seedData") {
     description = "Seed demo user (dev@example.com / password)"
     commandLine(
         "bash", "-c",
-        "docker exec -i template-postgres psql -U postgres -d application < init-scripts/02-seed-dev-data.sql"
+        "docker exec -i template-postgres psql -U postgres -d application < dev-scripts/seed-dev-data.sql"
     )
 }
 
@@ -175,6 +175,7 @@ tasks.register("testAll") {
 tasks.register("verifySetup") {
     group = "dev"
     description = "Verify all services are running correctly"
+    notCompatibleWithConfigurationCache("uses runtime HTTP checks")
     doLast {
         data class Check(val name: String, val passed: Boolean, val fix: String)
 
