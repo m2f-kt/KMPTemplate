@@ -6,21 +6,23 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.di.allAppModules
 import com.m2f.template.localization.LocalAppLocale
 import com.m2f.template.localization.setAppLocale
 import com.m2f.template.navigation.AppNavHost
 import com.m2f.template.navigation.DashboardRoute
+import com.m2f.template.navigation.InviteAcceptRoute
 import com.m2f.template.navigation.LoginRoute
 import com.m2f.template.navigation.OAuthCallbackRoute
-import com.m2f.template.navigation.InviteAcceptRoute
+import com.m2f.template.navigation.Route
 import com.m2f.template.app.auth.checkOAuthCallback
 import com.m2f.template.app.auth.checkInviteLink
 import com.m2f.template.storage.PreferencesStorage
 import com.m2f.template.storage.TokenStorage
 import com.m2f.template.sdk.AuthInterceptor
-import androidx.navigation.compose.rememberNavController
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 
@@ -39,8 +41,8 @@ fun App() {
             setAppLocale(currentLocale)
         }
 
-        // NavController lives OUTSIDE key(currentLocale) so it survives locale changes
-        val navController = rememberNavController()
+        // Back stack lives OUTSIDE key(currentLocale) so it survives locale changes
+        val backStack = remember { mutableStateListOf<Route>(LoginRoute()) }
 
         // --- Auth effects: MUST be outside key(currentLocale) ---
         // These run once on app startup. If they were inside key(), locale changes
@@ -52,23 +54,21 @@ fun App() {
         LaunchedEffect(Unit) {
             val token = checkInviteLink()
             if (token != null) {
-                navController.navigate(InviteAcceptRoute(token = token)) {
-                    popUpTo(0) { inclusive = true }
-                }
+                backStack.clear()
+                backStack.add(InviteAcceptRoute(token = token))
                 return@LaunchedEffect
             }
 
             // Check for OAuth callback on startup (WASM: browser URL params)
             val callback = checkOAuthCallback()
             if (callback != null) {
-                navController.navigate(
+                backStack.clear()
+                backStack.add(
                     OAuthCallbackRoute(
                         accessToken = callback.first,
                         refreshToken = callback.second,
                     ),
-                ) {
-                    popUpTo(0) { inclusive = true }
-                }
+                )
                 return@LaunchedEffect
             }
 
@@ -76,18 +76,16 @@ fun App() {
             tokenStorage.clearSessionTokens()
             val accessToken = tokenStorage.getAccessToken()
             if (accessToken != null) {
-                navController.navigate(DashboardRoute) {
-                    popUpTo<LoginRoute> { inclusive = true }
-                }
+                backStack.clear()
+                backStack.add(DashboardRoute)
             }
         }
 
         // Navigate to login when session expires (refresh token failed)
         LaunchedEffect(Unit) {
             authInterceptor.sessionExpired.collect {
-                navController.navigate(LoginRoute()) {
-                    popUpTo(0) { inclusive = true }
-                }
+                backStack.clear()
+                backStack.add(LoginRoute())
             }
         }
 
@@ -95,7 +93,7 @@ fun App() {
             key(currentLocale) {
                 TerminalTheme {
                     AppNavHost(
-                        navController = navController,
+                        backStack = backStack,
                         tokenStorage = tokenStorage,
                         authInterceptor = authInterceptor,
                     )

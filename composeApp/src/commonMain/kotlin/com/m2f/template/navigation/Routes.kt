@@ -1,21 +1,25 @@
 package com.m2f.template.navigation
 
+import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginRoute(val invitationToken: String? = null, val invitationEmail: String? = null)
+sealed interface Route : NavKey
 
 @Serializable
-data class RegisterRoute(val invitationToken: String? = null, val invitationEmail: String? = null)
+data class LoginRoute(val invitationToken: String? = null, val invitationEmail: String? = null) : Route
 
 @Serializable
-data object DashboardRoute
+data class RegisterRoute(val invitationToken: String? = null, val invitationEmail: String? = null) : Route
 
 @Serializable
-data object ProfileRoute
+data object DashboardRoute : Route
 
 @Serializable
-data object ForgotPasswordRoute
+data object ProfileRoute : Route
+
+@Serializable
+data object ForgotPasswordRoute : Route
 
 /**
  * Route for handling OAuth callback redirects.
@@ -25,29 +29,29 @@ data object ForgotPasswordRoute
 data class OAuthCallbackRoute(
     val accessToken: String,
     val refreshToken: String,
-)
+) : Route
 
 /**
  * Route for the group admin panel.
  */
 @Serializable
-data class AdminPanelRoute(val groupId: String? = null)
+data class AdminPanelRoute(val groupId: String? = null) : Route
 
 /**
  * Route for the register-member form.
  */
 @Serializable
-data class RegisterMemberRoute(val groupId: String)
+data class RegisterMemberRoute(val groupId: String) : Route
 
 /**
  * Route for accepting a group invitation via email link.
  * The token is extracted from the invitation URL.
  */
 @Serializable
-data class InviteAcceptRoute(val token: String)
+data class InviteAcceptRoute(val token: String) : Route
 
 /**
  * Route for the documents management screen (RAG document upload/list/delete).
  */
 @Serializable
-data class DocumentsRoute(val groupId: String)
+data class DocumentsRoute(val groupId: String) : Route

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,10 +11,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.ui.NavDisplay
 import com.m2f.template.app.auth.ForgotPasswordIntent
 import com.m2f.template.app.auth.ForgotPasswordScreen
 import com.m2f.template.app.auth.ForgotPasswordViewModel
@@ -64,372 +61,336 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppNavHost(
-    navController: NavHostController,
+    backStack: MutableList<Route>,
     tokenStorage: TokenStorage,
     authInterceptor: AuthInterceptor,
 ) {
     val oauthHandler = remember { OAuthHandler(serverBaseUrl = defaultBaseUrl()) }
 
     Box(modifier = Modifier.fillMaxSize().systemBarsPadding()) {
-        NavHost(
-            navController = navController,
-            startDestination = LoginRoute(),
-        ) {
-            composable<LoginRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<LoginRoute>()
-                val viewModel = koinViewModel<LoginViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
+        NavDisplay(
+            backStack = backStack,
+            onBack = { backStack.removeLastOrNull() },
+            entryProvider = entryProvider {
+                entry<LoginRoute> { route ->
+                    val viewModel = koinViewModel<LoginViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
 
-                // Set invitation token and email if present
-                LaunchedEffect(route.invitationToken, route.invitationEmail) {
-                    route.invitationToken?.let { token ->
-                        viewModel.take(LoginIntent.SetInvitationToken(token))
+                    LaunchedEffect(route.invitationToken, route.invitationEmail) {
+                        route.invitationToken?.let { token ->
+                            viewModel.take(LoginIntent.SetInvitationToken(token))
+                        }
+                        route.invitationEmail?.let { email ->
+                            viewModel.take(LoginIntent.SetInvitationEmail(email))
+                        }
                     }
-                    route.invitationEmail?.let { email ->
-                        viewModel.take(LoginIntent.SetInvitationEmail(email))
-                    }
-                }
 
-                LoginScreen(
-                    state = state,
-                    onEmailChange = { viewModel.take(LoginIntent.EmailChanged(it)) },
-                    onPasswordChange = { viewModel.take(LoginIntent.PasswordChanged(it)) },
-                    onRememberMeChange = { viewModel.take(LoginIntent.RememberMeChanged(it)) },
-                    onLoginClick = { viewModel.take(LoginIntent.SubmitLoginClicked) },
-                    onGoogleClick = { oauthHandler.startOAuth("google") },
-                    onAppleClick = { oauthHandler.startOAuth("apple") },
-                    onForgotPassword = { navController.navigate(ForgotPasswordRoute) },
-                    onRegister = { navController.navigate(RegisterRoute()) },
-                )
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is LoginEvent.NavigateToDashboard -> {
-                                navController.navigate(DashboardRoute) {
-                                    popUpTo<LoginRoute> { inclusive = true }
-                                }
-                            }
-                            is LoginEvent.NavigateToGroup -> {
-                                navController.navigate(DashboardRoute) {
-                                    popUpTo<LoginRoute> { inclusive = true }
+                    LoginScreen(
+                        state = state,
+                        onEmailChange = { viewModel.take(LoginIntent.EmailChanged(it)) },
+                        onPasswordChange = { viewModel.take(LoginIntent.PasswordChanged(it)) },
+                        onRememberMeChange = { viewModel.take(LoginIntent.RememberMeChanged(it)) },
+                        onLoginClick = { viewModel.take(LoginIntent.SubmitLoginClicked) },
+                        onGoogleClick = { oauthHandler.startOAuth("google") },
+                        onAppleClick = { oauthHandler.startOAuth("apple") },
+                        onForgotPassword = { backStack.add(ForgotPasswordRoute) },
+                        onRegister = { backStack.add(RegisterRoute()) },
+                    )
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is LoginEvent.NavigateToDashboard,
+                                is LoginEvent.NavigateToGroup -> {
+                                    backStack.clear()
+                                    backStack.add(DashboardRoute)
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            composable<RegisterRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<RegisterRoute>()
-                val viewModel = koinViewModel<RegisterViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
+                entry<RegisterRoute> { route ->
+                    val viewModel = koinViewModel<RegisterViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
 
-                // Set invitation token and email if present
-                LaunchedEffect(route.invitationToken, route.invitationEmail) {
-                    route.invitationToken?.let { token ->
-                        viewModel.take(RegisterIntent.SetInvitationToken(token))
+                    LaunchedEffect(route.invitationToken, route.invitationEmail) {
+                        route.invitationToken?.let { token ->
+                            viewModel.take(RegisterIntent.SetInvitationToken(token))
+                        }
+                        route.invitationEmail?.let { email ->
+                            viewModel.take(RegisterIntent.SetInvitationEmail(email))
+                        }
                     }
-                    route.invitationEmail?.let { email ->
-                        viewModel.take(RegisterIntent.SetInvitationEmail(email))
-                    }
-                }
 
-                RegisterScreen(
-                    state = state,
-                    onFirstNameChange = { viewModel.take(RegisterIntent.FirstNameChanged(it)) },
-                    onLastNameChange = { viewModel.take(RegisterIntent.LastNameChanged(it)) },
-                    onEmailChange = { viewModel.take(RegisterIntent.EmailChanged(it)) },
-                    onPasswordChange = { viewModel.take(RegisterIntent.PasswordChanged(it)) },
-                    onConfirmPasswordChange = { viewModel.take(RegisterIntent.ConfirmPasswordChanged(it)) },
-                    onTermsAcceptedChange = { viewModel.take(RegisterIntent.TermsAcceptedChanged(it)) },
-                    onRegisterClick = { viewModel.take(RegisterIntent.SubmitRegisterClicked) },
-                    onGoogleClick = { oauthHandler.startOAuth("google") },
-                    onAppleClick = { oauthHandler.startOAuth("apple") },
-                    onLogin = { navController.popBackStack() },
-                )
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is RegisterEvent.NavigateToDashboard -> {
-                                navController.navigate(DashboardRoute) {
-                                    popUpTo<LoginRoute> { inclusive = true }
-                                }
-                            }
-                            is RegisterEvent.NavigateToGroup -> {
-                                navController.navigate(DashboardRoute) {
-                                    popUpTo<LoginRoute> { inclusive = true }
+                    RegisterScreen(
+                        state = state,
+                        onFirstNameChange = { viewModel.take(RegisterIntent.FirstNameChanged(it)) },
+                        onLastNameChange = { viewModel.take(RegisterIntent.LastNameChanged(it)) },
+                        onEmailChange = { viewModel.take(RegisterIntent.EmailChanged(it)) },
+                        onPasswordChange = { viewModel.take(RegisterIntent.PasswordChanged(it)) },
+                        onConfirmPasswordChange = { viewModel.take(RegisterIntent.ConfirmPasswordChanged(it)) },
+                        onTermsAcceptedChange = { viewModel.take(RegisterIntent.TermsAcceptedChanged(it)) },
+                        onRegisterClick = { viewModel.take(RegisterIntent.SubmitRegisterClicked) },
+                        onGoogleClick = { oauthHandler.startOAuth("google") },
+                        onAppleClick = { oauthHandler.startOAuth("apple") },
+                        onLogin = { backStack.removeLastOrNull() },
+                    )
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is RegisterEvent.NavigateToDashboard,
+                                is RegisterEvent.NavigateToGroup -> {
+                                    backStack.clear()
+                                    backStack.add(DashboardRoute)
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            composable<OAuthCallbackRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<OAuthCallbackRoute>()
-                val tokenStorage = koinInject<TokenStorage>()
-                OAuthCallbackHandler(
-                    accessToken = route.accessToken,
-                    refreshToken = route.refreshToken,
-                    tokenStorage = tokenStorage,
-                    onSuccess = {
-                        navController.navigate(DashboardRoute) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                    onError = {
-                        navController.navigate(LoginRoute()) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    },
-                )
-            }
-
-            composable<DashboardRoute> { backStackEntry ->
-                val dashboardViewModel = koinViewModel<DashboardViewModel>()
-                val dashboardState by dashboardViewModel.model.collectAsStateWithLifecycle()
-
-                // Refresh profile data when this screen becomes visible (initial or returning from another screen)
-                val lifecycleOwner = backStackEntry
-                DisposableEffect(lifecycleOwner) {
-                    val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
-                        if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                            dashboardViewModel.take(DashboardIntent.RefreshProfile)
-                        }
-                    }
-                    lifecycleOwner.lifecycle.addObserver(observer)
-                    onDispose {
-                        lifecycleOwner.lifecycle.removeObserver(observer)
-                    }
+                entry<OAuthCallbackRoute> { route ->
+                    val tokenStorage = koinInject<TokenStorage>()
+                    OAuthCallbackHandler(
+                        accessToken = route.accessToken,
+                        refreshToken = route.refreshToken,
+                        tokenStorage = tokenStorage,
+                        onSuccess = {
+                            backStack.clear()
+                            backStack.add(DashboardRoute)
+                        },
+                        onError = {
+                            backStack.clear()
+                            backStack.add(LoginRoute())
+                        },
+                    )
                 }
 
-                DashboardScreen(
-                    state = dashboardState,
-                    onNavItemSelected = { dashboardViewModel.take(DashboardIntent.NavItemSelected(it)) },
-                    onProfileClick = { navController.navigate(ProfileRoute) },
-                    onLogout = { dashboardViewModel.take(DashboardIntent.LogoutClicked) },
-                    onAdminClick = { dashboardViewModel.take(DashboardIntent.AdminPanelClicked) },
-                )
-                LaunchedEffect(Unit) {
-                    dashboardViewModel.event.collect { event ->
-                        when (event) {
-                            is DashboardEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute()) {
-                                    popUpTo(0) { inclusive = true }
+                entry<DashboardRoute> {
+                    val dashboardViewModel = koinViewModel<DashboardViewModel>()
+                    val dashboardState by dashboardViewModel.model.collectAsStateWithLifecycle()
+
+                    // Refresh profile data when this screen enters composition
+                    // (initial load or returning from another screen)
+                    LaunchedEffect(Unit) {
+                        dashboardViewModel.take(DashboardIntent.RefreshProfile)
+                    }
+
+                    DashboardScreen(
+                        state = dashboardState,
+                        onNavItemSelected = { dashboardViewModel.take(DashboardIntent.NavItemSelected(it)) },
+                        onProfileClick = { backStack.add(ProfileRoute) },
+                        onLogout = { dashboardViewModel.take(DashboardIntent.LogoutClicked) },
+                        onAdminClick = { dashboardViewModel.take(DashboardIntent.AdminPanelClicked) },
+                    )
+                    LaunchedEffect(Unit) {
+                        dashboardViewModel.event.collect { event ->
+                            when (event) {
+                                is DashboardEvent.NavigateToLogin -> {
+                                    backStack.clear()
+                                    backStack.add(LoginRoute())
                                 }
-                            }
-                            is DashboardEvent.NavigateToAdmin -> {
-                                navController.navigate(AdminPanelRoute(groupId = event.groupId))
-                            }
-                        }
-                    }
-                }
-            }
-
-            composable<ProfileRoute> {
-                val viewModel = koinViewModel<ProfileViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
-                val preferencesStorage = koinInject<PreferencesStorage>()
-                val currentLocale = LocalAppLocale.current
-                ProfileScreen(
-                    state = state,
-                    onStartEditing = { viewModel.take(ProfileIntent.StartEditing) },
-                    onCancelEditing = { viewModel.take(ProfileIntent.CancelEditing) },
-                    onEditNameChange = { viewModel.take(ProfileIntent.EditNameChanged(it)) },
-                    onEditEmailChange = { viewModel.take(ProfileIntent.EditEmailChanged(it)) },
-                    onSaveProfile = { viewModel.take(ProfileIntent.SaveProfileClicked) },
-                    onLogout = { viewModel.take(ProfileIntent.LogoutClicked) },
-                    onBack = { navController.popBackStack() },
-                    onImageSelected = { bytes, mimeType ->
-                        viewModel.take(ProfileIntent.ImageSelected(bytes, mimeType))
-                    },
-                    onCropConfirmed = { viewModel.take(ProfileIntent.CropConfirmed) },
-                    onCropCancelled = { viewModel.take(ProfileIntent.CropCancelled) },
-                    localeSelector = {
-                        LocaleSelector(
-                            currentLocale = currentLocale,
-                            onLocaleChanged = { locale ->
-                                preferencesStorage.language = locale
-                            },
-                        )
-                    },
-                )
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is ProfileEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute()) {
-                                    popUpTo(0) { inclusive = true }
+                                is DashboardEvent.NavigateToAdmin -> {
+                                    backStack.add(AdminPanelRoute(groupId = event.groupId))
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            composable<ForgotPasswordRoute> {
-                val viewModel = koinViewModel<ForgotPasswordViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
-                ForgotPasswordScreen(
-                    state = state,
-                    onEmailChange = { viewModel.take(ForgotPasswordIntent.EmailChanged(it)) },
-                    onSubmit = { viewModel.take(ForgotPasswordIntent.SubmitForgotPasswordClicked) },
-                    onBackToLogin = { navController.popBackStack() },
-                )
-            }
-
-            composable<AdminPanelRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<AdminPanelRoute>()
-                val viewModel = koinViewModel<AdminPanelViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
-
-                LaunchedEffect(Unit) {
-                    val groupId = route.groupId
-                    if (groupId != null) {
-                        viewModel.take(AdminPanelIntent.LoadAdminPanel(groupId))
-                    }
-                    // When groupId is null, admin panel shows its initial/empty state
-                }
-
-                AdminPanelScreen(
-                    state = state,
-                    onLoadMore = { viewModel.take(AdminPanelIntent.LoadMoreMembers) },
-                    onRegisterMember = { viewModel.take(AdminPanelIntent.RegisterMemberClicked) },
-                    onBack = { navController.popBackStack() },
-                    onOpenCreateGroup = { viewModel.take(AdminPanelIntent.OpenCreateGroupDialog) },
-                    onCloseCreateGroup = { viewModel.take(AdminPanelIntent.CloseCreateGroupDialog) },
-                    onCreateGroupNameChange = { viewModel.take(AdminPanelIntent.CreateGroupNameChanged(it)) },
-                    onSubmitCreateGroup = { viewModel.take(AdminPanelIntent.SubmitCreateGroup) },
-                    onOpenInvite = { viewModel.take(AdminPanelIntent.OpenInviteDialog) },
-                    onCloseInvite = { viewModel.take(AdminPanelIntent.CloseInviteDialog) },
-                    onInviteEmailChange = { viewModel.take(AdminPanelIntent.InviteEmailChanged(it)) },
-                    onSendInvite = { viewModel.take(AdminPanelIntent.SendInvite) },
-                    onConfirmRevoke = { viewModel.take(AdminPanelIntent.ConfirmRevokeInvitation(it)) },
-                    onCancelRevoke = { viewModel.take(AdminPanelIntent.CancelRevoke) },
-                    onExecuteRevoke = { viewModel.take(AdminPanelIntent.ExecuteRevoke) },
-                    onResend = { viewModel.take(AdminPanelIntent.ResendInvitation(it)) },
-                    onConfirmRemoveMember = { viewModel.take(AdminPanelIntent.ConfirmRemoveMember(it)) },
-                    onCancelRemoveMember = { viewModel.take(AdminPanelIntent.CancelRemoveMember) },
-                    onExecuteRemoveMember = { viewModel.take(AdminPanelIntent.ExecuteRemoveMember) },
-                )
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is AdminPanelEvent.NavigateToRegisterMember -> {
-                                navController.navigate(RegisterMemberRoute(groupId = event.groupId))
-                            }
-                            is AdminPanelEvent.GroupCreated -> {
-                                // Navigate to admin panel with new group
-                                navController.navigate(AdminPanelRoute(groupId = event.groupId))
-                            }
-                        }
-                    }
-                }
-            }
-
-            composable<RegisterMemberRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<RegisterMemberRoute>()
-                val viewModel = koinViewModel<RegisterMemberViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
-                RegisterMemberScreen(
-                    state = state,
-                    onEmailChange = { viewModel.take(RegisterMemberIntent.EmailChanged(it)) },
-                    onPasswordChange = { viewModel.take(RegisterMemberIntent.PasswordChanged(it)) },
-                    onFirstNameChange = { viewModel.take(RegisterMemberIntent.FirstNameChanged(it)) },
-                    onLastNameChange = { viewModel.take(RegisterMemberIntent.LastNameChanged(it)) },
-                    onRoleChange = { viewModel.take(RegisterMemberIntent.RoleChanged(it)) },
-                    onSubmit = { viewModel.take(RegisterMemberIntent.SubmitRegisterMember(route.groupId)) },
-                    onBack = { navController.popBackStack() },
-                )
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is RegisterMemberEvent.RegistrationSuccess -> {
-                                navController.popBackStack()
-                            }
-                        }
-                    }
-                }
-            }
-
-            composable<InviteAcceptRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<InviteAcceptRoute>()
-                val viewModel = koinViewModel<InviteAcceptViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
-
-                LaunchedEffect(route.token) {
-                    viewModel.take(InviteAcceptIntent.LoadInvitation(route.token))
-                }
-
-                InviteAcceptScreen(
-                    state = state,
-                    onAccept = { viewModel.take(InviteAcceptIntent.AcceptInvitation) },
-                    onGoToLogin = { viewModel.take(InviteAcceptIntent.GoToLogin) },
-                    onGoToRegister = { viewModel.take(InviteAcceptIntent.GoToRegister) },
-                    onRequestNewInvitation = { viewModel.take(InviteAcceptIntent.RequestNewInvitation) },
-                )
-
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is InviteAcceptEvent.NavigateToGroup -> {
-                                navController.navigate(DashboardRoute) {
-                                    popUpTo(0) { inclusive = true }
-                                }
-                            }
-                            is InviteAcceptEvent.NavigateToLogin -> {
-                                navController.navigate(LoginRoute(invitationToken = event.token, invitationEmail = event.email)) {
-                                    popUpTo<InviteAcceptRoute> { inclusive = true }
-                                }
-                            }
-                            is InviteAcceptEvent.NavigateToRegister -> {
-                                navController.navigate(RegisterRoute(invitationToken = event.token, invitationEmail = event.email)) {
-                                    popUpTo<InviteAcceptRoute> { inclusive = true }
-                                }
-                            }
-                            is InviteAcceptEvent.RequestedNewInvitation -> {
-                                navController.navigate(LoginRoute()) {
-                                    popUpTo<InviteAcceptRoute> { inclusive = true }
+                entry<ProfileRoute> {
+                    val viewModel = koinViewModel<ProfileViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
+                    val preferencesStorage = koinInject<PreferencesStorage>()
+                    val currentLocale = LocalAppLocale.current
+                    ProfileScreen(
+                        state = state,
+                        onStartEditing = { viewModel.take(ProfileIntent.StartEditing) },
+                        onCancelEditing = { viewModel.take(ProfileIntent.CancelEditing) },
+                        onEditNameChange = { viewModel.take(ProfileIntent.EditNameChanged(it)) },
+                        onEditEmailChange = { viewModel.take(ProfileIntent.EditEmailChanged(it)) },
+                        onSaveProfile = { viewModel.take(ProfileIntent.SaveProfileClicked) },
+                        onLogout = { viewModel.take(ProfileIntent.LogoutClicked) },
+                        onBack = { backStack.removeLastOrNull() },
+                        onImageSelected = { bytes, mimeType ->
+                            viewModel.take(ProfileIntent.ImageSelected(bytes, mimeType))
+                        },
+                        onCropConfirmed = { viewModel.take(ProfileIntent.CropConfirmed) },
+                        onCropCancelled = { viewModel.take(ProfileIntent.CropCancelled) },
+                        localeSelector = {
+                            LocaleSelector(
+                                currentLocale = currentLocale,
+                                onLocaleChanged = { locale ->
+                                    preferencesStorage.language = locale
+                                },
+                            )
+                        },
+                    )
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is ProfileEvent.NavigateToLogin -> {
+                                    backStack.clear()
+                                    backStack.add(LoginRoute())
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            composable<DocumentsRoute> { backStackEntry ->
-                val route = backStackEntry.toRoute<DocumentsRoute>()
-                val viewModel = koinViewModel<DocumentsViewModel>()
-                val state by viewModel.model.collectAsStateWithLifecycle()
-                var showUploadSuccess by remember { mutableStateOf(false) }
-
-                LaunchedEffect(route.groupId) {
-                    viewModel.take(DocumentsIntent.LoadDocuments(route.groupId))
+                entry<ForgotPasswordRoute> {
+                    val viewModel = koinViewModel<ForgotPasswordViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
+                    ForgotPasswordScreen(
+                        state = state,
+                        onEmailChange = { viewModel.take(ForgotPasswordIntent.EmailChanged(it)) },
+                        onSubmit = { viewModel.take(ForgotPasswordIntent.SubmitForgotPasswordClicked) },
+                        onBackToLogin = { backStack.removeLastOrNull() },
+                    )
                 }
 
-                LaunchedEffect(Unit) {
-                    viewModel.event.collect { event ->
-                        when (event) {
-                            is DocumentsEvent.UploadSuccess -> {
-                                showUploadSuccess = true
+                entry<AdminPanelRoute> { route ->
+                    val viewModel = koinViewModel<AdminPanelViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(Unit) {
+                        val groupId = route.groupId
+                        if (groupId != null) {
+                            viewModel.take(AdminPanelIntent.LoadAdminPanel(groupId))
+                        }
+                    }
+
+                    AdminPanelScreen(
+                        state = state,
+                        onLoadMore = { viewModel.take(AdminPanelIntent.LoadMoreMembers) },
+                        onRegisterMember = { viewModel.take(AdminPanelIntent.RegisterMemberClicked) },
+                        onBack = { backStack.removeLastOrNull() },
+                        onOpenCreateGroup = { viewModel.take(AdminPanelIntent.OpenCreateGroupDialog) },
+                        onCloseCreateGroup = { viewModel.take(AdminPanelIntent.CloseCreateGroupDialog) },
+                        onCreateGroupNameChange = { viewModel.take(AdminPanelIntent.CreateGroupNameChanged(it)) },
+                        onSubmitCreateGroup = { viewModel.take(AdminPanelIntent.SubmitCreateGroup) },
+                        onOpenInvite = { viewModel.take(AdminPanelIntent.OpenInviteDialog) },
+                        onCloseInvite = { viewModel.take(AdminPanelIntent.CloseInviteDialog) },
+                        onInviteEmailChange = { viewModel.take(AdminPanelIntent.InviteEmailChanged(it)) },
+                        onSendInvite = { viewModel.take(AdminPanelIntent.SendInvite) },
+                        onConfirmRevoke = { viewModel.take(AdminPanelIntent.ConfirmRevokeInvitation(it)) },
+                        onCancelRevoke = { viewModel.take(AdminPanelIntent.CancelRevoke) },
+                        onExecuteRevoke = { viewModel.take(AdminPanelIntent.ExecuteRevoke) },
+                        onResend = { viewModel.take(AdminPanelIntent.ResendInvitation(it)) },
+                        onConfirmRemoveMember = { viewModel.take(AdminPanelIntent.ConfirmRemoveMember(it)) },
+                        onCancelRemoveMember = { viewModel.take(AdminPanelIntent.CancelRemoveMember) },
+                        onExecuteRemoveMember = { viewModel.take(AdminPanelIntent.ExecuteRemoveMember) },
+                    )
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is AdminPanelEvent.NavigateToRegisterMember -> {
+                                    backStack.add(RegisterMemberRoute(groupId = event.groupId))
+                                }
+                                is AdminPanelEvent.GroupCreated -> {
+                                    backStack.add(AdminPanelRoute(groupId = event.groupId))
+                                }
                             }
                         }
                     }
                 }
 
-                DocumentsScreen(
-                    state = state,
-                    onUploadClick = {
-                        // File picker integration is platform-specific;
-                        // placeholder for now - will be wired per-platform.
-                    },
-                    onDeleteDocument = { documentId ->
-                        viewModel.take(DocumentsIntent.DeleteDocument(documentId))
-                    },
-                    onBack = { navController.popBackStack() },
-                    showUploadSuccess = showUploadSuccess,
-                )
-            }
-        }
+                entry<RegisterMemberRoute> { route ->
+                    val viewModel = koinViewModel<RegisterMemberViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
+                    RegisterMemberScreen(
+                        state = state,
+                        onEmailChange = { viewModel.take(RegisterMemberIntent.EmailChanged(it)) },
+                        onPasswordChange = { viewModel.take(RegisterMemberIntent.PasswordChanged(it)) },
+                        onFirstNameChange = { viewModel.take(RegisterMemberIntent.FirstNameChanged(it)) },
+                        onLastNameChange = { viewModel.take(RegisterMemberIntent.LastNameChanged(it)) },
+                        onRoleChange = { viewModel.take(RegisterMemberIntent.RoleChanged(it)) },
+                        onSubmit = { viewModel.take(RegisterMemberIntent.SubmitRegisterMember(route.groupId)) },
+                        onBack = { backStack.removeLastOrNull() },
+                    )
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is RegisterMemberEvent.RegistrationSuccess -> {
+                                    backStack.removeLastOrNull()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                entry<InviteAcceptRoute> { route ->
+                    val viewModel = koinViewModel<InviteAcceptViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
+
+                    LaunchedEffect(route.token) {
+                        viewModel.take(InviteAcceptIntent.LoadInvitation(route.token))
+                    }
+
+                    InviteAcceptScreen(
+                        state = state,
+                        onAccept = { viewModel.take(InviteAcceptIntent.AcceptInvitation) },
+                        onGoToLogin = { viewModel.take(InviteAcceptIntent.GoToLogin) },
+                        onGoToRegister = { viewModel.take(InviteAcceptIntent.GoToRegister) },
+                        onRequestNewInvitation = { viewModel.take(InviteAcceptIntent.RequestNewInvitation) },
+                    )
+
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is InviteAcceptEvent.NavigateToGroup -> {
+                                    backStack.clear()
+                                    backStack.add(DashboardRoute)
+                                }
+                                is InviteAcceptEvent.NavigateToLogin -> {
+                                    backStack.clear()
+                                    backStack.add(LoginRoute(invitationToken = event.token, invitationEmail = event.email))
+                                }
+                                is InviteAcceptEvent.NavigateToRegister -> {
+                                    backStack.clear()
+                                    backStack.add(RegisterRoute(invitationToken = event.token, invitationEmail = event.email))
+                                }
+                                is InviteAcceptEvent.RequestedNewInvitation -> {
+                                    backStack.clear()
+                                    backStack.add(LoginRoute())
+                                }
+                            }
+                        }
+                    }
+                }
+
+                entry<DocumentsRoute> { route ->
+                    val viewModel = koinViewModel<DocumentsViewModel>()
+                    val state by viewModel.model.collectAsStateWithLifecycle()
+                    var showUploadSuccess by remember { mutableStateOf(false) }
+
+                    LaunchedEffect(route.groupId) {
+                        viewModel.take(DocumentsIntent.LoadDocuments(route.groupId))
+                    }
+
+                    LaunchedEffect(Unit) {
+                        viewModel.event.collect { event ->
+                            when (event) {
+                                is DocumentsEvent.UploadSuccess -> {
+                                    showUploadSuccess = true
+                                }
+                            }
+                        }
+                    }
+
+                    DocumentsScreen(
+                        state = state,
+                        onUploadClick = {
+                            // File picker integration is platform-specific;
+                            // placeholder for now - will be wired per-platform.
+                        },
+                        onDeleteDocument = { documentId ->
+                            viewModel.take(DocumentsIntent.DeleteDocument(documentId))
+                        },
+                        onBack = { backStack.removeLastOrNull() },
+                        showUploadSuccess = showUploadSuccess,
+                    )
+                }
+            },
+        )
     }
 }
