@@ -44,3 +44,15 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
+
+// Coverage measured on JVM target only (WASM/iOS native not instrumented by Kover).
+// Threshold starts at 0 — raise incrementally as tests are added to this module.
+kover {
+    reports {
+        verify {
+            rule("Minimum line coverage") {
+                minBound(0)
+            }
+        }
+    }
+}

@@ -8,6 +8,7 @@ plugins {
     id("org.jetbrains.kotlin.multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
     id("com.android.application")
+    id("kover-convention")
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -134,6 +135,18 @@ compose.desktop {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.m2f.template"
             packageVersion = "1.0.0"
+        }
+    }
+}
+
+// Coverage is measured on the JVM target only (Kover does not instrument WASM/iOS native).
+// Threshold starts at 0 — raise incrementally as tests are added to this module.
+kover {
+    reports {
+        verify {
+            rule("Minimum line coverage") {
+                minBound(0)
+            }
         }
     }
 }
