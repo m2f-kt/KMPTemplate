@@ -1,8 +1,6 @@
 plugins {
     id("kmp-library-convention")
     id("com.android.library")
-    alias(libs.plugins.composeMultiplatform)
-    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -21,23 +19,18 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            implementation(projects.core.models)
-            implementation(projects.core.sdk)
+            api(projects.app.dashboard.contract)
+            api(projects.app.dashboard.impl)
             implementation(projects.core.mvi)
-            implementation(projects.app.designsystem)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.components.resources)
+            implementation(projects.core.sdk)
+            implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
-        }
-        commonTest.dependencies {
-            implementation(projects.core.testing)
         }
     }
 }
 
 android {
-    namespace = "com.m2f.template.app.dashboard"
+    namespace = "com.m2f.template.app.dashboard.wire"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

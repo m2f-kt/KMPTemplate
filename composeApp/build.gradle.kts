@@ -81,7 +81,7 @@ kotlin {
             implementation(projects.app.designsystem)
             implementation(projects.app.auth)
             implementation(projects.app.admin)
-            implementation(projects.app.dashboard)
+            implementation(projects.app.dashboard.wire)
             implementation(projects.app.documents.wire)
             implementation(projects.app.profile)
         }
