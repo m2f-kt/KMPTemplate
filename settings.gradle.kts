@@ -57,7 +57,9 @@ include("server:ai")
 
 // App feature modules
 include("app:auth")
-include("app:admin")
+include("app:admin:contract")
+include("app:admin:impl")
+include("app:admin:wire")
 include("app:dashboard:contract")
 include("app:dashboard:impl")
 include("app:dashboard:wire")

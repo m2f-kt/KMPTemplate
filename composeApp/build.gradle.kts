@@ -80,7 +80,7 @@ kotlin {
             implementation(projects.core.sdk)
             implementation(projects.app.designsystem)
             implementation(projects.app.auth)
-            implementation(projects.app.admin)
+            implementation(projects.app.admin.wire)
             implementation(projects.app.dashboard.wire)
             implementation(projects.app.documents.wire)
             implementation(projects.app.profile.wire)

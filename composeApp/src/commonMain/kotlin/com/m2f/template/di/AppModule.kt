@@ -1,7 +1,6 @@
 package com.m2f.template.di
 
-import com.m2f.template.app.admin.AdminPanelViewModel
-import com.m2f.template.app.admin.RegisterMemberViewModel
+import com.m2f.template.app.admin.wire.adminModule
 import com.m2f.template.app.auth.ForgotPasswordViewModel
 import com.m2f.template.app.auth.InviteAcceptViewModel
 import com.m2f.template.app.auth.LoginViewModel
@@ -20,11 +19,10 @@ val appModule = module {
     includes(documentsModule)
     includes(dashboardModule)
     includes(profileModule)
+    includes(adminModule)
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::ForgotPasswordViewModel)
-    viewModelOf(::AdminPanelViewModel)
-    viewModelOf(::RegisterMemberViewModel)
     viewModelOf(::InviteAcceptViewModel)
 }
 
