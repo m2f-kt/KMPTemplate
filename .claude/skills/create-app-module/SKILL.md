@@ -13,18 +13,18 @@ Creates new client-side feature modules following the project's 3-submodule arch
 
 | Submodule | Role | Visibility |
 |-----------|------|------------|
-| **contract** | Public API: Route definition added to `Routes.kt`, shared types other features may depend on | Any module can depend on it |
-| **impl** | Hidden internals: ViewModel, MVI types, Screen composable, tests | Only wire depends on it |
-| **wire** | DI bridge: Koin module (`viewModelOf`), re-exports contract as `api` | composeApp imports this |
+| **contract** | Public API: Route definitions, shared types other features may depend on. Depends on `core:navigation`. | Any module can depend on it |
+| **impl** | Hidden internals: ViewModel, MVI types, Screen composable, tests | Only wire depends on it (via `implementation`) |
+| **wire** | DI + Navigation bridge: Koin module, `EntryProviderScope<Route>` extension. Uses `implementation(impl)` so impl is truly hidden. Re-exports contract as `api`. | composeApp imports this |
 
-This replaces Hilt's `@InstallIn` auto-discovery: the wire module exports a `val featureModule` that the aggregator (`AppModule.kt`) explicitly includes.
+This replaces Hilt's `@InstallIn` auto-discovery: the wire module exports a `val featureModule` that the aggregator (`AppModule.kt`) explicitly includes, and an `EntryProviderScope<Route>` extension that AppNavHost calls.
 
 ## Instructions
 
 ### 1. Understand the Feature Requirements
 - Ask for the feature name (e.g., "settings", "notifications", "profile editor")
 - Clarify the UI requirements (screens, composables needed)
-- Identify dependencies on other features
+- Identify dependencies on other features (for cross-feature navigation)
 
 ### 2. Generate Module Structure
 Run the `create_app_module.sh` script to scaffold the complete structure:
@@ -39,9 +39,9 @@ The script will create:
 - Base package structure (`com.m2f.template.app.<featurename>`)
 - `build.gradle.kts` for each submodule
 - Update `settings.gradle.kts` to include all 3 modules
-- Shared types placeholder in contract
+- Route definition in contract
 - ViewModel, Screen, Intent/Model/Mutation/Event in impl
-- Koin module in wire
+- Koin module + navigation extension in wire
 
 ### 3. Feature Module Structure
 After the script runs, you will have this structure:
@@ -51,7 +51,7 @@ app/<featurename>/
 |-- contract/
 |   |-- build.gradle.kts
 |   `-- src/commonMain/kotlin/com/m2f/template/app/<featurename>/contract/
-|       `-- <Feature>Contract.kt              # Shared types (if needed by other features)
+|       `-- <Feature>Route.kt                   # Route definition (extends Route from core:navigation)
 |
 |-- impl/
 |   |-- build.gradle.kts
@@ -69,27 +69,21 @@ app/<featurename>/
 `-- wire/
     |-- build.gradle.kts
     `-- src/commonMain/kotlin/com/m2f/template/app/<featurename>/wire/
-        `-- <Feature>Module.kt                # Koin module with viewModelOf
+        |-- <Feature>Module.kt                # Koin module with viewModelOf
+        `-- <Feature>Navigation.kt            # EntryProviderScope<Route> extension
 ```
 
 ### 4. Generated Files Reference
 
-#### Route (added to composeApp's Routes.kt)
-The script adds the new route to the existing `Routes.kt` file in composeApp where all routes are centralized:
-```kotlin
-// Added to composeApp/src/commonMain/kotlin/com/m2f/template/navigation/Routes.kt
-@Serializable
-data object <Feature>Route : Route
-```
-
-#### Contract Module - Shared Types
+#### Contract Module - Route
 ```kotlin
 package com.m2f.template.app.<featurename>.contract
 
-/**
- * Shared types for the <featurename> feature.
- * Add models/interfaces here that other features need to depend on.
- */
+import com.m2f.template.navigation.Route
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object <Feature>Route : Route
 ```
 
 #### Impl Module - Intent (sealed interface)
@@ -167,7 +161,6 @@ class <Feature>ViewModel(
 package com.m2f.template.app.<featurename>.impl
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -209,7 +202,6 @@ class <Feature>ViewModelTest : ViewModelTest() {
         val sdk = fakeSdk()
         val viewModel = <Feature>ViewModel(sdk)
         viewModel.test {
-            // Initial state assertion
             model(<Feature>Model(isLoading = false))
         }
     }
@@ -240,12 +232,56 @@ val <featurename>Module = module {
 }
 ```
 
+#### Wire Module - Navigation Extension
+```kotlin
+package com.m2f.template.app.<featurename>.wire
+
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.EntryProviderScope
+import com.m2f.template.app.<featurename>.contract.<Feature>Route
+import com.m2f.template.app.<featurename>.impl.<Feature>Event
+import com.m2f.template.app.<featurename>.impl.<Feature>Intent
+import com.m2f.template.app.<featurename>.impl.<Feature>Screen
+import com.m2f.template.app.<featurename>.impl.<Feature>ViewModel
+import com.m2f.template.navigation.Route
+import org.koin.compose.viewmodel.koinViewModel
+
+fun EntryProviderScope<Route>.<featurename>Entries(
+    backStack: MutableList<Route>,
+) {
+    entry<<Feature>Route> {
+        val viewModel = koinViewModel<<Feature>ViewModel>()
+        val state by viewModel.model.collectAsStateWithLifecycle()
+
+        <Feature>Screen(
+            state = state,
+            onBack = { backStack.removeLastOrNull() },
+        )
+
+        LaunchedEffect(Unit) {
+            viewModel.event.collect { event ->
+                when (event) {
+                    is <Feature>Event.NavigateBack -> backStack.removeLastOrNull()
+                }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            viewModel.take(<Feature>Intent.Load)
+        }
+    }
+}
+```
+
 ### 5. Build.gradle.kts Files
 
 #### Contract build.gradle.kts
 ```kotlin
 plugins {
     id("kmp-library-convention")
+    id("com.android.library")
 }
 
 kotlin {
@@ -264,7 +300,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.core.navigation)
             implementation(projects.core.models)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
@@ -363,8 +401,14 @@ kotlin {
         commonMain.dependencies {
             api(projects.app.<featurename>.contract)
             implementation(projects.app.<featurename>.impl)
+            implementation(projects.core.mvi)
+            implementation(projects.core.sdk)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation3.ui)
         }
     }
 }
@@ -384,40 +428,23 @@ android {
 
 ### 6. Next Steps After Creation
 1. **Sync Gradle** in your IDE
-2. **Add wire module to AppModule.kt** — include the wire's Koin module in the aggregator:
+2. **Add wire dependency to composeApp** — in `composeApp/build.gradle.kts`:
    ```kotlin
-   // In composeApp/.../di/AppModule.kt
+   implementation(projects.app.<featurename>.wire)
+   ```
+3. **Include Koin module in AppModule.kt**:
+   ```kotlin
    import com.m2f.template.app.<featurename>.wire.<featurename>Module
 
    val appModule = module {
        includes(<featurename>Module)
-       // ... existing viewModelOf() calls
+       // ... existing includes
    }
    ```
-3. **Add navigation entry in AppNavHost.kt** — wire the route to the screen:
+4. **Call wire navigation extension in AppNavHost.kt**:
    ```kotlin
-   // In composeApp/.../navigation/AppNavHost.kt
-   entry<<Feature>Route> {
-       val viewModel = koinViewModel<<Feature>ViewModel>()
-       val state by viewModel.model.collectAsStateWithLifecycle()
-       <Feature>Screen(
-           state = state,
-           onBack = { backStack.removeLastOrNull() },
-       )
-       LaunchedEffect(Unit) {
-           viewModel.event.collect { event ->
-               when (event) {
-                   is <Feature>Event.NavigateBack -> {
-                       backStack.removeLastOrNull()
-                   }
-               }
-           }
-       }
-   }
-   ```
-4. **Add wire dependency to composeApp** — in `composeApp/build.gradle.kts`:
-   ```kotlin
-   implementation(projects.app.<featurename>.wire)
+   // Inside entryProvider { ... } block:
+   <featurename>Entries(backStack)
    ```
 5. **Implement** the ViewModel logic and Screen UI
 6. **Run tests**: `./gradlew :app:<featurename>:impl:allTests`
@@ -432,8 +459,10 @@ android {
 - Use `TerminalTheme` (colors, typography) -- never Material3 `MaterialTheme`
 - Use `TerminalText`, `TerminalCard`, `TerminalBadge`, etc. from `app:designsystem`
 - ViewModel `reduce` is `suspend fun` (not plain fun) in this project
-- Navigation uses `entry<Route>` from Navigation 3 with `entryProvider`
+- Wire uses `implementation(impl)` -- impl types are truly hidden outside wire
+- Navigation uses `EntryProviderScope<Route>` extensions from wire modules
 - Back navigation uses `backStack.removeLastOrNull()` (mutable list pattern)
+- Cross-feature navigation: wire depends on other features' contracts for route references
 
 ## Examples
 - "Create a new settings feature"

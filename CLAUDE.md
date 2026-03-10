@@ -8,17 +8,25 @@ Architecture: MVI (Model-View-Intent) on the client side, feature modules on the
 
 ## Module Structure
 
-- `composeApp` -- Main Compose app entry point (all platform targets)
+- `composeApp` -- Main Compose app entry point (all platform targets). Depends on wire modules only.
 - `shared` -- DI aggregator (storageModule + sdkModule)
 - `core:models` -- Shared DTOs, AppError hierarchy, @Resource routes, StringKey
 - `core:mvi` -- MviViewModel<Intent, Model, Mutation, Event> base class
+- `core:navigation` -- `Route` interface (extends NavKey). All feature contracts depend on this.
 - `core:testing` -- ViewModelTest base, test{} DSL with Turbine, FakeSdkBuilder
 - `core:sdk` -- Sdk facade (by delegation), 6 API interfaces, apiCall() wrapper, AuthInterceptor
 - `core:storage` -- TokenStorage, PreferencesStorage (multiplatform-settings)
-- `app:auth`, `app:admin`, `app:dashboard`, `app:documents`, `app:profile`, `app:designsystem` -- Client feature modules
+- `app:auth`, `app:admin`, `app:dashboard`, `app:documents`, `app:profile` -- Client feature modules (each has contract/impl/wire submodules)
+- `app:designsystem` -- TerminalTheme, Foundation-only UI components
 - `server` -- Ktor server entry point
 - `server:core:config`, `server:core:database`, `server:core:security` -- Server infrastructure
 - `server:auth`, `server:groups`, `server:files`, `server:ai` -- Server feature modules
+
+### App Feature Submodules (contract/impl/wire)
+
+- **contract** -- Routes (extend `Route` from `core:navigation`), shared types. `api(core:navigation)`.
+- **impl** -- ViewModel, MVI types, Screen composable, tests. Hidden: only wire sees it.
+- **wire** -- `implementation(impl)` (impl truly hidden), `api(contract)`. Provides Koin module + `EntryProviderScope<Route>` navigation extension.
 
 ## Key Conventions
 
@@ -33,8 +41,8 @@ Architecture: MVI (Model-View-Intent) on the client side, feature modules on the
 - All DTOs are `@Serializable`.
 - Routes use Ktor `@Resource` for type-safe routing.
 - Server Koin modules: `authModule`, `groupModule`, `fileModule`, `aiModule` -> `serverModule`.
-- App Koin: `viewModelOf(::XxxViewModel)` in `appModule`.
-- Navigation 3 with manual `mutableStateListOf<Route>` back stack.
+- App Koin: `includes(featureModule)` in `appModule`. Wire modules provide `val xxxModule`.
+- Navigation 3 with manual `mutableStateListOf<Route>` back stack. Wire modules provide `EntryProviderScope<Route>` extensions called in AppNavHost.
 - Design system: `TerminalTheme` with Foundation-only components (no Material3).
 - Responsive layouts: `BoxWithConstraints` with 840.dp breakpoint.
 - Compose screens: callbacks pattern (no direct ViewModel access in composables).
@@ -63,6 +71,12 @@ Architecture: MVI (Model-View-Intent) on the client side, feature modules on the
 
 ## Client Pattern (per app feature module)
 
+Each feature has 3 submodules:
+
+**contract/** -- Routes + shared types
+- `XxxRoute.kt` -- `@Serializable data object/class XxxRoute : Route`
+
+**impl/** -- Hidden internals (only wire can see)
 - `XxxModel.kt` -- data class with defaults
 - `XxxIntent.kt` -- sealed interface for user actions
 - `XxxMutation.kt` -- sealed interface for state transitions
@@ -70,6 +84,10 @@ Architecture: MVI (Model-View-Intent) on the client side, feature modules on the
 - `XxxViewModel.kt` -- extends MviViewModel, `take()` + `reduce()`
 - `XxxScreen.kt` -- Composable with callbacks, responsive layout
 - `XxxViewModelTest.kt` -- Uses ViewModelTest base + test{} DSL
+
+**wire/** -- DI + Navigation bridge
+- `XxxModule.kt` -- Koin module with `viewModelOf`
+- `XxxNavigation.kt` -- `EntryProviderScope<Route>` extension encapsulating ViewModel/Screen wiring
 
 ## Infrastructure
 

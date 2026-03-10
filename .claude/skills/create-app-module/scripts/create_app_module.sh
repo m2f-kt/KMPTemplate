@@ -36,9 +36,9 @@ while [[ $# -gt 0 ]]; do
             echo "Usage: $0 --name \"feature name\""
             echo ""
             echo "Creates a 3-submodule feature under app/<feature>/ with:"
-            echo "  contract  - shared types, navigation route placeholder"
+            echo "  contract  - route definition, shared types"
             echo "  impl      - MVI ViewModel, Screen, tests"
-            echo "  wire      - Koin DI module"
+            echo "  wire      - Koin DI module + navigation extension"
             exit 0
             ;;
         *)
@@ -116,6 +116,7 @@ mkdir -p "$CONTRACT_SRC"
 cat > "app/$package_name/contract/build.gradle.kts" << GRADLE
 plugins {
     id("kmp-library-convention")
+    id("com.android.library")
 }
 
 kotlin {
@@ -134,7 +135,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.core.navigation)
             implementation(projects.core.models)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }
@@ -155,9 +158,15 @@ GRADLE
 # .gitignore
 echo "/build" > "app/$package_name/contract/.gitignore"
 
-# Placeholder contract file
-cat > "$CONTRACT_SRC/${class_name}Contract.kt" << KOTLIN
+# Route definition
+cat > "$CONTRACT_SRC/${class_name}Route.kt" << KOTLIN
 package com.m2f.template.app.${package_name}.contract
+
+import com.m2f.template.navigation.Route
+import kotlinx.serialization.Serializable
+
+@Serializable
+data object ${class_name}Route : Route
 KOTLIN
 
 echo "  contract module created"
@@ -399,8 +408,14 @@ kotlin {
         commonMain.dependencies {
             api(projects.app.${package_name}.contract)
             implementation(projects.app.${package_name}.impl)
+            implementation(projects.core.mvi)
+            implementation(projects.core.sdk)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation3.ui)
         }
     }
 }
@@ -431,6 +446,49 @@ import org.koin.dsl.module
 
 val ${package_name}Module = module {
     viewModelOf(::${class_name}ViewModel)
+}
+KOTLIN
+
+# Navigation Extension
+cat > "$WIRE_SRC/${class_name}Navigation.kt" << KOTLIN
+package com.m2f.template.app.${package_name}.wire
+
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.EntryProviderScope
+import com.m2f.template.app.${package_name}.contract.${class_name}Route
+import com.m2f.template.app.${package_name}.impl.${class_name}Event
+import com.m2f.template.app.${package_name}.impl.${class_name}Intent
+import com.m2f.template.app.${package_name}.impl.${class_name}Screen
+import com.m2f.template.app.${package_name}.impl.${class_name}ViewModel
+import com.m2f.template.navigation.Route
+import org.koin.compose.viewmodel.koinViewModel
+
+fun EntryProviderScope<Route>.${package_name}Entries(
+    backStack: MutableList<Route>,
+) {
+    entry<${class_name}Route> {
+        val viewModel = koinViewModel<${class_name}ViewModel>()
+        val state by viewModel.model.collectAsStateWithLifecycle()
+
+        ${class_name}Screen(
+            state = state,
+            onBack = { backStack.removeLastOrNull() },
+        )
+
+        LaunchedEffect(Unit) {
+            viewModel.event.collect { event ->
+                when (event) {
+                    is ${class_name}Event.NavigateBack -> backStack.removeLastOrNull()
+                }
+            }
+        }
+
+        LaunchedEffect(Unit) {
+            viewModel.take(${class_name}Intent.Load)
+        }
+    }
 }
 KOTLIN
 
@@ -466,29 +524,6 @@ include(\"app:${package_name}:wire\")
 fi
 
 # --------------------------------------------------------------------------
-# 5. ADD ROUTE TO Routes.kt
-# --------------------------------------------------------------------------
-echo "Adding route to Routes.kt..."
-
-ROUTES_FILE="composeApp/src/commonMain/kotlin/com/m2f/template/navigation/Routes.kt"
-if [[ -f "$ROUTES_FILE" ]]; then
-    # Check if route already exists
-    if grep -q "${class_name}Route" "$ROUTES_FILE" 2>/dev/null; then
-        echo "  WARNING: ${class_name}Route already exists in Routes.kt, skipping"
-    else
-        # Append the new route at the end of the file
-        cat >> "$ROUTES_FILE" << KOTLIN
-
-@Serializable
-data object ${class_name}Route : Route
-KOTLIN
-        echo "  ${class_name}Route added to Routes.kt"
-    fi
-else
-    echo "  WARNING: Routes.kt not found at $ROUTES_FILE, skipping route creation"
-fi
-
-# --------------------------------------------------------------------------
 # SUMMARY
 # --------------------------------------------------------------------------
 echo ""
@@ -500,12 +535,12 @@ echo "Package:  com.m2f.template.app.${package_name}"
 echo "Class:    ${class_name}"
 echo ""
 echo "Created modules:"
-echo "  app:${package_name}:contract   - shared types"
+echo "  app:${package_name}:contract   - route + shared types"
 echo "  app:${package_name}:impl       - ViewModel + Screen + Tests"
-echo "  app:${package_name}:wire       - Koin module"
+echo "  app:${package_name}:wire       - Koin module + navigation extension"
 echo ""
 echo "Generated files:"
-echo "  Contract:  ${class_name}Contract.kt"
+echo "  Contract:  ${class_name}Route.kt"
 echo "  Impl:      ${class_name}Intent.kt"
 echo "             ${class_name}Model.kt"
 echo "             ${class_name}Mutation.kt"
@@ -514,7 +549,7 @@ echo "             ${class_name}ViewModel.kt"
 echo "             ${class_name}Screen.kt"
 echo "             ${class_name}ViewModelTest.kt"
 echo "  Wire:      ${class_name}Module.kt"
-echo "  Route:     ${class_name}Route (in Routes.kt)"
+echo "             ${class_name}Navigation.kt"
 echo ""
 echo "Next steps:"
 echo "  1. Sync Gradle in your IDE"
@@ -523,6 +558,6 @@ echo "       implementation(projects.app.${package_name}.wire)"
 echo "  3. Include Koin module in AppModule.kt:"
 echo "       import com.m2f.template.app.${package_name}.wire.${package_name}Module"
 echo "       includes(${package_name}Module)"
-echo "  4. Add entry<${class_name}Route> in AppNavHost.kt"
+echo "  4. Call ${package_name}Entries(backStack) in AppNavHost.kt entryProvider block"
 echo "  5. Run tests: ./gradlew :app:${package_name}:impl:allTests"
 echo "========================================="

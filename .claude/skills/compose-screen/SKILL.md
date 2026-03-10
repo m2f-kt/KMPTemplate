@@ -17,7 +17,7 @@ Ask: What SDK methods does it need? (check core/sdk/src/commonMain/kotlin/com/m2
 
 ### Step 2: Define MVI Types (4 files)
 
-All in: app/<module>/src/commonMain/kotlin/com/m2f/template/app/<module>/
+All in: app/<module>/impl/src/commonMain/kotlin/com/m2f/template/app/<module>/
 
 **XxxModel.kt:**
 ```kotlin
@@ -64,7 +64,7 @@ sealed interface XxxEvent {
 
 ### Step 3: Write Tests FIRST (TDD)
 
-File: app/<module>/src/commonTest/kotlin/com/m2f/template/app/<module>/XxxViewModelTest.kt
+File: app/<module>/impl/src/commonTest/kotlin/com/m2f/template/app/<module>/XxxViewModelTest.kt
 
 ```kotlin
 package com.m2f.template.app.<module>
@@ -112,7 +112,7 @@ Key testing rules:
 
 ### Step 4: Implement ViewModel
 
-File: app/<module>/src/commonMain/kotlin/com/m2f/template/app/<module>/XxxViewModel.kt
+File: app/<module>/impl/src/commonMain/kotlin/com/m2f/template/app/<module>/XxxViewModel.kt
 
 ```kotlin
 package com.m2f.template.app.<module>
@@ -168,7 +168,7 @@ Key rules:
 
 ### Step 5: Create Screen Composable
 
-File: app/<module>/src/commonMain/kotlin/com/m2f/template/app/<module>/XxxScreen.kt
+File: app/<module>/impl/src/commonMain/kotlin/com/m2f/template/app/<module>/XxxScreen.kt
 
 ```kotlin
 package com.m2f.template.app.<module>
@@ -210,71 +210,114 @@ Key rules:
 
 ### Step 6: Add Navigation Route
 
-File: composeApp/src/commonMain/kotlin/com/m2f/template/navigation/Routes.kt
+File: app/<module>/contract/src/commonMain/kotlin/com/m2f/template/app/<module>/contract/XxxRoute.kt
 
-Add a new route:
 ```kotlin
-@Serializable data class XxxRoute(val param: String? = null) : Route
+package com.m2f.template.app.<module>.contract
+
+import com.m2f.template.navigation.Route
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class XxxRoute(val param: String? = null) : Route
 ```
 Or for no params:
 ```kotlin
 @Serializable data object XxxRoute : Route
 ```
 
-### Step 7: Wire in AppNavHost
+Routes go in the feature's **contract** module, not in composeApp.
 
-File: composeApp/src/commonMain/kotlin/com/m2f/template/navigation/AppNavHost.kt
+### Step 7: Add Wire Navigation Extension
 
-Add entry in the entryProvider block:
+File: app/<module>/wire/src/commonMain/kotlin/com/m2f/template/app/<module>/wire/XxxNavigation.kt
+
+Add an `EntryProviderScope<Route>` extension in the wire module:
 ```kotlin
-entry<XxxRoute> { route ->
-    val viewModel = koinViewModel<XxxViewModel>()
-    val state by viewModel.model.collectAsStateWithLifecycle()
+package com.m2f.template.app.<module>.wire
 
-    XxxScreen(
-        state = state,
-        onBackClick = { backStack.removeLastOrNull() },
-        onFieldChange = { viewModel.take(XxxIntent.FieldChanged(it)) },
-        onSubmitClick = { viewModel.take(XxxIntent.SubmitClicked) },
-    )
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.EntryProviderScope
+import com.m2f.template.app.<module>.contract.XxxRoute
+import com.m2f.template.app.<module>.XxxEvent
+import com.m2f.template.app.<module>.XxxIntent
+import com.m2f.template.app.<module>.XxxScreen
+import com.m2f.template.app.<module>.XxxViewModel
+import com.m2f.template.navigation.Route
+import org.koin.compose.viewmodel.koinViewModel
 
-    LaunchedEffect(Unit) {
-        viewModel.event.collect { event ->
-            when (event) {
-                is XxxEvent.NavigateBack -> backStack.removeLastOrNull()
+fun EntryProviderScope<Route>.xxxEntries(
+    backStack: MutableList<Route>,
+) {
+    entry<XxxRoute> { route ->
+        val viewModel = koinViewModel<XxxViewModel>()
+        val state by viewModel.model.collectAsStateWithLifecycle()
+
+        XxxScreen(
+            state = state,
+            onBackClick = { backStack.removeLastOrNull() },
+            onFieldChange = { viewModel.take(XxxIntent.FieldChanged(it)) },
+            onSubmitClick = { viewModel.take(XxxIntent.SubmitClicked) },
+        )
+
+        LaunchedEffect(Unit) {
+            viewModel.event.collect { event ->
+                when (event) {
+                    is XxxEvent.NavigateBack -> backStack.removeLastOrNull()
+                }
             }
         }
-    }
 
-    LaunchedEffect(Unit) {
-        viewModel.take(XxxIntent.LoadData)
+        LaunchedEffect(Unit) {
+            viewModel.take(XxxIntent.LoadData)
+        }
     }
 }
 ```
 
+Then call it in AppNavHost.kt's `entryProvider { }` block:
+```kotlin
+xxxEntries(backStack)
+```
+
 ### Step 8: Wire Koin DI
 
-File: composeApp/src/commonMain/kotlin/com/m2f/template/di/AppModule.kt
+File: app/<module>/wire/src/commonMain/kotlin/com/m2f/template/app/<module>/wire/XxxModule.kt
 
-Add:
+The Koin module in wire:
 ```kotlin
-viewModelOf(::XxxViewModel)
+val xxxModule = module {
+    viewModelOf(::XxxViewModel)
+}
+```
+
+Then include in AppModule.kt:
+```kotlin
+val appModule = module {
+    includes(xxxModule)
+}
 ```
 
 ### Step 9: Verify
 
 ```bash
-./gradlew :app:<module>:allTests
-./gradlew :composeApp:compileCommonMainKotlinMetadata
+./gradlew :app:<module>:impl:allTests
+./gradlew :composeApp:compileKotlinJvm
 ```
 
 ## New Module Checklist (if creating a new app module)
 
-1. Create directory: app/<module>/
-2. Create build.gradle.kts with kmp-library-convention plugin
-3. Add to settings.gradle.kts: include("app:<module>")
-4. Add dependency in composeApp/build.gradle.kts
-5. Follow steps 2-9 above
+1. Create directory: app/<module>/contract/, app/<module>/impl/, app/<module>/wire/
+2. Create build.gradle.kts for each submodule (contract depends on `core:navigation`, wire uses `implementation(impl)`)
+3. Add to settings.gradle.kts: include("app:<module>:contract"), include("app:<module>:impl"), include("app:<module>:wire")
+4. Add wire dependency in composeApp/build.gradle.kts: `implementation(projects.app.<module>.wire)`
+5. Add route to contract module
+6. Add navigation extension to wire module
+7. Call wire extension in AppNavHost.kt
+8. Include Koin module in AppModule.kt
+9. Follow steps 2-9 above for implementation
 
 ## Critical Rules
 
@@ -284,6 +327,9 @@ viewModelOf(::XxxViewModel)
 - ALWAYS handle responsive layout with BoxWithConstraints
 - ALWAYS use fakeSdk { } for test setup
 - ALWAYS extend ViewModelTest base class for tests
+- Routes go in **contract** module, not composeApp
+- Navigation entries go in **wire** as `EntryProviderScope<Route>` extensions
+- Wire uses `implementation(impl)` — impl types are truly hidden
 - reduce() must be pure — no side effects
 - Events are for navigation/one-shot actions only
 - Mutations are for state changes only
