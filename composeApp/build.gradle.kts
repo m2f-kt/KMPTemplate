@@ -83,7 +83,7 @@ kotlin {
             implementation(projects.app.admin)
             implementation(projects.app.dashboard.wire)
             implementation(projects.app.documents.wire)
-            implementation(projects.app.profile)
+            implementation(projects.app.profile.wire)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

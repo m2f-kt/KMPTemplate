@@ -8,7 +8,7 @@ import com.m2f.template.app.auth.LoginViewModel
 import com.m2f.template.app.auth.RegisterViewModel
 import com.m2f.template.app.dashboard.wire.dashboardModule
 import com.m2f.template.app.documents.wire.documentsModule
-import com.m2f.template.app.profile.ProfileViewModel
+import com.m2f.template.app.profile.wire.profileModule
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -19,10 +19,10 @@ import org.koin.dsl.module
 val appModule = module {
     includes(documentsModule)
     includes(dashboardModule)
+    includes(profileModule)
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::ForgotPasswordViewModel)
-    viewModelOf(::ProfileViewModel)
     viewModelOf(::AdminPanelViewModel)
     viewModelOf(::RegisterMemberViewModel)
     viewModelOf(::InviteAcceptViewModel)
