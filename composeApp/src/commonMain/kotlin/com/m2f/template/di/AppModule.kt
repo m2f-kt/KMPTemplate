@@ -5,9 +5,9 @@ import com.m2f.template.app.admin.RegisterMemberViewModel
 import com.m2f.template.app.auth.ForgotPasswordViewModel
 import com.m2f.template.app.auth.InviteAcceptViewModel
 import com.m2f.template.app.auth.LoginViewModel
-import com.m2f.template.app.documents.DocumentsViewModel
 import com.m2f.template.app.auth.RegisterViewModel
 import com.m2f.template.app.dashboard.DashboardViewModel
+import com.m2f.template.app.documents.wire.documentsModule
 import com.m2f.template.app.profile.ProfileViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -17,6 +17,7 @@ import org.koin.dsl.module
  * Combines shared module with client-specific dependencies.
  */
 val appModule = module {
+    includes(documentsModule)
     viewModelOf(::LoginViewModel)
     viewModelOf(::RegisterViewModel)
     viewModelOf(::ForgotPasswordViewModel)
@@ -25,7 +26,6 @@ val appModule = module {
     viewModelOf(::AdminPanelViewModel)
     viewModelOf(::RegisterMemberViewModel)
     viewModelOf(::InviteAcceptViewModel)
-    viewModelOf(::DocumentsViewModel)
 }
 
 /**
