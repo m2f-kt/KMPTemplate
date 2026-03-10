@@ -76,6 +76,7 @@ kotlin {
             implementation(libs.navigation3.ui)
             implementation(projects.shared)
             implementation(projects.core.models)
+            api(projects.core.navigation)
             implementation(projects.core.mvi)
             implementation(projects.core.sdk)
             implementation(projects.app.designsystem)

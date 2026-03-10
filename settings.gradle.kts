@@ -45,6 +45,7 @@ include("server:core:security")
 // Shared core modules
 include("core:models")
 include("core:mvi")
+include("core:navigation")
 include("core:testing")
 include("core:sdk")
 include("core:storage")
