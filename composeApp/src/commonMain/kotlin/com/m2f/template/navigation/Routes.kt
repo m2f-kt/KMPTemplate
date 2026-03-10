@@ -46,8 +46,3 @@ data class RegisterMemberRoute(val groupId: String) : Route
 @Serializable
 data class InviteAcceptRoute(val token: String) : Route
 
-/**
- * Route for the documents management screen (RAG document upload/list/delete).
- */
-@Serializable
-data class DocumentsRoute(val groupId: String) : Route
