@@ -19,7 +19,9 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            api(projects.core.navigation)
             implementation(projects.core.models)
+            implementation(libs.kotlinx.serialization.json)
         }
     }
 }

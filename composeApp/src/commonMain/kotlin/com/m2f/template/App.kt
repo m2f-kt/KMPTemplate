@@ -13,13 +13,13 @@ import com.m2f.template.di.allAppModules
 import com.m2f.template.localization.LocalAppLocale
 import com.m2f.template.localization.setAppLocale
 import com.m2f.template.navigation.AppNavHost
-import com.m2f.template.navigation.DashboardRoute
-import com.m2f.template.navigation.InviteAcceptRoute
-import com.m2f.template.navigation.LoginRoute
-import com.m2f.template.navigation.OAuthCallbackRoute
+import com.m2f.template.app.auth.contract.InviteAcceptRoute
+import com.m2f.template.app.auth.contract.LoginRoute
+import com.m2f.template.app.auth.contract.OAuthCallbackRoute
+import com.m2f.template.app.dashboard.contract.DashboardRoute
 import com.m2f.template.navigation.Route
-import com.m2f.template.app.auth.checkOAuthCallback
-import com.m2f.template.app.auth.checkInviteLink
+import com.m2f.template.app.auth.wire.checkOAuthCallback
+import com.m2f.template.app.auth.wire.checkInviteLink
 import com.m2f.template.storage.PreferencesStorage
 import com.m2f.template.storage.TokenStorage
 import com.m2f.template.sdk.AuthInterceptor
@@ -94,8 +94,6 @@ fun App() {
                 TerminalTheme {
                     AppNavHost(
                         backStack = backStack,
-                        tokenStorage = tokenStorage,
-                        authInterceptor = authInterceptor,
                     )
                 }
             }

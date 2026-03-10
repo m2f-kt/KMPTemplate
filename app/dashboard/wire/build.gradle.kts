@@ -1,6 +1,8 @@
 plugins {
     id("kmp-library-convention")
     id("com.android.library")
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -20,11 +22,18 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(projects.app.dashboard.contract)
-            api(projects.app.dashboard.impl)
+            implementation(projects.app.dashboard.impl)
             implementation(projects.core.mvi)
             implementation(projects.core.sdk)
+            implementation(projects.app.auth.contract)
+            implementation(projects.app.admin.contract)
+            implementation(projects.app.profile.contract)
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.koin.core)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation3.ui)
         }
     }
 }
