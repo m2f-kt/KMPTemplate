@@ -21,6 +21,7 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
+            implementation(projects.app.auth.contract)
             implementation(projects.core.models)
             implementation(projects.core.sdk)
             implementation(projects.core.mvi)
@@ -35,6 +36,10 @@ kotlin {
             implementation(projects.core.testing)
         }
     }
+}
+
+compose.resources {
+    packageOfResClass = "template.app.auth.generated.resources"
 }
 
 android {

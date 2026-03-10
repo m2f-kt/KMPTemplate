@@ -56,7 +56,9 @@ include("server:files")
 include("server:ai")
 
 // App feature modules
-include("app:auth")
+include("app:auth:contract")
+include("app:auth:impl")
+include("app:auth:wire")
 include("app:admin:contract")
 include("app:admin:impl")
 include("app:admin:wire")

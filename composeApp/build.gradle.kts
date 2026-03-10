@@ -79,7 +79,7 @@ kotlin {
             implementation(projects.core.mvi)
             implementation(projects.core.sdk)
             implementation(projects.app.designsystem)
-            implementation(projects.app.auth)
+            implementation(projects.app.auth.wire)
             implementation(projects.app.admin.wire)
             implementation(projects.app.dashboard.wire)
             implementation(projects.app.documents.wire)
