@@ -4,19 +4,27 @@
   },
   "teammateMode": "split-panes",
   "hooks": {
-    "SessionStart": [
+    "PreToolUse": [
       {
+        "matcher": "Edit|Write",
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-check-update.js"
+            "command": "node .claude/hooks/block-env-edits.js"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/detekt-on-edit.sh"
           }
         ]
       }
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "node .claude/hooks/gsd-statusline.js"
   }
 }
