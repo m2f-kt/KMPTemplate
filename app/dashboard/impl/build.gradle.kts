@@ -26,9 +26,9 @@ kotlin {
             implementation(projects.core.sdk)
             implementation(projects.core.mvi)
             implementation(projects.app.designsystem)
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.components.resources)
+            implementation(libs.compose.runtime)
+            implementation(libs.compose.foundation)
+            implementation(libs.compose.components.resources)
             implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
