@@ -52,9 +52,21 @@ include("core:storage")
 
 // Server feature modules
 include("server:auth")
+include("server:auth:contract")
+include("server:auth:impl")
+include("server:auth:wire")
 include("server:groups")
+include("server:groups:contract")
+include("server:groups:impl")
+include("server:groups:wire")
 include("server:files")
+include("server:files:contract")
+include("server:files:impl")
+include("server:files:wire")
 include("server:ai")
+include("server:ai:contract")
+include("server:ai:impl")
+include("server:ai:wire")
 
 // App feature modules
 include("app:auth:contract")

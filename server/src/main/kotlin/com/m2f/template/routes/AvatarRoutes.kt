@@ -5,9 +5,9 @@ package com.m2f.template.routes
 import arrow.core.raise.context.ensureNotNull
 import com.m2f.core.config.server.InvalidContent
 import com.m2f.core.config.server.conduitAuth
-import com.m2f.server.auth.errors.UserNotFound
-import com.m2f.server.auth.repository.UserRepository
-import com.m2f.server.files.service.FileService
+import com.m2f.server.auth.contract.errors.UserNotFound
+import com.m2f.server.auth.contract.repository.UserRepository
+import com.m2f.server.files.contract.service.FileService
 import com.m2f.template.models.dto.UserResponse
 import com.m2f.template.models.routes.Users
 import io.ktor.http.content.PartData

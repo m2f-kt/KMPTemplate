@@ -10,25 +10,25 @@ import com.m2f.server.ai.agents.AssistantAgentService
 import com.m2f.server.ai.agents.ChatAgentService
 import com.m2f.server.ai.rag.DocumentIngestionService
 import com.m2f.server.ai.rag.DocumentRepository
-import com.m2f.server.ai.registerAiMigrations
+import com.m2f.server.ai.wire.registerAiWireMigrations
 import com.m2f.server.ai.routes.aiRoutes
 import com.m2f.server.ai.routes.documentRoutes
-import com.m2f.server.groups.repository.MembershipRepository
+import com.m2f.server.groups.contract.repository.MembershipRepository
 import com.m2f.template.models.GroupRole
 import com.m2f.core.database.migrations.registerVectorMigrations
-import com.m2f.server.auth.registerAuthMigrations
-import com.m2f.server.auth.repository.UserRepository
+import com.m2f.server.auth.wire.registerAuthWireMigrations
+import com.m2f.server.auth.contract.repository.UserRepository
 import com.m2f.server.auth.routes.authRoutes
 import com.m2f.server.files.routes.fileRoutes
-import com.m2f.server.files.service.FileService
-import com.m2f.server.groups.registerGroupMigrations
+import com.m2f.server.files.contract.service.FileService
+import com.m2f.server.groups.wire.registerGroupWireMigrations
 import com.m2f.server.groups.routes.groupRoutes
 import com.m2f.server.groups.routes.invitationRoutes
-import com.m2f.server.groups.service.GroupService
-import com.m2f.server.groups.service.InvitationService
+import com.m2f.server.groups.contract.service.GroupService
+import com.m2f.server.groups.contract.service.InvitationService
 import com.m2f.server.auth.routes.oauthRoutes
 import com.m2f.server.auth.routes.userRoutes
-import com.m2f.server.auth.service.AuthService
+import com.m2f.server.auth.contract.service.AuthService
 import com.m2f.server.auth.service.OAuthService
 import com.m2f.server.auth.service.PasswordResetService
 import com.m2f.server.auth.service.UserService
@@ -68,9 +68,9 @@ import org.koin.ktor.plugin.Koin
 fun main() = SuspendApp {
     resourceScope {
         config {
-            registerAuthMigrations()
-            registerGroupMigrations()
-            registerAiMigrations()
+            registerAuthWireMigrations()
+            registerGroupWireMigrations()
+            registerAiWireMigrations()
             registerVectorMigrations()
             val database = startDatabase()
             startServer(Netty) {
