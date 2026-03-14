@@ -45,7 +45,7 @@ fun EntryProviderScope<Route>.privacyEntries(
             onToggleConsent = { viewModel.take(ConsentGateIntent.ToggleConsent(it)) },
             onAcceptAll = { viewModel.take(ConsentGateIntent.AcceptAll) },
             onViewDocument = { viewModel.take(ConsentGateIntent.ViewDocument(it)) },
-            onDecline = { backStack.removeLastOrNull() },
+            onDecline = { onAccountDeleted() },
         )
 
         LaunchedEffect(Unit) {
