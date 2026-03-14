@@ -63,6 +63,19 @@ internal class CreateRolesTableAndMigrateUsersMigration : Migration {
 }
 
 /**
+ * Migration to add the processing_restricted column to the users table.
+ */
+internal class AddProcessingRestrictedToUsersMigration : Migration {
+    override val version: String = "20260312000001"
+    override val description: String = "Add processing_restricted column to users table"
+
+    @Suppress("DEPRECATION")
+    override suspend fun migrate() {
+        SchemaUtils.createMissingTablesAndColumns(UsersTable)
+    }
+}
+
+/**
  * Register all auth-related database migrations.
  * Must be called before startDatabase() so migrations are available when the database starts.
  */
@@ -71,4 +84,5 @@ fun registerAuthMigrations() {
     MigrationRegistry.register(CreateRefreshTokensTableMigration())
     MigrationRegistry.register(CreatePasswordResetTokensTableMigration())
     MigrationRegistry.register(CreateRolesTableAndMigrateUsersMigration())
+    MigrationRegistry.register(AddProcessingRestrictedToUsersMigration())
 }

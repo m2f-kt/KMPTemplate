@@ -23,6 +23,7 @@ object UsersTable : Table("users") {
     val name = varchar("name", NAME_LENGTH)
     val avatarUrl = varchar("avatar_url", AVATAR_URL_LENGTH).nullable()
     val roleId = integer("role_id").references(RolesTable.id).default(1)
+    val processingRestricted = bool("processing_restricted").default(false)
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
     val updatedAt = datetime("updated_at").defaultExpression(CurrentDateTime)
 
