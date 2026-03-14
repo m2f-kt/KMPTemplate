@@ -85,6 +85,7 @@ kotlin {
             implementation(projects.app.admin.wire)
             implementation(projects.app.dashboard.wire)
             implementation(projects.app.documents.wire)
+            implementation(projects.app.privacy.wire)
             implementation(projects.app.profile.wire)
         }
         commonTest.dependencies {
