@@ -26,6 +26,7 @@ class LoginViewModel(
                     sendMutation(LoginMutation.SetInvitationEmail(intent.email))
                     if (intent.email != null) sendMutation(LoginMutation.SetEmail(intent.email))
                 }
+                is LoginIntent.Reset -> sendMutation(LoginMutation.ResetState)
             }
         }
     }
@@ -111,5 +112,6 @@ class LoginViewModel(
             is LoginMutation.SetInvitationToken -> model.copy(invitationToken = mutation.token)
             is LoginMutation.SetInvitationEmail -> model.copy(invitationEmail = mutation.email)
             is LoginMutation.SetAcceptingInvitation -> model.copy(isAcceptingInvitation = mutation.accepting)
+            is LoginMutation.ResetState -> LoginModel()
         }
 }

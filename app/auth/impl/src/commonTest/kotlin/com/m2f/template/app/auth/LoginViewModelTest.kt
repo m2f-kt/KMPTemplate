@@ -111,6 +111,20 @@ class LoginViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `reset intent clears all state back to initial`() {
+        val sdk = fakeSdk()
+        val viewModel = LoginViewModel(sdk)
+        viewModel.test {
+            intent(LoginIntent.EmailChanged("user@test.com"))
+            model(LoginModel(email = "user@test.com"))
+            intent(LoginIntent.PasswordChanged("secret"))
+            model(LoginModel(email = "user@test.com", password = "secret"))
+            intent(LoginIntent.Reset)
+            model(LoginModel())
+        }
+    }
+
+    @Test
     fun `successful login with consent check failure navigates to dashboard`() {
         val sdk = fakeSdk {
             auth {

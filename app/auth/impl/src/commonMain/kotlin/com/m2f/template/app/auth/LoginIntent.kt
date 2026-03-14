@@ -7,4 +7,5 @@ sealed interface LoginIntent {
     data object SubmitLoginClicked : LoginIntent
     data class SetInvitationToken(val token: String?) : LoginIntent
     data class SetInvitationEmail(val email: String?) : LoginIntent
+    data object Reset : LoginIntent
 }

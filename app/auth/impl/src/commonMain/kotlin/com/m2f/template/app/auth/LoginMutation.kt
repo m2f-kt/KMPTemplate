@@ -12,4 +12,5 @@ sealed interface LoginMutation {
     data class SetInvitationToken(val token: String?) : LoginMutation
     data class SetInvitationEmail(val email: String?) : LoginMutation
     data class SetAcceptingInvitation(val accepting: Boolean) : LoginMutation
+    data object ResetState : LoginMutation
 }

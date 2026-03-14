@@ -44,6 +44,10 @@ fun EntryProviderScope<Route>.authEntries(
         val state by viewModel.model.collectAsStateWithLifecycle()
         val oauthHandler = remember { OAuthHandler(serverBaseUrl = defaultBaseUrl()) }
 
+        LaunchedEffect(Unit) {
+            viewModel.take(LoginIntent.Reset)
+        }
+
         LaunchedEffect(route.invitationToken, route.invitationEmail) {
             route.invitationToken?.let { token ->
                 viewModel.take(LoginIntent.SetInvitationToken(token))
