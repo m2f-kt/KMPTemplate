@@ -101,17 +101,33 @@ class RegisterViewModel(
                             sdk.getInvitation(token).fold(
                                 ifLeft = {
                                     // User IS in the group (server handled it), just navigate to dashboard
-                                    sendEvent(RegisterEvent.NavigateToDashboard)
+                                    navigateWithConsentCheck()
                                 },
                                 ifRight = { invitation ->
                                     sendEvent(RegisterEvent.NavigateToGroup(invitation.groupId))
                                 },
                             )
                         } else {
-                            sendEvent(RegisterEvent.NavigateToDashboard)
+                            navigateWithConsentCheck()
                         }
                     },
                 )
+            },
+        )
+    }
+
+    private suspend fun navigateWithConsentCheck() {
+        sdk.getRequiredConsents().fold(
+            ifLeft = {
+                // If we can't check consents, proceed to dashboard
+                sendEvent(RegisterEvent.NavigateToDashboard)
+            },
+            ifRight = { response ->
+                if (response.hasOutdated) {
+                    sendEvent(RegisterEvent.NavigateToConsentGate)
+                } else {
+                    sendEvent(RegisterEvent.NavigateToDashboard)
+                }
             },
         )
     }
