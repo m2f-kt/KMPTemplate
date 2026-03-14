@@ -23,6 +23,7 @@ dependencies {
     implementation(projects.server.groups.wire)
     implementation(projects.server.files.wire)
     implementation(projects.server.ai.wire)
+    implementation(projects.server.privacy.wire)
     implementation(libs.bundles.logging.server)
     implementation(libs.bundles.ktor.security)
     implementation(libs.bundles.ktor.core)

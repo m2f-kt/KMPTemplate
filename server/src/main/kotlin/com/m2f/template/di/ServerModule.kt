@@ -3,6 +3,7 @@ package com.m2f.template.di
 import arrow.core.raise.Raise
 import com.m2f.core.config.server.DomainError
 import com.m2f.server.ai.wire.aiWireModule
+import com.m2f.server.privacy.wire.privacyWireModule
 import com.m2f.server.auth.wire.authWireModule
 import com.m2f.server.auth.wire.registerAuthService
 import com.m2f.server.files.wire.fileWireModule
@@ -33,6 +34,7 @@ val serverModule = module {
     includes(groupWireModule)
     includes(fileWireModule)
     includes(aiWireModule)
+    includes(privacyWireModule)
 
     // AuthService is registered here (not in authWireModule) so we can wire
     // the invitation acceptance callback that bridges auth and groups modules.

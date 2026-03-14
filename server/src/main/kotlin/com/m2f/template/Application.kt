@@ -17,6 +17,7 @@ import com.m2f.server.groups.contract.repository.MembershipRepository
 import com.m2f.template.models.GroupRole
 import com.m2f.core.database.migrations.registerVectorMigrations
 import com.m2f.server.auth.wire.registerAuthWireMigrations
+import com.m2f.server.privacy.wire.registerPrivacyWireMigrations
 import com.m2f.server.auth.contract.repository.UserRepository
 import com.m2f.server.auth.routes.authRoutes
 import com.m2f.server.files.routes.fileRoutes
@@ -26,6 +27,16 @@ import com.m2f.server.groups.routes.groupRoutes
 import com.m2f.server.groups.routes.invitationRoutes
 import com.m2f.server.groups.contract.service.GroupService
 import com.m2f.server.groups.contract.service.InvitationService
+import com.m2f.server.privacy.contract.service.AccountDeletionService
+import com.m2f.server.privacy.contract.service.ConsentService
+import com.m2f.server.privacy.contract.service.DataExportService
+import com.m2f.server.privacy.contract.service.LegalDocumentService
+import com.m2f.server.privacy.contract.service.ProcessingRestrictionService
+import com.m2f.server.privacy.routes.consentRoutes
+import com.m2f.server.privacy.routes.deletionRoutes
+import com.m2f.server.privacy.routes.exportRoutes
+import com.m2f.server.privacy.routes.legalRoutes
+import com.m2f.server.privacy.routes.restrictionRoutes
 import com.m2f.server.auth.routes.oauthRoutes
 import com.m2f.server.auth.routes.userRoutes
 import com.m2f.server.auth.contract.service.AuthService
@@ -71,6 +82,7 @@ fun main() = SuspendApp {
             registerAuthWireMigrations()
             registerGroupWireMigrations()
             registerAiWireMigrations()
+            registerPrivacyWireMigrations()
             registerVectorMigrations()
             val database = startDatabase()
             startServer(Netty) {
@@ -147,6 +159,17 @@ fun Application.module() {
         val fileService: FileService by inject()
         fileRoutes(fileService)
         avatarRoutes(userRepository, fileService)
+        // Privacy / GDPR routes
+        val consentService: ConsentService by inject()
+        val legalDocumentService: LegalDocumentService by inject()
+        val dataExportService: DataExportService by inject()
+        val accountDeletionService: AccountDeletionService by inject()
+        val processingRestrictionService: ProcessingRestrictionService by inject()
+        consentRoutes(consentService)
+        legalRoutes(legalDocumentService)
+        exportRoutes(dataExportService)
+        deletionRoutes(accountDeletionService)
+        restrictionRoutes(processingRestrictionService)
         // Shared role checker lambda for cross-module authorization
         val membershipRepository: MembershipRepository by inject()
         @OptIn(ExperimentalUuidApi::class)
