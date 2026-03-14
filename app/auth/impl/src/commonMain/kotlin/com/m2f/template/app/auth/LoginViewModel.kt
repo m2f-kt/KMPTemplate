@@ -72,7 +72,7 @@ class LoginViewModel(
                     ifLeft = {
                         // Log error but still navigate - user is logged in
                         sendMutation(LoginMutation.SetAcceptingInvitation(false))
-                        sendEvent(LoginEvent.NavigateToDashboard)
+                        navigateWithConsentCheck()
                     },
                     ifRight = { response ->
                         sendMutation(LoginMutation.SetAcceptingInvitation(false))
@@ -80,8 +80,24 @@ class LoginViewModel(
                     },
                 )
         } else {
-            sendEvent(LoginEvent.NavigateToDashboard)
+            navigateWithConsentCheck()
         }
+    }
+
+    private suspend fun navigateWithConsentCheck() {
+        sdk.getRequiredConsents().fold(
+            ifLeft = {
+                // If we can't check consents, proceed to dashboard
+                sendEvent(LoginEvent.NavigateToDashboard)
+            },
+            ifRight = { response ->
+                if (response.hasOutdated) {
+                    sendEvent(LoginEvent.NavigateToConsentGate)
+                } else {
+                    sendEvent(LoginEvent.NavigateToDashboard)
+                }
+            },
+        )
     }
 
     override suspend fun reduce(model: LoginModel, mutation: LoginMutation): LoginModel =

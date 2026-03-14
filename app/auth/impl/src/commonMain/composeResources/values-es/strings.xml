@@ -137,6 +137,12 @@
     <string name="error_invitation_not_found">Invitación no encontrada</string>
     <string name="error_invitation_email_mismatch">Tu correo no coincide con esta invitación</string>
 
+    <!-- Privacy errors -->
+    <string name="error_privacy_processing_restricted">El procesamiento de tus datos está actualmente restringido</string>
+    <string name="error_privacy_consent_required">Debes aceptar los consentimientos necesarios para continuar</string>
+    <string name="error_privacy_deletion_pending">Tu cuenta está programada para ser eliminada</string>
+    <string name="error_privacy_export_not_ready">Tu exportación de datos aún no está lista</string>
+
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>
 

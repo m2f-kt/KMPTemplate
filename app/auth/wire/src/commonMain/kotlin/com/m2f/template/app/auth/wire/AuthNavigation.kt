@@ -28,6 +28,7 @@ import com.m2f.template.app.auth.contract.LoginRoute
 import com.m2f.template.app.auth.contract.OAuthCallbackRoute
 import com.m2f.template.app.auth.contract.RegisterRoute
 import com.m2f.template.app.dashboard.contract.DashboardRoute
+import com.m2f.template.app.privacy.contract.ConsentGateRoute
 import com.m2f.template.navigation.Route
 import com.m2f.template.sdk.defaultBaseUrl
 import com.m2f.template.storage.TokenStorage
@@ -69,6 +70,10 @@ fun EntryProviderScope<Route>.authEntries(
                     is LoginEvent.NavigateToGroup -> {
                         backStack.clear()
                         backStack.add(DashboardRoute)
+                    }
+                    is LoginEvent.NavigateToConsentGate -> {
+                        backStack.clear()
+                        backStack.add(ConsentGateRoute)
                     }
                 }
             }
