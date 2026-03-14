@@ -14,7 +14,7 @@ interface ConsentService {
     suspend fun grantConsent(userId: String, request: GrantConsentRequest, ipAddress: String?, userAgent: String?)
 
     context(raise: Raise<DomainError>)
-    suspend fun withdrawConsent(userId: String, consentType: String)
+    suspend fun withdrawConsent(userId: String, consentType: String, ipAddress: String?, userAgent: String?)
 
     context(raise: Raise<DomainError>)
     suspend fun getRequiredConsents(userId: String): RequiredConsentsResponse

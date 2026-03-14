@@ -27,8 +27,10 @@ fun Route.consentRoutes(consentService: ConsentService) {
             }
         }
         post<Privacy.WithdrawConsent> { route ->
+            val ipAddress = call.request.local.remoteAddress
+            val userAgent = call.request.headers["User-Agent"]
             conduitAuth { userId ->
-                consentService.withdrawConsent(userId, route.type)
+                consentService.withdrawConsent(userId, route.type, ipAddress, userAgent)
                 mapOf("message" to "Consent withdrawn")
             }
         }
