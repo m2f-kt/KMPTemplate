@@ -9,6 +9,10 @@ import com.m2f.server.privacy.contract.service.ConsentService
 import com.m2f.server.privacy.contract.service.DataExportService
 import com.m2f.server.privacy.contract.service.LegalDocumentService
 import com.m2f.server.privacy.contract.service.ProcessingRestrictionService
+import com.m2f.server.privacy.jobs.DeletionExecutorJob
+import com.m2f.server.privacy.jobs.ExportCleanupJob
+import com.m2f.server.privacy.jobs.PrivacyJob
+import com.m2f.server.privacy.jobs.PrivacyJobScheduler
 import com.m2f.server.privacy.repository.ExposedAccountDeletionRepository
 import com.m2f.server.privacy.repository.ExposedConsentRepository
 import com.m2f.server.privacy.repository.ExposedDataExportRepository
@@ -18,6 +22,7 @@ import com.m2f.server.privacy.service.ConsentServiceImpl
 import com.m2f.server.privacy.service.DataExportServiceImpl
 import com.m2f.server.privacy.service.LegalDocumentServiceImpl
 import com.m2f.server.privacy.service.ProcessingRestrictionServiceImpl
+import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import org.koin.dsl.module
 
@@ -31,4 +36,11 @@ val privacyModule = module {
     single<DataExportService> { DataExportServiceImpl(get(), getAll()) }
     single<AccountDeletionService> { AccountDeletionServiceImpl(get(), get(), get(), get()) }
     single<ProcessingRestrictionService> { ProcessingRestrictionServiceImpl(get()) }
+    single<PrivacyJob>(qualifier = org.koin.core.qualifier.named("deletionExecutorJob")) {
+        DeletionExecutorJob(get(), get(), get())
+    }
+    single<PrivacyJob>(qualifier = org.koin.core.qualifier.named("exportCleanupJob")) {
+        ExportCleanupJob(get())
+    }
+    single { PrivacyJobScheduler(get<CoroutineScope>(), getAll()) }
 }

@@ -32,6 +32,7 @@ import com.m2f.server.privacy.contract.service.ConsentService
 import com.m2f.server.privacy.contract.service.DataExportService
 import com.m2f.server.privacy.contract.service.LegalDocumentService
 import com.m2f.server.privacy.contract.service.ProcessingRestrictionService
+import com.m2f.server.privacy.jobs.PrivacyJobScheduler
 import com.m2f.server.privacy.routes.consentRoutes
 import com.m2f.server.privacy.routes.deletionRoutes
 import com.m2f.server.privacy.routes.exportRoutes
@@ -68,6 +69,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.routing
 import org.slf4j.LoggerFactory
 import io.ktor.server.websocket.WebSockets
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.awaitCancellation
 import org.jetbrains.exposed.v1.r2dbc.R2dbcDatabase
 import kotlin.uuid.ExperimentalUuidApi
@@ -102,6 +104,8 @@ fun Application.module() {
     }
     // Register the R2dbcDatabase instance in Koin for repository injection
     getKoin().declare(database)
+    // Register the application coroutine scope so jobs can be launched
+    getKoin().declare(CoroutineScope(coroutineContext))
 
     install(Resources)
     install(ContentNegotiation) { json() }
@@ -141,6 +145,11 @@ fun Application.module() {
     }
     configureSecurity()
     configureOAuth()
+
+    // Start privacy scheduled jobs (deletion execution, export cleanup)
+    val privacyJobScheduler: PrivacyJobScheduler by inject()
+    privacyJobScheduler.start()
+
     routing {
         // Unauthenticated health check endpoint
         healthRoutes(database, config.env)
