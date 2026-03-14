@@ -7,6 +7,8 @@ import com.m2f.template.sdk.api.AuthApiImpl
 import com.m2f.template.sdk.api.DocumentApi
 import com.m2f.template.sdk.api.DocumentApiImpl
 import com.m2f.template.sdk.api.FileApi
+import com.m2f.template.sdk.api.PrivacyApi
+import com.m2f.template.sdk.api.PrivacyApiImpl
 import com.m2f.template.sdk.api.FileApiImpl
 import com.m2f.template.sdk.api.GroupApi
 import com.m2f.template.sdk.api.GroupApiImpl
@@ -48,5 +50,6 @@ val sdkModule = module {
     single<FileApi> { FileApiImpl(client = get()) }
     single<InvitationApi> { InvitationApiImpl(client = get()) }
     single<DocumentApi> { DocumentApiImpl(client = get()) }
-    single { Sdk(authApi = get(), userApi = get(), groupApi = get(), fileApi = get(), invitationApi = get(), documentApi = get()) }
+    single<PrivacyApi> { PrivacyApiImpl(client = get()) }
+    single { Sdk(authApi = get(), userApi = get(), groupApi = get(), fileApi = get(), invitationApi = get(), documentApi = get(), privacyApi = get()) }
 }
