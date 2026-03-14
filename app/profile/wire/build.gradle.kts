@@ -27,6 +27,7 @@ kotlin {
             implementation(projects.core.sdk)
             implementation(projects.core.storage)
             implementation(projects.app.auth.contract)
+            implementation(projects.app.privacy.contract)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.androidx.lifecycle.runtimeCompose)

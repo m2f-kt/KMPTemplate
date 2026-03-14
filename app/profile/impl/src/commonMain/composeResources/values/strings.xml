@@ -85,6 +85,12 @@
     <string name="error_invitation_not_found">Invitation not found</string>
     <string name="error_invitation_email_mismatch">Your email does not match this invitation</string>
 
+    <!-- Privacy errors -->
+    <string name="error_privacy_processing_restricted">Your data processing is currently restricted</string>
+    <string name="error_privacy_consent_required">You must accept the required consents to continue</string>
+    <string name="error_privacy_deletion_pending">Your account is scheduled for deletion</string>
+    <string name="error_privacy_export_not_ready">Your data export is not ready yet</string>
+
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>
 
@@ -94,6 +100,9 @@
     <string name="sidebar_brand_prompt">&gt;_</string>
     <string name="sidebar_brand_name">profile</string>
     <string name="sidebar_logout">$ logout</string>
+
+    <!-- Nav: Common (all tiers) -->
+    <string name="sidebar_nav_privacy">Privacy &amp; Data</string>
 
     <!-- Nav: Free tier -->
     <string name="sidebar_nav_free_profile">Profile</string>
