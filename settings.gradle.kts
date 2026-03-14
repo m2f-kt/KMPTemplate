@@ -67,6 +67,10 @@ include("server:ai")
 include("server:ai:contract")
 include("server:ai:impl")
 include("server:ai:wire")
+include("server:privacy")
+include("server:privacy:contract")
+include("server:privacy:impl")
+include("server:privacy:wire")
 
 // App feature modules
 include("app:auth:contract")
