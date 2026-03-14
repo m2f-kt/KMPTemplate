@@ -1,9 +1,11 @@
 package com.m2f.server.privacy.service
 
 import arrow.core.raise.Raise
+import arrow.core.raise.catch
 import arrow.core.raise.context.ensureNotNull
 import com.m2f.core.config.server.DomainError
 import com.m2f.core.config.server.UnexpectedError
+import com.m2f.server.privacy.contract.errors.InvalidConsentType
 import com.m2f.server.privacy.contract.repository.LegalDocumentRecord
 import com.m2f.server.privacy.contract.repository.LegalDocumentRepository
 import com.m2f.server.privacy.contract.service.LegalDocumentService
@@ -26,20 +28,26 @@ class LegalDocumentServiceImpl(
             UnexpectedError("Legal document not found for type $type")
         }
 
-        return document.toResponse()
+        return with(raise) { document.toResponse() }
     }
 
     context(raise: Raise<DomainError>)
     override suspend fun getAllVersions(type: String): List<LegalDocumentResponse> {
         val documents = legalDocumentRepository.findAllVersionsByType(type)
-        return documents.map { it.toResponse() }
+        return with(raise) { documents.map { it.toResponse() } }
     }
 
-    private fun LegalDocumentRecord.toResponse(): LegalDocumentResponse = LegalDocumentResponse(
-        type = ConsentType.valueOf(type),
-        version = version,
-        locale = this.locale,
-        content = content,
-        publishedAt = publishedAt.toInstant(TimeZone.UTC).toString(),
-    )
+    context(raise: Raise<DomainError>)
+    private fun LegalDocumentRecord.toResponse(): LegalDocumentResponse {
+        val consentType = catch({ ConsentType.valueOf(type) }) {
+            raise.raise(InvalidConsentType(type))
+        }
+        return LegalDocumentResponse(
+            type = consentType,
+            version = version,
+            locale = this.locale,
+            content = content,
+            publishedAt = publishedAt.toInstant(TimeZone.UTC).toString(),
+        )
+    }
 }

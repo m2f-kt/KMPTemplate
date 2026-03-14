@@ -3,8 +3,10 @@
 package com.m2f.server.privacy.service
 
 import arrow.core.raise.Raise
+import arrow.core.raise.catch
 import arrow.core.raise.context.ensureNotNull
 import com.m2f.core.config.server.DomainError
+import com.m2f.server.privacy.contract.errors.InvalidConsentType
 import com.m2f.server.privacy.contract.repository.ConsentRepository
 import com.m2f.server.privacy.contract.repository.LegalDocumentRepository
 import com.m2f.server.privacy.contract.service.ConsentService
@@ -28,8 +30,11 @@ class ConsentServiceImpl(
         val uuid = Uuid.parse(userId)
         val records = consentRepository.findAllActiveByUser(uuid)
         return records.map { record ->
+            val consentType = catch({ ConsentType.valueOf(record.consentType) }) {
+                raise.raise(InvalidConsentType(record.consentType))
+            }
             ConsentStatus(
-                type = ConsentType.valueOf(record.consentType),
+                type = consentType,
                 granted = record.granted,
                 grantedAt = record.createdAt.toInstant(TimeZone.UTC).toString(),
                 documentVersion = record.legalDocumentVersion,
@@ -55,7 +60,7 @@ class ConsentServiceImpl(
     }
 
     context(raise: Raise<DomainError>)
-    override suspend fun withdrawConsent(userId: String, consentType: String) {
+    override suspend fun withdrawConsent(userId: String, consentType: String, ipAddress: String?, userAgent: String?) {
         val uuid = Uuid.parse(userId)
         val latestConsent = consentRepository.findLatestByUserAndType(uuid, consentType)
         consentRepository.insert(
@@ -63,8 +68,8 @@ class ConsentServiceImpl(
             consentType = consentType,
             granted = false,
             legalDocumentVersion = latestConsent?.legalDocumentVersion ?: "",
-            ipAddress = null,
-            userAgent = null,
+            ipAddress = ipAddress,
+            userAgent = userAgent,
         )
     }
 
