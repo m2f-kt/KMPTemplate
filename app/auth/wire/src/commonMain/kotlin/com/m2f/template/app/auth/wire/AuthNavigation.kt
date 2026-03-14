@@ -29,6 +29,7 @@ import com.m2f.template.app.auth.contract.OAuthCallbackRoute
 import com.m2f.template.app.auth.contract.RegisterRoute
 import com.m2f.template.app.dashboard.contract.DashboardRoute
 import com.m2f.template.app.privacy.contract.ConsentGateRoute
+import com.m2f.template.app.privacy.contract.LegalDocumentRoute
 import com.m2f.template.navigation.Route
 import com.m2f.template.sdk.defaultBaseUrl
 import com.m2f.template.storage.TokenStorage
@@ -106,6 +107,8 @@ fun EntryProviderScope<Route>.authEntries(
             onGoogleClick = { oauthHandler.startOAuth("google") },
             onAppleClick = { oauthHandler.startOAuth("apple") },
             onLogin = { backStack.removeLastOrNull() },
+            onViewPrivacyPolicy = { backStack.add(LegalDocumentRoute(type = "PRIVACY_POLICY")) },
+            onViewTermsOfService = { backStack.add(LegalDocumentRoute(type = "TERMS_OF_SERVICE")) },
         )
         LaunchedEffect(Unit) {
             viewModel.event.collect { event ->
@@ -114,6 +117,13 @@ fun EntryProviderScope<Route>.authEntries(
                     is RegisterEvent.NavigateToGroup -> {
                         backStack.clear()
                         backStack.add(DashboardRoute)
+                    }
+                    is RegisterEvent.NavigateToConsentGate -> {
+                        backStack.clear()
+                        backStack.add(ConsentGateRoute)
+                    }
+                    is RegisterEvent.ViewLegalDocument -> {
+                        backStack.add(LegalDocumentRoute(event.type))
                     }
                 }
             }

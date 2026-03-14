@@ -46,7 +46,10 @@
     <string name="register_password_placeholder">min. 8 characters</string>
     <string name="register_confirm_password_label">confirm_password</string>
     <string name="register_confirm_password_placeholder">re-enter password</string>
-    <string name="register_terms_text">I accept the terms and conditions</string>
+    <string name="register_terms_prefix">I accept the </string>
+    <string name="register_terms_privacy_policy">Privacy Policy</string>
+    <string name="register_terms_and"> and </string>
+    <string name="register_terms_tos">Terms of Service</string>
     <string name="register_button">$ register()</string>
     <string name="register_button_loading">$ registering...</string>
     <string name="register_login_prompt">// already have an account?</string>

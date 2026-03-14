@@ -24,7 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.m2f.template.designsystem.components.TerminalText
@@ -70,7 +75,10 @@ import template.app.auth.generated.resources.register_login_prompt
 import template.app.auth.generated.resources.register_password_label
 import template.app.auth.generated.resources.register_password_placeholder
 import template.app.auth.generated.resources.register_subtitle
-import template.app.auth.generated.resources.register_terms_text
+import template.app.auth.generated.resources.register_terms_and
+import template.app.auth.generated.resources.register_terms_prefix
+import template.app.auth.generated.resources.register_terms_privacy_policy
+import template.app.auth.generated.resources.register_terms_tos
 import template.app.auth.generated.resources.register_title
 
 /**
@@ -96,6 +104,8 @@ fun RegisterScreen(
     onGoogleClick: () -> Unit,
     onAppleClick: () -> Unit,
     onLogin: () -> Unit,
+    onViewPrivacyPolicy: () -> Unit,
+    onViewTermsOfService: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
 
@@ -117,6 +127,8 @@ fun RegisterScreen(
                 onGoogleClick = onGoogleClick,
                 onAppleClick = onAppleClick,
                 onLogin = onLogin,
+                onViewPrivacyPolicy = onViewPrivacyPolicy,
+                onViewTermsOfService = onViewTermsOfService,
             )
         } else {
             RegisterMobileLayout(
@@ -131,6 +143,8 @@ fun RegisterScreen(
                 onGoogleClick = onGoogleClick,
                 onAppleClick = onAppleClick,
                 onLogin = onLogin,
+                onViewPrivacyPolicy = onViewPrivacyPolicy,
+                onViewTermsOfService = onViewTermsOfService,
             )
         }
     }
@@ -151,6 +165,8 @@ private fun RegisterDesktopLayout(
     onGoogleClick: () -> Unit,
     onAppleClick: () -> Unit,
     onLogin: () -> Unit,
+    onViewPrivacyPolicy: () -> Unit,
+    onViewTermsOfService: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
 
@@ -192,6 +208,8 @@ private fun RegisterDesktopLayout(
                 onGoogleClick = onGoogleClick,
                 onAppleClick = onAppleClick,
                 onLogin = onLogin,
+                onViewPrivacyPolicy = onViewPrivacyPolicy,
+                onViewTermsOfService = onViewTermsOfService,
             )
         }
     }
@@ -318,6 +336,8 @@ private fun RegisterMobileLayout(
     onGoogleClick: () -> Unit,
     onAppleClick: () -> Unit,
     onLogin: () -> Unit,
+    onViewPrivacyPolicy: () -> Unit,
+    onViewTermsOfService: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -390,6 +410,8 @@ private fun RegisterMobileLayout(
                     onConfirmPasswordChange = onConfirmPasswordChange,
                     onTermsAcceptedChange = onTermsAcceptedChange,
                     onRegisterClick = onRegisterClick,
+                    onViewPrivacyPolicy = onViewPrivacyPolicy,
+                    onViewTermsOfService = onViewTermsOfService,
                 )
             }
         }
@@ -426,6 +448,8 @@ private fun RegisterFormContent(
     onGoogleClick: () -> Unit,
     onAppleClick: () -> Unit,
     onLogin: () -> Unit,
+    onViewPrivacyPolicy: () -> Unit,
+    onViewTermsOfService: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -480,6 +504,8 @@ private fun RegisterFormContent(
                     onConfirmPasswordChange = onConfirmPasswordChange,
                     onTermsAcceptedChange = onTermsAcceptedChange,
                     onRegisterClick = onRegisterClick,
+                    onViewPrivacyPolicy = onViewPrivacyPolicy,
+                    onViewTermsOfService = onViewTermsOfService,
                 )
             }
         }
@@ -519,6 +545,8 @@ private fun RegisterFormFields(
     onConfirmPasswordChange: (String) -> Unit,
     onTermsAcceptedChange: (Boolean) -> Unit,
     onRegisterClick: () -> Unit,
+    onViewPrivacyPolicy: () -> Unit,
+    onViewTermsOfService: () -> Unit,
 ) {
     val firstNameError = state.fieldErrors["firstName"]
     val lastNameError = state.fieldErrors["lastName"]
@@ -587,12 +615,13 @@ private fun RegisterFormFields(
             errorMessage = confirmPasswordError?.let { resolveStringKey(it) },
         )
 
-        // Terms checkbox
+        // Terms checkbox with clickable legal document links
         Column {
-            TerminalCheckbox(
+            TermsCheckboxWithLinks(
                 checked = state.termsAccepted,
                 onCheckedChange = onTermsAcceptedChange,
-                label = stringResource(Res.string.register_terms_text),
+                onViewPrivacyPolicy = onViewPrivacyPolicy,
+                onViewTermsOfService = onViewTermsOfService,
             )
             if (termsError != null) {
                 val colors = TerminalTheme.colors
@@ -612,6 +641,62 @@ private fun RegisterFormFields(
             modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.Default,
             enabled = !state.isLoading,
+        )
+    }
+}
+
+@Composable
+private fun TermsCheckboxWithLinks(
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    onViewPrivacyPolicy: () -> Unit,
+    onViewTermsOfService: () -> Unit,
+) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    val prefix = stringResource(Res.string.register_terms_prefix)
+    val privacyPolicy = stringResource(Res.string.register_terms_privacy_policy)
+    val and = stringResource(Res.string.register_terms_and)
+    val tos = stringResource(Res.string.register_terms_tos)
+
+    val linkStyle = SpanStyle(
+        color = colors.accent,
+        textDecoration = TextDecoration.Underline,
+    )
+    val normalStyle = SpanStyle(color = colors.text)
+
+    val annotatedText = buildAnnotatedString {
+        withStyle(normalStyle) { append(prefix) }
+        pushStringAnnotation(tag = "LINK", annotation = "privacy_policy")
+        withStyle(linkStyle) { append(privacyPolicy) }
+        pop()
+        withStyle(normalStyle) { append(and) }
+        pushStringAnnotation(tag = "LINK", annotation = "terms_of_service")
+        withStyle(linkStyle) { append(tos) }
+        pop()
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        TerminalCheckbox(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+        )
+        @Suppress("DEPRECATION")
+        androidx.compose.foundation.text.ClickableText(
+            text = annotatedText,
+            style = typography.sm.merge(TextStyle(color = colors.text)),
+            onClick = { offset ->
+                annotatedText.getStringAnnotations(tag = "LINK", start = offset, end = offset)
+                    .firstOrNull()?.let { annotation ->
+                        when (annotation.item) {
+                            "privacy_policy" -> onViewPrivacyPolicy()
+                            "terms_of_service" -> onViewTermsOfService()
+                        }
+                    }
+            },
         )
     }
 }
