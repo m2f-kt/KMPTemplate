@@ -72,6 +72,7 @@ import template.app.profile.generated.resources.sidebar_nav_poweradmin_configura
 import template.app.profile.generated.resources.sidebar_nav_poweradmin_maintenance
 import template.app.profile.generated.resources.sidebar_nav_poweradmin_system_logs
 import template.app.profile.generated.resources.sidebar_nav_poweradmin_danger_zone
+import template.app.profile.generated.resources.sidebar_nav_privacy
 import template.app.profile.generated.resources.sidebar_footer_free_title
 import template.app.profile.generated.resources.sidebar_footer_free_subtitle
 import template.app.profile.generated.resources.sidebar_footer_paid_title
@@ -210,6 +211,7 @@ private fun TierNavItems(
         is UserTier.Free -> listOf(
             "profile" to stringResource(Res.string.sidebar_nav_free_profile),
             "preferences" to stringResource(Res.string.sidebar_nav_free_preferences),
+            "privacy" to stringResource(Res.string.sidebar_nav_privacy),
             "billing" to stringResource(Res.string.sidebar_nav_free_billing),
         )
         is UserTier.Paid -> listOf(
@@ -217,6 +219,7 @@ private fun TierNavItems(
             "preferences" to stringResource(Res.string.sidebar_nav_paid_preferences),
             "team" to stringResource(Res.string.sidebar_nav_paid_team_access),
             "analytics" to stringResource(Res.string.sidebar_nav_paid_analytics),
+            "privacy" to stringResource(Res.string.sidebar_nav_privacy),
             "billing" to stringResource(Res.string.sidebar_nav_paid_billing),
             "export" to stringResource(Res.string.sidebar_nav_paid_export),
         )
@@ -226,6 +229,7 @@ private fun TierNavItems(
             "team" to stringResource(Res.string.sidebar_nav_premium_team_access),
             "webhooks" to stringResource(Res.string.sidebar_nav_premium_webhooks),
             "api-keys" to stringResource(Res.string.sidebar_nav_premium_api_keys),
+            "privacy" to stringResource(Res.string.sidebar_nav_privacy),
             "billing" to stringResource(Res.string.sidebar_nav_premium_billing),
             "support" to stringResource(Res.string.sidebar_nav_premium_priority_support),
         )
@@ -239,6 +243,7 @@ private fun TierNavItems(
                 "analytics" to stringResource(Res.string.sidebar_nav_admin_analytics),
                 "audit" to stringResource(Res.string.sidebar_nav_admin_audit_log),
                 "settings" to stringResource(Res.string.sidebar_nav_admin_org_settings),
+                "privacy" to stringResource(Res.string.sidebar_nav_privacy),
                 "tools" to stringResource(Res.string.sidebar_nav_admin_admin_tools),
                 "reports" to stringResource(Res.string.sidebar_nav_admin_reports),
             )
@@ -256,6 +261,7 @@ private fun TierNavItems(
                 "config" to stringResource(Res.string.sidebar_nav_poweradmin_configuration),
                 "maintenance" to stringResource(Res.string.sidebar_nav_poweradmin_maintenance),
                 "logs" to stringResource(Res.string.sidebar_nav_poweradmin_system_logs),
+                "privacy" to stringResource(Res.string.sidebar_nav_privacy),
                 "danger" to stringResource(Res.string.sidebar_nav_poweradmin_danger_zone),
             )
         }

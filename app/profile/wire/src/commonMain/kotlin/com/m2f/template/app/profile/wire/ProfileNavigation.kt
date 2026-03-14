@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.runtime.EntryProviderScope
 import com.m2f.template.app.auth.contract.LoginRoute
+import com.m2f.template.app.privacy.contract.PrivacySettingsRoute
 import com.m2f.template.app.profile.ProfileEvent
 import com.m2f.template.app.profile.ProfileIntent
 import com.m2f.template.app.profile.ProfileScreen
@@ -36,6 +37,7 @@ fun EntryProviderScope<Route>.profileEntries(
             },
             onCropConfirmed = { viewModel.take(ProfileIntent.CropConfirmed) },
             onCropCancelled = { viewModel.take(ProfileIntent.CropCancelled) },
+            onNavigateToPrivacy = { backStack.add(PrivacySettingsRoute) },
             localeSelector = { localeSelector() },
         )
         LaunchedEffect(Unit) {
@@ -44,6 +46,9 @@ fun EntryProviderScope<Route>.profileEntries(
                     is ProfileEvent.NavigateToLogin -> {
                         backStack.clear()
                         backStack.add(LoginRoute())
+                    }
+                    is ProfileEvent.NavigateToPrivacySettings -> {
+                        backStack.add(PrivacySettingsRoute)
                     }
                 }
             }

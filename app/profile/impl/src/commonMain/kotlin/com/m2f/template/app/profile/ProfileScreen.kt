@@ -112,6 +112,7 @@ fun ProfileScreen(
     onImageSelected: (ByteArray, String) -> Unit,
     onCropConfirmed: () -> Unit,
     onCropCancelled: () -> Unit,
+    onNavigateToPrivacy: () -> Unit = {},
     modifier: Modifier = Modifier,
     localeSelector: (@Composable () -> Unit)? = null,
 ) {
@@ -146,6 +147,7 @@ fun ProfileScreen(
                     onLogout = onLogout,
                     onBack = onBack,
                     onAvatarClick = launchImagePicker,
+                    onNavigateToPrivacy = onNavigateToPrivacy,
                     localeSelector = localeSelector,
                 )
             }
@@ -189,6 +191,7 @@ private fun DesktopProfile(
     onLogout: () -> Unit,
     onBack: () -> Unit,
     onAvatarClick: () -> Unit,
+    onNavigateToPrivacy: () -> Unit,
     localeSelector: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
@@ -201,7 +204,13 @@ private fun DesktopProfile(
             tier = state.tier,
             userName = state.name.ifBlank { state.email },
             selectedItem = selectedNavItem,
-            onNavItemSelected = { selectedNavItem = it },
+            onNavItemSelected = { key ->
+                if (key == "privacy") {
+                    onNavigateToPrivacy()
+                } else {
+                    selectedNavItem = key
+                }
+            },
             onLogout = onLogout,
         )
 
