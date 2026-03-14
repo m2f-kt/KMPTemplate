@@ -139,3 +139,49 @@ class Documents {
     @Serializable @Resource("{documentId}/delete")
     class Delete(val parent: Documents = Documents(), val documentId: String)
 }
+
+@Serializable
+@Resource("/api/privacy")
+class Privacy {
+    @Serializable @Resource("consent/list")
+    class GetConsents(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("consent/grant")
+    class GrantConsent(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("consent/{type}/withdraw")
+    class WithdrawConsent(val parent: Privacy = Privacy(), val type: String)
+
+    @Serializable @Resource("consent/required")
+    class RequiredConsents(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("legal/{type}")
+    class LegalDocument(val parent: Privacy = Privacy(), val type: String, val locale: String? = null)
+
+    @Serializable @Resource("legal/{type}/versions")
+    class LegalDocumentVersions(val parent: Privacy = Privacy(), val type: String)
+
+    @Serializable @Resource("export/request")
+    class RequestExport(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("export/{id}")
+    class ExportStatus(val parent: Privacy = Privacy(), val id: String)
+
+    @Serializable @Resource("export/{id}/download")
+    class ExportDownload(val parent: Privacy = Privacy(), val id: String)
+
+    @Serializable @Resource("deletion/request")
+    class RequestDeletion(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("deletion/status")
+    class GetDeletionStatus(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("deletion/cancel")
+    class CancelDeletion(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("restrict/enable")
+    class RestrictProcessing(val parent: Privacy = Privacy())
+
+    @Serializable @Resource("restrict/disable")
+    class LiftRestriction(val parent: Privacy = Privacy())
+}
