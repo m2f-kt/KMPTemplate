@@ -16,6 +16,7 @@ data class UserRecord(
     val name: String,
     val role: UserRole,
     val avatarUrl: String? = null,
+    val processingRestricted: Boolean = false,
 )
 
 /**
@@ -29,4 +30,5 @@ interface UserRepository {
     suspend fun updatePasswordHash(id: Uuid, passwordHash: String): Boolean
     suspend fun count(): Long
     suspend fun updateAvatarUrl(id: Uuid, avatarUrl: String): Boolean
+    suspend fun updateProcessingRestricted(id: Uuid, restricted: Boolean): Boolean
 }
