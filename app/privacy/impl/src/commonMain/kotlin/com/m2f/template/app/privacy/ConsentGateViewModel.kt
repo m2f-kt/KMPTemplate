@@ -25,6 +25,7 @@ class ConsentGateViewModel(
     }
 
     private suspend fun handleLoadConsents() {
+        if (model.value.consents.isNotEmpty()) return
         sendMutation(ConsentGateMutation.SetLoading(true))
         sdk.getRequiredConsents().fold(
             ifLeft = { error ->
