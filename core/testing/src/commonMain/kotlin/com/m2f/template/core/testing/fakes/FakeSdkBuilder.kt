@@ -7,8 +7,9 @@ import com.m2f.template.sdk.Sdk
  * DSL builder for creating a fake [Sdk] instance in tests.
  *
  * Composes [FakeAuthApiBuilder], [FakeUserApiBuilder], [FakeGroupApiBuilder],
- * [FakeFileApiBuilder], [FakeInvitationApiBuilder], and [FakeDocumentApiBuilder]
- * so tests configure only the API methods they exercise, while unconfigured paths fail fast.
+ * [FakeFileApiBuilder], [FakeInvitationApiBuilder], [FakeDocumentApiBuilder],
+ * and [FakePrivacyApiBuilder] so tests configure only the API methods they exercise,
+ * while unconfigured paths fail fast.
  *
  * Usage:
  * ```kotlin
@@ -18,6 +19,7 @@ import com.m2f.template.sdk.Sdk
  *     group { createGroup { Either.Right(GroupResponse(...)) } }
  *     file { uploadFile { _, _, _ -> Either.Right(FileResponse(...)) } }
  *     invitation { createInvitation { _, _ -> Either.Right(InvitationResponse(...)) } }
+ *     privacy { getActiveConsents { Either.Right(emptyList()) } }
  * }
  * ```
  */
@@ -30,6 +32,7 @@ class FakeSdkBuilder {
     private var fileApiBuilder: FakeFileApiBuilder = FakeFileApiBuilder()
     private var invitationApiBuilder: FakeInvitationApiBuilder = FakeInvitationApiBuilder()
     private var documentApiBuilder: FakeDocumentApiBuilder = FakeDocumentApiBuilder()
+    private var privacyApiBuilder: FakePrivacyApiBuilder = FakePrivacyApiBuilder()
 
     fun auth(init: FakeAuthApiBuilder.() -> Unit) {
         authApiBuilder.init()
@@ -55,6 +58,10 @@ class FakeSdkBuilder {
         documentApiBuilder.init()
     }
 
+    fun privacy(init: FakePrivacyApiBuilder.() -> Unit) {
+        privacyApiBuilder.init()
+    }
+
     internal fun build(): Sdk {
         return Sdk(
             authApi = authApiBuilder.build(),
@@ -63,6 +70,7 @@ class FakeSdkBuilder {
             fileApi = fileApiBuilder.build(),
             invitationApi = invitationApiBuilder.build(),
             documentApi = documentApiBuilder.build(),
+            privacyApi = privacyApiBuilder.build(),
         )
     }
 }
