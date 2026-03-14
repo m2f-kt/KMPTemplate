@@ -41,6 +41,10 @@ import template.composeapp.generated.resources.error_invitation_expired
 import template.composeapp.generated.resources.error_invitation_not_found
 import template.composeapp.generated.resources.error_invitation_revoked
 import template.composeapp.generated.resources.error_invitation_email_mismatch
+import template.composeapp.generated.resources.error_privacy_consent_required
+import template.composeapp.generated.resources.error_privacy_deletion_pending
+import template.composeapp.generated.resources.error_privacy_export_not_ready
+import template.composeapp.generated.resources.error_privacy_processing_restricted
 import template.composeapp.generated.resources.error_validation_terms_not_accepted
 
 /**
@@ -113,6 +117,12 @@ fun resolveStringKey(key: StringKey, vararg args: Any): String =
         StringKey.INVITATION_ALREADY_ACCEPTED -> stringResource(Res.string.error_invitation_already_accepted, *args)
         StringKey.INVITATION_NOT_FOUND -> stringResource(Res.string.error_invitation_not_found, *args)
         StringKey.INVITATION_EMAIL_MISMATCH -> stringResource(Res.string.error_invitation_email_mismatch, *args)
+
+        // Privacy errors
+        StringKey.PRIVACY_PROCESSING_RESTRICTED -> stringResource(Res.string.error_privacy_processing_restricted, *args)
+        StringKey.PRIVACY_CONSENT_REQUIRED -> stringResource(Res.string.error_privacy_consent_required, *args)
+        StringKey.PRIVACY_DELETION_PENDING -> stringResource(Res.string.error_privacy_deletion_pending, *args)
+        StringKey.PRIVACY_EXPORT_NOT_READY -> stringResource(Res.string.error_privacy_export_not_ready, *args)
 
         // Generic fallback
         StringKey.GENERIC_ERROR -> stringResource(Res.string.error_generic, *args)

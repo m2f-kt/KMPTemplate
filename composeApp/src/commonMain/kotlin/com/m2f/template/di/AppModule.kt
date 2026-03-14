@@ -4,6 +4,7 @@ import com.m2f.template.app.admin.wire.adminModule
 import com.m2f.template.app.auth.wire.authModule
 import com.m2f.template.app.dashboard.wire.dashboardModule
 import com.m2f.template.app.documents.wire.documentsModule
+import com.m2f.template.app.privacy.wire.privacyModule
 import com.m2f.template.app.profile.wire.profileModule
 import org.koin.dsl.module
 
@@ -17,6 +18,7 @@ val appModule = module {
         adminModule,
         dashboardModule,
         documentsModule,
+        privacyModule,
         profileModule,
     )
 }

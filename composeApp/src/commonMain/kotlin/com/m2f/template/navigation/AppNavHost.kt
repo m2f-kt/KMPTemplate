@@ -10,7 +10,10 @@ import androidx.navigation3.ui.NavDisplay
 import com.m2f.template.app.admin.wire.adminEntries
 import com.m2f.template.app.auth.wire.authEntries
 import com.m2f.template.app.dashboard.wire.dashboardEntries
+import com.m2f.template.app.auth.contract.LoginRoute
+import com.m2f.template.app.dashboard.contract.DashboardRoute
 import com.m2f.template.app.documents.wire.documentsEntries
+import com.m2f.template.app.privacy.wire.privacyEntries
 import com.m2f.template.app.profile.wire.profileEntries
 import com.m2f.template.localization.LocalAppLocale
 import com.m2f.template.localization.LocaleSelector
@@ -41,6 +44,17 @@ fun AppNavHost(
                 }
                 adminEntries(backStack)
                 documentsEntries(backStack)
+                privacyEntries(
+                    backStack = backStack,
+                    onConsentCompleted = {
+                        backStack.clear()
+                        backStack.add(DashboardRoute)
+                    },
+                    onAccountDeleted = {
+                        backStack.clear()
+                        backStack.add(LoginRoute())
+                    },
+                )
             },
         )
     }
