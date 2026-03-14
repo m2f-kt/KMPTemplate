@@ -269,6 +269,33 @@ sealed class AppError {
             override val message: String = "File not found"
         ) : File()
     }
+
+    @Serializable
+    sealed class Privacy : AppError() {
+        @Serializable
+        data class ProcessingRestricted(
+            override val code: String = "PRIVACY_PROCESSING_RESTRICTED",
+            override val message: String = "Your data processing is currently restricted"
+        ) : Privacy()
+
+        @Serializable
+        data class ConsentRequired(
+            override val code: String = "PRIVACY_CONSENT_REQUIRED",
+            override val message: String = "You must accept the required privacy policies"
+        ) : Privacy()
+
+        @Serializable
+        data class DeletionPending(
+            override val code: String = "PRIVACY_DELETION_PENDING",
+            override val message: String = "Your account is scheduled for deletion"
+        ) : Privacy()
+
+        @Serializable
+        data class ExportNotReady(
+            override val code: String = "PRIVACY_EXPORT_NOT_READY",
+            override val message: String = "Data export is not ready for download"
+        ) : Privacy()
+    }
 }
 
 /**
