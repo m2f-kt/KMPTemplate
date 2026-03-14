@@ -295,6 +295,13 @@ sealed class AppError {
             override val code: String = "PRIVACY_EXPORT_NOT_READY",
             override val message: String = "Data export is not ready for download"
         ) : Privacy()
+
+        @Serializable
+        data class InvalidConsentType(
+            val type: String = "",
+            override val code: String = "PRIVACY_INVALID_CONSENT_TYPE",
+            override val message: String = "Invalid consent type: $type"
+        ) : Privacy()
     }
 }
 

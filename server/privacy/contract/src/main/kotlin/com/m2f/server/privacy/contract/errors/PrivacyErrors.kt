@@ -5,6 +5,7 @@ import com.m2f.core.config.server.conflict
 import com.m2f.core.config.server.forbidden
 import com.m2f.core.config.server.notFound
 import com.m2f.core.config.server.preferredLanguage
+import com.m2f.core.config.server.unprocessable
 import com.m2f.core.config.server.localization.ServerStrings
 import com.m2f.template.models.AppError
 import io.ktor.server.routing.RoutingContext
@@ -76,5 +77,17 @@ data class ExportAlreadyActive(
         val locale = routingContext.preferredLanguage()
         val message = ServerStrings.resolve(error.code, locale)
         routingContext.conflict(error.code, message)
+    }
+}
+
+data class InvalidConsentType(
+    val type: String,
+) : DomainError {
+    override fun toAppError(): AppError = AppError.Privacy.InvalidConsentType(type = type)
+
+    context(routingContext: RoutingContext)
+    override suspend fun respond() {
+        val error = toAppError()
+        routingContext.unprocessable(error.code, error.message)
     }
 }
