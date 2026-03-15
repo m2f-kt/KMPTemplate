@@ -13,10 +13,12 @@ import com.m2f.template.models.dto.privacy.RequiredConsentsResponse
 import com.m2f.template.models.routes.Privacy
 import com.m2f.template.sdk.apiCall
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.plugins.resources.get
 import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 
 class PrivacyApiImpl(private val client: HttpClient) : PrivacyApi {
@@ -50,6 +52,16 @@ class PrivacyApiImpl(private val client: HttpClient) : PrivacyApi {
     override suspend fun getExportDownloadUrl(id: String): Either<AppError, String> =
         apiCall { client.get(Privacy.ExportDownload(id = id)) }
 
+    override suspend fun getActiveExport(): Either<AppError, DataExportResponse?> =
+        Either.catch {
+            val response = client.get(Privacy.ActiveExport())
+            if (response.status == HttpStatusCode.NoContent) {
+                null
+            } else {
+                response.body<DataExportResponse>()
+            }
+        }.mapLeft { AppError.Client.Unknown(detail = it.message) }
+
     override suspend fun requestAccountDeletion(request: DeletionRequest): Either<AppError, DeletionResponse> =
         apiCall {
             client.post(Privacy.RequestDeletion()) {
@@ -59,14 +71,15 @@ class PrivacyApiImpl(private val client: HttpClient) : PrivacyApi {
         }
 
     override suspend fun getDeletionStatus(): Either<AppError, DeletionResponse?> =
-        apiCall { client.get(Privacy.GetDeletionStatus()) }
+        Either.catch {
+            val response = client.get(Privacy.GetDeletionStatus())
+            if (response.status == HttpStatusCode.NoContent) {
+                null
+            } else {
+                response.body<DeletionResponse>()
+            }
+        }.mapLeft { AppError.Client.Unknown(detail = it.message) }
 
     override suspend fun cancelDeletion(): Either<AppError, Unit> =
         apiCall { client.post(Privacy.CancelDeletion()) }
-
-    override suspend fun restrictProcessing(): Either<AppError, Unit> =
-        apiCall { client.post(Privacy.RestrictProcessing()) }
-
-    override suspend fun liftRestriction(): Either<AppError, Unit> =
-        apiCall { client.post(Privacy.LiftRestriction()) }
 }

@@ -3,10 +3,8 @@
 package com.m2f.server.privacy.service
 
 import arrow.core.raise.Raise
-import arrow.core.raise.catch
 import arrow.core.raise.context.ensureNotNull
 import com.m2f.core.config.server.DomainError
-import com.m2f.server.privacy.contract.errors.InvalidConsentType
 import com.m2f.server.privacy.contract.repository.ConsentRepository
 import com.m2f.server.privacy.contract.repository.LegalDocumentRepository
 import com.m2f.server.privacy.contract.service.ConsentService
@@ -29,15 +27,15 @@ class ConsentServiceImpl(
     override suspend fun getActiveConsents(userId: String): List<ConsentStatus> {
         val uuid = Uuid.parse(userId)
         val records = consentRepository.findAllActiveByUser(uuid)
-        return records.map { record ->
-            val consentType = catch({ ConsentType.valueOf(record.consentType) }) {
-                raise.raise(InvalidConsentType(record.consentType))
-            }
+        val recordsByType = records.associateBy { it.consentType }
+
+        return ConsentType.entries.map { type ->
+            val record = recordsByType[type.name]
             ConsentStatus(
-                type = consentType,
-                granted = record.granted,
-                grantedAt = record.createdAt.toInstant(TimeZone.UTC).toString(),
-                documentVersion = record.legalDocumentVersion,
+                type = type,
+                granted = record?.granted ?: false,
+                grantedAt = record?.createdAt?.toInstant(TimeZone.UTC)?.toString(),
+                documentVersion = record?.legalDocumentVersion,
             )
         }
     }

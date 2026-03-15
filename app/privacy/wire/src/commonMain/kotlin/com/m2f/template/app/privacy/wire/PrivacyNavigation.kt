@@ -78,7 +78,6 @@ fun EntryProviderScope<Route>.privacyEntries(
             onRequestExport = { viewModel.take(PrivacySettingsIntent.RequestExport) },
             onDownloadExport = { viewModel.take(PrivacySettingsIntent.DownloadExport) },
             onRequestDeletion = { backStack.add(AccountDeletionRoute) },
-            onToggleRestriction = { viewModel.take(PrivacySettingsIntent.ToggleRestriction) },
             onViewDocument = { viewModel.take(PrivacySettingsIntent.ViewDocument(it)) },
             onWithdrawConsent = { viewModel.take(PrivacySettingsIntent.WithdrawConsent(it)) },
             onBack = { backStack.removeLastOrNull() },

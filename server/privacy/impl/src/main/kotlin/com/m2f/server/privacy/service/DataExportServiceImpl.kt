@@ -70,6 +70,12 @@ class DataExportServiceImpl(
         return "/api/privacy/exports/${record.id}/download"
     }
 
+    context(raise: Raise<DomainError>)
+    override suspend fun getActiveExport(userId: String): DataExportResponse? {
+        val uuid = Uuid.parse(userId)
+        return dataExportRepository.findActiveByUser(uuid)?.toResponse()
+    }
+
     private fun DataExportRecord.toResponse(): DataExportResponse = DataExportResponse(
         id = id.toString(),
         status = ExportStatus.valueOf(status),

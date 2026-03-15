@@ -9,7 +9,6 @@ sealed interface PrivacySettingsMutation {
     data class SetConsents(val consents: List<ConsentStatus>) : PrivacySettingsMutation
     data class SetExportStatus(val status: DataExportResponse?) : PrivacySettingsMutation
     data class SetDeletionStatus(val status: DeletionResponse?) : PrivacySettingsMutation
-    data class SetRestricted(val restricted: Boolean) : PrivacySettingsMutation
     data class SetLoading(val loading: Boolean) : PrivacySettingsMutation
     data class SetError(val error: StringKey?) : PrivacySettingsMutation
 }

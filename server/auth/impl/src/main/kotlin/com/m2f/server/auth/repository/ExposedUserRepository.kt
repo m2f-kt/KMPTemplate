@@ -81,13 +81,6 @@ class ExposedUserRepository(private val db: R2dbcDatabase) : UserRepository {
             rowsUpdated > 0
         }
 
-    override suspend fun updateProcessingRestricted(id: Uuid, restricted: Boolean): Boolean =
-        suspendTransaction(db = db) {
-            val rowsUpdated = UsersTable.update({ UsersTable.id eq id }) { stmt ->
-                stmt[processingRestricted] = restricted
-            }
-            rowsUpdated > 0
-        }
 }
 
 private fun roleIdForRole(role: UserRole): Int = when (role) {
@@ -107,5 +100,4 @@ private fun ResultRow.toUserRecord(): UserRecord = UserRecord(
         else -> UserRole.User
     },
     avatarUrl = this[UsersTable.avatarUrl],
-    processingRestricted = this[UsersTable.processingRestricted],
 )

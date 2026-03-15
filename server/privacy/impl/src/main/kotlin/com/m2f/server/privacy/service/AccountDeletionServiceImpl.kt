@@ -44,6 +44,9 @@ class AccountDeletionServiceImpl(
         ensureNotNull(user) {
             InvalidCredentials()
         }
+        ensureNotNull(user.passwordHash) {
+            InvalidCredentials()
+        }
         ensure(passwordHasher.verify(request.password, user.passwordHash)) {
             InvalidCredentials()
         }

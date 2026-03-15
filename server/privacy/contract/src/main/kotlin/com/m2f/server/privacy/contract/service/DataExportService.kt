@@ -13,4 +13,7 @@ interface DataExportService {
 
     context(raise: Raise<DomainError>)
     suspend fun getExportDownloadUrl(userId: String, exportId: String): String
+
+    context(raise: Raise<DomainError>)
+    suspend fun getActiveExport(userId: String): DataExportResponse?
 }

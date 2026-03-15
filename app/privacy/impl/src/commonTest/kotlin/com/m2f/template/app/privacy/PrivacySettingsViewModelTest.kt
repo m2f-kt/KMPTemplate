@@ -117,59 +117,6 @@ class PrivacySettingsViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `toggle restriction enables restriction when not restricted`() {
-        val sdk = fakeSdk {
-            privacy {
-                restrictProcessing { Either.Right(Unit) }
-            }
-        }
-        val viewModel = PrivacySettingsViewModel(sdk)
-        viewModel.test {
-            intent(PrivacySettingsIntent.ToggleRestriction)
-            model(
-                PrivacySettingsModel(
-                    isRestricted = true,
-                    loading = false,
-                    error = null,
-                )
-            )
-        }
-    }
-
-    @Test
-    fun `toggle restriction lifts restriction when already restricted`() {
-        val sdk = fakeSdk {
-            privacy {
-                getActiveConsents { Either.Right(sampleConsents) }
-                getDeletionStatus { Either.Right(null) }
-                restrictProcessing { Either.Right(Unit) }
-                liftRestriction { Either.Right(Unit) }
-            }
-        }
-        val viewModel = PrivacySettingsViewModel(sdk)
-        viewModel.test {
-            // First enable restriction
-            intent(PrivacySettingsIntent.ToggleRestriction)
-            model(
-                PrivacySettingsModel(
-                    isRestricted = true,
-                    loading = false,
-                    error = null,
-                )
-            )
-            // Then lift it
-            intent(PrivacySettingsIntent.ToggleRestriction)
-            model(
-                PrivacySettingsModel(
-                    isRestricted = false,
-                    loading = false,
-                    error = null,
-                )
-            )
-        }
-    }
-
-    @Test
     fun `view document emits NavigateToDocument event`() {
         val sdk = fakeSdk {
             privacy {

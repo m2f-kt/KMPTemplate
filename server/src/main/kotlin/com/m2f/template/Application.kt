@@ -31,13 +31,11 @@ import com.m2f.server.privacy.contract.service.AccountDeletionService
 import com.m2f.server.privacy.contract.service.ConsentService
 import com.m2f.server.privacy.contract.service.DataExportService
 import com.m2f.server.privacy.contract.service.LegalDocumentService
-import com.m2f.server.privacy.contract.service.ProcessingRestrictionService
 import com.m2f.server.privacy.jobs.PrivacyJobScheduler
 import com.m2f.server.privacy.routes.consentRoutes
 import com.m2f.server.privacy.routes.deletionRoutes
 import com.m2f.server.privacy.routes.exportRoutes
 import com.m2f.server.privacy.routes.legalRoutes
-import com.m2f.server.privacy.routes.restrictionRoutes
 import com.m2f.server.auth.routes.oauthRoutes
 import com.m2f.server.auth.routes.userRoutes
 import com.m2f.server.auth.contract.service.AuthService
@@ -173,12 +171,10 @@ fun Application.module() {
         val legalDocumentService: LegalDocumentService by inject()
         val dataExportService: DataExportService by inject()
         val accountDeletionService: AccountDeletionService by inject()
-        val processingRestrictionService: ProcessingRestrictionService by inject()
         consentRoutes(consentService)
         legalRoutes(legalDocumentService)
         exportRoutes(dataExportService)
         deletionRoutes(accountDeletionService)
-        restrictionRoutes(processingRestrictionService)
         // Shared role checker lambda for cross-module authorization
         val membershipRepository: MembershipRepository by inject()
         @OptIn(ExperimentalUuidApi::class)

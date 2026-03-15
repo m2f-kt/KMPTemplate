@@ -20,9 +20,8 @@ interface PrivacyApi {
     suspend fun requestDataExport(): Either<AppError, DataExportResponse>
     suspend fun getExportStatus(id: String): Either<AppError, DataExportResponse>
     suspend fun getExportDownloadUrl(id: String): Either<AppError, String>
+    suspend fun getActiveExport(): Either<AppError, DataExportResponse?>
     suspend fun requestAccountDeletion(request: DeletionRequest): Either<AppError, DeletionResponse>
     suspend fun getDeletionStatus(): Either<AppError, DeletionResponse?>
     suspend fun cancelDeletion(): Either<AppError, Unit>
-    suspend fun restrictProcessing(): Either<AppError, Unit>
-    suspend fun liftRestriction(): Either<AppError, Unit>
 }

@@ -678,6 +678,7 @@ private fun TermsCheckboxWithLinks(
     }
 
     Row(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         TerminalCheckbox(

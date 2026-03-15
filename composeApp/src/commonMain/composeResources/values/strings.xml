@@ -237,7 +237,6 @@
     <string name="error_invitation_email_mismatch">Your email does not match this invitation</string>
 
     <!-- Privacy errors -->
-    <string name="error_privacy_processing_restricted">Data processing is currently restricted for your account</string>
     <string name="error_privacy_consent_required">Required consent has not been granted</string>
     <string name="error_privacy_deletion_pending">Account deletion is already scheduled</string>
     <string name="error_privacy_export_not_ready">Your data export is not ready yet</string>
