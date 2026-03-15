@@ -17,6 +17,7 @@ class AccountDeletionViewModel(
         viewModelScope.launch {
             when (intent) {
                 is AccountDeletionIntent.Load -> handleLoad()
+                is AccountDeletionIntent.ProceedToReAuth -> handleProceedToReAuth()
                 is AccountDeletionIntent.ReAuthenticate -> handleReAuthenticate(intent.password)
                 is AccountDeletionIntent.SetReason -> handleSetReason(intent.reason)
                 is AccountDeletionIntent.ConfirmDeletion -> handleConfirmDeletion()
@@ -38,6 +39,10 @@ class AccountDeletionViewModel(
                 }
             },
         )
+    }
+
+    private suspend fun handleProceedToReAuth() {
+        sendMutation(AccountDeletionMutation.SetStep(DeletionStep.RE_AUTH))
     }
 
     private suspend fun handleReAuthenticate(password: String) {

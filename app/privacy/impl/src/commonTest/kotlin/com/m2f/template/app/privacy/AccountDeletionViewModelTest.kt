@@ -132,6 +132,67 @@ class AccountDeletionViewModelTest : ViewModelTest() {
     }
 
     @Test
+    fun `proceedToReAuth advances to RE_AUTH step without setting password`() {
+        val sdk = fakeSdk {
+            privacy {
+                getDeletionStatus { Either.Right(null) }
+            }
+        }
+        val viewModel = AccountDeletionViewModel(sdk)
+        viewModel.test {
+            intent(AccountDeletionIntent.ProceedToReAuth)
+            model(
+                AccountDeletionModel(
+                    step = DeletionStep.RE_AUTH,
+                    password = "",
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `full deletion flow with proceedToReAuth`() {
+        val deletionResponse = DeletionResponse(
+            id = "del-789",
+            status = DeletionStatus.PENDING,
+            scheduledAt = "2026-03-21T00:00:00Z",
+        )
+        val sdk = fakeSdk {
+            privacy {
+                getDeletionStatus { Either.Right(null) }
+                requestAccountDeletion { Either.Right(deletionResponse) }
+            }
+        }
+        val viewModel = AccountDeletionViewModel(sdk)
+        viewModel.test {
+            intent(AccountDeletionIntent.ProceedToReAuth)
+            model(
+                AccountDeletionModel(
+                    step = DeletionStep.RE_AUTH,
+                    password = "",
+                )
+            )
+            intent(AccountDeletionIntent.ReAuthenticate("my-password"))
+            model(
+                AccountDeletionModel(
+                    step = DeletionStep.REASON,
+                    password = "my-password",
+                )
+            )
+            intent(AccountDeletionIntent.SetReason("reason"))
+            model(
+                AccountDeletionModel(
+                    step = DeletionStep.CONFIRM,
+                    password = "my-password",
+                    reason = "reason",
+                )
+            )
+            intent(AccountDeletionIntent.ConfirmDeletion)
+            event(AccountDeletionEvent.DeletionScheduled)
+        }
+    }
+
+    @Test
     fun `cancelDeletion calls SDK and emits DeletionCancelled`() {
         val pendingDeletion = DeletionResponse(
             id = "del-123",
