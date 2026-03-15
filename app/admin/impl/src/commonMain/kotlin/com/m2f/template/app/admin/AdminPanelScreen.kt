@@ -39,6 +39,8 @@ import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalTooltip
 import com.m2f.template.designsystem.components.input.TerminalInput
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.util.toDisplayDate
+import com.m2f.template.designsystem.util.trimIsoSuffix
 import com.m2f.template.models.GroupRole
 import com.m2f.template.models.dto.InvitationResponse
 import com.m2f.template.models.dto.MemberResponse
@@ -297,7 +299,7 @@ fun AdminPanelScreen(
                             }
                             if (!isMobile) {
                                 TerminalTableCell(
-                                    text = formatJoinedDate(member.joinedAt),
+                                    text = member.joinedAt.toDisplayDate(),
                                     secondary = true,
                                 )
                             }
@@ -846,23 +848,6 @@ private fun RemoveMemberDialog(
 }
 
 /**
- * Formats an ISO-8601 date string (e.g. "2026-03-02T12:34:56") as "DD/MM/YYYY".
- * Returns "-" if the string is blank or parsing fails.
- */
-private fun formatJoinedDate(isoDate: String): String {
-    if (isoDate.isBlank()) return "-"
-    return try {
-        val dateTime = LocalDateTime.parse(isoDate)
-        val day = dateTime.day.toString().padStart(2, '0')
-        val month = dateTime.monthNumber.toString().padStart(2, '0')
-        val year = dateTime.year.toString()
-        "$day/$month/$year"
-    } catch (_: Exception) {
-        "-"
-    }
-}
-
-/**
  * Computes the number of days until the given expiry date string.
  *
  * Parses the ISO-8601 [LocalDateTime] string (assumed UTC) and returns the
@@ -871,7 +856,7 @@ private fun formatJoinedDate(isoDate: String): String {
  */
 private fun computeDaysUntilExpiry(expiresAt: String): Int {
     return try {
-        val expiryInstant = LocalDateTime.parse(expiresAt).toInstant(TimeZone.UTC)
+        val expiryInstant = LocalDateTime.parse(expiresAt.trimIsoSuffix()).toInstant(TimeZone.UTC)
         val now = Clock.System.now()
         val diffMs = expiryInstant.toEpochMilliseconds() - now.toEpochMilliseconds()
         if (diffMs <= 0L) 0 else (diffMs / (1000L * 60 * 60 * 24)).toInt()

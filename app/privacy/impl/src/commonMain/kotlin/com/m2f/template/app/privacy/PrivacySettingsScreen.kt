@@ -30,6 +30,7 @@ import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.components.selection.TerminalSwitch
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.util.toDisplayDateTime
 import com.m2f.template.models.dto.privacy.ConsentStatus
 import com.m2f.template.models.dto.privacy.ConsentType
 import com.m2f.template.models.dto.privacy.ExportStatus
@@ -274,7 +275,7 @@ private fun ConsentStatusRow(
             )
             if (consent.grantedAt != null) {
                 TerminalText(
-                    text = stringResource(Res.string.privacy_consent_granted_prefix, consent.grantedAt ?: ""),
+                    text = stringResource(Res.string.privacy_consent_granted_prefix, consent.grantedAt?.toDisplayDateTime() ?: ""),
                     style = typography.xs,
                     color = colors.textDim,
                 )

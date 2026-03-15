@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ======================== Relative Time ======================== -->
+    <string name="relative_time_just_now">ahora mismo</string>
+    <string name="relative_time_minutes_ago">hace %1$d min</string>
+    <string name="relative_time_hours_ago">hace %1$d h</string>
+    <string name="relative_time_yesterday">ayer</string>
+    <string name="relative_time_days_ago">hace %1$d días</string>
+    <string name="relative_time_weeks_ago">hace %1$d semanas</string>
+    <string name="relative_time_months_ago">hace %1$d meses</string>
+    <string name="relative_time_years_ago">hace %1$d años</string>
+
+</resources>

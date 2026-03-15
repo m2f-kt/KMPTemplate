@@ -28,6 +28,7 @@ import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
 import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
+import com.m2f.template.designsystem.util.toDisplayDate
 import com.m2f.template.designsystem.theme.TerminalTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.documents.generated.resources.Res
@@ -192,7 +193,7 @@ fun DocumentsScreen(
                             secondary = true,
                         )
                         TerminalTableCell(
-                            text = document.createdAt.take(10),
+                            text = document.createdAt.toDisplayDate(),
                             secondary = true,
                         )
                         Box(modifier = Modifier.weight(1f)) {

@@ -146,19 +146,19 @@ fun PremiumTierContent(
                     TerminalTableRow(showBottomBorder = true) {
                         TerminalTableCell(text = "production")
                         TerminalTableCell(text = "tk_prod_***...x8f2", secondary = true)
-                        TerminalTableCell(text = "2024-01-15", secondary = true)
+                        TerminalTableCell(text = "15/01/2024", secondary = true)
                         TerminalTableCell(text = "2 hours ago", secondary = true)
                     }
                     TerminalTableRow(showBottomBorder = true) {
                         TerminalTableCell(text = "staging")
                         TerminalTableCell(text = "tk_stg_***...m4d1", secondary = true)
-                        TerminalTableCell(text = "2024-02-20", secondary = true)
+                        TerminalTableCell(text = "20/02/2024", secondary = true)
                         TerminalTableCell(text = "5 days ago", secondary = true)
                     }
                     TerminalTableRow(showBottomBorder = false) {
                         TerminalTableCell(text = "development")
                         TerminalTableCell(text = "tk_dev_***...q7a9", secondary = true)
-                        TerminalTableCell(text = "2024-03-01", secondary = true)
+                        TerminalTableCell(text = "01/03/2024", secondary = true)
                         TerminalTableCell(text = "never", secondary = true)
                     }
                 }

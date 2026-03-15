@@ -28,6 +28,7 @@ kotlin {
             implementation(libs.compose.ui.tooling.preview)
             implementation(libs.coil.compose)
             implementation(libs.coil.network.ktor)
+            implementation(libs.kotlinx.datetime)
         }
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)

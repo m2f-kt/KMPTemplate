@@ -39,6 +39,7 @@ import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.components.input.TerminalPasswordInput
 import com.m2f.template.designsystem.components.input.TerminalTextarea
 import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.util.toDisplayDate
 import org.jetbrains.compose.resources.stringResource
 import template.app.privacy.generated.resources.Res
 import template.app.privacy.generated.resources.*
@@ -526,7 +527,7 @@ private fun ScheduledStep(
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
-    val displayDate = scheduledAt ?: ""
+    val displayDate = scheduledAt?.toDisplayDate() ?: ""
 
     // Step label
     TerminalText(
