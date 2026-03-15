@@ -195,6 +195,53 @@ class ConsentServiceTest {
         }
     }
 
+    private val marketingDocument = LegalDocumentRecord(
+        id = Uuid.random(),
+        type = ConsentType.MARKETING.name,
+        version = "1.0",
+        locale = "en",
+        content = "Marketing consent content",
+        publishedAt = now,
+    )
+
+    @Test
+    fun `getActiveConsents returns granted=false after consent is withdrawn`() = runTest {
+        val consentRepo = FakeConsentRepository()
+        val legalDocRepo = FakeLegalDocumentRepository(
+            documents = mutableListOf(marketingDocument),
+        )
+        val service = ConsentServiceImpl(consentRepo, legalDocRepo)
+
+        // Grant MARKETING consent
+        either {
+            service.grantConsent(
+                userId = userIdStr,
+                request = GrantConsentRequest(type = ConsentType.MARKETING, documentVersion = "1.0"),
+                ipAddress = null,
+                userAgent = null,
+            )
+        }
+
+        // Withdraw MARKETING consent
+        either {
+            service.withdrawConsent(
+                userId = userIdStr,
+                consentType = ConsentType.MARKETING.name,
+                ipAddress = null,
+                userAgent = null,
+            )
+        }
+
+        val result = either {
+            service.getActiveConsents(userIdStr)
+        }
+
+        val consents = result.getOrNull().shouldNotBeNull()
+        val marketingConsent = consents.first { it.type == ConsentType.MARKETING }
+        marketingConsent.granted shouldBe false
+        marketingConsent.grantedAt.shouldBeNull()
+    }
+
     @Test
     fun `getActiveConsents deduplicates by type returning latest`() = runTest {
         val consentRepo = FakeConsentRepository()

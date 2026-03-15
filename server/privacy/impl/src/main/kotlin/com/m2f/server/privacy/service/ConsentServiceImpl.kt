@@ -26,17 +26,24 @@ class ConsentServiceImpl(
     context(raise: Raise<DomainError>)
     override suspend fun getActiveConsents(userId: String): List<ConsentStatus> {
         val uuid = Uuid.parse(userId)
-        val records = consentRepository.findAllActiveByUser(uuid)
-        val recordsByType = records.associateBy { it.consentType }
 
         return ConsentType.entries.map { type ->
-            val record = recordsByType[type.name]
-            ConsentStatus(
-                type = type,
-                granted = record?.granted ?: false,
-                grantedAt = record?.createdAt?.toInstant(TimeZone.UTC)?.toString(),
-                documentVersion = record?.legalDocumentVersion,
-            )
+            val record = consentRepository.findLatestByUserAndType(uuid, type.name)
+            if (record != null && record.granted) {
+                ConsentStatus(
+                    type = type,
+                    granted = true,
+                    grantedAt = record.createdAt.toInstant(TimeZone.UTC).toString(),
+                    documentVersion = record.legalDocumentVersion,
+                )
+            } else {
+                ConsentStatus(
+                    type = type,
+                    granted = false,
+                    grantedAt = null,
+                    documentVersion = null,
+                )
+            }
         }
     }
 

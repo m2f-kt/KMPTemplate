@@ -47,7 +47,7 @@ class AccountDeletionServiceTest {
         val deletionRepo = FakeAccountDeletionRepository()
         val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
         val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = FakeConsentRepository()
+        val consentRepo = StubConsentRepository()
         val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
 
         val result = either {
@@ -68,7 +68,7 @@ class AccountDeletionServiceTest {
         val deletionRepo = FakeAccountDeletionRepository()
         val userRepo = FakeUserRepository() // empty -- no users
         val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = FakeConsentRepository()
+        val consentRepo = StubConsentRepository()
         val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
 
         val result = either {
@@ -86,7 +86,7 @@ class AccountDeletionServiceTest {
         val deletionRepo = FakeAccountDeletionRepository()
         val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
         val hasher = FakePasswordHasher(verifyResult = false)
-        val consentRepo = FakeConsentRepository()
+        val consentRepo = StubConsentRepository()
         val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
 
         val result = either {
@@ -104,7 +104,7 @@ class AccountDeletionServiceTest {
         val deletionRepo = FakeAccountDeletionRepository()
         val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
         val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = FakeConsentRepository()
+        val consentRepo = StubConsentRepository()
         val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
 
         // Create first deletion request
@@ -131,7 +131,7 @@ class AccountDeletionServiceTest {
         val deletionRepo = FakeAccountDeletionRepository()
         val userRepo = FakeUserRepository()
         val hasher = FakePasswordHasher()
-        val consentRepo = FakeConsentRepository()
+        val consentRepo = StubConsentRepository()
         val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
 
         val result = either {
@@ -146,7 +146,7 @@ class AccountDeletionServiceTest {
         val deletionRepo = FakeAccountDeletionRepository()
         val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
         val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = FakeConsentRepository()
+        val consentRepo = StubConsentRepository()
         val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
 
         // Create a deletion request first
@@ -266,10 +266,10 @@ private class FakePasswordHasher(
 }
 
 /**
- * Minimal fake for [ConsentRepository] -- only needed as a constructor dependency
+ * Minimal stub for [ConsentRepository] -- only needed as a constructor dependency
  * for [AccountDeletionServiceImpl], not exercised in these tests.
  */
-private class FakeConsentRepository : ConsentRepository {
+private class StubConsentRepository : ConsentRepository {
 
     override suspend fun insert(
         userId: Uuid,
