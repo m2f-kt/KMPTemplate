@@ -115,6 +115,7 @@ fun ProfileScreen(
     onNavigateToPrivacy: () -> Unit = {},
     modifier: Modifier = Modifier,
     localeSelector: (@Composable () -> Unit)? = null,
+    privacyContent: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
 
@@ -149,6 +150,7 @@ fun ProfileScreen(
                     onAvatarClick = launchImagePicker,
                     onNavigateToPrivacy = onNavigateToPrivacy,
                     localeSelector = localeSelector,
+                    privacyContent = privacyContent,
                 )
             }
             else -> {
@@ -193,6 +195,7 @@ private fun DesktopProfile(
     onAvatarClick: () -> Unit,
     onNavigateToPrivacy: () -> Unit,
     localeSelector: (@Composable () -> Unit)? = null,
+    privacyContent: (@Composable () -> Unit)? = null,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -205,7 +208,7 @@ private fun DesktopProfile(
             userName = state.name.ifBlank { state.email },
             selectedItem = selectedNavItem,
             onNavItemSelected = { key ->
-                if (key == "privacy") {
+                if (key == "privacy" && privacyContent == null) {
                     onNavigateToPrivacy()
                 } else {
                     selectedNavItem = key
@@ -214,43 +217,55 @@ private fun DesktopProfile(
             onLogout = onLogout,
         )
 
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .verticalScroll(rememberScrollState())
-                .padding(32.dp),
-            verticalArrangement = Arrangement.spacedBy(24.dp),
-        ) {
-            TerminalText(
-                text = stringResource(Res.string.profile_back),
-                style = typography.sm,
-                color = colors.textMuted,
-                modifier = Modifier.clickable(onClick = onBack),
-            )
-
-            ProfileHeader(
-                state = state,
-                onAvatarClick = onAvatarClick,
-            )
-
-            if (state.isEditing) {
-                EditProfileSection(
-                    state = state,
-                    onEditNameChange = onEditNameChange,
-                    onEditEmailChange = onEditEmailChange,
-                    onSaveProfile = onSaveProfile,
-                    onCancelEditing = onCancelEditing,
+        when (selectedNavItem) {
+            "privacy" -> if (privacyContent != null) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .padding(32.dp),
+                ) {
+                    privacyContent()
+                }
+            }
+            else -> Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
+                    .padding(32.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+            ) {
+                TerminalText(
+                    text = stringResource(Res.string.profile_back),
+                    style = typography.sm,
+                    color = colors.textMuted,
+                    modifier = Modifier.clickable(onClick = onBack),
                 )
-            } else {
-                ProfileInfoCard(state = state, onStartEditing = onStartEditing)
-            }
 
-            if (localeSelector != null) {
-                localeSelector()
-            }
+                ProfileHeader(
+                    state = state,
+                    onAvatarClick = onAvatarClick,
+                )
 
-            TierContent(state = state)
+                if (state.isEditing) {
+                    EditProfileSection(
+                        state = state,
+                        onEditNameChange = onEditNameChange,
+                        onEditEmailChange = onEditEmailChange,
+                        onSaveProfile = onSaveProfile,
+                        onCancelEditing = onCancelEditing,
+                    )
+                } else {
+                    ProfileInfoCard(state = state, onStartEditing = onStartEditing)
+                }
+
+                if (localeSelector != null) {
+                    localeSelector()
+                }
+
+                TierContent(state = state)
+            }
         }
     }
 }

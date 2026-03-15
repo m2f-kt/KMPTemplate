@@ -273,12 +273,6 @@ sealed class AppError {
     @Serializable
     sealed class Privacy : AppError() {
         @Serializable
-        data class ProcessingRestricted(
-            override val code: String = "PRIVACY_PROCESSING_RESTRICTED",
-            override val message: String = "Your data processing is currently restricted"
-        ) : Privacy()
-
-        @Serializable
         data class ConsentRequired(
             override val code: String = "PRIVACY_CONSENT_REQUIRED",
             override val message: String = "You must accept the required privacy policies"

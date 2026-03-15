@@ -10,20 +10,6 @@ import com.m2f.core.config.server.localization.ServerStrings
 import com.m2f.template.models.AppError
 import io.ktor.server.routing.RoutingContext
 
-data class ProcessingRestricted(
-    val detail: String = "Data processing is currently restricted for this user",
-) : DomainError {
-    override fun toAppError(): AppError = AppError.Privacy.ProcessingRestricted()
-
-    context(routingContext: RoutingContext)
-    override suspend fun respond() {
-        val error = toAppError()
-        val locale = routingContext.preferredLanguage()
-        val message = ServerStrings.resolve(error.code, locale)
-        routingContext.forbidden(error.code, message)
-    }
-}
-
 data class ConsentRequired(
     val detail: String = "User consent is required before processing",
 ) : DomainError {

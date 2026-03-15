@@ -95,27 +95,36 @@ class RegisterViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `successful registration with outdated consents navigates to consent gate`() {
+    fun `successful registration with outdated consents grants them and navigates to dashboard`() {
+        var getRequiredConsentsCallCount = 0
         val sdk = fakeSdk {
             auth {
                 register { Either.Right(AuthResponse(accessToken = "tok", refreshToken = "ref", expiresIn = 3600)) }
             }
             privacy {
                 getRequiredConsents {
-                    Either.Right(
-                        RequiredConsentsResponse(
-                            consents = listOf(
-                                RequiredConsent(
-                                    type = ConsentType.PRIVACY_POLICY,
-                                    currentVersion = "2.0",
-                                    acceptedVersion = "1.0",
-                                    needsUpdate = true,
+                    getRequiredConsentsCallCount++
+                    if (getRequiredConsentsCallCount == 1) {
+                        // First call (from grantRequiredConsents): has outdated consents
+                        Either.Right(
+                            RequiredConsentsResponse(
+                                consents = listOf(
+                                    RequiredConsent(
+                                        type = ConsentType.PRIVACY_POLICY,
+                                        currentVersion = "2.0",
+                                        acceptedVersion = "1.0",
+                                        needsUpdate = true,
+                                    ),
                                 ),
+                                hasOutdated = true,
                             ),
-                            hasOutdated = true,
-                        ),
-                    )
+                        )
+                    } else {
+                        // Second call (from navigateWithConsentCheck): consents now granted
+                        Either.Right(RequiredConsentsResponse(consents = emptyList(), hasOutdated = false))
+                    }
                 }
+                grantConsent { Either.Right(Unit) }
             }
         }
         val viewModel = RegisterViewModel(sdk)
@@ -134,7 +143,7 @@ class RegisterViewModelTest : ViewModelTest() {
             model(RegisterModel(firstName = "John", lastName = "Doe", email = "john@test.com", password = "password123", confirmPassword = "password123", termsAccepted = true))
             intent(RegisterIntent.SubmitRegisterClicked)
             model(RegisterModel(firstName = "John", lastName = "Doe", email = "john@test.com", password = "password123", confirmPassword = "password123", termsAccepted = true, isLoading = true))
-            event(RegisterEvent.NavigateToConsentGate)
+            event(RegisterEvent.NavigateToDashboard)
         }
     }
 

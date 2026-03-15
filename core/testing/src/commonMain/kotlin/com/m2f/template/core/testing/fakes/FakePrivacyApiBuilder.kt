@@ -53,6 +53,9 @@ class FakePrivacyApiBuilder {
     private var _getExportDownloadUrl: suspend (String) -> Either<AppError, String> =
         { Either.Left(AppError.Client.Unknown()) }
 
+    private var _getActiveExport: suspend () -> Either<AppError, DataExportResponse?> =
+        { Either.Right(null) }
+
     private var _requestAccountDeletion: suspend (DeletionRequest) -> Either<AppError, DeletionResponse> =
         { Either.Left(AppError.Client.Unknown()) }
 
@@ -60,12 +63,6 @@ class FakePrivacyApiBuilder {
         { Either.Left(AppError.Client.Unknown()) }
 
     private var _cancelDeletion: suspend () -> Either<AppError, Unit> =
-        { Either.Left(AppError.Client.Unknown()) }
-
-    private var _restrictProcessing: suspend () -> Either<AppError, Unit> =
-        { Either.Left(AppError.Client.Unknown()) }
-
-    private var _liftRestriction: suspend () -> Either<AppError, Unit> =
         { Either.Left(AppError.Client.Unknown()) }
 
     fun getActiveConsents(behavior: suspend () -> Either<AppError, List<ConsentStatus>>) {
@@ -100,6 +97,10 @@ class FakePrivacyApiBuilder {
         _getExportDownloadUrl = behavior
     }
 
+    fun getActiveExport(behavior: suspend () -> Either<AppError, DataExportResponse?>) {
+        _getActiveExport = behavior
+    }
+
     fun requestAccountDeletion(behavior: suspend (DeletionRequest) -> Either<AppError, DeletionResponse>) {
         _requestAccountDeletion = behavior
     }
@@ -110,14 +111,6 @@ class FakePrivacyApiBuilder {
 
     fun cancelDeletion(behavior: suspend () -> Either<AppError, Unit>) {
         _cancelDeletion = behavior
-    }
-
-    fun restrictProcessing(behavior: suspend () -> Either<AppError, Unit>) {
-        _restrictProcessing = behavior
-    }
-
-    fun liftRestriction(behavior: suspend () -> Either<AppError, Unit>) {
-        _liftRestriction = behavior
     }
 
     internal fun build(): PrivacyApi = object : PrivacyApi {
@@ -145,6 +138,9 @@ class FakePrivacyApiBuilder {
         override suspend fun getExportDownloadUrl(id: String): Either<AppError, String> =
             _getExportDownloadUrl(id)
 
+        override suspend fun getActiveExport(): Either<AppError, DataExportResponse?> =
+            _getActiveExport()
+
         override suspend fun requestAccountDeletion(request: DeletionRequest): Either<AppError, DeletionResponse> =
             _requestAccountDeletion(request)
 
@@ -153,11 +149,5 @@ class FakePrivacyApiBuilder {
 
         override suspend fun cancelDeletion(): Either<AppError, Unit> =
             _cancelDeletion()
-
-        override suspend fun restrictProcessing(): Either<AppError, Unit> =
-            _restrictProcessing()
-
-        override suspend fun liftRestriction(): Either<AppError, Unit> =
-            _liftRestriction()
     }
 }

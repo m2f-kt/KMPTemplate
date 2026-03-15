@@ -28,6 +28,8 @@ kotlin {
             implementation(projects.core.storage)
             implementation(projects.app.auth.contract)
             implementation(projects.app.privacy.contract)
+            implementation(projects.app.privacy.impl)
+            implementation(projects.app.privacy.wire)
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.androidx.lifecycle.runtimeCompose)

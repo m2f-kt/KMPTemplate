@@ -12,6 +12,7 @@ import io.ktor.client.plugins.resources.post
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
@@ -101,12 +102,14 @@ class AuthInterceptor(
 
                 if (newTokens != null) {
                     // Retry with new token
+                    request.headers.remove(HttpHeaders.Authorization)
                     request.bearerAuth(newTokens.accessToken)
                     execute(request)
                 } else {
                     // Check if another coroutine refreshed
                     val updatedToken = tokenStorage.getAccessToken()
                     if (updatedToken != null && updatedToken != originalAccessToken) {
+                        request.headers.remove(HttpHeaders.Authorization)
                         request.bearerAuth(updatedToken)
                         execute(request)
                     } else {

@@ -19,7 +19,6 @@ class PrivacySettingsViewModel(
                 is PrivacySettingsIntent.Load -> handleLoad()
                 is PrivacySettingsIntent.RequestExport -> handleRequestExport()
                 is PrivacySettingsIntent.DownloadExport -> handleDownloadExport()
-                is PrivacySettingsIntent.ToggleRestriction -> handleToggleRestriction()
                 is PrivacySettingsIntent.ViewDocument -> sendEvent(PrivacySettingsEvent.NavigateToDocument(intent.type))
                 is PrivacySettingsIntent.WithdrawConsent -> handleWithdrawConsent(intent.type)
             }
@@ -30,6 +29,7 @@ class PrivacySettingsViewModel(
         sendMutation(PrivacySettingsMutation.SetLoading(true))
         val consentsDeferred = viewModelScope.async { sdk.getActiveConsents() }
         val deletionDeferred = viewModelScope.async { sdk.getDeletionStatus() }
+        val exportDeferred = viewModelScope.async { sdk.getActiveExport() }
 
         consentsDeferred.await().fold(
             ifLeft = { error ->
@@ -45,6 +45,15 @@ class PrivacySettingsViewModel(
             ifLeft = { /* ignore deletion status error if consents loaded */ },
             ifRight = { status ->
                 sendMutation(PrivacySettingsMutation.SetDeletionStatus(status))
+            },
+        )
+
+        exportDeferred.await().fold(
+            ifLeft = { /* ignore export status error */ },
+            ifRight = { export ->
+                if (export != null) {
+                    sendMutation(PrivacySettingsMutation.SetExportStatus(export))
+                }
             },
         )
     }
@@ -84,21 +93,6 @@ class PrivacySettingsViewModel(
         )
     }
 
-    private suspend fun handleToggleRestriction() {
-        sendMutation(PrivacySettingsMutation.SetLoading(true))
-        val isCurrentlyRestricted = model.value.isRestricted
-        val result = if (isCurrentlyRestricted) sdk.liftRestriction() else sdk.restrictProcessing()
-        result.fold(
-            ifLeft = { error ->
-                val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
-                sendMutation(PrivacySettingsMutation.SetError(key))
-            },
-            ifRight = {
-                sendMutation(PrivacySettingsMutation.SetRestricted(!isCurrentlyRestricted))
-            },
-        )
-    }
-
     private suspend fun handleDownloadExport() {
         val exportId = model.value.exportStatus?.id ?: return
         sdk.getExportDownloadUrl(exportId).fold(
@@ -126,11 +120,6 @@ class PrivacySettingsViewModel(
             )
             is PrivacySettingsMutation.SetDeletionStatus -> model.copy(
                 deletionStatus = mutation.status,
-            )
-            is PrivacySettingsMutation.SetRestricted -> model.copy(
-                isRestricted = mutation.restricted,
-                loading = false,
-                error = null,
             )
             is PrivacySettingsMutation.SetLoading -> model.copy(
                 loading = mutation.loading,

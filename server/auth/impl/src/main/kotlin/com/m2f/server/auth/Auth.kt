@@ -8,6 +8,7 @@ import com.m2f.server.auth.contract.tables.RolesTable
 import com.m2f.server.auth.contract.tables.UsersTable
 import org.jetbrains.exposed.v1.r2dbc.SchemaUtils
 import org.jetbrains.exposed.v1.r2dbc.insert
+import org.jetbrains.exposed.v1.r2dbc.transactions.TransactionManager
 
 /**
  * Migration to create the users table.
@@ -63,15 +64,16 @@ internal class CreateRolesTableAndMigrateUsersMigration : Migration {
 }
 
 /**
- * Migration to add the processing_restricted column to the users table.
+ * Migration to drop the processing_restricted column from the users table.
+ * This column was added in the initial GDPR implementation but the processing
+ * restriction feature has been removed.
  */
-internal class AddProcessingRestrictedToUsersMigration : Migration {
-    override val version: String = "20260312000001"
-    override val description: String = "Add processing_restricted column to users table"
+internal class DropProcessingRestrictedFromUsersMigration : Migration {
+    override val version: String = "20260315000001"
+    override val description: String = "Drop processing_restricted column from users table"
 
-    @Suppress("DEPRECATION")
     override suspend fun migrate() {
-        SchemaUtils.createMissingTablesAndColumns(UsersTable)
+        TransactionManager.current().exec("ALTER TABLE users DROP COLUMN IF EXISTS processing_restricted")
     }
 }
 
@@ -84,5 +86,5 @@ fun registerAuthMigrations() {
     MigrationRegistry.register(CreateRefreshTokensTableMigration())
     MigrationRegistry.register(CreatePasswordResetTokensTableMigration())
     MigrationRegistry.register(CreateRolesTableAndMigrateUsersMigration())
-    MigrationRegistry.register(AddProcessingRestrictedToUsersMigration())
+    MigrationRegistry.register(DropProcessingRestrictedFromUsersMigration())
 }

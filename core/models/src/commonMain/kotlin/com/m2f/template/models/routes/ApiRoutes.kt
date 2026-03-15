@@ -170,6 +170,9 @@ class Privacy {
     @Serializable @Resource("export/{id}/download")
     class ExportDownload(val parent: Privacy = Privacy(), val id: String)
 
+    @Serializable @Resource("export/active")
+    class ActiveExport(val parent: Privacy = Privacy())
+
     @Serializable @Resource("deletion/request")
     class RequestDeletion(val parent: Privacy = Privacy())
 
@@ -179,9 +182,4 @@ class Privacy {
     @Serializable @Resource("deletion/cancel")
     class CancelDeletion(val parent: Privacy = Privacy())
 
-    @Serializable @Resource("restrict/enable")
-    class RestrictProcessing(val parent: Privacy = Privacy())
-
-    @Serializable @Resource("restrict/disable")
-    class LiftRestriction(val parent: Privacy = Privacy())
 }

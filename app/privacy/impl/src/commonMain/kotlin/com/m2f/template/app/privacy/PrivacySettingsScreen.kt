@@ -36,7 +36,7 @@ import com.m2f.template.models.dto.privacy.ExportStatus
 
 /**
  * Privacy settings screen allowing users to manage consents, data exports,
- * processing restrictions, and account deletion.
+ * and account deletion.
  *
  * Desktop (>840dp): Centered column with max width ~600dp.
  * Mobile (<=840dp): Full-width with padding.
@@ -47,7 +47,6 @@ fun PrivacySettingsScreen(
     onRequestExport: () -> Unit,
     onDownloadExport: () -> Unit,
     onRequestDeletion: () -> Unit,
-    onToggleRestriction: () -> Unit,
     onViewDocument: (ConsentType) -> Unit,
     onWithdrawConsent: (ConsentType) -> Unit,
     onBack: () -> Unit,
@@ -79,7 +78,6 @@ fun PrivacySettingsScreen(
                 onRequestExport = onRequestExport,
                 onDownloadExport = onDownloadExport,
                 onRequestDeletion = onRequestDeletion,
-                onToggleRestriction = onToggleRestriction,
                 onViewDocument = onViewDocument,
                 onWithdrawConsent = onWithdrawConsent,
                 onBack = onBack,
@@ -94,12 +92,11 @@ fun PrivacySettingsScreen(
 }
 
 @Composable
-private fun PrivacySettingsContent(
+fun PrivacySettingsContent(
     state: PrivacySettingsModel,
     onRequestExport: () -> Unit,
     onDownloadExport: () -> Unit,
     onRequestDeletion: () -> Unit,
-    onToggleRestriction: () -> Unit,
     onViewDocument: (ConsentType) -> Unit,
     onWithdrawConsent: (ConsentType) -> Unit,
     onBack: () -> Unit,
@@ -204,24 +201,6 @@ private fun PrivacySettingsContent(
                 enabled = !state.loading,
             )
         }
-
-        TerminalDivider()
-
-        // Section: Processing Restriction
-        SectionHeader(title = "Processing Restriction")
-
-        TerminalText(
-            text = "Restrict the processing of your personal data. Some features may be limited.",
-            style = typography.sm,
-            color = colors.textDim,
-        )
-
-        TerminalSwitch(
-            checked = state.isRestricted,
-            onCheckedChange = { onToggleRestriction() },
-            label = if (state.isRestricted) "Processing restricted" else "Processing active",
-            enabled = !state.loading,
-        )
 
         TerminalDivider()
 

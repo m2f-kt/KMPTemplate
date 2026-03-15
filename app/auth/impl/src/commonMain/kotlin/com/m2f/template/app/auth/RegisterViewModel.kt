@@ -8,6 +8,7 @@ import arrow.core.raise.zipOrAccumulate
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.FieldError
 import com.m2f.template.models.dto.RegisterRequest
+import com.m2f.template.models.dto.privacy.GrantConsentRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.models.validation.validateEmail
 import com.m2f.template.models.validation.validateName
@@ -93,6 +94,7 @@ class RegisterViewModel(
                         sendMutation(RegisterMutation.SetServerError(key))
                     },
                     ifRight = {
+                        grantRequiredConsents()
                         val token = current.invitationToken
                         if (!token.isNullOrBlank()) {
                             // Server already accepted invitation during registration.
@@ -114,6 +116,18 @@ class RegisterViewModel(
                 )
             },
         )
+    }
+
+    private suspend fun grantRequiredConsents() {
+        val requiredConsents = sdk.getRequiredConsents().getOrNull() ?: return
+        for (consent in requiredConsents.consents) {
+            sdk.grantConsent(
+                GrantConsentRequest(
+                    type = consent.type,
+                    documentVersion = consent.currentVersion,
+                )
+            )
+        }
     }
 
     private suspend fun navigateWithConsentCheck() {

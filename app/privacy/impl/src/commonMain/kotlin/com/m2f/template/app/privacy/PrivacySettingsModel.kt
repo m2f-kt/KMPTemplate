@@ -9,7 +9,6 @@ data class PrivacySettingsModel(
     val activeConsents: List<ConsentStatus> = emptyList(),
     val exportStatus: DataExportResponse? = null,
     val deletionStatus: DeletionResponse? = null,
-    val isRestricted: Boolean = false,
     val loading: Boolean = true,
     val error: StringKey? = null,
 )

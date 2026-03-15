@@ -64,6 +64,7 @@ class ExposedConsentRepository(private val db: R2dbcDatabase) : ConsentRepositor
                 .orderBy(ConsentRecordsTable.createdAt, SortOrder.DESC)
                 .toList()
                 .map { it.toConsentRecord() }
+                .distinctBy { it.consentType }
         }
 
     override suspend fun findAllByUser(userId: Uuid): List<ConsentRecord> =
