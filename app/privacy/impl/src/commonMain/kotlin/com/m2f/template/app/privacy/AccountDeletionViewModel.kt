@@ -55,6 +55,7 @@ class AccountDeletionViewModel(
     }
 
     private suspend fun handleLogOut() {
+        sendMutation(AccountDeletionMutation.SetLoading(true))
         sdk.logout()
         sendEvent(AccountDeletionEvent.LoggedOut)
     }

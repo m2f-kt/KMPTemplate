@@ -5,6 +5,8 @@ import com.m2f.template.core.testing.ViewModelTest
 import com.m2f.template.core.testing.fakes.fakeSdk
 import com.m2f.template.core.testing.test
 import com.m2f.template.models.AppError
+import com.m2f.template.models.UserRole
+import com.m2f.template.models.dto.UserResponse
 import com.m2f.template.models.dto.privacy.DeletionResponse
 import com.m2f.template.models.dto.privacy.DeletionStatus
 import com.m2f.template.models.localization.StringKey
@@ -191,6 +193,65 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             )
             intent(AccountDeletionIntent.ConfirmDeletion)
             event(AccountDeletionEvent.NavigateToLogin)
+        }
+    }
+
+    @Test
+    fun `skip reason moves to confirm step with empty reason`() {
+        val sdk = fakeSdk {
+            privacy {
+                getDeletionStatus { Either.Right(null) }
+            }
+        }
+        val viewModel = AccountDeletionViewModel(sdk)
+        viewModel.test {
+            intent(AccountDeletionIntent.SkipReason)
+            model(
+                AccountDeletionModel(
+                    step = DeletionStep.CONFIRM,
+                    reason = "",
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `log out triggers logout and sends LoggedOut event`() {
+        val sdk = fakeSdk {
+            auth { logout { Either.Right(Unit) } }
+        }
+        val viewModel = AccountDeletionViewModel(sdk)
+        viewModel.test {
+            // Set up state through prior steps to ensure pipeline is warm
+            intent(AccountDeletionIntent.ProceedToReAuth)
+            model(AccountDeletionModel(step = DeletionStep.RE_AUTH))
+            intent(AccountDeletionIntent.LogOut)
+            event(AccountDeletionEvent.LoggedOut)
+        }
+    }
+
+    @Test
+    fun `load fetches user email from profile`() {
+        val profile = UserResponse(
+            id = "user-1",
+            email = "test@example.com",
+            name = "Test User",
+            role = UserRole.User,
+        )
+        val sdk = fakeSdk {
+            user { getProfile { Either.Right(profile) } }
+            privacy {
+                getDeletionStatus { Either.Right(null) }
+            }
+        }
+        val viewModel = AccountDeletionViewModel(sdk)
+        viewModel.test {
+            intent(AccountDeletionIntent.Load)
+            model(
+                AccountDeletionModel(
+                    userEmail = "test@example.com",
+                )
+            )
         }
     }
 
