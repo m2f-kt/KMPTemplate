@@ -1,6 +1,6 @@
 # Project State
 
-Last activity: 2026-03-15 - Completed quick task 5: Fix consent toggle not working when withdrawing - toggle stays on despite successful withdraw API calls
+Last activity: 2026-03-15 - Completed quick task 6: Fix data export stuck in PENDING state forever and missing download button
 
 ### Blockers/Concerns
 
@@ -15,3 +15,4 @@ None
 | 3 | Add translations for privacy module and profile ES gaps | 2026-03-15 | b2f647d | Verified | [3-add-translations-for-privacy-policy-and-](./quick/3-add-translations-for-privacy-policy-and-/) |
 | 4 | Fix consent toggle grant/withdraw bugs, data export status display, and translate UI enum badges | 2026-03-15 | 91127df | Verified | [4-fix-consent-toggle-grant-withdraw-bugs-d](./quick/4-fix-consent-toggle-grant-withdraw-bugs-d/) |
 | 5 | Fix consent withdraw not reflecting in getActiveConsents (server-side) | 2026-03-15 | 4a3be60 | Verified | [5-fix-consent-toggle-not-working-when-with](./quick/5-fix-consent-toggle-not-working-when-with/) |
+| 6 | Fix data export stuck in PENDING state forever and missing download button | 2026-03-15 | f5209f2 | Verified | [6-fix-data-export-stuck-in-pending-state-a](./quick/6-fix-data-export-stuck-in-pending-state-a/) |
