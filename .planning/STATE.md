@@ -1,6 +1,6 @@
 # Project State
 
-Last activity: 2026-03-15 - Completed quick task 6: Fix data export stuck in PENDING state forever and missing download button
+Last activity: 2026-03-15 - Completed quick task 7: Fix data export process inline on request
 
 ### Blockers/Concerns
 
@@ -16,3 +16,4 @@ None
 | 4 | Fix consent toggle grant/withdraw bugs, data export status display, and translate UI enum badges | 2026-03-15 | 91127df | Verified | [4-fix-consent-toggle-grant-withdraw-bugs-d](./quick/4-fix-consent-toggle-grant-withdraw-bugs-d/) |
 | 5 | Fix consent withdraw not reflecting in getActiveConsents (server-side) | 2026-03-15 | 4a3be60 | Verified | [5-fix-consent-toggle-not-working-when-with](./quick/5-fix-consent-toggle-not-working-when-with/) |
 | 6 | Fix data export stuck in PENDING state forever and missing download button | 2026-03-15 | f5209f2 | Verified | [6-fix-data-export-stuck-in-pending-state-a](./quick/6-fix-data-export-stuck-in-pending-state-a/) |
+| 7 | Fix data export process inline on request and include COMPLETED in active query | 2026-03-15 | b0f0969 | Verified | [7-fix-data-export-process-inline-on-reques](./quick/7-fix-data-export-process-inline-on-reques/) |
