@@ -88,7 +88,13 @@ class PrivacySettingsViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `withdraw consent reloads consents after success`() {
+    fun `toggle consent withdraws when already granted`() {
+        val grantedConsent = ConsentStatus(
+            type = ConsentType.MARKETING,
+            granted = true,
+            grantedAt = "2026-01-01T00:00:00Z",
+            documentVersion = "1.0",
+        )
         val updatedConsents = listOf(
             ConsentStatus(
                 type = ConsentType.PRIVACY_POLICY,
@@ -105,12 +111,88 @@ class PrivacySettingsViewModelTest : ViewModelTest() {
         }
         val viewModel = PrivacySettingsViewModel(sdk)
         viewModel.test {
-            intent(PrivacySettingsIntent.WithdrawConsent(ConsentType.MARKETING))
+            intent(PrivacySettingsIntent.ToggleConsent(grantedConsent))
             model(
                 PrivacySettingsModel(
                     activeConsents = updatedConsents,
                     loading = false,
                     error = null,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `toggle consent grants when not yet granted`() {
+        val notGrantedConsent = ConsentStatus(
+            type = ConsentType.MARKETING,
+            granted = false,
+            grantedAt = null,
+            documentVersion = null,
+        )
+        val legalDocument = com.m2f.template.models.dto.privacy.LegalDocumentResponse(
+            type = ConsentType.MARKETING,
+            version = "2.0",
+            locale = "en",
+            content = "Marketing consent text",
+            publishedAt = "2026-01-01T00:00:00Z",
+        )
+        val updatedConsents = listOf(
+            ConsentStatus(
+                type = ConsentType.MARKETING,
+                granted = true,
+                grantedAt = "2026-03-15T00:00:00Z",
+                documentVersion = "2.0",
+            ),
+        )
+        val sdk = fakeSdk {
+            privacy {
+                getLegalDocument { _, _ -> Either.Right(legalDocument) }
+                grantConsent { Either.Right(Unit) }
+                getActiveConsents { Either.Right(updatedConsents) }
+            }
+        }
+        val viewModel = PrivacySettingsViewModel(sdk)
+        viewModel.test {
+            intent(PrivacySettingsIntent.ToggleConsent(notGrantedConsent))
+            model(
+                PrivacySettingsModel(
+                    activeConsents = updatedConsents,
+                    loading = false,
+                    error = null,
+                )
+            )
+        }
+    }
+
+    @Test
+    fun `toggle consent grant failure shows error in model`() {
+        val notGrantedConsent = ConsentStatus(
+            type = ConsentType.MARKETING,
+            granted = false,
+            grantedAt = null,
+            documentVersion = null,
+        )
+        val legalDocument = com.m2f.template.models.dto.privacy.LegalDocumentResponse(
+            type = ConsentType.MARKETING,
+            version = "2.0",
+            locale = "en",
+            content = "Marketing consent text",
+            publishedAt = "2026-01-01T00:00:00Z",
+        )
+        val sdk = fakeSdk {
+            privacy {
+                getLegalDocument { _, _ -> Either.Right(legalDocument) }
+                grantConsent { Either.Left(AppError.Client.Unknown()) }
+            }
+        }
+        val viewModel = PrivacySettingsViewModel(sdk)
+        viewModel.test {
+            intent(PrivacySettingsIntent.ToggleConsent(notGrantedConsent))
+            model(
+                PrivacySettingsModel(
+                    loading = false,
+                    error = StringKey.CLIENT_UNKNOWN_ERROR,
                 )
             )
         }

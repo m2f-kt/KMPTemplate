@@ -51,7 +51,7 @@ fun PrivacySettingsScreen(
     onDownloadExport: () -> Unit,
     onRequestDeletion: () -> Unit,
     onViewDocument: (ConsentType) -> Unit,
-    onWithdrawConsent: (ConsentType) -> Unit,
+    onToggleConsent: (ConsentStatus) -> Unit,
     onBack: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
@@ -82,7 +82,7 @@ fun PrivacySettingsScreen(
                 onDownloadExport = onDownloadExport,
                 onRequestDeletion = onRequestDeletion,
                 onViewDocument = onViewDocument,
-                onWithdrawConsent = onWithdrawConsent,
+                onToggleConsent = onToggleConsent,
                 onBack = onBack,
                 modifier = if (isDesktop) {
                     Modifier.widthIn(max = 600.dp)
@@ -101,7 +101,7 @@ fun PrivacySettingsContent(
     onDownloadExport: () -> Unit,
     onRequestDeletion: () -> Unit,
     onViewDocument: (ConsentType) -> Unit,
-    onWithdrawConsent: (ConsentType) -> Unit,
+    onToggleConsent: (ConsentStatus) -> Unit,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -152,7 +152,7 @@ fun PrivacySettingsContent(
             ConsentStatusRow(
                 consent = consent,
                 onViewDocument = { onViewDocument(consent.type) },
-                onWithdraw = { onWithdrawConsent(consent.type) },
+                onToggle = { onToggleConsent(consent) },
             )
         }
 
@@ -243,7 +243,7 @@ private fun SectionHeader(title: String) {
 private fun ConsentStatusRow(
     consent: ConsentStatus,
     onViewDocument: () -> Unit,
-    onWithdraw: () -> Unit,
+    onToggle: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
@@ -285,7 +285,7 @@ private fun ConsentStatusRow(
             if (isOptional) {
                 TerminalSwitch(
                     checked = consent.granted,
-                    onCheckedChange = { onWithdraw() },
+                    onCheckedChange = { onToggle() },
                 )
             } else {
                 TerminalBadge(

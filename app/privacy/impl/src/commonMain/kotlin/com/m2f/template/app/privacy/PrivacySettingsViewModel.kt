@@ -2,6 +2,8 @@ package com.m2f.template.app.privacy
 
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
+import com.m2f.template.models.dto.privacy.ConsentStatus
+import com.m2f.template.models.dto.privacy.GrantConsentRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.async
@@ -20,7 +22,7 @@ class PrivacySettingsViewModel(
                 is PrivacySettingsIntent.RequestExport -> handleRequestExport()
                 is PrivacySettingsIntent.DownloadExport -> handleDownloadExport()
                 is PrivacySettingsIntent.ViewDocument -> sendEvent(PrivacySettingsEvent.NavigateToDocument(intent.type))
-                is PrivacySettingsIntent.WithdrawConsent -> handleWithdrawConsent(intent.type)
+                is PrivacySettingsIntent.ToggleConsent -> handleToggleConsent(intent.consent)
             }
         }
     }
@@ -71,24 +73,47 @@ class PrivacySettingsViewModel(
         )
     }
 
-    private suspend fun handleWithdrawConsent(type: com.m2f.template.models.dto.privacy.ConsentType) {
+    private suspend fun handleToggleConsent(consent: ConsentStatus) {
         sendMutation(PrivacySettingsMutation.SetLoading(true))
-        sdk.withdrawConsent(type).fold(
+        if (consent.granted) {
+            sdk.withdrawConsent(consent.type).fold(
+                ifLeft = { error ->
+                    val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                    sendMutation(PrivacySettingsMutation.SetError(key))
+                },
+                ifRight = {
+                    reloadConsents()
+                },
+            )
+        } else {
+            sdk.getLegalDocument(consent.type).fold(
+                ifLeft = { error ->
+                    val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                    sendMutation(PrivacySettingsMutation.SetError(key))
+                },
+                ifRight = { document ->
+                    sdk.grantConsent(GrantConsentRequest(type = consent.type, documentVersion = document.version)).fold(
+                        ifLeft = { error ->
+                            val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                            sendMutation(PrivacySettingsMutation.SetError(key))
+                        },
+                        ifRight = {
+                            reloadConsents()
+                        },
+                    )
+                },
+            )
+        }
+    }
+
+    private suspend fun reloadConsents() {
+        sdk.getActiveConsents().fold(
             ifLeft = { error ->
                 val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
                 sendMutation(PrivacySettingsMutation.SetError(key))
             },
-            ifRight = {
-                // Reload consents after withdrawal
-                sdk.getActiveConsents().fold(
-                    ifLeft = { error ->
-                        val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
-                        sendMutation(PrivacySettingsMutation.SetError(key))
-                    },
-                    ifRight = { consents ->
-                        sendMutation(PrivacySettingsMutation.SetConsents(consents))
-                    },
-                )
+            ifRight = { consents ->
+                sendMutation(PrivacySettingsMutation.SetConsents(consents))
             },
         )
     }
