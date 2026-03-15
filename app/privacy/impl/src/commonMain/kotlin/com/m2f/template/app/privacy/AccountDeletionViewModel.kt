@@ -22,11 +22,19 @@ class AccountDeletionViewModel(
                 is AccountDeletionIntent.SetReason -> handleSetReason(intent.reason)
                 is AccountDeletionIntent.ConfirmDeletion -> handleConfirmDeletion()
                 is AccountDeletionIntent.CancelDeletion -> handleCancelDeletion()
+                is AccountDeletionIntent.SkipReason -> handleSkipReason()
+                is AccountDeletionIntent.LogOut -> handleLogOut()
             }
         }
     }
 
     private suspend fun handleLoad() {
+        sdk.getProfile().fold(
+            ifLeft = { /* ignore profile fetch error */ },
+            ifRight = { profile ->
+                sendMutation(AccountDeletionMutation.SetUserEmail(profile.email))
+            },
+        )
         sdk.getDeletionStatus().fold(
             ifLeft = { error ->
                 val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
@@ -39,6 +47,16 @@ class AccountDeletionViewModel(
                 }
             },
         )
+    }
+
+    private suspend fun handleSkipReason() {
+        sendMutation(AccountDeletionMutation.SetReason(""))
+        sendMutation(AccountDeletionMutation.SetStep(DeletionStep.CONFIRM))
+    }
+
+    private suspend fun handleLogOut() {
+        sdk.logout()
+        sendEvent(AccountDeletionEvent.LoggedOut)
     }
 
     private suspend fun handleProceedToReAuth() {
@@ -102,5 +120,6 @@ class AccountDeletionViewModel(
         is AccountDeletionMutation.SetPendingDeletion -> model.copy(pendingDeletion = mutation.deletion)
         is AccountDeletionMutation.SetLoading -> model.copy(loading = mutation.loading, error = null)
         is AccountDeletionMutation.SetError -> model.copy(error = mutation.error, loading = false)
+        is AccountDeletionMutation.SetUserEmail -> model.copy(userEmail = mutation.email)
     }
 }

@@ -25,34 +25,104 @@
     <string name="privacy_consent_granted_prefix">Granted: %1$s</string>
 
     <!-- ======================== AccountDeletionScreen ======================== -->
-    <string name="privacy_deletion_title">Delete Account</string>
+    <string name="privacy_deletion_title">Delete Your Account</string>
     <string name="privacy_deletion_processing">Processing...</string>
     <string name="privacy_deletion_error_title">Error</string>
-    <string name="privacy_deletion_warning_title">Warning</string>
-    <string name="privacy_deletion_warning_message">This action is permanent and cannot be undone. All your personal data, documents, and account information will be permanently deleted after a grace period.</string>
-    <string name="privacy_deletion_warning_consider">Before proceeding, please consider:</string>
-    <string name="privacy_deletion_warning_bullet1">  - Download your data export first</string>
-    <string name="privacy_deletion_warning_bullet2">  - This cannot be reversed after the grace period</string>
-    <string name="privacy_deletion_warning_bullet3">  - All active sessions will be terminated</string>
-    <string name="privacy_deletion_go_back">Go Back</string>
-    <string name="privacy_deletion_continue">Continue</string>
-    <string name="privacy_deletion_reauth_message">Please verify your identity by entering your password.</string>
-    <string name="privacy_deletion_reauth_label">Password</string>
+
+    <!-- Step 1: Warning -->
+    <string name="privacy_deletion_warning_danger_title">DANGER</string>
+    <string name="privacy_deletion_warning_danger_message">This action is permanent and cannot be undone.</string>
+    <string name="privacy_deletion_warning_scope_label">THIS WILL PERMANENTLY DELETE:</string>
+    <string name="privacy_deletion_warning_scope_card_title">deletion_scope</string>
+    <string name="privacy_deletion_warning_scope_card_desc">// items to be removed</string>
+    <string name="privacy_deletion_warning_scope_item1">Your profile and personal data</string>
+    <string name="privacy_deletion_warning_scope_item2">All your documents and files</string>
+    <string name="privacy_deletion_warning_scope_item3">Your group memberships</string>
+    <string name="privacy_deletion_warning_scope_item4">Consent and activity history</string>
+    <string name="privacy_deletion_warning_grace">A 7-day grace period applies. Your account will be scheduled for deletion and permanently removed after 7 days. You may cancel this during the grace period.</string>
+    <string name="privacy_deletion_warning_understand">I Understand, Continue</string>
+    <string name="privacy_deletion_cancel">Cancel</string>
+    <string name="privacy_deletion_back">Back</string>
+
+    <!-- Step 2: Re-Auth -->
+    <string name="privacy_deletion_reauth_title">Verify Your Identity</string>
+    <string name="privacy_deletion_reauth_subtitle">Enter your password to confirm this action.</string>
+    <string name="privacy_deletion_reauth_label">PASSWORD</string>
     <string name="privacy_deletion_reauth_placeholder">Enter your password</string>
-    <string name="privacy_deletion_reauth_verify">Verify</string>
-    <string name="privacy_deletion_reason_message">Optionally, let us know why you are leaving. This helps us improve our service.</string>
-    <string name="privacy_deletion_reason_label">Reason (optional)</string>
+    <string name="privacy_deletion_reauth_error_title">ERROR</string>
+    <string name="privacy_deletion_reauth_error_message">Invalid password. Please try again.</string>
+    <string name="privacy_deletion_reauth_verify">Verify &amp; Continue</string>
+
+    <!-- Step 3: Reason -->
+    <string name="privacy_deletion_reason_title">Help Us Improve</string>
+    <string name="privacy_deletion_reason_subtitle">Optionally tell us why you are leaving.</string>
+    <string name="privacy_deletion_reason_label">FEEDBACK (OPTIONAL)</string>
     <string name="privacy_deletion_reason_placeholder">Tell us why you\'re leaving...</string>
-    <string name="privacy_deletion_confirm_message">You are about to permanently delete your account. This is your last chance to cancel.</string>
+    <string name="privacy_deletion_reason_continue">Continue</string>
+    <string name="privacy_deletion_reason_skip">Skip</string>
+
+    <!-- Step 4: Confirm -->
+    <string name="privacy_deletion_confirm_step">STEP 4 OF 5</string>
     <string name="privacy_deletion_confirm_title">Final Confirmation</string>
-    <string name="privacy_deletion_confirm_question">Are you absolutely sure?</string>
-    <string name="privacy_deletion_confirm_cancel">Cancel</string>
+    <string name="privacy_deletion_confirm_subtitle">Review the details below before confirming deletion</string>
+    <string name="privacy_deletion_confirm_card_title">deletion_summary</string>
+    <string name="privacy_deletion_confirm_card_desc">// scheduled for removal</string>
+    <string name="privacy_deletion_confirm_account">Account: %1$s</string>
+    <string name="privacy_deletion_confirm_scheduled">Scheduled deletion: %1$s</string>
+    <string name="privacy_deletion_confirm_grace">Grace period: 7 days</string>
+    <string name="privacy_deletion_confirm_warn">After %1$s, this action cannot be undone.</string>
     <string name="privacy_deletion_confirm_button">Delete My Account</string>
-    <string name="privacy_deletion_scheduled_message">Your account has been scheduled for deletion.</string>
-    <string name="privacy_deletion_scheduled_message_date"> It will be permanently removed on %1$s.</string>
-    <string name="privacy_deletion_scheduled_title">Deletion Scheduled</string>
-    <string name="privacy_deletion_scheduled_info">You can cancel this request before the scheduled date to keep your account.</string>
-    <string name="privacy_deletion_scheduled_cancel">Cancel Deletion</string>
+
+    <!-- Step 5: Scheduled -->
+    <string name="privacy_deletion_scheduled_step">STEP 5 OF 5</string>
+    <string name="privacy_deletion_scheduled_success_title">Deletion Scheduled</string>
+    <string name="privacy_deletion_scheduled_success_message">Your deletion request has been confirmed.</string>
+    <string name="privacy_deletion_scheduled_card_title">deletion_scheduled</string>
+    <string name="privacy_deletion_scheduled_card_desc">// account marked for removal</string>
+    <string name="privacy_deletion_scheduled_card_line1">Your account will be permanently deleted on %1$s</string>
+    <string name="privacy_deletion_scheduled_card_line2">You will receive an email confirmation</string>
+    <string name="privacy_deletion_scheduled_card_line3">You can cancel this request anytime before the scheduled date</string>
+    <string name="privacy_deletion_scheduled_cancel">Cancel Deletion Request</string>
+    <string name="privacy_deletion_scheduled_logout">Log Out Now</string>
+
+    <!-- Desktop right panel -->
+    <string name="privacy_deletion_desktop_step1_indicator">STEP 01 / 03 — ACCOUNT DELETION</string>
+    <string name="privacy_deletion_desktop_step1_header">DELETION IMPACT</string>
+    <string name="privacy_deletion_desktop_step1_title">What gets removed</string>
+    <string name="privacy_deletion_desktop_step1_desc">When your account is deleted, all associated data will be permanently removed from our systems.</string>
+    <string name="privacy_deletion_desktop_step1_bullet1">Profile information and settings</string>
+    <string name="privacy_deletion_desktop_step1_bullet2">Documents and uploaded files</string>
+    <string name="privacy_deletion_desktop_step1_bullet3">Group memberships and roles</string>
+    <string name="privacy_deletion_desktop_step1_bullet4">Consent records and activity logs</string>
+    <string name="privacy_deletion_desktop_step1_note">A 7-day grace period allows you to cancel before permanent deletion.</string>
+
+    <string name="privacy_deletion_desktop_step2_indicator">STEP 02 / 03 — VERIFY IDENTITY</string>
+    <string name="privacy_deletion_desktop_step2_header">SECURITY NOTICE</string>
+    <string name="privacy_deletion_desktop_step2_title">Why we verify</string>
+    <string name="privacy_deletion_desktop_step2_desc">Account deletion is irreversible. We verify your identity to prevent unauthorized deletions.</string>
+    <string name="privacy_deletion_desktop_step2_bullet1">Protects against unauthorized access</string>
+    <string name="privacy_deletion_desktop_step2_bullet2">Confirms you are the account owner</string>
+    <string name="privacy_deletion_desktop_step2_bullet3">Required by our security policy</string>
+
+    <string name="privacy_deletion_desktop_step3_indicator">STEP 03 / 03 — FEEDBACK</string>
+    <string name="privacy_deletion_desktop_step3_header">PRIVACY NOTE</string>
+    <string name="privacy_deletion_desktop_step3_title">Your feedback</string>
+    <string name="privacy_deletion_desktop_step3_desc">Your feedback is completely optional and helps us improve our service.</string>
+    <string name="privacy_deletion_desktop_step3_bullet1">Feedback is anonymous after account deletion</string>
+    <string name="privacy_deletion_desktop_step3_bullet2">Used only for service improvement</string>
+    <string name="privacy_deletion_desktop_step3_bullet3">You can skip this step entirely</string>
+
+    <string name="privacy_deletion_desktop_step4_header">DELETION IMPACT</string>
+    <string name="privacy_deletion_desktop_step4_bullet1">All data will be permanently erased</string>
+    <string name="privacy_deletion_desktop_step4_bullet2">Active sessions will be terminated</string>
+    <string name="privacy_deletion_desktop_step4_bullet3">Shared files will become inaccessible</string>
+    <string name="privacy_deletion_desktop_step4_note">Grace period allows cancellation before final removal.</string>
+
+    <string name="privacy_deletion_desktop_step5_header">WHAT HAPPENS NEXT</string>
+    <string name="privacy_deletion_desktop_step5_step1">1. Your account is marked for deletion</string>
+    <string name="privacy_deletion_desktop_step5_step2">2. A confirmation email will be sent</string>
+    <string name="privacy_deletion_desktop_step5_step3">3. After the grace period, all data is removed</string>
+    <string name="privacy_deletion_desktop_step5_cancel">To cancel, use the button on the left or contact support before the scheduled date.</string>
 
     <!-- ======================== ConsentGateScreen ======================== -->
     <string name="privacy_gate_title">Privacy Policy Agreement</string>

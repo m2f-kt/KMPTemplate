@@ -25,34 +25,104 @@
     <string name="privacy_consent_granted_prefix">Otorgado: %1$s</string>
 
     <!-- ======================== AccountDeletionScreen ======================== -->
-    <string name="privacy_deletion_title">Eliminar Cuenta</string>
+    <string name="privacy_deletion_title">Eliminar Tu Cuenta</string>
     <string name="privacy_deletion_processing">Procesando...</string>
     <string name="privacy_deletion_error_title">Error</string>
-    <string name="privacy_deletion_warning_title">Advertencia</string>
-    <string name="privacy_deletion_warning_message">Esta acción es permanente y no se puede deshacer. Todos tus datos personales, documentos e información de cuenta serán eliminados de forma permanente después de un período de gracia.</string>
-    <string name="privacy_deletion_warning_consider">Antes de continuar, considera:</string>
-    <string name="privacy_deletion_warning_bullet1">  - Descarga tu exportación de datos primero</string>
-    <string name="privacy_deletion_warning_bullet2">  - Esto no se puede revertir después del período de gracia</string>
-    <string name="privacy_deletion_warning_bullet3">  - Todas las sesiones activas serán terminadas</string>
-    <string name="privacy_deletion_go_back">Volver</string>
-    <string name="privacy_deletion_continue">Continuar</string>
-    <string name="privacy_deletion_reauth_message">Verifica tu identidad ingresando tu contraseña.</string>
-    <string name="privacy_deletion_reauth_label">Contraseña</string>
+
+    <!-- Step 1: Warning -->
+    <string name="privacy_deletion_warning_danger_title">PELIGRO</string>
+    <string name="privacy_deletion_warning_danger_message">Esta acción es permanente y no se puede deshacer.</string>
+    <string name="privacy_deletion_warning_scope_label">ESTO ELIMINARÁ PERMANENTEMENTE:</string>
+    <string name="privacy_deletion_warning_scope_card_title">deletion_scope</string>
+    <string name="privacy_deletion_warning_scope_card_desc">// elementos a eliminar</string>
+    <string name="privacy_deletion_warning_scope_item1">Tu perfil y datos personales</string>
+    <string name="privacy_deletion_warning_scope_item2">Todos tus documentos y archivos</string>
+    <string name="privacy_deletion_warning_scope_item3">Tus membresías de grupo</string>
+    <string name="privacy_deletion_warning_scope_item4">Historial de consentimiento y actividad</string>
+    <string name="privacy_deletion_warning_grace">Se aplica un período de gracia de 7 días. Tu cuenta será programada para eliminación y eliminada permanentemente después de 7 días. Puedes cancelar esto durante el período de gracia.</string>
+    <string name="privacy_deletion_warning_understand">Entiendo, Continuar</string>
+    <string name="privacy_deletion_cancel">Cancelar</string>
+    <string name="privacy_deletion_back">Atrás</string>
+
+    <!-- Step 2: Re-Auth -->
+    <string name="privacy_deletion_reauth_title">Verifica Tu Identidad</string>
+    <string name="privacy_deletion_reauth_subtitle">Ingresa tu contraseña para confirmar esta acción.</string>
+    <string name="privacy_deletion_reauth_label">CONTRASEÑA</string>
     <string name="privacy_deletion_reauth_placeholder">Ingresa tu contraseña</string>
-    <string name="privacy_deletion_reauth_verify">Verificar</string>
-    <string name="privacy_deletion_reason_message">Opcionalmente, cuéntanos por qué te vas. Esto nos ayuda a mejorar nuestro servicio.</string>
-    <string name="privacy_deletion_reason_label">Razón (opcional)</string>
+    <string name="privacy_deletion_reauth_error_title">ERROR</string>
+    <string name="privacy_deletion_reauth_error_message">Contraseña inválida. Inténtalo de nuevo.</string>
+    <string name="privacy_deletion_reauth_verify">Verificar y Continuar</string>
+
+    <!-- Step 3: Reason -->
+    <string name="privacy_deletion_reason_title">Ayúdanos a Mejorar</string>
+    <string name="privacy_deletion_reason_subtitle">Opcionalmente cuéntanos por qué te vas.</string>
+    <string name="privacy_deletion_reason_label">COMENTARIOS (OPCIONAL)</string>
     <string name="privacy_deletion_reason_placeholder">Cuéntanos por qué te vas...</string>
-    <string name="privacy_deletion_confirm_message">Estás a punto de eliminar permanentemente tu cuenta. Esta es tu última oportunidad de cancelar.</string>
+    <string name="privacy_deletion_reason_continue">Continuar</string>
+    <string name="privacy_deletion_reason_skip">Omitir</string>
+
+    <!-- Step 4: Confirm -->
+    <string name="privacy_deletion_confirm_step">PASO 4 DE 5</string>
     <string name="privacy_deletion_confirm_title">Confirmación Final</string>
-    <string name="privacy_deletion_confirm_question">¿Estás absolutamente seguro?</string>
-    <string name="privacy_deletion_confirm_cancel">Cancelar</string>
+    <string name="privacy_deletion_confirm_subtitle">Revisa los detalles a continuación antes de confirmar la eliminación</string>
+    <string name="privacy_deletion_confirm_card_title">deletion_summary</string>
+    <string name="privacy_deletion_confirm_card_desc">// programado para eliminación</string>
+    <string name="privacy_deletion_confirm_account">Cuenta: %1$s</string>
+    <string name="privacy_deletion_confirm_scheduled">Eliminación programada: %1$s</string>
+    <string name="privacy_deletion_confirm_grace">Período de gracia: 7 días</string>
+    <string name="privacy_deletion_confirm_warn">Después del %1$s, esta acción no se puede deshacer.</string>
     <string name="privacy_deletion_confirm_button">Eliminar Mi Cuenta</string>
-    <string name="privacy_deletion_scheduled_message">Tu cuenta ha sido programada para eliminación.</string>
-    <string name="privacy_deletion_scheduled_message_date"> Se eliminará permanentemente el %1$s.</string>
-    <string name="privacy_deletion_scheduled_title">Eliminación Programada</string>
-    <string name="privacy_deletion_scheduled_info">Puedes cancelar esta solicitud antes de la fecha programada para conservar tu cuenta.</string>
-    <string name="privacy_deletion_scheduled_cancel">Cancelar Eliminación</string>
+
+    <!-- Step 5: Scheduled -->
+    <string name="privacy_deletion_scheduled_step">PASO 5 DE 5</string>
+    <string name="privacy_deletion_scheduled_success_title">Eliminación Programada</string>
+    <string name="privacy_deletion_scheduled_success_message">Tu solicitud de eliminación ha sido confirmada.</string>
+    <string name="privacy_deletion_scheduled_card_title">deletion_scheduled</string>
+    <string name="privacy_deletion_scheduled_card_desc">// cuenta marcada para eliminación</string>
+    <string name="privacy_deletion_scheduled_card_line1">Tu cuenta será eliminada permanentemente el %1$s</string>
+    <string name="privacy_deletion_scheduled_card_line2">Recibirás un correo de confirmación</string>
+    <string name="privacy_deletion_scheduled_card_line3">Puedes cancelar esta solicitud en cualquier momento antes de la fecha programada</string>
+    <string name="privacy_deletion_scheduled_cancel">Cancelar Solicitud de Eliminación</string>
+    <string name="privacy_deletion_scheduled_logout">Cerrar Sesión Ahora</string>
+
+    <!-- Desktop right panel -->
+    <string name="privacy_deletion_desktop_step1_indicator">PASO 01 / 03 — ELIMINACIÓN DE CUENTA</string>
+    <string name="privacy_deletion_desktop_step1_header">IMPACTO DE ELIMINACIÓN</string>
+    <string name="privacy_deletion_desktop_step1_title">Qué se elimina</string>
+    <string name="privacy_deletion_desktop_step1_desc">Cuando tu cuenta sea eliminada, todos los datos asociados serán eliminados permanentemente de nuestros sistemas.</string>
+    <string name="privacy_deletion_desktop_step1_bullet1">Información de perfil y configuración</string>
+    <string name="privacy_deletion_desktop_step1_bullet2">Documentos y archivos subidos</string>
+    <string name="privacy_deletion_desktop_step1_bullet3">Membresías y roles de grupo</string>
+    <string name="privacy_deletion_desktop_step1_bullet4">Registros de consentimiento y actividad</string>
+    <string name="privacy_deletion_desktop_step1_note">Un período de gracia de 7 días te permite cancelar antes de la eliminación permanente.</string>
+
+    <string name="privacy_deletion_desktop_step2_indicator">PASO 02 / 03 — VERIFICAR IDENTIDAD</string>
+    <string name="privacy_deletion_desktop_step2_header">AVISO DE SEGURIDAD</string>
+    <string name="privacy_deletion_desktop_step2_title">Por qué verificamos</string>
+    <string name="privacy_deletion_desktop_step2_desc">La eliminación de cuenta es irreversible. Verificamos tu identidad para prevenir eliminaciones no autorizadas.</string>
+    <string name="privacy_deletion_desktop_step2_bullet1">Protege contra acceso no autorizado</string>
+    <string name="privacy_deletion_desktop_step2_bullet2">Confirma que eres el propietario de la cuenta</string>
+    <string name="privacy_deletion_desktop_step2_bullet3">Requerido por nuestra política de seguridad</string>
+
+    <string name="privacy_deletion_desktop_step3_indicator">PASO 03 / 03 — COMENTARIOS</string>
+    <string name="privacy_deletion_desktop_step3_header">NOTA DE PRIVACIDAD</string>
+    <string name="privacy_deletion_desktop_step3_title">Tus comentarios</string>
+    <string name="privacy_deletion_desktop_step3_desc">Tus comentarios son completamente opcionales y nos ayudan a mejorar nuestro servicio.</string>
+    <string name="privacy_deletion_desktop_step3_bullet1">Los comentarios son anónimos después de la eliminación de cuenta</string>
+    <string name="privacy_deletion_desktop_step3_bullet2">Se usan solo para mejorar el servicio</string>
+    <string name="privacy_deletion_desktop_step3_bullet3">Puedes omitir este paso por completo</string>
+
+    <string name="privacy_deletion_desktop_step4_header">IMPACTO DE ELIMINACIÓN</string>
+    <string name="privacy_deletion_desktop_step4_bullet1">Todos los datos serán eliminados permanentemente</string>
+    <string name="privacy_deletion_desktop_step4_bullet2">Las sesiones activas serán terminadas</string>
+    <string name="privacy_deletion_desktop_step4_bullet3">Los archivos compartidos serán inaccesibles</string>
+    <string name="privacy_deletion_desktop_step4_note">El período de gracia permite la cancelación antes de la eliminación final.</string>
+
+    <string name="privacy_deletion_desktop_step5_header">QUÉ SUCEDE DESPUÉS</string>
+    <string name="privacy_deletion_desktop_step5_step1">1. Tu cuenta es marcada para eliminación</string>
+    <string name="privacy_deletion_desktop_step5_step2">2. Se enviará un correo de confirmación</string>
+    <string name="privacy_deletion_desktop_step5_step3">3. Después del período de gracia, todos los datos son eliminados</string>
+    <string name="privacy_deletion_desktop_step5_cancel">Para cancelar, usa el botón a la izquierda o contacta soporte antes de la fecha programada.</string>
 
     <!-- ======================== ConsentGateScreen ======================== -->
     <string name="privacy_gate_title">Acuerdo de Política de Privacidad</string>

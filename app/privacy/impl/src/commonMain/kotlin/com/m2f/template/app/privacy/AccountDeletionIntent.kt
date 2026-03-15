@@ -7,4 +7,6 @@ sealed interface AccountDeletionIntent {
     data class SetReason(val reason: String) : AccountDeletionIntent
     data object ConfirmDeletion : AccountDeletionIntent
     data object CancelDeletion : AccountDeletionIntent
+    data object SkipReason : AccountDeletionIntent
+    data object LogOut : AccountDeletionIntent
 }

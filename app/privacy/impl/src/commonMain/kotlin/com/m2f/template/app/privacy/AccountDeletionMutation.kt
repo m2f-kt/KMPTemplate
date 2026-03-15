@@ -10,4 +10,5 @@ sealed interface AccountDeletionMutation {
     data class SetPendingDeletion(val deletion: DeletionResponse?) : AccountDeletionMutation
     data class SetLoading(val loading: Boolean) : AccountDeletionMutation
     data class SetError(val error: StringKey?) : AccountDeletionMutation
+    data class SetUserEmail(val email: String) : AccountDeletionMutation
 }

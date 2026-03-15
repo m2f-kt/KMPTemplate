@@ -15,6 +15,7 @@ data class AccountDeletionModel(
     val step: DeletionStep = DeletionStep.WARNING,
     val password: String = "",
     val reason: String = "",
+    val userEmail: String = "",
     val pendingDeletion: DeletionResponse? = null,
     val loading: Boolean = false,
     val error: StringKey? = null,
