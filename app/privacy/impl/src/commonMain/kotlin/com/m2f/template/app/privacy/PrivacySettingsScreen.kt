@@ -189,7 +189,7 @@ fun PrivacySettingsContent(
                 )
             }
 
-            if (state.exportStatus.status == ExportStatus.COMPLETED && state.exportStatus.downloadUrl != null) {
+            if (state.exportStatus.status == ExportStatus.COMPLETED) {
                 TerminalButton(
                     text = stringResource(Res.string.privacy_settings_export_download),
                     onClick = onDownloadExport,
