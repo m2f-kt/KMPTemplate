@@ -1,6 +1,6 @@
 # Project State
 
-Last activity: 2026-03-15 - Completed quick task 7: Fix data export process inline on request
+Last activity: 2026-03-15 - Completed quick task 7: Fix data export: process inline on request and return COMPLETED exports in active query
 
 ### Blockers/Concerns
 
