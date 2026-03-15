@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalUuidApi::class)
+@file:OptIn(ExperimentalUuidApi::class, ExperimentalTime::class)
 
 package com.m2f.server.privacy.service
 
@@ -6,6 +6,7 @@ import arrow.core.raise.Raise
 import arrow.core.raise.context.ensure
 import arrow.core.raise.context.ensureNotNull
 import com.m2f.core.config.server.DomainError
+import com.m2f.core.config.server.UnexpectedError
 import com.m2f.server.privacy.contract.errors.ExportAlreadyActive
 import com.m2f.server.privacy.contract.errors.ExportNotReady
 import com.m2f.server.privacy.contract.repository.DataExportRecord
@@ -16,6 +17,10 @@ import com.m2f.template.models.dto.privacy.DataExportResponse
 import com.m2f.template.models.dto.privacy.ExportStatus
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.days
+import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -31,9 +36,39 @@ class DataExportServiceImpl(
         ensure(activeExport == null) { ExportAlreadyActive() }
 
         val exportId = dataExportRepository.insert(uuid, ExportStatus.PENDING.name)
+        dataExportRepository.updateStatus(exportId, ExportStatus.PROCESSING.name)
+
+        var processingError: Exception? = null
+        try {
+            val sections = exportContributors.map { contributor -> contributor.export(uuid) }
+            val fileKey = sections.joinToString(
+                separator = ",",
+                prefix = "{",
+                postfix = "}",
+            ) { section -> "\"${section.name}\":${section.jsonData}" }
+
+            val now = Clock.System.now()
+            val completedAt = now.toLocalDateTime(TimeZone.UTC)
+            val expiresAt = (now + 7.days).toLocalDateTime(TimeZone.UTC)
+
+            dataExportRepository.updateStatus(
+                id = exportId,
+                status = ExportStatus.COMPLETED.name,
+                fileKey = fileKey,
+                completedAt = completedAt,
+                expiresAt = expiresAt,
+            )
+        } catch (e: Exception) {
+            dataExportRepository.updateStatus(exportId, "FAILED")
+            processingError = e
+        }
+        if (processingError != null) {
+            raise.raise(UnexpectedError("Export processing failed: ${processingError.message}"))
+        }
+
         val record = dataExportRepository.findById(exportId)
         ensureNotNull(record) {
-            com.m2f.core.config.server.UnexpectedError("Failed to create export record")
+            UnexpectedError("Failed to retrieve completed export record")
         }
         return record.toResponse()
     }

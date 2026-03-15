@@ -52,7 +52,8 @@ class ExposedDataExportRepository(private val db: R2dbcDatabase) : DataExportRep
                 .where {
                     (DataExportRequestsTable.userId eq userId) and
                         ((DataExportRequestsTable.status eq "PENDING") or
-                            (DataExportRequestsTable.status eq "PROCESSING"))
+                            (DataExportRequestsTable.status eq "PROCESSING") or
+                            (DataExportRequestsTable.status eq "COMPLETED"))
                 }
                 .singleOrNull()
                 ?.toDataExportRecord()
