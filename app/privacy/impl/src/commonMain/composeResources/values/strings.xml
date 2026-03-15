@@ -29,6 +29,11 @@
     <string name="privacy_deletion_processing">Processing...</string>
     <string name="privacy_deletion_error_title">Error</string>
 
+    <!-- Step counters -->
+    <string name="privacy_deletion_step_1">STEP 1 OF 5</string>
+    <string name="privacy_deletion_step_2">STEP 2 OF 5</string>
+    <string name="privacy_deletion_step_3">STEP 3 OF 5</string>
+
     <!-- Step 1: Warning -->
     <string name="privacy_deletion_warning_danger_title">DANGER</string>
     <string name="privacy_deletion_warning_danger_message">This action is permanent and cannot be undone.</string>
@@ -86,7 +91,7 @@
     <string name="privacy_deletion_scheduled_logout">Log Out Now</string>
 
     <!-- Desktop right panel -->
-    <string name="privacy_deletion_desktop_step1_indicator">STEP 01 / 03 — ACCOUNT DELETION</string>
+    <string name="privacy_deletion_desktop_step1_indicator">STEP 01 / 05 — ACCOUNT DELETION</string>
     <string name="privacy_deletion_desktop_step1_header">DELETION IMPACT</string>
     <string name="privacy_deletion_desktop_step1_title">What gets removed</string>
     <string name="privacy_deletion_desktop_step1_desc">When your account is deleted, all associated data will be permanently removed from our systems.</string>
@@ -96,7 +101,7 @@
     <string name="privacy_deletion_desktop_step1_bullet4">Consent records and activity logs</string>
     <string name="privacy_deletion_desktop_step1_note">A 7-day grace period allows you to cancel before permanent deletion.</string>
 
-    <string name="privacy_deletion_desktop_step2_indicator">STEP 02 / 03 — VERIFY IDENTITY</string>
+    <string name="privacy_deletion_desktop_step2_indicator">STEP 02 / 05 — VERIFY IDENTITY</string>
     <string name="privacy_deletion_desktop_step2_header">SECURITY NOTICE</string>
     <string name="privacy_deletion_desktop_step2_title">Why we verify</string>
     <string name="privacy_deletion_desktop_step2_desc">Account deletion is irreversible. We verify your identity to prevent unauthorized deletions.</string>
@@ -104,7 +109,7 @@
     <string name="privacy_deletion_desktop_step2_bullet2">Confirms you are the account owner</string>
     <string name="privacy_deletion_desktop_step2_bullet3">Required by our security policy</string>
 
-    <string name="privacy_deletion_desktop_step3_indicator">STEP 03 / 03 — FEEDBACK</string>
+    <string name="privacy_deletion_desktop_step3_indicator">STEP 03 / 05 — FEEDBACK</string>
     <string name="privacy_deletion_desktop_step3_header">PRIVACY NOTE</string>
     <string name="privacy_deletion_desktop_step3_title">Your feedback</string>
     <string name="privacy_deletion_desktop_step3_desc">Your feedback is completely optional and helps us improve our service.</string>

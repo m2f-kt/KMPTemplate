@@ -205,11 +205,18 @@ private fun WarningStep(
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
+    // Step label
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_step_1),
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.textDim,
+    )
+
     // Title
     TerminalText(
         text = stringResource(Res.string.privacy_deletion_title),
         style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.5).sp),
-        color = colors.error,
+        color = colors.text,
     )
 
     // Danger alert
@@ -289,6 +296,13 @@ private fun ReAuthStep(
     val typography = TerminalTheme.typography
     var password by remember { mutableStateOf("") }
 
+    // Step label
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_step_2),
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.textDim,
+    )
+
     // Title
     TerminalText(
         text = stringResource(Res.string.privacy_deletion_reauth_title),
@@ -354,6 +368,13 @@ private fun ReasonStep(
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
     var localReason by remember(reason) { mutableStateOf(reason) }
+
+    // Step label
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_step_3),
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.textDim,
+    )
 
     // Title
     TerminalText(
@@ -432,7 +453,7 @@ private fun ConfirmStep(
     TerminalText(
         text = stringResource(Res.string.privacy_deletion_confirm_title),
         style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
-        color = colors.error,
+        color = colors.text,
     )
 
     // Subtitle
@@ -574,7 +595,6 @@ private fun DesktopRightPanel(step: DeletionStep) {
 
     when (step) {
         DeletionStep.WARNING -> {
-            PanelStepIndicator(stringResource(Res.string.privacy_deletion_desktop_step1_indicator))
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step1_header))
             PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step1_title))
             TerminalText(
@@ -596,7 +616,6 @@ private fun DesktopRightPanel(step: DeletionStep) {
         }
 
         DeletionStep.RE_AUTH -> {
-            PanelStepIndicator(stringResource(Res.string.privacy_deletion_desktop_step2_indicator))
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step2_header))
             PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step2_title))
             TerminalText(
@@ -611,7 +630,6 @@ private fun DesktopRightPanel(step: DeletionStep) {
         }
 
         DeletionStep.REASON -> {
-            PanelStepIndicator(stringResource(Res.string.privacy_deletion_desktop_step3_indicator))
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step3_header))
             PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step3_title))
             TerminalText(

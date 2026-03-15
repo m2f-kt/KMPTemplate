@@ -29,6 +29,10 @@ class AccountDeletionViewModel(
     }
 
     private suspend fun handleLoad() {
+        sendMutation(AccountDeletionMutation.SetStep(DeletionStep.WARNING))
+        sendMutation(AccountDeletionMutation.SetPassword(""))
+        sendMutation(AccountDeletionMutation.SetReason(""))
+        sendMutation(AccountDeletionMutation.SetError(null))
         sdk.getProfile().fold(
             ifLeft = { /* ignore profile fetch error */ },
             ifRight = { profile ->

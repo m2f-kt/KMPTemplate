@@ -29,6 +29,11 @@
     <string name="privacy_deletion_processing">Procesando...</string>
     <string name="privacy_deletion_error_title">Error</string>
 
+    <!-- Step counters -->
+    <string name="privacy_deletion_step_1">PASO 1 DE 5</string>
+    <string name="privacy_deletion_step_2">PASO 2 DE 5</string>
+    <string name="privacy_deletion_step_3">PASO 3 DE 5</string>
+
     <!-- Step 1: Warning -->
     <string name="privacy_deletion_warning_danger_title">PELIGRO</string>
     <string name="privacy_deletion_warning_danger_message">Esta acción es permanente y no se puede deshacer.</string>
@@ -86,7 +91,7 @@
     <string name="privacy_deletion_scheduled_logout">Cerrar Sesión Ahora</string>
 
     <!-- Desktop right panel -->
-    <string name="privacy_deletion_desktop_step1_indicator">PASO 01 / 03 — ELIMINACIÓN DE CUENTA</string>
+    <string name="privacy_deletion_desktop_step1_indicator">PASO 01 / 05 — ELIMINACIÓN DE CUENTA</string>
     <string name="privacy_deletion_desktop_step1_header">IMPACTO DE ELIMINACIÓN</string>
     <string name="privacy_deletion_desktop_step1_title">Qué se elimina</string>
     <string name="privacy_deletion_desktop_step1_desc">Cuando tu cuenta sea eliminada, todos los datos asociados serán eliminados permanentemente de nuestros sistemas.</string>
@@ -96,7 +101,7 @@
     <string name="privacy_deletion_desktop_step1_bullet4">Registros de consentimiento y actividad</string>
     <string name="privacy_deletion_desktop_step1_note">Un período de gracia de 7 días te permite cancelar antes de la eliminación permanente.</string>
 
-    <string name="privacy_deletion_desktop_step2_indicator">PASO 02 / 03 — VERIFICAR IDENTIDAD</string>
+    <string name="privacy_deletion_desktop_step2_indicator">PASO 02 / 05 — VERIFICAR IDENTIDAD</string>
     <string name="privacy_deletion_desktop_step2_header">AVISO DE SEGURIDAD</string>
     <string name="privacy_deletion_desktop_step2_title">Por qué verificamos</string>
     <string name="privacy_deletion_desktop_step2_desc">La eliminación de cuenta es irreversible. Verificamos tu identidad para prevenir eliminaciones no autorizadas.</string>
@@ -104,7 +109,7 @@
     <string name="privacy_deletion_desktop_step2_bullet2">Confirma que eres el propietario de la cuenta</string>
     <string name="privacy_deletion_desktop_step2_bullet3">Requerido por nuestra política de seguridad</string>
 
-    <string name="privacy_deletion_desktop_step3_indicator">PASO 03 / 03 — COMENTARIOS</string>
+    <string name="privacy_deletion_desktop_step3_indicator">PASO 03 / 05 — COMENTARIOS</string>
     <string name="privacy_deletion_desktop_step3_header">NOTA DE PRIVACIDAD</string>
     <string name="privacy_deletion_desktop_step3_title">Tus comentarios</string>
     <string name="privacy_deletion_desktop_step3_desc">Tus comentarios son completamente opcionales y nos ayudan a mejorar nuestro servicio.</string>
