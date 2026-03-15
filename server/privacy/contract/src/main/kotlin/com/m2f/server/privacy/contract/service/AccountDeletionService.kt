@@ -7,6 +7,9 @@ import com.m2f.template.models.dto.privacy.DeletionResponse
 
 interface AccountDeletionService {
     context(raise: Raise<DomainError>)
+    suspend fun verifyPasswordForDeletion(userId: String, password: String): String
+
+    context(raise: Raise<DomainError>)
     suspend fun requestDeletion(userId: String, request: DeletionRequest): DeletionResponse
 
     context(raise: Raise<DomainError>)

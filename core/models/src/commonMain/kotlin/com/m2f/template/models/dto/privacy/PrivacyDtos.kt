@@ -66,8 +66,14 @@ data class DataExportResponse(
 )
 
 @Serializable
+data class VerifyPasswordRequest(val password: String)
+
+@Serializable
+data class VerifyPasswordResponse(val confirmationToken: String)
+
+@Serializable
 data class DeletionRequest(
-    val password: String,
+    val confirmationToken: String,
     val reason: String? = null,
 )
 

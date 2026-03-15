@@ -22,6 +22,7 @@ import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
@@ -33,6 +34,21 @@ class AccountDeletionServiceImpl(
     private val consentRepository: ConsentRepository,
 ) : AccountDeletionService {
 
+    private data class DeletionToken(val token: String, val expiresAt: kotlinx.datetime.Instant)
+    private val deletionTokens = java.util.concurrent.ConcurrentHashMap<String, DeletionToken>()
+
+    context(raise: Raise<DomainError>)
+    override suspend fun verifyPasswordForDeletion(userId: String, password: String): String {
+        val uuid = Uuid.parse(userId)
+        val user = userRepository.findById(uuid)
+        ensureNotNull(user) { InvalidCredentials() }
+        ensureNotNull(user.passwordHash) { InvalidCredentials() }
+        ensure(passwordHasher.verify(password, user.passwordHash)) { InvalidCredentials() }
+        val token = Uuid.random().toString()
+        deletionTokens[userId] = DeletionToken(token, kotlinx.datetime.Clock.System.now().plus(15.minutes))
+        return token
+    }
+
     context(raise: Raise<DomainError>)
     override suspend fun requestDeletion(userId: String, request: DeletionRequest): DeletionResponse {
         val uuid = Uuid.parse(userId)
@@ -40,16 +56,11 @@ class AccountDeletionServiceImpl(
         val existingDeletion = accountDeletionRepository.findPendingByUser(uuid)
         ensure(existingDeletion == null) { DeletionAlreadyPending() }
 
-        val user = userRepository.findById(uuid)
-        ensureNotNull(user) {
-            InvalidCredentials()
-        }
-        ensureNotNull(user.passwordHash) {
-            InvalidCredentials()
-        }
-        ensure(passwordHasher.verify(request.password, user.passwordHash)) {
-            InvalidCredentials()
-        }
+        val storedToken = deletionTokens[userId]
+        ensureNotNull(storedToken) { InvalidCredentials() }
+        ensure(storedToken.token == request.confirmationToken) { InvalidCredentials() }
+        ensure(storedToken.expiresAt > kotlinx.datetime.Clock.System.now()) { InvalidCredentials() }
+        deletionTokens.remove(userId)
 
         val scheduledAt = Clock.System.now().plus(7.days).toLocalDateTime(TimeZone.UTC)
         val deletionId = accountDeletionRepository.insert(uuid, request.reason, scheduledAt)

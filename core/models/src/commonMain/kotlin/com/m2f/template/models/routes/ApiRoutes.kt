@@ -173,6 +173,9 @@ class Privacy {
     @Serializable @Resource("export/active")
     class ActiveExport(val parent: Privacy = Privacy())
 
+    @Serializable @Resource("deletion/verify-password")
+    class VerifyPassword(val parent: Privacy = Privacy())
+
     @Serializable @Resource("deletion/request")
     class RequestDeletion(val parent: Privacy = Privacy())
 
