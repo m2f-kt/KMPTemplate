@@ -29,6 +29,9 @@ import com.m2f.template.designsystem.components.feedback.TerminalAlert
 import com.m2f.template.designsystem.components.feedback.TerminalBadge
 import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.privacy.generated.resources.Res
+import template.app.privacy.generated.resources.*
 
 /**
  * Legal document viewer screen showing privacy policy, terms of service, etc.
@@ -99,7 +102,7 @@ private fun LegalDocumentContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalButton(
-                text = "Back",
+                text = stringResource(Res.string.privacy_document_back),
                 onClick = onBack,
                 variant = ButtonVariant.Ghost,
             )
@@ -119,7 +122,7 @@ private fun LegalDocumentContent(
 
         // Loading
         if (state.loading) {
-            TerminalProgress(label = "Loading document...")
+            TerminalProgress(label = stringResource(Res.string.privacy_document_loading))
         }
 
         // Error
@@ -127,7 +130,7 @@ private fun LegalDocumentContent(
             TerminalAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
-                title = "Error",
+                title = stringResource(Res.string.privacy_document_error_title),
             )
         }
 
@@ -147,7 +150,7 @@ private fun LegalDocumentContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 TerminalText(
-                    text = "Published: ${state.document.publishedAt}",
+                    text = stringResource(Res.string.privacy_document_published_prefix, state.document.publishedAt),
                     style = typography.xs,
                     color = colors.textDim,
                 )

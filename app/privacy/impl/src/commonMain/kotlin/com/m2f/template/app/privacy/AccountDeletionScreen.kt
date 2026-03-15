@@ -34,6 +34,9 @@ import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.components.input.TerminalPasswordInput
 import com.m2f.template.designsystem.components.input.TerminalTextarea
 import com.m2f.template.designsystem.theme.TerminalTheme
+import org.jetbrains.compose.resources.stringResource
+import template.app.privacy.generated.resources.Res
+import template.app.privacy.generated.resources.*
 
 /**
  * Multi-step account deletion flow screen.
@@ -114,14 +117,14 @@ private fun AccountDeletionContent(
     ) {
         // Title
         TerminalText(
-            text = "Delete Account",
+            text = stringResource(Res.string.privacy_deletion_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.error,
         )
 
         // Loading
         if (state.loading) {
-            TerminalProgress(label = "Processing...")
+            TerminalProgress(label = stringResource(Res.string.privacy_deletion_processing))
         }
 
         // Error
@@ -129,7 +132,7 @@ private fun AccountDeletionContent(
             TerminalAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
-                title = "Error",
+                title = stringResource(Res.string.privacy_deletion_error_title),
             )
         }
 
@@ -181,24 +184,23 @@ private fun WarningStep(
     val typography = TerminalTheme.typography
 
     TerminalAlert(
-        message = "This action is permanent and cannot be undone. All your personal data, " +
-            "documents, and account information will be permanently deleted after a grace period.",
+        message = stringResource(Res.string.privacy_deletion_warning_message),
         variant = AlertVariant.Warning,
-        title = "Warning",
+        title = stringResource(Res.string.privacy_deletion_warning_title),
     )
 
     Spacer(modifier = Modifier.height(4.dp))
 
     TerminalText(
-        text = "Before proceeding, please consider:",
+        text = stringResource(Res.string.privacy_deletion_warning_consider),
         style = typography.sm.copy(fontWeight = FontWeight.Medium),
         color = colors.text,
     )
 
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        TerminalText(text = "  - Download your data export first", style = typography.sm, color = colors.textDim)
-        TerminalText(text = "  - This cannot be reversed after the grace period", style = typography.sm, color = colors.textDim)
-        TerminalText(text = "  - All active sessions will be terminated", style = typography.sm, color = colors.textDim)
+        TerminalText(text = stringResource(Res.string.privacy_deletion_warning_bullet1), style = typography.sm, color = colors.textDim)
+        TerminalText(text = stringResource(Res.string.privacy_deletion_warning_bullet2), style = typography.sm, color = colors.textDim)
+        TerminalText(text = stringResource(Res.string.privacy_deletion_warning_bullet3), style = typography.sm, color = colors.textDim)
     }
 
     Row(
@@ -206,14 +208,14 @@ private fun WarningStep(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = "Go Back",
+            text = stringResource(Res.string.privacy_deletion_go_back),
             onClick = onBack,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Secondary,
             enabled = !loading,
         )
         TerminalButton(
-            text = "Continue",
+            text = stringResource(Res.string.privacy_deletion_continue),
             onClick = onContinue,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
@@ -233,7 +235,7 @@ private fun ReAuthStep(
     var password by remember { mutableStateOf("") }
 
     TerminalText(
-        text = "Please verify your identity by entering your password.",
+        text = stringResource(Res.string.privacy_deletion_reauth_message),
         style = typography.sm,
         color = colors.textDim,
     )
@@ -241,8 +243,8 @@ private fun ReAuthStep(
     TerminalPasswordInput(
         value = password,
         onValueChange = { password = it },
-        label = "Password",
-        placeholder = "Enter your password",
+        label = stringResource(Res.string.privacy_deletion_reauth_label),
+        placeholder = stringResource(Res.string.privacy_deletion_reauth_placeholder),
         enabled = !loading,
     )
 
@@ -251,14 +253,14 @@ private fun ReAuthStep(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = "Go Back",
+            text = stringResource(Res.string.privacy_deletion_go_back),
             onClick = onBack,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Secondary,
             enabled = !loading,
         )
         TerminalButton(
-            text = "Verify",
+            text = stringResource(Res.string.privacy_deletion_reauth_verify),
             onClick = { onReAuthenticate(password) },
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Default,
@@ -278,7 +280,7 @@ private fun ReasonStep(
     var localReason by remember(reason) { mutableStateOf(reason) }
 
     TerminalText(
-        text = "Optionally, let us know why you are leaving. This helps us improve our service.",
+        text = stringResource(Res.string.privacy_deletion_reason_message),
         style = typography.sm,
         color = colors.textDim,
     )
@@ -286,13 +288,13 @@ private fun ReasonStep(
     TerminalTextarea(
         value = localReason,
         onValueChange = { localReason = it },
-        label = "Reason (optional)",
-        placeholder = "Tell us why you're leaving...",
+        label = stringResource(Res.string.privacy_deletion_reason_label),
+        placeholder = stringResource(Res.string.privacy_deletion_reason_placeholder),
         enabled = !loading,
     )
 
     TerminalButton(
-        text = "Continue",
+        text = stringResource(Res.string.privacy_deletion_continue),
         onClick = { onSetReason(localReason) },
         modifier = Modifier.fillMaxWidth(),
         variant = ButtonVariant.Destructive,
@@ -310,16 +312,15 @@ private fun ConfirmStep(
     val typography = TerminalTheme.typography
 
     TerminalAlert(
-        message = "You are about to permanently delete your account. " +
-            "This is your last chance to cancel.",
+        message = stringResource(Res.string.privacy_deletion_confirm_message),
         variant = AlertVariant.Error,
-        title = "Final Confirmation",
+        title = stringResource(Res.string.privacy_deletion_confirm_title),
     )
 
     Spacer(modifier = Modifier.height(4.dp))
 
     TerminalText(
-        text = "Are you absolutely sure?",
+        text = stringResource(Res.string.privacy_deletion_confirm_question),
         style = typography.md.copy(fontWeight = FontWeight.Bold),
         color = colors.error,
     )
@@ -329,14 +330,14 @@ private fun ConfirmStep(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = "Cancel",
+            text = stringResource(Res.string.privacy_deletion_confirm_cancel),
             onClick = onCancel,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Secondary,
             enabled = !loading,
         )
         TerminalButton(
-            text = "Delete My Account",
+            text = stringResource(Res.string.privacy_deletion_confirm_button),
             onClick = onConfirmDeletion,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
@@ -353,23 +354,25 @@ private fun ScheduledStep(
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
+    val message = stringResource(Res.string.privacy_deletion_scheduled_message) +
+        if (scheduledAt != null) stringResource(Res.string.privacy_deletion_scheduled_message_date, scheduledAt) else ""
+
     TerminalAlert(
-        message = "Your account has been scheduled for deletion." +
-            if (scheduledAt != null) " It will be permanently removed on $scheduledAt." else "",
+        message = message,
         variant = AlertVariant.Info,
-        title = "Deletion Scheduled",
+        title = stringResource(Res.string.privacy_deletion_scheduled_title),
     )
 
     Spacer(modifier = Modifier.height(4.dp))
 
     TerminalText(
-        text = "You can cancel this request before the scheduled date to keep your account.",
+        text = stringResource(Res.string.privacy_deletion_scheduled_info),
         style = typography.sm,
         color = colors.textDim,
     )
 
     TerminalButton(
-        text = "Cancel Deletion",
+        text = stringResource(Res.string.privacy_deletion_scheduled_cancel),
         onClick = onCancelDeletion,
         modifier = Modifier.fillMaxWidth(),
         variant = ButtonVariant.Default,

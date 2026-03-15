@@ -33,6 +33,9 @@ import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.dto.privacy.ConsentStatus
 import com.m2f.template.models.dto.privacy.ConsentType
 import com.m2f.template.models.dto.privacy.ExportStatus
+import org.jetbrains.compose.resources.stringResource
+import template.app.privacy.generated.resources.Res
+import template.app.privacy.generated.resources.*
 
 /**
  * Privacy settings screen allowing users to manage consents, data exports,
@@ -116,13 +119,13 @@ fun PrivacySettingsContent(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalText(
-                text = "Privacy Settings",
+                text = stringResource(Res.string.privacy_settings_title),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
                 color = colors.text,
             )
 
             TerminalButton(
-                text = "Back",
+                text = stringResource(Res.string.privacy_settings_back),
                 onClick = onBack,
                 variant = ButtonVariant.Ghost,
             )
@@ -130,7 +133,7 @@ fun PrivacySettingsContent(
 
         // Loading
         if (state.loading) {
-            TerminalProgress(label = "Loading privacy settings...")
+            TerminalProgress(label = stringResource(Res.string.privacy_settings_loading))
         }
 
         // Error
@@ -138,12 +141,12 @@ fun PrivacySettingsContent(
             TerminalAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
-                title = "Error",
+                title = stringResource(Res.string.privacy_settings_error_title),
             )
         }
 
         // Section: Your Consents
-        SectionHeader(title = "Your Consents")
+        SectionHeader(title = stringResource(Res.string.privacy_settings_consents_header))
 
         state.activeConsents.forEach { consent ->
             ConsentStatusRow(
@@ -156,10 +159,10 @@ fun PrivacySettingsContent(
         TerminalDivider()
 
         // Section: Data Export
-        SectionHeader(title = "Data Export")
+        SectionHeader(title = stringResource(Res.string.privacy_settings_export_header))
 
         TerminalText(
-            text = "Request a copy of all your personal data.",
+            text = stringResource(Res.string.privacy_settings_export_desc),
             style = typography.sm,
             color = colors.textDim,
         )
@@ -171,7 +174,7 @@ fun PrivacySettingsContent(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 TerminalText(
-                    text = "Export status:",
+                    text = stringResource(Res.string.privacy_settings_export_status),
                     style = typography.sm,
                     color = colors.text,
                 )
@@ -188,14 +191,14 @@ fun PrivacySettingsContent(
 
             if (state.exportStatus.status == ExportStatus.COMPLETED && state.exportStatus.downloadUrl != null) {
                 TerminalButton(
-                    text = "Download Export",
+                    text = stringResource(Res.string.privacy_settings_export_download),
                     onClick = onDownloadExport,
                     variant = ButtonVariant.Success,
                 )
             }
         } else {
             TerminalButton(
-                text = "Request Data Export",
+                text = stringResource(Res.string.privacy_settings_export_request),
                 onClick = onRequestExport,
                 variant = ButtonVariant.Secondary,
                 enabled = !state.loading,
@@ -205,16 +208,16 @@ fun PrivacySettingsContent(
         TerminalDivider()
 
         // Section: Delete Account
-        SectionHeader(title = "Delete Account")
+        SectionHeader(title = stringResource(Res.string.privacy_settings_delete_header))
 
         TerminalText(
-            text = "Permanently delete your account and all associated data. This action cannot be undone.",
+            text = stringResource(Res.string.privacy_settings_delete_desc),
             style = typography.sm,
             color = colors.textDim,
         )
 
         TerminalButton(
-            text = "Delete My Account",
+            text = stringResource(Res.string.privacy_settings_delete_button),
             onClick = onRequestDeletion,
             variant = ButtonVariant.Destructive,
             enabled = !state.loading,
@@ -262,7 +265,7 @@ private fun ConsentStatusRow(
             )
             if (consent.grantedAt != null) {
                 TerminalText(
-                    text = "Granted: ${consent.grantedAt}",
+                    text = stringResource(Res.string.privacy_consent_granted_prefix, consent.grantedAt ?: ""),
                     style = typography.xs,
                     color = colors.textDim,
                 )
@@ -274,7 +277,7 @@ private fun ConsentStatusRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             TerminalButton(
-                text = "View",
+                text = stringResource(Res.string.privacy_consent_view),
                 onClick = onViewDocument,
                 variant = ButtonVariant.Ghost,
             )
@@ -286,7 +289,7 @@ private fun ConsentStatusRow(
                 )
             } else {
                 TerminalBadge(
-                    text = "Required",
+                    text = stringResource(Res.string.privacy_consent_required_badge),
                     variant = BadgeVariant.Default,
                 )
             }

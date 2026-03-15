@@ -34,6 +34,9 @@ import com.m2f.template.designsystem.components.feedback.TerminalProgress
 import com.m2f.template.designsystem.components.selection.TerminalCheckbox
 import com.m2f.template.designsystem.theme.TerminalTheme
 import com.m2f.template.models.dto.privacy.ConsentType
+import org.jetbrains.compose.resources.stringResource
+import template.app.privacy.generated.resources.Res
+import template.app.privacy.generated.resources.*
 
 /**
  * Full-screen consent gate that blocks access until required consents are granted.
@@ -108,13 +111,13 @@ private fun ConsentGateContent(
     ) {
         // Title
         TerminalText(
-            text = "Privacy Policy Agreement",
+            text = stringResource(Res.string.privacy_gate_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
         )
 
         TerminalText(
-            text = "Please review and accept the following to continue.",
+            text = stringResource(Res.string.privacy_gate_subtitle),
             style = typography.sm,
             color = colors.textDim,
         )
@@ -122,7 +125,7 @@ private fun ConsentGateContent(
         // Loading state
         if (state.loading) {
             TerminalProgress(
-                label = "Loading consent requirements...",
+                label = stringResource(Res.string.privacy_gate_loading),
             )
         }
 
@@ -131,7 +134,7 @@ private fun ConsentGateContent(
             TerminalAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
-                title = "Error",
+                title = stringResource(Res.string.privacy_gate_error_title),
             )
         }
 
@@ -151,7 +154,7 @@ private fun ConsentGateContent(
 
             // Accept All button
             TerminalButton(
-                text = "Accept All",
+                text = stringResource(Res.string.privacy_gate_accept_all),
                 onClick = onAcceptAll,
                 modifier = Modifier.fillMaxWidth(),
                 variant = ButtonVariant.Default,
@@ -160,7 +163,7 @@ private fun ConsentGateContent(
 
             // Decline button
             TerminalButton(
-                text = "Decline",
+                text = stringResource(Res.string.privacy_gate_decline),
                 onClick = onDecline,
                 modifier = Modifier.fillMaxWidth(),
                 variant = ButtonVariant.Secondary,
@@ -196,7 +199,7 @@ private fun ConsentRow(
         }
 
         BasicText(
-            text = "Read",
+            text = stringResource(Res.string.privacy_gate_read),
             modifier = Modifier.clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
@@ -207,9 +210,10 @@ private fun ConsentRow(
     }
 }
 
+@Composable
 internal fun consentTypeLabel(type: ConsentType): String = when (type) {
-    ConsentType.PRIVACY_POLICY -> "Privacy Policy"
-    ConsentType.TERMS_OF_SERVICE -> "Terms of Service"
-    ConsentType.MARKETING -> "Marketing Communications"
-    ConsentType.ANALYTICS -> "Analytics & Usage Data"
+    ConsentType.PRIVACY_POLICY -> stringResource(Res.string.privacy_consent_type_privacy_policy)
+    ConsentType.TERMS_OF_SERVICE -> stringResource(Res.string.privacy_consent_type_terms_of_service)
+    ConsentType.MARKETING -> stringResource(Res.string.privacy_consent_type_marketing)
+    ConsentType.ANALYTICS -> stringResource(Res.string.privacy_consent_type_analytics)
 }
