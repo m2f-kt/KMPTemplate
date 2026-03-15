@@ -70,7 +70,8 @@ class AccountDeletionViewModel(
             },
             ifRight = {
                 sendMutation(AccountDeletionMutation.SetLoading(false))
-                sendEvent(AccountDeletionEvent.DeletionScheduled)
+                sdk.logout()
+                sendEvent(AccountDeletionEvent.NavigateToLogin)
             },
         )
     }
@@ -84,6 +85,8 @@ class AccountDeletionViewModel(
             },
             ifRight = {
                 sendMutation(AccountDeletionMutation.SetLoading(false))
+                sendMutation(AccountDeletionMutation.SetPendingDeletion(null))
+                sendMutation(AccountDeletionMutation.SetStep(DeletionStep.WARNING))
                 sendEvent(AccountDeletionEvent.DeletionCancelled)
             },
         )
