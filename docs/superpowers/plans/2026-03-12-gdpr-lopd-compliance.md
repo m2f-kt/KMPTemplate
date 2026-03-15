@@ -1944,53 +1944,48 @@ git commit -m "feat(privacy): add privacy navigation routes"
 
 ### Task 21: Pencil Screen Designs
 
-**Files:** Pencil .pen files (created via Pencil MCP tools)
+**Status:** COMPLETE — all designs created in `terminal_design_system.pen`.
 
-Each feature needs its Pencil design created before the Screen composable is implemented. Use the Pencil MCP tools (`get_editor_state`, `open_document`, `get_guidelines`, `get_style_guide`, `batch_design`) to create:
+Use `batch_get` with the node IDs below to extract layout/style details when implementing Screen composables.
 
-- [ ] **Step 1: Design consent-gate screen**
+#### Privacy & Compliance — Pencil Node ID Reference
 
-Create a new .pen file for the consent gate flow:
-- Full-screen modal layout
-- Checkbox list for each required consent (Privacy Policy, Terms of Service)
-- Each checkbox has a "Read full document" link
-- "Accept All" primary button (disabled until all required consents checked)
-- "Decline" secondary button with warning that the user cannot proceed
-- Terminal theme styling consistent with existing screens
+| Feature | Frame | Node ID | Viewport | Status |
+|---|---|---|---|---|
+| **Screen 1: Consent Gate** | Unchecked | `CJ3ls` | Mobile | New |
+| | Checked | `HQP5l` | Mobile | New |
+| | Unchecked Desktop | _(child of `htpbU`)_ | Desktop | New |
+| | Checked Desktop | _(child of `htpbU`)_ | Desktop | New |
+| **Screen 2: Privacy Settings** | Mobile | `uqYr1` | Mobile | New |
+| | Desktop | `WBLgM` | Desktop | New |
+| **Screen 3: Legal Document** | English | `0Pzj6` | Mobile | New |
+| **Screen 4: Account Deletion** | Step 1 — Warning | `QPZk8` | Mobile | New |
+| | Step 1 — Warning Desktop | _(child of `77j60`)_ | Desktop | New |
+| | Step 2 — Re-auth | `CK6X7` | Mobile | New |
+| | Step 2 — Re-auth Desktop | _(child of `77j60`)_ | Desktop | New |
+| | Step 3 — Reason | `P2Won` | Mobile | New |
+| | Step 3 — Reason Desktop | _(child of `77j60`)_ | Desktop | New |
+| | Step 4 — Confirm | `7Ergr` | Mobile | New |
+| | Step 4 — Confirm Desktop | `M6GOH` | Desktop | New |
+| | Step 5 — Scheduled | `w9mBg` | Mobile | New |
+| | Step 5 — Scheduled Desktop | `M7TNv` | Desktop | New |
+| **Screen 5: Login/Register Footer** | Login Mobile | `9UXn1` | Mobile | Modified |
+| | Register Mobile | `KXp69` | Mobile | Modified |
+| | Login Desktop | `xNUU3` | Desktop | Modified |
+| | Register Desktop | `B1nWB` | Desktop | Modified |
+| **Screen 6: Profile Entry** | Free/Paid/Premium/Admin/Power (desktop) | `EnD7X` `ENKv0` `d4oDS` `uGWqD` `QFwfO` | Desktop | Modified |
+| | Free/Paid/Premium/Admin/Power (mobile) | `rCzUG` `k6yQw` `qgU7x` `jiyew` `OSLp4` | Mobile | Modified |
 
-- [ ] **Step 2: Design privacy-settings screen**
+> **Note:** The Consent Gate desktop variants and Deletion Steps 1-3 desktop variants were created inside container frames. Inspect `htpbU` and `77j60` directly with `batch_get` to resolve their exact child node IDs.
 
-Create a new .pen file for the privacy settings hub:
-- Section: "Your Consents" — list of consent items with granted/withdrawn status and toggle switches for optional consents (MARKETING, ANALYTICS). Required consents (PRIVACY_POLICY, TERMS_OF_SERVICE) show as read-only granted status
-- Section: "Data Export" — "Download My Data" button, status indicator (idle/processing/ready with download link/expired)
-- Section: "Processing Restriction" — toggle with explanation text
-- Section: "Delete Account" — danger-styled button linking to AccountDeletionRoute
-- Responsive: 840.dp breakpoint for desktop/mobile
+#### How to use during implementation
 
-- [ ] **Step 3: Design legal-document screen**
+When implementing a Screen composable, fetch the design reference:
 
-Create a new .pen file for the legal document viewer:
-- Header with document type title, version badge, published date
-- Locale switcher (es/en) in the header
-- Scrollable markdown content area
-- Back navigation
-
-- [ ] **Step 4: Design account-deletion screen**
-
-Create a new .pen file for the multi-step deletion flow:
-- Step 1 (WARNING): Warning message about irreversible action, what data will be deleted
-- Step 2 (RE_AUTH): Password input for re-authentication
-- Step 3 (REASON): Optional text area for deletion reason
-- Step 4 (CONFIRM): Summary + "Delete My Account" danger button with 7-day grace period info
-- Step 5 (SCHEDULED): Confirmation that deletion is scheduled, "Cancel Deletion" option, countdown to scheduled date
-
-- [ ] **Step 5: Update login/register screen designs**
-
-Update existing login and register .pen files to add a legal links footer: "By continuing, you accept our [Privacy Policy] and [Terms of Service]"
-
-- [ ] **Step 6: Update profile screen design**
-
-Update existing profile .pen file to add a "Privacy & Data" menu entry that navigates to PrivacySettingsRoute.
+```
+batch_get(nodeIds=["<nodeId>"]) → extract colors, spacing, typography, layout structure
+get_screenshot(nodeId="<nodeId>") → visual reference
+```
 
 - [ ] **Step 7: Commit any generated assets**
 

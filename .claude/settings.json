@@ -11,6 +11,10 @@
           {
             "type": "command",
             "command": "node .claude/hooks/block-env-edits.js"
+          },
+          {
+            "type": "command",
+            "command": "node .claude/hooks/block-generated-files.js"
           }
         ]
       }
@@ -22,6 +26,10 @@
           {
             "type": "command",
             "command": "node .claude/hooks/detekt-on-edit.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/run-related-tests.sh"
           }
         ]
       }
