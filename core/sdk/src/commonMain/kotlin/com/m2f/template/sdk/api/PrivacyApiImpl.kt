@@ -10,6 +10,8 @@ import com.m2f.template.models.dto.privacy.DeletionResponse
 import com.m2f.template.models.dto.privacy.GrantConsentRequest
 import com.m2f.template.models.dto.privacy.LegalDocumentResponse
 import com.m2f.template.models.dto.privacy.RequiredConsentsResponse
+import com.m2f.template.models.dto.privacy.VerifyPasswordRequest
+import com.m2f.template.models.dto.privacy.VerifyPasswordResponse
 import com.m2f.template.models.routes.Privacy
 import com.m2f.template.sdk.apiCall
 import io.ktor.client.HttpClient
@@ -61,6 +63,14 @@ class PrivacyApiImpl(private val client: HttpClient) : PrivacyApi {
                 response.body<DataExportResponse>()
             }
         }.mapLeft { AppError.Client.Unknown(detail = it.message) }
+
+    override suspend fun verifyPasswordForDeletion(request: VerifyPasswordRequest): Either<AppError, VerifyPasswordResponse> =
+        apiCall {
+            client.post(Privacy.VerifyPassword()) {
+                contentType(ContentType.Application.Json)
+                setBody(request)
+            }
+        }
 
     override suspend fun requestAccountDeletion(request: DeletionRequest): Either<AppError, DeletionResponse> =
         apiCall {

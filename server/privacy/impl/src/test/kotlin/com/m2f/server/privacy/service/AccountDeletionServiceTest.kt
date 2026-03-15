@@ -42,18 +42,59 @@ class AccountDeletionServiceTest {
         role = UserRole.User,
     )
 
+    private fun createService(
+        deletionRepo: FakeAccountDeletionRepository = FakeAccountDeletionRepository(),
+        userRepo: FakeUserRepository = FakeUserRepository(users = mutableMapOf(userId to testUser)),
+        hasher: FakePasswordHasher = FakePasswordHasher(verifyResult = true),
+        consentRepo: StubConsentRepository = StubConsentRepository(),
+    ) = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+
+    /** Helper: verify password and get a confirmation token for the test user. */
+    private suspend fun AccountDeletionServiceImpl.getToken(uid: String = userIdStr, password: String = "correct_password"): String =
+        either { verifyPasswordForDeletion(uid, password) }.shouldBeRight()
+
     @Test
-    fun `requestDeletion with valid password creates pending deletion`() = runTest {
-        val deletionRepo = FakeAccountDeletionRepository()
-        val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
-        val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = StubConsentRepository()
-        val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+    fun `verifyPasswordForDeletion with valid password returns token`() = runTest {
+        val service = createService()
+
+        val result = either {
+            service.verifyPasswordForDeletion(userIdStr, "correct_password")
+        }
+
+        result.shouldBeRight().shouldNotBeNull()
+    }
+
+    @Test
+    fun `verifyPasswordForDeletion with wrong password raises InvalidCredentials`() = runTest {
+        val service = createService(hasher = FakePasswordHasher(verifyResult = false))
+
+        val result = either {
+            service.verifyPasswordForDeletion(userIdStr, "wrong_password")
+        }
+
+        result.shouldBeLeft().shouldBeInstanceOf<InvalidCredentials>()
+    }
+
+    @Test
+    fun `verifyPasswordForDeletion with unknown user raises InvalidCredentials`() = runTest {
+        val service = createService(userRepo = FakeUserRepository())
+
+        val result = either {
+            service.verifyPasswordForDeletion(userIdStr, "any_password")
+        }
+
+        result.shouldBeLeft().shouldBeInstanceOf<InvalidCredentials>()
+    }
+
+    @Test
+    fun `requestDeletion with valid token creates pending deletion`() = runTest {
+        val service = createService()
+        val token = service.getToken()
 
         val result = either {
             service.requestDeletion(
                 userId = userIdStr,
-                request = DeletionRequest(password = "correct_password", reason = "Testing"),
+                request = DeletionRequest(confirmationToken = token, reason = "Testing"),
             )
         }
 
@@ -64,17 +105,14 @@ class AccountDeletionServiceTest {
     }
 
     @Test
-    fun `requestDeletion with user not found raises InvalidCredentials`() = runTest {
-        val deletionRepo = FakeAccountDeletionRepository()
-        val userRepo = FakeUserRepository() // empty -- no users
-        val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = StubConsentRepository()
-        val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+    fun `requestDeletion with invalid token raises InvalidCredentials`() = runTest {
+        val service = createService()
+        service.getToken() // generate a real token but don't use it
 
         val result = either {
             service.requestDeletion(
                 userId = userIdStr,
-                request = DeletionRequest(password = "any_password"),
+                request = DeletionRequest(confirmationToken = "invalid-token"),
             )
         }
 
@@ -82,17 +120,13 @@ class AccountDeletionServiceTest {
     }
 
     @Test
-    fun `requestDeletion with wrong password raises InvalidCredentials`() = runTest {
-        val deletionRepo = FakeAccountDeletionRepository()
-        val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
-        val hasher = FakePasswordHasher(verifyResult = false)
-        val consentRepo = StubConsentRepository()
-        val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+    fun `requestDeletion without verifying password raises InvalidCredentials`() = runTest {
+        val service = createService()
 
         val result = either {
             service.requestDeletion(
                 userId = userIdStr,
-                request = DeletionRequest(password = "wrong_password"),
+                request = DeletionRequest(confirmationToken = "no-such-token"),
             )
         }
 
@@ -101,25 +135,23 @@ class AccountDeletionServiceTest {
 
     @Test
     fun `requestDeletion when deletion already pending raises DeletionAlreadyPending`() = runTest {
-        val deletionRepo = FakeAccountDeletionRepository()
-        val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
-        val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = StubConsentRepository()
-        val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+        val service = createService()
 
         // Create first deletion request
+        val token1 = service.getToken()
         either {
             service.requestDeletion(
                 userId = userIdStr,
-                request = DeletionRequest(password = "correct_password"),
+                request = DeletionRequest(confirmationToken = token1),
             )
         }.shouldBeRight()
 
-        // Try again -- should fail
+        // Try again -- should fail (already pending)
+        val token2 = service.getToken()
         val result = either {
             service.requestDeletion(
                 userId = userIdStr,
-                request = DeletionRequest(password = "correct_password"),
+                request = DeletionRequest(confirmationToken = token2),
             )
         }
 
@@ -128,11 +160,7 @@ class AccountDeletionServiceTest {
 
     @Test
     fun `getDeletionStatus returns null when no deletion pending`() = runTest {
-        val deletionRepo = FakeAccountDeletionRepository()
-        val userRepo = FakeUserRepository()
-        val hasher = FakePasswordHasher()
-        val consentRepo = StubConsentRepository()
-        val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+        val service = createService()
 
         val result = either {
             service.getDeletionStatus(userIdStr)
@@ -143,17 +171,14 @@ class AccountDeletionServiceTest {
 
     @Test
     fun `cancelDeletion cancels a pending deletion`() = runTest {
-        val deletionRepo = FakeAccountDeletionRepository()
-        val userRepo = FakeUserRepository(users = mutableMapOf(userId to testUser))
-        val hasher = FakePasswordHasher(verifyResult = true)
-        val consentRepo = StubConsentRepository()
-        val service = AccountDeletionServiceImpl(deletionRepo, userRepo, hasher, consentRepo)
+        val service = createService()
 
         // Create a deletion request first
+        val token = service.getToken()
         either {
             service.requestDeletion(
                 userId = userIdStr,
-                request = DeletionRequest(password = "correct_password"),
+                request = DeletionRequest(confirmationToken = token),
             )
         }.shouldBeRight()
 

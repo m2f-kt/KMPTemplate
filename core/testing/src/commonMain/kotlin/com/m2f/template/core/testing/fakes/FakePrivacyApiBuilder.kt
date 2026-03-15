@@ -11,6 +11,8 @@ import com.m2f.template.models.dto.privacy.DeletionResponse
 import com.m2f.template.models.dto.privacy.GrantConsentRequest
 import com.m2f.template.models.dto.privacy.LegalDocumentResponse
 import com.m2f.template.models.dto.privacy.RequiredConsentsResponse
+import com.m2f.template.models.dto.privacy.VerifyPasswordRequest
+import com.m2f.template.models.dto.privacy.VerifyPasswordResponse
 import com.m2f.template.sdk.api.PrivacyApi
 
 /**
@@ -55,6 +57,9 @@ class FakePrivacyApiBuilder {
 
     private var _getActiveExport: suspend () -> Either<AppError, DataExportResponse?> =
         { Either.Right(null) }
+
+    private var _verifyPasswordForDeletion: suspend (VerifyPasswordRequest) -> Either<AppError, VerifyPasswordResponse> =
+        { Either.Left(AppError.Client.Unknown()) }
 
     private var _requestAccountDeletion: suspend (DeletionRequest) -> Either<AppError, DeletionResponse> =
         { Either.Left(AppError.Client.Unknown()) }
@@ -101,6 +106,10 @@ class FakePrivacyApiBuilder {
         _getActiveExport = behavior
     }
 
+    fun verifyPasswordForDeletion(behavior: suspend (VerifyPasswordRequest) -> Either<AppError, VerifyPasswordResponse>) {
+        _verifyPasswordForDeletion = behavior
+    }
+
     fun requestAccountDeletion(behavior: suspend (DeletionRequest) -> Either<AppError, DeletionResponse>) {
         _requestAccountDeletion = behavior
     }
@@ -140,6 +149,9 @@ class FakePrivacyApiBuilder {
 
         override suspend fun getActiveExport(): Either<AppError, DataExportResponse?> =
             _getActiveExport()
+
+        override suspend fun verifyPasswordForDeletion(request: VerifyPasswordRequest): Either<AppError, VerifyPasswordResponse> =
+            _verifyPasswordForDeletion(request)
 
         override suspend fun requestAccountDeletion(request: DeletionRequest): Either<AppError, DeletionResponse> =
             _requestAccountDeletion(request)

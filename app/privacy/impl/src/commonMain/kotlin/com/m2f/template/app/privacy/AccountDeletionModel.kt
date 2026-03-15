@@ -13,7 +13,7 @@ enum class DeletionStep {
 
 data class AccountDeletionModel(
     val step: DeletionStep = DeletionStep.WARNING,
-    val password: String = "",
+    val confirmationToken: String = "",
     val reason: String = "",
     val userEmail: String = "",
     val pendingDeletion: DeletionResponse? = null,

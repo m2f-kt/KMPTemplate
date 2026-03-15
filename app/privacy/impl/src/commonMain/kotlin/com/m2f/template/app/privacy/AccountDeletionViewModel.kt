@@ -3,6 +3,7 @@ package com.m2f.template.app.privacy
 import androidx.lifecycle.viewModelScope
 import com.m2f.template.core.mvi.MviViewModel
 import com.m2f.template.models.dto.privacy.DeletionRequest
+import com.m2f.template.models.dto.privacy.VerifyPasswordRequest
 import com.m2f.template.models.localization.StringKey
 import com.m2f.template.sdk.Sdk
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class AccountDeletionViewModel(
 
     private suspend fun handleLoad() {
         sendMutation(AccountDeletionMutation.SetStep(DeletionStep.WARNING))
-        sendMutation(AccountDeletionMutation.SetPassword(""))
+        sendMutation(AccountDeletionMutation.SetConfirmationToken(""))
         sendMutation(AccountDeletionMutation.SetReason(""))
         sendMutation(AccountDeletionMutation.SetError(null))
         sdk.getProfile().fold(
@@ -69,8 +70,18 @@ class AccountDeletionViewModel(
     }
 
     private suspend fun handleReAuthenticate(password: String) {
-        sendMutation(AccountDeletionMutation.SetPassword(password))
-        sendMutation(AccountDeletionMutation.SetStep(DeletionStep.REASON))
+        sendMutation(AccountDeletionMutation.SetLoading(true))
+        sdk.verifyPasswordForDeletion(VerifyPasswordRequest(password)).fold(
+            ifLeft = { error ->
+                val key = StringKey.fromCode(error.code) ?: StringKey.GENERIC_ERROR
+                sendMutation(AccountDeletionMutation.SetError(key))
+            },
+            ifRight = { response ->
+                sendMutation(AccountDeletionMutation.SetConfirmationToken(response.confirmationToken))
+                sendMutation(AccountDeletionMutation.SetLoading(false))
+                sendMutation(AccountDeletionMutation.SetStep(DeletionStep.REASON))
+            },
+        )
     }
 
     private suspend fun handleSetReason(reason: String) {
@@ -83,8 +94,8 @@ class AccountDeletionViewModel(
         val currentModel = model.value
         sdk.requestAccountDeletion(
             DeletionRequest(
-                password = currentModel.password,
-                reason = currentModel.reason,
+                confirmationToken = currentModel.confirmationToken,
+                reason = currentModel.reason.ifBlank { null },
             )
         ).fold(
             ifLeft = { error ->
@@ -120,7 +131,7 @@ class AccountDeletionViewModel(
         mutation: AccountDeletionMutation,
     ): AccountDeletionModel = when (mutation) {
         is AccountDeletionMutation.SetStep -> model.copy(step = mutation.step)
-        is AccountDeletionMutation.SetPassword -> model.copy(password = mutation.password)
+        is AccountDeletionMutation.SetConfirmationToken -> model.copy(confirmationToken = mutation.token)
         is AccountDeletionMutation.SetReason -> model.copy(reason = mutation.reason)
         is AccountDeletionMutation.SetPendingDeletion -> model.copy(pendingDeletion = mutation.deletion)
         is AccountDeletionMutation.SetLoading -> model.copy(loading = mutation.loading, error = null)

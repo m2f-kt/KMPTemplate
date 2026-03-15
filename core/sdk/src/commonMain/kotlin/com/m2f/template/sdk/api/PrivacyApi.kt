@@ -10,6 +10,8 @@ import com.m2f.template.models.dto.privacy.DeletionResponse
 import com.m2f.template.models.dto.privacy.GrantConsentRequest
 import com.m2f.template.models.dto.privacy.LegalDocumentResponse
 import com.m2f.template.models.dto.privacy.RequiredConsentsResponse
+import com.m2f.template.models.dto.privacy.VerifyPasswordRequest
+import com.m2f.template.models.dto.privacy.VerifyPasswordResponse
 
 interface PrivacyApi {
     suspend fun getActiveConsents(): Either<AppError, List<ConsentStatus>>
@@ -21,6 +23,7 @@ interface PrivacyApi {
     suspend fun getExportStatus(id: String): Either<AppError, DataExportResponse>
     suspend fun getExportDownloadUrl(id: String): Either<AppError, String>
     suspend fun getActiveExport(): Either<AppError, DataExportResponse?>
+    suspend fun verifyPasswordForDeletion(request: VerifyPasswordRequest): Either<AppError, VerifyPasswordResponse>
     suspend fun requestAccountDeletion(request: DeletionRequest): Either<AppError, DeletionResponse>
     suspend fun getDeletionStatus(): Either<AppError, DeletionResponse?>
     suspend fun cancelDeletion(): Either<AppError, Unit>
