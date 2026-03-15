@@ -11,6 +11,7 @@ files_modified:
   - app/privacy/impl/src/commonTest/kotlin/com/m2f/template/app/privacy/PrivacySettingsViewModelTest.kt
   - app/privacy/impl/src/commonMain/composeResources/values/strings.xml
   - app/privacy/impl/src/commonMain/composeResources/values-es/strings.xml
+  - app/privacy/wire/src/commonMain/kotlin/com/m2f/template/app/privacy/wire/PrivacyNavigation.kt
 autonomous: true
 requirements: []
 
@@ -29,6 +30,9 @@ must_haves:
     - path: "app/privacy/impl/src/commonMain/kotlin/com/m2f/template/app/privacy/PrivacySettingsScreen.kt"
       provides: "Translated export status badge text"
       contains: "exportStatusLabel"
+    - path: "app/privacy/wire/src/commonMain/kotlin/com/m2f/template/app/privacy/wire/PrivacyNavigation.kt"
+      provides: "Updated wire passing onToggleConsent callback to screen"
+      contains: "onToggleConsent"
   key_links:
     - from: "PrivacySettingsScreen.kt"
       to: "PrivacySettingsViewModel.kt"
@@ -38,6 +42,10 @@ must_haves:
       to: "Sdk.grantConsent / Sdk.withdrawConsent"
       via: "conditional call based on consent.granted"
       pattern: "consent\\.granted"
+    - from: "PrivacyNavigation.kt"
+      to: "PrivacySettingsScreen.kt"
+      via: "onToggleConsent callback wiring ViewModel intent"
+      pattern: "onToggleConsent"
 ---
 
 <objective>
@@ -63,6 +71,7 @@ Output: Working consent toggles with correct grant/withdraw logic, translated st
 @app/privacy/impl/src/commonMain/kotlin/com/m2f/template/app/privacy/PrivacySettingsScreen.kt
 @app/privacy/impl/src/commonMain/kotlin/com/m2f/template/app/privacy/PrivacySettingsIntent.kt
 @app/privacy/impl/src/commonTest/kotlin/com/m2f/template/app/privacy/PrivacySettingsViewModelTest.kt
+@app/privacy/wire/src/commonMain/kotlin/com/m2f/template/app/privacy/wire/PrivacyNavigation.kt
 
 <interfaces>
 <!-- Key types the executor needs -->
@@ -106,6 +115,7 @@ The Sdk class delegates to PrivacyApi via `by`, so `sdk.grantConsent(...)` and `
     app/privacy/impl/src/commonMain/kotlin/com/m2f/template/app/privacy/PrivacySettingsIntent.kt,
     app/privacy/impl/src/commonMain/kotlin/com/m2f/template/app/privacy/PrivacySettingsViewModel.kt,
     app/privacy/impl/src/commonMain/kotlin/com/m2f/template/app/privacy/PrivacySettingsScreen.kt,
+    app/privacy/wire/src/commonMain/kotlin/com/m2f/template/app/privacy/wire/PrivacyNavigation.kt,
     app/privacy/impl/src/commonTest/kotlin/com/m2f/template/app/privacy/PrivacySettingsViewModelTest.kt
   </files>
   <behavior>
@@ -133,12 +143,12 @@ The Sdk class delegates to PrivacyApi via `by`, so `sdk.grantConsent(...)` and `
        - In `ConsentStatusRow`: change `onWithdraw: () -> Unit` to `onToggle: () -> Unit`, update `TerminalSwitch`'s `onCheckedChange` to call `onToggle()`.
        - Update all call sites: `onWithdrawConsent(consent.type)` becomes `onToggleConsent(consent)` passing the full `ConsentStatus`.
 
-    4. **PrivacySettingsViewModelTest.kt**:
+    4. **PrivacyNavigation.kt** (wire file): Update the call to `PrivacySettingsScreen` to replace the `onWithdrawConsent` parameter with `onToggleConsent`. The lambda should dispatch `PrivacySettingsIntent.ToggleConsent(consent)` to the ViewModel, matching the new `(ConsentStatus) -> Unit` signature.
+
+    5. **PrivacySettingsViewModelTest.kt**:
        - Update existing `withdraw consent reloads consents after success` test to use `ToggleConsent(consentWithGrantedTrue)` and configure `withdrawConsent` fake.
        - Add new test `grant consent fetches document version and grants` that uses `ToggleConsent(consentWithGrantedFalse)` and configures `getLegalDocument` + `grantConsent` + `getActiveConsents` fakes. Verify model shows the consent as granted after reload.
        - Add test for grant consent error case.
-
-    **Important:** The PrivacySettingsScreen callback rename also needs updating in the wire navigation file. Check `app/privacy/wire/src/commonMain/kotlin/com/m2f/template/app/privacy/wire/PrivacyNavigation.kt` for the `onWithdrawConsent` callback and update it to pass `onToggleConsent` with `PrivacySettingsIntent.ToggleConsent(consent)`.
   </action>
   <verify>
     <automated>./gradlew :app:privacy:allTests</automated>
@@ -147,6 +157,7 @@ The Sdk class delegates to PrivacyApi via `by`, so `sdk.grantConsent(...)` and `
     - ToggleConsent intent replaces WithdrawConsent
     - When consent.granted=false, toggle calls grantConsent with latest document version
     - When consent.granted=true, toggle calls withdrawConsent
+    - PrivacyNavigation.kt wire file passes onToggleConsent to screen
     - All existing and new tests pass
   </done>
 </task>
