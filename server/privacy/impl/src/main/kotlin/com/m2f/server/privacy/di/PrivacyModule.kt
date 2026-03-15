@@ -10,6 +10,7 @@ import com.m2f.server.privacy.contract.service.DataExportService
 import com.m2f.server.privacy.contract.service.LegalDocumentService
 import com.m2f.server.privacy.jobs.DeletionExecutorJob
 import com.m2f.server.privacy.jobs.ExportCleanupJob
+import com.m2f.server.privacy.jobs.ExportProcessorJob
 import com.m2f.server.privacy.jobs.PrivacyJob
 import com.m2f.server.privacy.jobs.PrivacyJobScheduler
 import com.m2f.server.privacy.repository.ExposedAccountDeletionRepository
@@ -38,6 +39,9 @@ val privacyModule = module {
     }
     single<PrivacyJob>(qualifier = org.koin.core.qualifier.named("exportCleanupJob")) {
         ExportCleanupJob(get())
+    }
+    single<PrivacyJob>(qualifier = org.koin.core.qualifier.named("exportProcessorJob")) {
+        ExportProcessorJob(get(), getAll())
     }
     single { PrivacyJobScheduler(get<CoroutineScope>(), getAll()) }
 }

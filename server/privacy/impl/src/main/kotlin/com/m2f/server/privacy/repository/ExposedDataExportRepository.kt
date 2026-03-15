@@ -74,6 +74,15 @@ class ExposedDataExportRepository(private val db: R2dbcDatabase) : DataExportRep
         rowsUpdated > 0
     }
 
+    override suspend fun findPending(): List<DataExportRecord> =
+        suspendTransaction(db = db) {
+            DataExportRequestsTable
+                .select(DataExportRequestsTable.columns)
+                .where { DataExportRequestsTable.status eq "PENDING" }
+                .toList()
+                .map { it.toDataExportRecord() }
+        }
+
     override suspend fun findExpired(): List<DataExportRecord> =
         suspendTransaction(db = db) {
             val now = Clock.System.now().toLocalDateTime(TimeZone.UTC)

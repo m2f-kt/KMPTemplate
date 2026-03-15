@@ -79,6 +79,7 @@ class DataExportServiceImpl(
     private fun DataExportRecord.toResponse(): DataExportResponse = DataExportResponse(
         id = id.toString(),
         status = ExportStatus.valueOf(status),
+        downloadUrl = if (status == ExportStatus.COMPLETED.name) "/api/privacy/exports/$id/download" else null,
         createdAt = createdAt.toInstant(TimeZone.UTC).toString(),
         expiresAt = expiresAt?.toInstant(TimeZone.UTC)?.toString(),
     )

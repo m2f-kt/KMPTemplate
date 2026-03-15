@@ -21,6 +21,7 @@ interface DataExportRepository {
     suspend fun findById(id: Uuid): DataExportRecord?
     suspend fun findActiveByUser(userId: Uuid): DataExportRecord?
     suspend fun updateStatus(id: Uuid, status: String, fileKey: String? = null, completedAt: LocalDateTime? = null, expiresAt: LocalDateTime? = null): Boolean
+    suspend fun findPending(): List<DataExportRecord>
     suspend fun findExpired(): List<DataExportRecord>
     suspend fun deleteByUser(userId: Uuid)
 }
