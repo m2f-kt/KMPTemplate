@@ -1,6 +1,6 @@
 # Project State
 
-Last activity: 2026-03-15 - Completed quick task 5: Fix consent withdraw not reflecting in getActiveConsents (server-side)
+Last activity: 2026-03-15 - Completed quick task 5: Fix consent toggle not working when withdrawing - toggle stays on despite successful withdraw API calls
 
 ### Blockers/Concerns
 
