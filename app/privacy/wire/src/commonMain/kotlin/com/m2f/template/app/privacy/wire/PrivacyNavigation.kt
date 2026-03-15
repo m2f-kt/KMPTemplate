@@ -138,6 +138,7 @@ fun EntryProviderScope<Route>.privacyEntries(
 
         AccountDeletionScreen(
             state = state,
+            onProceedToReAuth = { viewModel.take(AccountDeletionIntent.ProceedToReAuth) },
             onReAuthenticate = { viewModel.take(AccountDeletionIntent.ReAuthenticate(it)) },
             onSetReason = { viewModel.take(AccountDeletionIntent.SetReason(it)) },
             onConfirmDeletion = { viewModel.take(AccountDeletionIntent.ConfirmDeletion) },

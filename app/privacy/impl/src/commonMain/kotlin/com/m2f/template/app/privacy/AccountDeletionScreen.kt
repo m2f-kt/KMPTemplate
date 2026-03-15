@@ -44,6 +44,7 @@ import com.m2f.template.designsystem.theme.TerminalTheme
 @Composable
 fun AccountDeletionScreen(
     state: AccountDeletionModel,
+    onProceedToReAuth: () -> Unit,
     onReAuthenticate: (String) -> Unit,
     onSetReason: (String) -> Unit,
     onConfirmDeletion: () -> Unit,
@@ -64,6 +65,7 @@ fun AccountDeletionScreen(
             ) {
                 AccountDeletionContent(
                     state = state,
+                    onProceedToReAuth = onProceedToReAuth,
                     onReAuthenticate = onReAuthenticate,
                     onSetReason = onSetReason,
                     onConfirmDeletion = onConfirmDeletion,
@@ -78,6 +80,7 @@ fun AccountDeletionScreen(
         } else {
             AccountDeletionContent(
                 state = state,
+                onProceedToReAuth = onProceedToReAuth,
                 onReAuthenticate = onReAuthenticate,
                 onSetReason = onSetReason,
                 onConfirmDeletion = onConfirmDeletion,
@@ -94,6 +97,7 @@ fun AccountDeletionScreen(
 @Composable
 private fun AccountDeletionContent(
     state: AccountDeletionModel,
+    onProceedToReAuth: () -> Unit,
     onReAuthenticate: (String) -> Unit,
     onSetReason: (String) -> Unit,
     onConfirmDeletion: () -> Unit,
@@ -134,7 +138,7 @@ private fun AccountDeletionContent(
         // Step content
         when (state.step) {
             DeletionStep.WARNING -> WarningStep(
-                onContinue = { onReAuthenticate("") },
+                onContinue = onProceedToReAuth,
                 onBack = onBack,
                 loading = state.loading,
             )
@@ -153,7 +157,7 @@ private fun AccountDeletionContent(
 
             DeletionStep.CONFIRM -> ConfirmStep(
                 onConfirmDeletion = onConfirmDeletion,
-                onCancel = onCancelDeletion,
+                onCancel = onBack,
                 loading = state.loading,
             )
 
