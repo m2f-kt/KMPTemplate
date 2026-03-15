@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ======================== PrivacySettingsScreen ======================== -->
+    <string name="privacy_settings_title">Configuración de Privacidad</string>
+    <string name="privacy_settings_back">Atrás</string>
+    <string name="privacy_settings_loading">Cargando configuración de privacidad...</string>
+    <string name="privacy_settings_error_title">Error</string>
+    <string name="privacy_settings_consents_header">Tus Consentimientos</string>
+    <string name="privacy_settings_export_header">Exportación de Datos</string>
+    <string name="privacy_settings_export_desc">Solicita una copia de todos tus datos personales.</string>
+    <string name="privacy_settings_export_status">Estado de exportación:</string>
+    <string name="privacy_settings_export_download">Descargar Exportación</string>
+    <string name="privacy_settings_export_request">Solicitar Exportación de Datos</string>
+    <string name="privacy_settings_delete_header">Eliminar Cuenta</string>
+    <string name="privacy_settings_delete_desc">Elimina permanentemente tu cuenta y todos los datos asociados. Esta acción no se puede deshacer.</string>
+    <string name="privacy_settings_delete_button">Eliminar Mi Cuenta</string>
+    <string name="privacy_consent_required_badge">Obligatorio</string>
+    <string name="privacy_consent_view">Ver</string>
+    <string name="privacy_consent_granted_prefix">Otorgado: %1$s</string>
+
+    <!-- ======================== AccountDeletionScreen ======================== -->
+    <string name="privacy_deletion_title">Eliminar Cuenta</string>
+    <string name="privacy_deletion_processing">Procesando...</string>
+    <string name="privacy_deletion_error_title">Error</string>
+    <string name="privacy_deletion_warning_title">Advertencia</string>
+    <string name="privacy_deletion_warning_message">Esta acción es permanente y no se puede deshacer. Todos tus datos personales, documentos e información de cuenta serán eliminados de forma permanente después de un período de gracia.</string>
+    <string name="privacy_deletion_warning_consider">Antes de continuar, considera:</string>
+    <string name="privacy_deletion_warning_bullet1">  - Descarga tu exportación de datos primero</string>
+    <string name="privacy_deletion_warning_bullet2">  - Esto no se puede revertir después del período de gracia</string>
+    <string name="privacy_deletion_warning_bullet3">  - Todas las sesiones activas serán terminadas</string>
+    <string name="privacy_deletion_go_back">Volver</string>
+    <string name="privacy_deletion_continue">Continuar</string>
+    <string name="privacy_deletion_reauth_message">Verifica tu identidad ingresando tu contraseña.</string>
+    <string name="privacy_deletion_reauth_label">Contraseña</string>
+    <string name="privacy_deletion_reauth_placeholder">Ingresa tu contraseña</string>
+    <string name="privacy_deletion_reauth_verify">Verificar</string>
+    <string name="privacy_deletion_reason_message">Opcionalmente, cuéntanos por qué te vas. Esto nos ayuda a mejorar nuestro servicio.</string>
+    <string name="privacy_deletion_reason_label">Razón (opcional)</string>
+    <string name="privacy_deletion_reason_placeholder">Cuéntanos por qué te vas...</string>
+    <string name="privacy_deletion_confirm_message">Estás a punto de eliminar permanentemente tu cuenta. Esta es tu última oportunidad de cancelar.</string>
+    <string name="privacy_deletion_confirm_title">Confirmación Final</string>
+    <string name="privacy_deletion_confirm_question">¿Estás absolutamente seguro?</string>
+    <string name="privacy_deletion_confirm_cancel">Cancelar</string>
+    <string name="privacy_deletion_confirm_button">Eliminar Mi Cuenta</string>
+    <string name="privacy_deletion_scheduled_message">Tu cuenta ha sido programada para eliminación.</string>
+    <string name="privacy_deletion_scheduled_message_date"> Se eliminará permanentemente el %1$s.</string>
+    <string name="privacy_deletion_scheduled_title">Eliminación Programada</string>
+    <string name="privacy_deletion_scheduled_info">Puedes cancelar esta solicitud antes de la fecha programada para conservar tu cuenta.</string>
+    <string name="privacy_deletion_scheduled_cancel">Cancelar Eliminación</string>
+
+    <!-- ======================== ConsentGateScreen ======================== -->
+    <string name="privacy_gate_title">Acuerdo de Política de Privacidad</string>
+    <string name="privacy_gate_subtitle">Revisa y acepta lo siguiente para continuar.</string>
+    <string name="privacy_gate_loading">Cargando requisitos de consentimiento...</string>
+    <string name="privacy_gate_error_title">Error</string>
+    <string name="privacy_gate_accept_all">Aceptar Todo</string>
+    <string name="privacy_gate_decline">Rechazar</string>
+    <string name="privacy_gate_read">Leer</string>
+
+    <!-- ======================== Consent Type Labels (shared) ======================== -->
+    <string name="privacy_consent_type_privacy_policy">Política de Privacidad</string>
+    <string name="privacy_consent_type_terms_of_service">Términos de Servicio</string>
+    <string name="privacy_consent_type_marketing">Comunicaciones de Marketing</string>
+    <string name="privacy_consent_type_analytics">Analíticas y Datos de Uso</string>
+
+    <!-- ======================== LegalDocumentScreen ======================== -->
+    <string name="privacy_document_back">Atrás</string>
+    <string name="privacy_document_loading">Cargando documento...</string>
+    <string name="privacy_document_error_title">Error</string>
+    <string name="privacy_document_published_prefix">Publicado: %1$s</string>
+
+</resources>

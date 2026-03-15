@@ -21,6 +21,12 @@
     <string name="profile_error_title">error</string>
     <string name="profile_back">&lt; atrás</string>
     <string name="profile_logout">$ Cerrar Sesión</string>
+    <string name="profile_avatar_tap_hint">Toca para cambiar avatar</string>
+    <string name="profile_avatar_uploading">Subiendo avatar…</string>
+    <string name="profile_crop_dialog_title">Recortar Imagen</string>
+    <string name="profile_crop_dialog_desc">// ajusta tu foto de perfil</string>
+    <string name="profile_crop_confirm">&gt; confirmar</string>
+    <string name="profile_crop_cancel">cancelar</string>
 
     <!-- ======================== Error Messages (keyed to StringKey enum) ======================== -->
 
@@ -91,6 +97,9 @@
     <string name="sidebar_brand_prompt">&gt;_</string>
     <string name="sidebar_brand_name">perfil</string>
     <string name="sidebar_logout">$ cerrar sesión</string>
+
+    <!-- Nav: Common (all tiers) -->
+    <string name="sidebar_nav_privacy">Privacidad y Datos</string>
 
     <!-- Nav: Free tier -->
     <string name="sidebar_nav_free_profile">Perfil</string>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ======================== PrivacySettingsScreen ======================== -->
+    <string name="privacy_settings_title">Privacy Settings</string>
+    <string name="privacy_settings_back">Back</string>
+    <string name="privacy_settings_loading">Loading privacy settings...</string>
+    <string name="privacy_settings_error_title">Error</string>
+    <string name="privacy_settings_consents_header">Your Consents</string>
+    <string name="privacy_settings_export_header">Data Export</string>
+    <string name="privacy_settings_export_desc">Request a copy of all your personal data.</string>
+    <string name="privacy_settings_export_status">Export status:</string>
+    <string name="privacy_settings_export_download">Download Export</string>
+    <string name="privacy_settings_export_request">Request Data Export</string>
+    <string name="privacy_settings_delete_header">Delete Account</string>
+    <string name="privacy_settings_delete_desc">Permanently delete your account and all associated data. This action cannot be undone.</string>
+    <string name="privacy_settings_delete_button">Delete My Account</string>
+    <string name="privacy_consent_required_badge">Required</string>
+    <string name="privacy_consent_view">View</string>
+    <string name="privacy_consent_granted_prefix">Granted: %1$s</string>
+
+    <!-- ======================== AccountDeletionScreen ======================== -->
+    <string name="privacy_deletion_title">Delete Account</string>
+    <string name="privacy_deletion_processing">Processing...</string>
+    <string name="privacy_deletion_error_title">Error</string>
+    <string name="privacy_deletion_warning_title">Warning</string>
+    <string name="privacy_deletion_warning_message">This action is permanent and cannot be undone. All your personal data, documents, and account information will be permanently deleted after a grace period.</string>
+    <string name="privacy_deletion_warning_consider">Before proceeding, please consider:</string>
+    <string name="privacy_deletion_warning_bullet1">  - Download your data export first</string>
+    <string name="privacy_deletion_warning_bullet2">  - This cannot be reversed after the grace period</string>
+    <string name="privacy_deletion_warning_bullet3">  - All active sessions will be terminated</string>
+    <string name="privacy_deletion_go_back">Go Back</string>
+    <string name="privacy_deletion_continue">Continue</string>
+    <string name="privacy_deletion_reauth_message">Please verify your identity by entering your password.</string>
+    <string name="privacy_deletion_reauth_label">Password</string>
+    <string name="privacy_deletion_reauth_placeholder">Enter your password</string>
+    <string name="privacy_deletion_reauth_verify">Verify</string>
+    <string name="privacy_deletion_reason_message">Optionally, let us know why you are leaving. This helps us improve our service.</string>
+    <string name="privacy_deletion_reason_label">Reason (optional)</string>
+    <string name="privacy_deletion_reason_placeholder">Tell us why you\'re leaving...</string>
+    <string name="privacy_deletion_confirm_message">You are about to permanently delete your account. This is your last chance to cancel.</string>
+    <string name="privacy_deletion_confirm_title">Final Confirmation</string>
+    <string name="privacy_deletion_confirm_question">Are you absolutely sure?</string>
+    <string name="privacy_deletion_confirm_cancel">Cancel</string>
+    <string name="privacy_deletion_confirm_button">Delete My Account</string>
+    <string name="privacy_deletion_scheduled_message">Your account has been scheduled for deletion.</string>
+    <string name="privacy_deletion_scheduled_message_date"> It will be permanently removed on %1$s.</string>
+    <string name="privacy_deletion_scheduled_title">Deletion Scheduled</string>
+    <string name="privacy_deletion_scheduled_info">You can cancel this request before the scheduled date to keep your account.</string>
+    <string name="privacy_deletion_scheduled_cancel">Cancel Deletion</string>
+
+    <!-- ======================== ConsentGateScreen ======================== -->
+    <string name="privacy_gate_title">Privacy Policy Agreement</string>
+    <string name="privacy_gate_subtitle">Please review and accept the following to continue.</string>
+    <string name="privacy_gate_loading">Loading consent requirements...</string>
+    <string name="privacy_gate_error_title">Error</string>
+    <string name="privacy_gate_accept_all">Accept All</string>
+    <string name="privacy_gate_decline">Decline</string>
+    <string name="privacy_gate_read">Read</string>
+
+    <!-- ======================== Consent Type Labels (shared) ======================== -->
+    <string name="privacy_consent_type_privacy_policy">Privacy Policy</string>
+    <string name="privacy_consent_type_terms_of_service">Terms of Service</string>
+    <string name="privacy_consent_type_marketing">Marketing Communications</string>
+    <string name="privacy_consent_type_analytics">Analytics &amp; Usage Data</string>
+
+    <!-- ======================== LegalDocumentScreen ======================== -->
+    <string name="privacy_document_back">Back</string>
+    <string name="privacy_document_loading">Loading document...</string>
+    <string name="privacy_document_error_title">Error</string>
+    <string name="privacy_document_published_prefix">Published: %1$s</string>
+
+</resources>
