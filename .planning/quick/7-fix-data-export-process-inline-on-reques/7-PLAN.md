@@ -7,7 +7,7 @@ depends_on: []
 files_modified:
   - server/privacy/impl/src/main/kotlin/com/m2f/server/privacy/service/DataExportServiceImpl.kt
   - server/privacy/impl/src/main/kotlin/com/m2f/server/privacy/repository/ExposedDataExportRepository.kt
-autonomous: true
+autonomous: false
 requirements: [QUICK-7]
 
 must_haves:
@@ -111,14 +111,12 @@ After inserting the PENDING record, process the export inline (same pattern as E
 6. Re-fetch the record with `findById(exportId)` and return `.toResponse()`
 7. Wrap the processing in try/catch -- on failure, update status to "FAILED" and re-raise the error as `UnexpectedError`
 
-Add these imports to DataExportServiceImpl.kt:
-- `kotlinx.datetime.TimeZone`
-- `kotlinx.datetime.toLocalDateTime`
-- `kotlin.time.Clock`
+Add these imports to DataExportServiceImpl.kt (note: `TimeZone` is already imported):
+- `kotlinx.datetime.toLocalDateTime` (REQUIRED for `.toLocalDateTime(TimeZone.UTC)` calls)
+- `kotlinx.datetime.Clock`
 - `kotlin.time.Duration.Companion.days`
-- `kotlin.time.ExperimentalTime`
 
-Add `@file:OptIn(ExperimentalTime::class)` if not already present (check -- the file already has `@file:OptIn(ExperimentalUuidApi::class)`; combine them).
+Add `@file:OptIn(ExperimentalTime::class)` if not already present (check -- the file already has `@file:OptIn(ExperimentalUuidApi::class)`; combine them). Also add `import kotlin.time.ExperimentalTime`.
 
 **Fix B -- ExposedDataExportRepository.findActiveByUser():**
 Change the where clause to include COMPLETED status:
@@ -143,11 +141,11 @@ This ensures that after processing completes (or after a page refresh), the clie
   </done>
 </task>
 
-<task type="auto">
-  <name>Task 2: Verify server starts and run existing tests</name>
-  <files></files>
+<task type="checkpoint:human-verify" gate="blocking">
+  <name>Task 2: Verify tests pass and server compiles</name>
+  <files>none</files>
   <action>
-Run the server privacy module tests to confirm nothing is broken. Also do a quick compile of the full server to catch any transitive issues.
+Run the server privacy module tests and full server compile to confirm the inline processing changes do not break anything.
   </action>
   <verify>
     <automated>cd /Users/marc/IdeaProjects/Template && ./gradlew :server:privacy:impl:test :server:compileKotlin 2>&1 | tail -20</automated>
