@@ -1,6 +1,6 @@
 # Project State
 
-Last activity: 2026-03-15 - Completed quick task 8: Redesign delete account flow to match Pencil designs (steps 1-5, mobile+desktop) and update translations
+Last activity: 2026-03-15 - Completed quick task 9: Fix deletion flow reset, step counters, title colors, and server-side password validation
 
 ### Blockers/Concerns
 
@@ -18,3 +18,4 @@ None
 | 6 | Fix data export stuck in PENDING state forever and missing download button | 2026-03-15 | f5209f2 | Verified | [6-fix-data-export-stuck-in-pending-state-a](./quick/6-fix-data-export-stuck-in-pending-state-a/) |
 | 7 | Fix data export process inline on request and include COMPLETED in active query | 2026-03-15 | b0f0969 | Verified | [7-fix-data-export-process-inline-on-reques](./quick/7-fix-data-export-process-inline-on-reques/) |
 | 8 | Redesign delete account flow to match Pencil designs | 2026-03-15 | 4912772 | Verified | [8-redesign-delete-account-flow-to-match-pe](./quick/8-redesign-delete-account-flow-to-match-pe/) |
+| 9 | Fix deletion flow reset, step counters, title colors, and server-side password validation | 2026-03-15 | e6a699b | Done | [9-fix-deletion-flow-reset-on-back-consiste](./quick/9-fix-deletion-flow-reset-on-back-consiste/) |
