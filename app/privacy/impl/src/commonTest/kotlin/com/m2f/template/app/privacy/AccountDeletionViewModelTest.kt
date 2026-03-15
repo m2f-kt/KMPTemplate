@@ -97,13 +97,14 @@ class AccountDeletionViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `confirmDeletion calls SDK and emits DeletionScheduled`() {
+    fun `confirmDeletion calls SDK logs out and navigates to login`() {
         val deletionResponse = DeletionResponse(
             id = "del-456",
             status = DeletionStatus.PENDING,
             scheduledAt = "2026-03-21T00:00:00Z",
         )
         val sdk = fakeSdk {
+            auth { logout { Either.Right(Unit) } }
             privacy {
                 getDeletionStatus { Either.Right(null) }
                 requestAccountDeletion { Either.Right(deletionResponse) }
@@ -127,7 +128,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
                 )
             )
             intent(AccountDeletionIntent.ConfirmDeletion)
-            event(AccountDeletionEvent.DeletionScheduled)
+            event(AccountDeletionEvent.NavigateToLogin)
         }
     }
 
@@ -158,6 +159,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             scheduledAt = "2026-03-21T00:00:00Z",
         )
         val sdk = fakeSdk {
+            auth { logout { Either.Right(Unit) } }
             privacy {
                 getDeletionStatus { Either.Right(null) }
                 requestAccountDeletion { Either.Right(deletionResponse) }
@@ -188,7 +190,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
                 )
             )
             intent(AccountDeletionIntent.ConfirmDeletion)
-            event(AccountDeletionEvent.DeletionScheduled)
+            event(AccountDeletionEvent.NavigateToLogin)
         }
     }
 
@@ -216,6 +218,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
                 )
             )
             intent(AccountDeletionIntent.CancelDeletion)
+            model(AccountDeletionModel())
             event(AccountDeletionEvent.DeletionCancelled)
         }
     }
