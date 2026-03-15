@@ -7,10 +7,12 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -19,14 +21,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.m2f.template.designsystem.components.TerminalText
 import com.m2f.template.designsystem.components.button.ButtonVariant
 import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.card.CardVariant
+import com.m2f.template.designsystem.components.card.TerminalCard
 import com.m2f.template.designsystem.components.display.TerminalDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.TerminalAlert
@@ -41,8 +46,8 @@ import template.app.privacy.generated.resources.*
 /**
  * Multi-step account deletion flow screen.
  *
- * Desktop (>840dp): Centered card with max width ~500dp.
- * Mobile (<=840dp): Full-width with padding.
+ * Mobile (<=840dp): Single column, full-width with padding.
+ * Desktop (>840dp): Two-column layout -- left (main flow) + right (480dp contextual panel).
  */
 @Composable
 fun AccountDeletionScreen(
@@ -50,8 +55,10 @@ fun AccountDeletionScreen(
     onProceedToReAuth: () -> Unit,
     onReAuthenticate: (String) -> Unit,
     onSetReason: (String) -> Unit,
+    onSkipReason: () -> Unit,
     onConfirmDeletion: () -> Unit,
     onCancelDeletion: () -> Unit,
+    onLogout: () -> Unit,
     onBack: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
@@ -62,113 +69,128 @@ fun AccountDeletionScreen(
             .background(colors.bg),
     ) {
         if (maxWidth > 840.dp) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
+            // Desktop: Two-column layout
+            Row(modifier = Modifier.fillMaxSize()) {
+                // Left column -- main flow
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState())
+                        .padding(48.dp)
+                        .widthIn(max = 800.dp),
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
+                ) {
+                    StepContent(
+                        state = state,
+                        onProceedToReAuth = onProceedToReAuth,
+                        onReAuthenticate = onReAuthenticate,
+                        onSetReason = onSetReason,
+                        onSkipReason = onSkipReason,
+                        onConfirmDeletion = onConfirmDeletion,
+                        onCancelDeletion = onCancelDeletion,
+                        onLogout = onLogout,
+                        onBack = onBack,
+                    )
+                }
+
+                // Right column -- contextual panel
+                val borderColor = colors.border
+                Column(
+                    modifier = Modifier
+                        .width(480.dp)
+                        .fillMaxHeight()
+                        .drawBehind {
+                            drawLine(
+                                color = borderColor,
+                                start = Offset(0f, 0f),
+                                end = Offset(0f, size.height),
+                                strokeWidth = 1.dp.toPx(),
+                            )
+                        }
+                        .background(colors.bg)
+                        .verticalScroll(rememberScrollState())
+                        .padding(32.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    DesktopRightPanel(step = state.step)
+                }
+            }
+        } else {
+            // Mobile: Single column
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(24.dp),
+                verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
-                AccountDeletionContent(
+                StepContent(
                     state = state,
                     onProceedToReAuth = onProceedToReAuth,
                     onReAuthenticate = onReAuthenticate,
                     onSetReason = onSetReason,
+                    onSkipReason = onSkipReason,
                     onConfirmDeletion = onConfirmDeletion,
                     onCancelDeletion = onCancelDeletion,
+                    onLogout = onLogout,
                     onBack = onBack,
-                    modifier = Modifier
-                        .widthIn(max = 500.dp)
-                        .background(colors.surface)
-                        .padding(48.dp),
                 )
             }
-        } else {
-            AccountDeletionContent(
-                state = state,
-                onProceedToReAuth = onProceedToReAuth,
-                onReAuthenticate = onReAuthenticate,
-                onSetReason = onSetReason,
-                onConfirmDeletion = onConfirmDeletion,
-                onCancelDeletion = onCancelDeletion,
-                onBack = onBack,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-            )
         }
     }
 }
 
 @Composable
-private fun AccountDeletionContent(
+private fun StepContent(
     state: AccountDeletionModel,
     onProceedToReAuth: () -> Unit,
     onReAuthenticate: (String) -> Unit,
     onSetReason: (String) -> Unit,
+    onSkipReason: () -> Unit,
     onConfirmDeletion: () -> Unit,
     onCancelDeletion: () -> Unit,
+    onLogout: () -> Unit,
     onBack: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    if (state.loading) {
+        TerminalProgress(label = stringResource(Res.string.privacy_deletion_processing))
+    }
 
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
-    ) {
-        // Title
-        TerminalText(
-            text = stringResource(Res.string.privacy_deletion_title),
-            style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
-            color = colors.error,
+    when (state.step) {
+        DeletionStep.WARNING -> WarningStep(
+            onContinue = onProceedToReAuth,
+            onCancel = onBack,
+            loading = state.loading,
         )
 
-        // Loading
-        if (state.loading) {
-            TerminalProgress(label = stringResource(Res.string.privacy_deletion_processing))
-        }
+        DeletionStep.RE_AUTH -> ReAuthStep(
+            error = state.error,
+            onReAuthenticate = onReAuthenticate,
+            onBack = onBack,
+            loading = state.loading,
+        )
 
-        // Error
-        if (state.error != null) {
-            TerminalAlert(
-                message = state.error.code,
-                variant = AlertVariant.Error,
-                title = stringResource(Res.string.privacy_deletion_error_title),
-            )
-        }
+        DeletionStep.REASON -> ReasonStep(
+            reason = state.reason,
+            onSetReason = onSetReason,
+            onSkipReason = onSkipReason,
+            onBack = onBack,
+            loading = state.loading,
+        )
 
-        TerminalDivider()
+        DeletionStep.CONFIRM -> ConfirmStep(
+            userEmail = state.userEmail,
+            onConfirmDeletion = onConfirmDeletion,
+            onCancel = onBack,
+            loading = state.loading,
+        )
 
-        // Step content
-        when (state.step) {
-            DeletionStep.WARNING -> WarningStep(
-                onContinue = onProceedToReAuth,
-                onBack = onBack,
-                loading = state.loading,
-            )
-
-            DeletionStep.RE_AUTH -> ReAuthStep(
-                onReAuthenticate = onReAuthenticate,
-                onBack = onBack,
-                loading = state.loading,
-            )
-
-            DeletionStep.REASON -> ReasonStep(
-                reason = state.reason,
-                onSetReason = onSetReason,
-                loading = state.loading,
-            )
-
-            DeletionStep.CONFIRM -> ConfirmStep(
-                onConfirmDeletion = onConfirmDeletion,
-                onCancel = onBack,
-                loading = state.loading,
-            )
-
-            DeletionStep.SCHEDULED -> ScheduledStep(
-                scheduledAt = state.pendingDeletion?.scheduledAt,
-                onCancelDeletion = onCancelDeletion,
-            )
-        }
+        DeletionStep.SCHEDULED -> ScheduledStep(
+            scheduledAt = state.pendingDeletion?.scheduledAt,
+            onCancelDeletion = onCancelDeletion,
+            onLogout = onLogout,
+        )
     }
 }
 
@@ -177,48 +199,80 @@ private fun AccountDeletionContent(
 @Composable
 private fun WarningStep(
     onContinue: () -> Unit,
-    onBack: () -> Unit,
+    onCancel: () -> Unit,
     loading: Boolean,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
-    TerminalAlert(
-        message = stringResource(Res.string.privacy_deletion_warning_message),
-        variant = AlertVariant.Warning,
-        title = stringResource(Res.string.privacy_deletion_warning_title),
-    )
-
-    Spacer(modifier = Modifier.height(4.dp))
-
+    // Title
     TerminalText(
-        text = stringResource(Res.string.privacy_deletion_warning_consider),
-        style = typography.sm.copy(fontWeight = FontWeight.Medium),
-        color = colors.text,
+        text = stringResource(Res.string.privacy_deletion_title),
+        style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.5).sp),
+        color = colors.error,
     )
 
-    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-        TerminalText(text = stringResource(Res.string.privacy_deletion_warning_bullet1), style = typography.sm, color = colors.textDim)
-        TerminalText(text = stringResource(Res.string.privacy_deletion_warning_bullet2), style = typography.sm, color = colors.textDim)
-        TerminalText(text = stringResource(Res.string.privacy_deletion_warning_bullet3), style = typography.sm, color = colors.textDim)
+    // Danger alert
+    TerminalAlert(
+        message = stringResource(Res.string.privacy_deletion_warning_danger_message),
+        variant = AlertVariant.Error,
+        title = "[${stringResource(Res.string.privacy_deletion_warning_danger_title)}]",
+    )
+
+    // Scope label
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_warning_scope_label),
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.textDim,
+    )
+
+    // Scope card
+    TerminalCard(
+        title = stringResource(Res.string.privacy_deletion_warning_scope_card_title),
+        description = stringResource(Res.string.privacy_deletion_warning_scope_card_desc),
+        variant = CardVariant.Default,
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            val items = listOf(
+                stringResource(Res.string.privacy_deletion_warning_scope_item1),
+                stringResource(Res.string.privacy_deletion_warning_scope_item2),
+                stringResource(Res.string.privacy_deletion_warning_scope_item3),
+                stringResource(Res.string.privacy_deletion_warning_scope_item4),
+            )
+            items.forEach { item ->
+                TerminalText(
+                    text = "▸ $item",
+                    style = typography.sm.copy(lineHeight = (typography.sm.fontSize.value * 1.8).sp),
+                    color = colors.text,
+                )
+            }
+        }
     }
 
+    // Grace period text
+    TerminalText(
+        text = "▸ ${stringResource(Res.string.privacy_deletion_warning_grace)}",
+        style = typography.sm.copy(fontSize = 13.sp),
+        color = colors.textDim,
+    )
+
+    // Buttons
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = stringResource(Res.string.privacy_deletion_go_back),
-            onClick = onBack,
-            modifier = Modifier.weight(1f),
-            variant = ButtonVariant.Secondary,
-            enabled = !loading,
-        )
-        TerminalButton(
-            text = stringResource(Res.string.privacy_deletion_continue),
+            text = stringResource(Res.string.privacy_deletion_warning_understand),
             onClick = onContinue,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
+            enabled = !loading,
+        )
+        TerminalButton(
+            text = stringResource(Res.string.privacy_deletion_cancel),
+            onClick = onCancel,
+            modifier = Modifier.weight(1f),
+            variant = ButtonVariant.Ghost,
             enabled = !loading,
         )
     }
@@ -226,6 +280,7 @@ private fun WarningStep(
 
 @Composable
 private fun ReAuthStep(
+    error: com.m2f.template.models.localization.StringKey?,
     onReAuthenticate: (String) -> Unit,
     onBack: () -> Unit,
     loading: Boolean,
@@ -234,12 +289,21 @@ private fun ReAuthStep(
     val typography = TerminalTheme.typography
     var password by remember { mutableStateOf("") }
 
+    // Title
     TerminalText(
-        text = stringResource(Res.string.privacy_deletion_reauth_message),
-        style = typography.sm,
+        text = stringResource(Res.string.privacy_deletion_reauth_title),
+        style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
+        color = colors.text,
+    )
+
+    // Subtitle
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_reauth_subtitle),
+        style = typography.sm.copy(fontSize = 13.sp),
         color = colors.textDim,
     )
 
+    // Password input
     TerminalPasswordInput(
         value = password,
         onValueChange = { password = it },
@@ -248,23 +312,33 @@ private fun ReAuthStep(
         enabled = !loading,
     )
 
+    // Error alert
+    if (error != null) {
+        TerminalAlert(
+            message = stringResource(Res.string.privacy_deletion_reauth_error_message),
+            variant = AlertVariant.Error,
+            title = "[${stringResource(Res.string.privacy_deletion_reauth_error_title)}]",
+        )
+    }
+
+    // Buttons
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = stringResource(Res.string.privacy_deletion_go_back),
-            onClick = onBack,
-            modifier = Modifier.weight(1f),
-            variant = ButtonVariant.Secondary,
-            enabled = !loading,
-        )
-        TerminalButton(
             text = stringResource(Res.string.privacy_deletion_reauth_verify),
             onClick = { onReAuthenticate(password) },
             modifier = Modifier.weight(1f),
-            variant = ButtonVariant.Default,
+            variant = ButtonVariant.Destructive,
             enabled = password.isNotBlank() && !loading,
+        )
+        TerminalButton(
+            text = stringResource(Res.string.privacy_deletion_back),
+            onClick = onBack,
+            modifier = Modifier.weight(1f),
+            variant = ButtonVariant.Ghost,
+            enabled = !loading,
         )
     }
 }
@@ -273,18 +347,29 @@ private fun ReAuthStep(
 private fun ReasonStep(
     reason: String,
     onSetReason: (String) -> Unit,
+    onSkipReason: () -> Unit,
+    onBack: () -> Unit,
     loading: Boolean,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
     var localReason by remember(reason) { mutableStateOf(reason) }
 
+    // Title
     TerminalText(
-        text = stringResource(Res.string.privacy_deletion_reason_message),
-        style = typography.sm,
+        text = stringResource(Res.string.privacy_deletion_reason_title),
+        style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
+        color = colors.text,
+    )
+
+    // Subtitle
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_reason_subtitle),
+        style = typography.sm.copy(fontSize = 13.sp),
         color = colors.textDim,
     )
 
+    // Textarea
     TerminalTextarea(
         value = localReason,
         onValueChange = { localReason = it },
@@ -293,17 +378,40 @@ private fun ReasonStep(
         enabled = !loading,
     )
 
-    TerminalButton(
-        text = stringResource(Res.string.privacy_deletion_continue),
-        onClick = { onSetReason(localReason) },
-        modifier = Modifier.fillMaxWidth(),
-        variant = ButtonVariant.Destructive,
-        enabled = !loading,
-    )
+    // Buttons
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        TerminalButton(
+            text = stringResource(Res.string.privacy_deletion_reason_continue),
+            onClick = { onSetReason(localReason) },
+            modifier = Modifier.fillMaxWidth(),
+            variant = ButtonVariant.Destructive,
+            enabled = !loading,
+        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            TerminalButton(
+                text = stringResource(Res.string.privacy_deletion_reason_skip),
+                onClick = onSkipReason,
+                modifier = Modifier.weight(1f),
+                variant = ButtonVariant.Ghost,
+                enabled = !loading,
+            )
+            TerminalButton(
+                text = stringResource(Res.string.privacy_deletion_back),
+                onClick = onBack,
+                modifier = Modifier.weight(1f),
+                variant = ButtonVariant.Ghost,
+                enabled = !loading,
+            )
+        }
+    }
 }
 
 @Composable
 private fun ConfirmStep(
+    userEmail: String,
     onConfirmDeletion: () -> Unit,
     onCancel: () -> Unit,
     loading: Boolean,
@@ -311,36 +419,78 @@ private fun ConfirmStep(
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
-    TerminalAlert(
-        message = stringResource(Res.string.privacy_deletion_confirm_message),
-        variant = AlertVariant.Error,
-        title = stringResource(Res.string.privacy_deletion_confirm_title),
+    val scheduledDate = "7 days"
+
+    // Step label
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_confirm_step),
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.textDim,
     )
 
-    Spacer(modifier = Modifier.height(4.dp))
-
+    // Title
     TerminalText(
-        text = stringResource(Res.string.privacy_deletion_confirm_question),
-        style = typography.md.copy(fontWeight = FontWeight.Bold),
+        text = stringResource(Res.string.privacy_deletion_confirm_title),
+        style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
         color = colors.error,
     )
 
+    // Subtitle
+    TerminalText(
+        text = stringResource(Res.string.privacy_deletion_confirm_subtitle),
+        style = typography.xs.copy(fontSize = 12.sp),
+        color = colors.textDim,
+    )
+
+    // Deletion summary card
+    TerminalCard(
+        title = stringResource(Res.string.privacy_deletion_confirm_card_title),
+        description = stringResource(Res.string.privacy_deletion_confirm_card_desc),
+        variant = CardVariant.Accent,
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_confirm_account, userEmail),
+                style = typography.sm,
+                color = colors.text,
+            )
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_confirm_scheduled, scheduledDate),
+                style = typography.sm,
+                color = colors.text,
+            )
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_confirm_grace),
+                style = typography.sm,
+                color = colors.text,
+            )
+        }
+    }
+
+    // Warning alert
+    TerminalAlert(
+        message = stringResource(Res.string.privacy_deletion_confirm_warn, scheduledDate),
+        variant = AlertVariant.Warning,
+        title = "[WARN]",
+    )
+
+    // Buttons
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TerminalButton(
-            text = stringResource(Res.string.privacy_deletion_confirm_cancel),
-            onClick = onCancel,
-            modifier = Modifier.weight(1f),
-            variant = ButtonVariant.Secondary,
-            enabled = !loading,
-        )
-        TerminalButton(
             text = stringResource(Res.string.privacy_deletion_confirm_button),
             onClick = onConfirmDeletion,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
+            enabled = !loading,
+        )
+        TerminalButton(
+            text = stringResource(Res.string.privacy_deletion_cancel),
+            onClick = onCancel,
+            modifier = Modifier.weight(1f),
+            variant = ButtonVariant.Ghost,
             enabled = !loading,
         )
     }
@@ -350,32 +500,214 @@ private fun ConfirmStep(
 private fun ScheduledStep(
     scheduledAt: String?,
     onCancelDeletion: () -> Unit,
+    onLogout: () -> Unit,
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
 
-    val message = stringResource(Res.string.privacy_deletion_scheduled_message) +
-        if (scheduledAt != null) stringResource(Res.string.privacy_deletion_scheduled_message_date, scheduledAt) else ""
+    val displayDate = scheduledAt ?: ""
 
-    TerminalAlert(
-        message = message,
-        variant = AlertVariant.Info,
-        title = stringResource(Res.string.privacy_deletion_scheduled_title),
-    )
-
-    Spacer(modifier = Modifier.height(4.dp))
-
+    // Step label
     TerminalText(
-        text = stringResource(Res.string.privacy_deletion_scheduled_info),
-        style = typography.sm,
+        text = stringResource(Res.string.privacy_deletion_scheduled_step),
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
-    TerminalButton(
-        text = stringResource(Res.string.privacy_deletion_scheduled_cancel),
-        onClick = onCancelDeletion,
-        modifier = Modifier.fillMaxWidth(),
-        variant = ButtonVariant.Default,
+    // Success alert
+    TerminalAlert(
+        message = stringResource(Res.string.privacy_deletion_scheduled_success_message),
+        variant = AlertVariant.Success,
+        title = "[SUCCESS] ${stringResource(Res.string.privacy_deletion_scheduled_success_title)}",
+    )
+
+    // Info card
+    TerminalCard(
+        title = stringResource(Res.string.privacy_deletion_scheduled_card_title),
+        description = stringResource(Res.string.privacy_deletion_scheduled_card_desc),
+        variant = CardVariant.Info,
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_scheduled_card_line1, displayDate),
+                style = typography.sm,
+                color = colors.text,
+            )
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_scheduled_card_line2),
+                style = typography.sm,
+                color = colors.text,
+            )
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_scheduled_card_line3),
+                style = typography.sm,
+                color = colors.text,
+            )
+        }
+    }
+
+    // Buttons
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        TerminalButton(
+            text = stringResource(Res.string.privacy_deletion_scheduled_cancel),
+            onClick = onCancelDeletion,
+            modifier = Modifier.fillMaxWidth(),
+            variant = ButtonVariant.Default,
+        )
+        TerminalButton(
+            text = stringResource(Res.string.privacy_deletion_scheduled_logout),
+            onClick = onLogout,
+            modifier = Modifier.fillMaxWidth(),
+            variant = ButtonVariant.Ghost,
+        )
+    }
+}
+
+// endregion
+
+// region Desktop Right Panel
+
+@Composable
+private fun DesktopRightPanel(step: DeletionStep) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+
+    when (step) {
+        DeletionStep.WARNING -> {
+            PanelStepIndicator(stringResource(Res.string.privacy_deletion_desktop_step1_indicator))
+            PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step1_header))
+            PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step1_title))
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step1_desc),
+                style = typography.sm,
+                color = colors.textDim,
+            )
+            TerminalDivider()
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet1))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet2))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet3))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet4))
+            Spacer(modifier = Modifier.height(8.dp))
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step1_note),
+                style = typography.xs,
+                color = colors.textDim,
+            )
+        }
+
+        DeletionStep.RE_AUTH -> {
+            PanelStepIndicator(stringResource(Res.string.privacy_deletion_desktop_step2_indicator))
+            PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step2_header))
+            PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step2_title))
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step2_desc),
+                style = typography.sm,
+                color = colors.textDim,
+            )
+            TerminalDivider()
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step2_bullet1))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step2_bullet2))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step2_bullet3))
+        }
+
+        DeletionStep.REASON -> {
+            PanelStepIndicator(stringResource(Res.string.privacy_deletion_desktop_step3_indicator))
+            PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step3_header))
+            PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step3_title))
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step3_desc),
+                style = typography.sm,
+                color = colors.textDim,
+            )
+            TerminalDivider()
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step3_bullet1))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step3_bullet2))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step3_bullet3))
+        }
+
+        DeletionStep.CONFIRM -> {
+            PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step4_header))
+            TerminalDivider()
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step4_bullet1))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step4_bullet2))
+            PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step4_bullet3))
+            Spacer(modifier = Modifier.height(8.dp))
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step4_note),
+                style = typography.xs,
+                color = colors.textDim,
+            )
+        }
+
+        DeletionStep.SCHEDULED -> {
+            PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step5_header))
+            TerminalDivider()
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step5_step1),
+                style = typography.sm,
+                color = colors.text,
+            )
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step5_step2),
+                style = typography.sm,
+                color = colors.text,
+            )
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step5_step3),
+                style = typography.sm,
+                color = colors.text,
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TerminalText(
+                text = stringResource(Res.string.privacy_deletion_desktop_step5_cancel),
+                style = typography.xs,
+                color = colors.textDim,
+            )
+        }
+    }
+}
+
+@Composable
+private fun PanelStepIndicator(text: String) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+    TerminalText(
+        text = text,
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.textDim,
+    )
+}
+
+@Composable
+private fun PanelHeader(text: String) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+    TerminalText(
+        text = text,
+        style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
+        color = colors.accent,
+    )
+}
+
+@Composable
+private fun PanelTitle(text: String) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+    TerminalText(
+        text = text,
+        style = typography.md.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
+        color = colors.text,
+    )
+}
+
+@Composable
+private fun PanelBullet(text: String) {
+    val colors = TerminalTheme.colors
+    val typography = TerminalTheme.typography
+    TerminalText(
+        text = "▸ $text",
+        style = typography.sm,
+        color = colors.text,
     )
 }
 

@@ -141,8 +141,10 @@ fun EntryProviderScope<Route>.privacyEntries(
             onProceedToReAuth = { viewModel.take(AccountDeletionIntent.ProceedToReAuth) },
             onReAuthenticate = { viewModel.take(AccountDeletionIntent.ReAuthenticate(it)) },
             onSetReason = { viewModel.take(AccountDeletionIntent.SetReason(it)) },
+            onSkipReason = { viewModel.take(AccountDeletionIntent.SkipReason) },
             onConfirmDeletion = { viewModel.take(AccountDeletionIntent.ConfirmDeletion) },
             onCancelDeletion = { viewModel.take(AccountDeletionIntent.CancelDeletion) },
+            onLogout = { viewModel.take(AccountDeletionIntent.LogOut) },
             onBack = { backStack.removeLastOrNull() },
         )
 
@@ -156,6 +158,9 @@ fun EntryProviderScope<Route>.privacyEntries(
                         backStack.removeLastOrNull()
                     }
                     is AccountDeletionEvent.NavigateToLogin -> {
+                        onAccountDeleted()
+                    }
+                    is AccountDeletionEvent.LoggedOut -> {
                         onAccountDeleted()
                     }
                     is AccountDeletionEvent.ShowError -> {
