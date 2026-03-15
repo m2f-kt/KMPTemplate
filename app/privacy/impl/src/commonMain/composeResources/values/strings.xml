@@ -12,6 +12,11 @@
     <string name="privacy_settings_export_status">Export status:</string>
     <string name="privacy_settings_export_download">Download Export</string>
     <string name="privacy_settings_export_request">Request Data Export</string>
+    <string name="privacy_export_status_pending">Pending</string>
+    <string name="privacy_export_status_processing">Processing</string>
+    <string name="privacy_export_status_completed">Completed</string>
+    <string name="privacy_export_status_failed">Failed</string>
+    <string name="privacy_export_status_expired">Expired</string>
     <string name="privacy_settings_delete_header">Delete Account</string>
     <string name="privacy_settings_delete_desc">Permanently delete your account and all associated data. This action cannot be undone.</string>
     <string name="privacy_settings_delete_button">Delete My Account</string>

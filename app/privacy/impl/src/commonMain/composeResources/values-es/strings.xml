@@ -12,6 +12,11 @@
     <string name="privacy_settings_export_status">Estado de exportación:</string>
     <string name="privacy_settings_export_download">Descargar Exportación</string>
     <string name="privacy_settings_export_request">Solicitar Exportación de Datos</string>
+    <string name="privacy_export_status_pending">Pendiente</string>
+    <string name="privacy_export_status_processing">Procesando</string>
+    <string name="privacy_export_status_completed">Completado</string>
+    <string name="privacy_export_status_failed">Fallido</string>
+    <string name="privacy_export_status_expired">Expirado</string>
     <string name="privacy_settings_delete_header">Eliminar Cuenta</string>
     <string name="privacy_settings_delete_desc">Elimina permanentemente tu cuenta y todos los datos asociados. Esta acción no se puede deshacer.</string>
     <string name="privacy_settings_delete_button">Eliminar Mi Cuenta</string>

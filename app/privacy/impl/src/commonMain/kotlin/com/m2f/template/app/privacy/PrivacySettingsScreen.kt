@@ -179,7 +179,7 @@ fun PrivacySettingsContent(
                     color = colors.text,
                 )
                 TerminalBadge(
-                    text = state.exportStatus.status.name,
+                    text = exportStatusLabel(state.exportStatus.status),
                     variant = when (state.exportStatus.status) {
                         ExportStatus.COMPLETED -> BadgeVariant.Success
                         ExportStatus.PENDING, ExportStatus.PROCESSING -> BadgeVariant.Warning
@@ -225,6 +225,15 @@ fun PrivacySettingsContent(
 
         Spacer(modifier = Modifier.height(16.dp))
     }
+}
+
+@Composable
+private fun exportStatusLabel(status: ExportStatus): String = when (status) {
+    ExportStatus.PENDING -> stringResource(Res.string.privacy_export_status_pending)
+    ExportStatus.PROCESSING -> stringResource(Res.string.privacy_export_status_processing)
+    ExportStatus.COMPLETED -> stringResource(Res.string.privacy_export_status_completed)
+    ExportStatus.FAILED -> stringResource(Res.string.privacy_export_status_failed)
+    ExportStatus.EXPIRED -> stringResource(Res.string.privacy_export_status_expired)
 }
 
 @Composable
