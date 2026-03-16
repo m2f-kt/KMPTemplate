@@ -248,3 +248,44 @@ tasks.register("verifySetup") {
         println("  All services verified ✅\n")
     }
 }
+
+tasks.register("installGitHooks") {
+    group = "dev"
+    description = "Install git hooks for code quality checks (opt-in)"
+    doLast {
+        val hooksDir = file(".git/hooks")
+        if (!hooksDir.exists()) {
+            throw GradleException(".git/hooks directory not found. Is this a git repository?")
+        }
+
+        // Pre-commit: run detekt
+        val preCommit = file(".git/hooks/pre-commit")
+        preCommit.writeText(
+            """
+            |#!/usr/bin/env bash
+            |set -euo pipefail
+            |echo "Running detekt..."
+            |./gradlew detekt --no-daemon
+            |echo "Detekt passed ✅"
+            """.trimMargin()
+        )
+        preCommit.setExecutable(true)
+
+        // Pre-push: run all tests
+        val prePush = file(".git/hooks/pre-push")
+        prePush.writeText(
+            """
+            |#!/usr/bin/env bash
+            |set -euo pipefail
+            |echo "Running tests..."
+            |./gradlew testAll --no-daemon
+            |echo "All tests passed ✅"
+            """.trimMargin()
+        )
+        prePush.setExecutable(true)
+
+        println("\n  Git hooks installed ✅")
+        println("  - pre-commit: runs detekt")
+        println("  - pre-push: runs testAll\n")
+    }
+}
