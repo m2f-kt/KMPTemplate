@@ -429,7 +429,7 @@ private fun TerminalCardPreview() {
                     )
                 },
             ) {
-                TerminalText("HOST: 192.168.1.42\nPORT: 8080\nLATENCY: 12ms")
+                TerminalText("HOST: server.local\nPORT: 8080\nLATENCY: 12ms")
             }
 
             // 3. Info Card

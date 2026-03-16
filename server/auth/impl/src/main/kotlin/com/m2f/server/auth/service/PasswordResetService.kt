@@ -21,8 +21,10 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.ExperimentalTime
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
+import org.slf4j.LoggerFactory
 
 private val RESET_TOKEN_EXPIRY = 1.hours
+private val logger = LoggerFactory.getLogger(PasswordResetService::class.java)
 
 /**
  * Service for password reset flow: generating reset tokens and handling password changes.
@@ -75,9 +77,9 @@ class PasswordResetService(
                         If you did not request this, please ignore this email.
                     """.trimIndent()
                 )
-            } catch (_: Exception) {
+            } catch (e: Exception) {
                 // Log failure but don't expose to user (security: don't reveal email existence)
-                // TODO: Add proper logging when logging infrastructure exists
+                logger.error("Failed to send password reset email", e)
             }
         }
         // Always return success (prevents user enumeration)
