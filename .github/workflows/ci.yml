@@ -30,6 +30,32 @@ jobs:
           name: server-coverage-report
           path: server/build/reports/kover/html/
 
+  lint:
+    name: Static Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Run detekt
+        run: ./gradlew detekt --no-daemon
+
+  security:
+    name: Dependency Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: CRITICAL,HIGH
+
   test-client:
     name: KMP Client Tests & Coverage
     runs-on: ubuntu-latest
@@ -49,6 +75,11 @@ jobs:
             :core:models:jvmTest :core:models:koverVerify \
             :core:mvi:jvmTest   :core:mvi:koverVerify \
             :shared:jvmTest     :shared:koverVerify \
+            :app:auth:impl:jvmTest \
+            :app:admin:impl:jvmTest \
+            :app:dashboard:impl:jvmTest \
+            :app:profile:impl:jvmTest \
+            :app:privacy:impl:jvmTest \
             --no-daemon
       - name: Generate KMP HTML coverage reports
         if: always()
@@ -57,6 +88,11 @@ jobs:
             :core:models:koverHtmlReport \
             :core:mvi:koverHtmlReport \
             :shared:koverHtmlReport \
+            :app:auth:impl:koverHtmlReport \
+            :app:admin:impl:koverHtmlReport \
+            :app:dashboard:impl:koverHtmlReport \
+            :app:profile:impl:koverHtmlReport \
+            :app:privacy:impl:koverHtmlReport \
             --no-daemon
       - name: Generate KMP XML coverage reports
         if: always()
@@ -65,6 +101,11 @@ jobs:
             :core:models:koverXmlReport \
             :core:mvi:koverXmlReport \
             :shared:koverXmlReport \
+            :app:auth:impl:koverXmlReport \
+            :app:admin:impl:koverXmlReport \
+            :app:dashboard:impl:koverXmlReport \
+            :app:profile:impl:koverXmlReport \
+            :app:privacy:impl:koverXmlReport \
             --no-daemon
       - name: Upload KMP coverage reports
         if: always()
@@ -75,3 +116,8 @@ jobs:
             core/models/build/reports/kover/
             core/mvi/build/reports/kover/
             shared/build/reports/kover/
+            app/auth/impl/build/reports/kover/
+            app/admin/impl/build/reports/kover/
+            app/dashboard/impl/build/reports/kover/
+            app/profile/impl/build/reports/kover/
+            app/privacy/impl/build/reports/kover/

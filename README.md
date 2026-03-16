@@ -1,6 +1,17 @@
+[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+
 # Template
 
 Kotlin Multiplatform full-stack template with authentication, AI agents, file storage, and email — targeting Android, iOS, Web (WASM), Desktop (JVM), and Ktor server.
+
+## Using This Template
+
+1. **Fork** this repository
+2. **Configure** your project: `./setup.sh` (sets project name, package, database, display name)
+3. **Start infrastructure**: `./gradlew devSetup`
+4. **Seed demo data**: `./gradlew seedData`
+5. **Start developing**: Use Claude skills to scaffold features (see below)
 
 ## Quick Start
 
@@ -78,6 +89,19 @@ Default credentials: MinIO `minioadmin`/`minioadmin`, PostgreSQL `postgres`/`pos
 
 - **[Getting Started](docs/GETTING-STARTED.md)** — Step-by-step setup walkthrough with troubleshooting
 - **[Architecture](docs/ARCHITECTURE.md)** — Module structure, data flow, and how to add a feature
+
+## Adding a Feature
+
+Use Claude Code skills to scaffold new features following project conventions:
+
+| Skill | What it creates |
+|---|---|
+| `/create-app-module` | Client feature (contract/impl/wire) with ViewModel, Screen, tests |
+| `/create-server-module` | Server feature with routes, service, repository, migrations |
+| `/feature` | Full-stack: both client and server modules |
+| `/compose-screen` | Single Compose screen with callbacks pattern |
+| `/ktor-endpoint` | Single Ktor route handler |
+| `/mvi-viewmodel` | MVI ViewModel boilerplate |
 
 ## Configuration
 
