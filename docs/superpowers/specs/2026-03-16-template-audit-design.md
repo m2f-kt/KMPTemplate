@@ -169,8 +169,7 @@ Workflow:
 
 ### 3.1 Remove Project-Specific Planning Artifacts
 - Delete `.planning/` directory entirely (STATE.md, quick/ tasks 1-9, phases/)
-- Delete `docs/superpowers/` directory (GDPR specs and plans)
-- Delete `docs/superpowers/` directory — **only after all four phases are complete and verified**. This spec file itself lives there; it should be the last thing deleted
+- Delete `docs/superpowers/` directory (GDPR specs and plans) — **only after all four phases are complete and verified**, since this spec file itself lives there
 
 ### 3.2 Resolve TODOs
 - **PasswordResetService.kt:80** — `// TODO: Add proper logging` — Replace with SLF4J logging (matching existing server convention). Add `private val logger = LoggerFactory.getLogger(PasswordResetService::class.java)` and log the exception.
