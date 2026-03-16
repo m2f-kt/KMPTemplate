@@ -26,6 +26,10 @@ read -p "  Package name (e.g., com.company.app): " PACKAGE_NAME
 read -p "  Database name (e.g., myapp_db): " DB_NAME
 
 echo ""
+read -p "  App display name (e.g., My App) [default: $PROJECT_NAME]: " DISPLAY_NAME
+DISPLAY_NAME="${DISPLAY_NAME:-$PROJECT_NAME}"
+
+echo ""
 
 # --- Input validation ---
 
@@ -51,6 +55,11 @@ fi
 
 if ! [[ "$DB_NAME" =~ ^[a-zA-Z0-9_]+$ ]]; then
     echo -e "${RED}error:${NC} Database name must be alphanumeric with underscores only (no spaces)"
+    exit 1
+fi
+
+if [[ -z "$DISPLAY_NAME" ]]; then
+    echo -e "${RED}error:${NC} Display name cannot be empty"
     exit 1
 fi
 
@@ -91,6 +100,7 @@ echo "  package:        $OLD_PACKAGE -> $PACKAGE_NAME"
 echo "  server_package: $OLD_SERVER_PACKAGE -> $NEW_SERVER_PACKAGE"
 echo "  core_package:   $OLD_CORE_PACKAGE -> $NEW_CORE_PACKAGE"
 echo "  database:       $OLD_DB_NAME -> $DB_NAME"
+echo "  display_name:   $DISPLAY_NAME"
 echo "  root_project:   template -> $PROJECT_NAME_LOWER"
 echo ""
 
@@ -104,7 +114,7 @@ echo ""
 # --- Rename operations ---
 
 # 1. Update package references in Kotlin files (.kt)
-echo "  [1/9] Updating package references in .kt files..."
+echo "  [1/14] Updating package references in .kt files..."
 find . -name "*.kt" \
     -not -path "./.gradle/*" \
     -not -path "*/build/*" \
@@ -118,7 +128,7 @@ find . -name "*.kt" \
 done
 
 # 2. Update package references in Gradle files (.kts)
-echo "  [2/9] Updating package references in .gradle.kts files..."
+echo "  [2/14] Updating package references in .gradle.kts files..."
 find . -name "*.gradle.kts" \
     -not -path "./.gradle/*" \
     -not -path "*/build/*" \
@@ -129,17 +139,17 @@ find . -name "*.gradle.kts" \
 done
 
 # 3. Update settings.gradle.kts root project name
-echo "  [3/9] Updating rootProject.name..."
+echo "  [3/14] Updating rootProject.name..."
 sed_inplace "s/rootProject.name = \"template\"/rootProject.name = \"${PROJECT_NAME_LOWER}\"/g" settings.gradle.kts
 
 # 4. Update docker-compose.yml database name
-echo "  [4/9] Updating docker-compose.yml..."
+echo "  [4/14] Updating docker-compose.yml..."
 sed_inplace "s/POSTGRES_DB: ${OLD_DB_NAME}/POSTGRES_DB: ${DB_NAME}/g" docker-compose.yml
 sed_inplace "s/pg_isready -U postgres -d ${OLD_DB_NAME}/pg_isready -U postgres -d ${DB_NAME}/g" docker-compose.yml
 sed_inplace "s/container_name: template-postgres/container_name: ${PROJECT_NAME_LOWER}-postgres/g" docker-compose.yml
 
 # 5. Update server database configuration (DataSource.kt)
-echo "  [5/9] Updating server database configuration..."
+echo "  [5/14] Updating server database configuration..."
 find . -name "DataSource.kt" \
     -not -path "./.gradle/*" \
     -not -path "*/build/*" | while read -r file; do
@@ -148,7 +158,7 @@ find . -name "DataSource.kt" \
 done
 
 # 6. Move source directories to new package path
-echo "  [6/9] Moving source directories..."
+echo "  [6/14] Moving source directories..."
 
 move_package_dir() {
     local base_dir="$1"
@@ -201,20 +211,31 @@ for src in "${SOURCE_SETS[@]}"; do
 done
 
 # 7. Handle server packages (com.m2f.server, com.m2f.core)
-echo "  [7/9] Moving server package directories..."
+echo "  [7/14] Moving server package directories..."
 
 # Move com.m2f.server -> new server package
-for mod in auth ai; do
-    for variant in main test; do
-        src="server/${mod}/src/${variant}/kotlin"
-        if [[ -d "${src}/${OLD_SERVER_PATH}" ]]; then
-            move_package_dir "$src" "$OLD_SERVER_PATH" "$NEW_SERVER_PATH"
-        fi
+for mod in auth ai groups files privacy; do
+    for sub in contract impl wire; do
+        for variant in main test; do
+            src="server/${mod}/${sub}/src/${variant}/kotlin"
+            if [[ -d "${src}/${OLD_SERVER_PATH}" ]]; then
+                move_package_dir "$src" "$OLD_SERVER_PATH" "$NEW_SERVER_PATH"
+            fi
+        done
     done
 done
 
 # Move com.m2f.core -> new core package
 for mod in config database security; do
+    for sub in contract impl wire; do
+        for variant in main test; do
+            src="server/core/${mod}/${sub}/src/${variant}/kotlin"
+            if [[ -d "${src}/${OLD_CORE_PATH}" ]]; then
+                move_package_dir "$src" "$OLD_CORE_PATH" "$NEW_CORE_PATH"
+            fi
+        done
+    done
+    # Also check flat structure (some core modules don't have submodules)
     for variant in main test; do
         src="server/core/${mod}/src/${variant}/kotlin"
         if [[ -d "${src}/${OLD_CORE_PATH}" ]]; then
@@ -232,7 +253,7 @@ for variant in main test; do
 done
 
 # 8. Update AndroidManifest.xml if it contains package references
-echo "  [8/9] Updating AndroidManifest.xml..."
+echo "  [8/14] Updating AndroidManifest.xml..."
 find . -name "AndroidManifest.xml" \
     -not -path "./.gradle/*" \
     -not -path "*/build/*" | while read -r file; do
@@ -242,8 +263,61 @@ find . -name "AndroidManifest.xml" \
 done
 
 # 9. Delete .iml files (IDE will regenerate)
-echo "  [9/9] Removing .iml files (IDE will regenerate)..."
+echo "  [9/14] Removing .iml files (IDE will regenerate)..."
 find . -name "*.iml" -not -path "./.gradle/*" -not -path "*/build/*" -delete 2>/dev/null || true
+
+# 10. Update remaining Docker container names
+echo "  [10/14] Updating Docker container names..."
+sed_inplace "s/container_name: template-minio$/container_name: ${PROJECT_NAME_LOWER}-minio/g" docker-compose.yml
+sed_inplace "s/container_name: template-minio-init$/container_name: ${PROJECT_NAME_LOWER}-minio-init/g" docker-compose.yml
+sed_inplace "s/container_name: template-mailhog$/container_name: ${PROJECT_NAME_LOWER}-mailhog/g" docker-compose.yml
+
+# 11. Update OAuth and SMTP configuration
+echo "  [11/14] Updating OAuth and SMTP configuration..."
+sed_inplace "s/OAUTH_MOBILE_SCHEME=template/OAUTH_MOBILE_SCHEME=${PROJECT_NAME_LOWER}/g" .env.example
+sed_inplace "s/noreply@template.local/noreply@${PROJECT_NAME_LOWER}.local/g" .env.example
+
+# 12. Update app display name in string resources
+echo "  [12/14] Updating app display name..."
+# Android res strings.xml (value: "template")
+find . -path "*/androidMain/res/values/strings.xml" \
+    -not -path "./.gradle/*" \
+    -not -path "*/build/*" | while read -r file; do
+    sed_inplace "s|<string name=\"app_name\">template</string>|<string name=\"app_name\">${DISPLAY_NAME}</string>|g" "$file"
+done
+# Compose resources strings.xml (value: "terminal" — fixing inconsistency)
+find . -path "*/commonMain/composeResources/values/strings.xml" \
+    -not -path "./.gradle/*" \
+    -not -path "*/build/*" | while read -r file; do
+    sed_inplace "s|<string name=\"app_name\">terminal</string>|<string name=\"app_name\">${DISPLAY_NAME}</string>|g" "$file"
+done
+# Spanish translations
+find . -path "*/composeResources/values-es/strings.xml" \
+    -not -path "./.gradle/*" \
+    -not -path "*/build/*" | while read -r file; do
+    if grep -q "app_name" "$file" 2>/dev/null; then
+        sed_inplace "s|<string name=\"app_name\">[^<]*</string>|<string name=\"app_name\">${DISPLAY_NAME}</string>|g" "$file"
+    fi
+done
+
+# 13. Update iOS configuration
+echo "  [13/14] Updating iOS configuration..."
+if [[ -f "iosApp/Configuration/Config.xcconfig" ]]; then
+    sed_inplace "s/PRODUCT_NAME=template/PRODUCT_NAME=${PROJECT_NAME_LOWER}/g" iosApp/Configuration/Config.xcconfig
+    sed_inplace "s|PRODUCT_BUNDLE_IDENTIFIER=com.m2f.template.template|PRODUCT_BUNDLE_IDENTIFIER=${PACKAGE_NAME}|g" iosApp/Configuration/Config.xcconfig
+fi
+
+# 14. Update tooling configuration
+echo "  [14/14] Updating tooling configuration..."
+# .mcp.json database name
+if [[ -f ".mcp.json" ]]; then
+    sed_inplace "s|localhost:5436/${OLD_DB_NAME}|localhost:5436/${DB_NAME}|g" .mcp.json
+fi
+# README.md title and clone instructions
+if [[ -f "README.md" ]]; then
+    sed_inplace "s/^# Template$/# ${PROJECT_NAME}/g" README.md
+    sed_inplace "s/cd template/cd ${PROJECT_NAME_LOWER}/g" README.md
+fi
 
 # --- Post-rename verification ---
 
@@ -266,13 +340,15 @@ else
     echo "status: package_rename complete"
 fi
 
-# --- Optional build verification ---
+# --- Build verification (mandatory) ---
 
 echo ""
-read -p "  Run build verification? (y/N): " BUILD_CHECK
-if [[ "$BUILD_CHECK" == "y" || "$BUILD_CHECK" == "Y" ]]; then
-    echo "status: building..."
-    ./gradlew build --no-daemon 2>&1 | tail -5
+echo "status: building..."
+./gradlew build --no-daemon 2>&1 | tail -20
+BUILD_EXIT=$?
+if [[ $BUILD_EXIT -ne 0 ]]; then
+    echo -e "${RED}error:${NC} Build failed. Please fix the issues above."
+    exit 1
 fi
 
 # --- Completion ---
