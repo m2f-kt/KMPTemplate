@@ -1,0 +1,25 @@
+{
+  "name": "KMP Template",
+  "image": "mcr.microsoft.com/devcontainers/java:17",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "./gradlew devSetup",
+  "forwardPorts": [8080, 5436, 9002, 9003, 1025, 8025],
+  "portsAttributes": {
+    "8080": { "label": "Server API" },
+    "5436": { "label": "PostgreSQL" },
+    "9002": { "label": "MinIO API" },
+    "9003": { "label": "MinIO Console" },
+    "1025": { "label": "MailHog SMTP" },
+    "8025": { "label": "MailHog Web" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "fwcd.kotlin",
+        "vscjava.vscode-gradle"
+      ]
+    }
+  }
+}
