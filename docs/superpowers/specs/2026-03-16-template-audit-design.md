@@ -98,6 +98,9 @@ Fields: Problem statement, Proposed solution, Alternatives considered, Additiona
 ### 1.3 Developer Tooling
 
 #### Shared IntelliJ Run Configurations (`.idea/runConfigurations/`)
+
+> **Note**: `.idea/` is gitignored. Add `!.idea/runConfigurations/` to `.gitignore` to allow sharing these files.
+
 - **Server_Run.xml** — `:server:run` Gradle task
 - **Web_App_Run.xml** — `:composeApp:wasmJsBrowserDevelopmentRun` Gradle task
 - **All_Tests.xml** — `testAll` Gradle task
@@ -105,9 +108,9 @@ Fields: Problem statement, Proposed solution, Alternatives considered, Additiona
 
 #### Git Hooks via Gradle
 Add `installGitHooks` task to root `build.gradle.kts`:
-- Installs `.git/hooks/pre-commit` — runs `./gradlew detekt`
+- Installs `.git/hooks/pre-commit` — runs `./gradlew detekt` (note: may take 30-60s on 40+ modules; consider scoping to changed files if too slow)
 - Installs `.git/hooks/pre-push` — runs `./gradlew testAll`
-- Auto-runs as part of `devSetup`
+- Opt-in: NOT auto-run as part of `devSetup`. Developers install manually via `./gradlew installGitHooks`
 
 ---
 
@@ -121,22 +124,26 @@ Add `installGitHooks` task to root `build.gradle.kts`:
 Add a new interactive prompt:
 - **App display name** (defaults to project name) — human-readable name for UI
 
-New replacement operations to add:
+> **Note**: The postgres container name (`template-postgres`) is already handled by existing step 4. The items below cover only the containers and config not yet renamed.
 
-| # | Item | Old value | New value | File(s) |
-|---|------|-----------|-----------|---------|
-| 10 | MinIO container name | `template-minio` | `{project-lower}-minio` | `docker-compose.yml` |
-| 11 | MinIO init container name | `template-minio-init` | `{project-lower}-minio-init` | `docker-compose.yml` |
-| 12 | MailHog container name | `template-mailhog` | `{project-lower}-mailhog` | `docker-compose.yml` |
-| 13 | OAuth mobile scheme | `OAUTH_MOBILE_SCHEME=template` | `OAUTH_MOBILE_SCHEME={project-lower}` | `.env.example` |
-| 14 | SMTP from domain | `noreply@template.local` | `noreply@{project-lower}.local` | `.env.example` |
-| 15 | App display name | `"Template"` in strings.xml | `"{display-name}"` | `composeResources/values/strings.xml`, `values-es/strings.xml` |
-| 16 | iOS bundle identifier | `com.m2f.template` | `{package-name}` | `iosApp/` config files |
-| 17 | .mcp.json DB name | `application` | `{db-name}` | `.mcp.json` |
-| 18 | CLAUDE.md project name | `"Template"` references | `"{project-name}"` | `CLAUDE.md` |
-| 19 | README title + clone | `# Template`, `cd template` | `# {project-name}`, `cd {project-lower}` | `README.md` |
+New replacement operations, grouped into logical steps:
 
-Update step counter from `[1/9]` to `[1/19]` and renumber.
+| Step | Group | Items | File(s) |
+|------|-------|-------|---------|
+| 10 | Docker container names | `template-minio` → `{project-lower}-minio`, `template-minio-init` → `{project-lower}-minio-init`, `template-mailhog` → `{project-lower}-mailhog` | `docker-compose.yml` |
+| 11 | OAuth & SMTP config | `OAUTH_MOBILE_SCHEME=template` → `{project-lower}`, `noreply@template.local` → `noreply@{project-lower}.local` | `.env.example` |
+| 12 | App display name | `"template"` / `"terminal"` → `"{display-name}"` in app_name keys. **Files**: `composeApp/src/androidMain/res/values/strings.xml` (value: `"template"`), `composeApp/src/commonMain/composeResources/values/strings.xml` (value: `"terminal"` — inconsistency to resolve), `values-es/strings.xml` | Multiple strings.xml |
+| 13 | iOS config | `PRODUCT_NAME=template` → `{project-lower}`, `PRODUCT_BUNDLE_IDENTIFIER=com.m2f.template.template$(TEAM_ID)` → `{package-name}$(TEAM_ID)` | `iosApp/Configuration/Config.xcconfig` |
+| 14 | Tooling config | `.mcp.json`: `application` → `{db-name}`. `CLAUDE.md`: `"Template"` → `"{project-name}"`. `README.md`: `# Template` → `# {project-name}`, `cd template` → `cd {project-lower}` | `.mcp.json`, `CLAUDE.md`, `README.md` |
+
+Update step counter from `[1/9]` to `[1/14]` and renumber.
+
+#### Fix existing setup.sh gap: server module package moves
+
+Existing step 7 only moves server packages for `auth` and `ai`. Add `groups`, `files`, and `privacy` to the module list:
+```bash
+for mod in auth ai groups files privacy; do
+```
 
 ### 2.2 Create `/setup-project` Claude Skill
 
@@ -163,10 +170,10 @@ Workflow:
 ### 3.1 Remove Project-Specific Planning Artifacts
 - Delete `.planning/` directory entirely (STATE.md, quick/ tasks 1-9, phases/)
 - Delete `docs/superpowers/` directory (GDPR specs and plans)
-- Note: this spec file itself lives in `docs/superpowers/specs/` — it will be deleted as part of the cleanup since it documents completed work
+- Delete `docs/superpowers/` directory — **only after all four phases are complete and verified**. This spec file itself lives there; it should be the last thing deleted
 
 ### 3.2 Resolve TODOs
-- **PasswordResetService.kt:80** — `// TODO: Add proper logging` — Replace with actual Log4j logging. The server already has Log4j configured with JSON layout. Add `private val logger = LoggerFactory.getLogger(...)` and log the exception.
+- **PasswordResetService.kt:80** — `// TODO: Add proper logging` — Replace with SLF4J logging (matching existing server convention). Add `private val logger = LoggerFactory.getLogger(PasswordResetService::class.java)` and log the exception.
 - **Models.kt:15** — `// TODO: When Koog adds outputDimensionality...` — Keep as-is. This is a legitimate upstream dependency note about Koog 0.6.2 limitations.
 
 ### 3.3 Clean Sample/Placeholder Content
@@ -217,15 +224,15 @@ security:
 ```
 
 #### Expand client test coverage
-Update `test-client` job to include all app feature modules:
+Augment (not replace) existing `core:models`, `core:mvi`, `shared` tests with app feature module tests:
 ```
 :app:auth:impl:jvmTest
 :app:admin:impl:jvmTest
 :app:dashboard:impl:jvmTest
-:app:documents:impl:jvmTest
 :app:profile:impl:jvmTest
 :app:privacy:impl:jvmTest
 ```
+> **Note**: Verify each module has actual test files before adding to CI. `app:documents:impl` may not have tests yet — add only modules with existing tests, flag the rest as coverage gaps.
 
 ### 4.2 Devcontainer
 
