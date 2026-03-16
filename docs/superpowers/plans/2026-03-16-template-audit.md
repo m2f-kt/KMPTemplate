@@ -1378,7 +1378,7 @@ rm -rf docs/superpowers
 - [ ] **Step 3: Commit**
 
 ```bash
-git add -A
+git rm -r docs/superpowers
 git commit -m "chore: remove audit spec and plan (completed)"
 ```
 
