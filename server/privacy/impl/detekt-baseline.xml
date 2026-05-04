@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:AccountDeletionServiceTest.kt$StubConsentRepository${}</ID>
+    <ID>MaxLineLength:AccountDeletionServiceTest.kt$AccountDeletionServiceTest$private suspend</ID>
+    <ID>MaxLineLength:ConsentServiceImpl.kt$ConsentServiceImpl$com.m2f.server.privacy.contract.errors.ConsentRequired(detail = "Legal document not found for type ${request.type}")</ID>
+    <ID>MaxLineLength:ConsentServiceImpl.kt$ConsentServiceImpl$override suspend</ID>
+    <ID>TooGenericExceptionCaught:DataExportServiceImpl.kt$DataExportServiceImpl$e: Exception</ID>
+    <ID>UnusedPrivateProperty:AccountDeletionServiceImpl.kt$AccountDeletionServiceImpl$private val consentRepository: ConsentRepository</ID>
+  </CurrentIssues>
+</SmellBaseline>

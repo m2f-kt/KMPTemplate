@@ -100,41 +100,49 @@ fun Application.module() {
     install(Koin) {
         modules(configurationModule, serverModule)
     }
-    // Register the R2dbcDatabase instance in Koin for repository injection
     getKoin().declare(database)
-    // Register the application coroutine scope so jobs can be launched
     getKoin().declare(CoroutineScope(coroutineContext))
 
     install(Resources)
     install(ContentNegotiation) { json() }
     install(WebSockets)
+    installCors(config.env.http.port, config.env.http.corsAllowedOrigins)
+    installStatusPages()
+    configureSecurity()
+    configureOAuth()
+
+    val privacyJobScheduler: PrivacyJobScheduler by inject()
+    privacyJobScheduler.start()
+
+    installAppRouting()
+}
+
+private fun Application.installCors(serverPort: Int, extraOrigins: List<String>) {
     install(CORS) {
-        // Development origins. Allow the API's own host (rare, but harmless),
-        // common WASM/JS dev-server defaults, and any APP_URL host.
-        allowHost("localhost:${config.env.http.port}", schemes = listOf("http"))
-        // WASM dev-server (Kotlin webpack-dev-server defaults to 8080).
+        // Development origins: API's own port + common WASM/dev-server defaults.
+        allowHost("localhost:$serverPort", schemes = listOf("http"))
         allowHost("localhost:8080", schemes = listOf("http"))
         allowHost("localhost:8081", schemes = listOf("http"))
         allowHost("localhost:8082", schemes = listOf("http"))
         allowHost("localhost:3000", schemes = listOf("http"))
         // Extra origins from CORS_ALLOWED_ORIGINS env var (LAN IPs, ngrok, etc.)
-        config.env.http.corsAllowedOrigins.forEach { origin ->
+        extraOrigins.forEach { origin ->
             allowHost(origin, schemes = listOf("http", "https"))
         }
-        // HTTP methods used by API endpoints
         allowMethod(HttpMethod.Get)
         allowMethod(HttpMethod.Post)
         allowMethod(HttpMethod.Put)
         allowMethod(HttpMethod.Delete)
         allowMethod(HttpMethod.Options)
-        // Headers used by API (Content-Type for JSON, Authorization for Bearer tokens)
         allowHeader(HttpHeaders.ContentType)
         allowHeader(HttpHeaders.Authorization)
         allowHeader(HttpHeaders.AcceptLanguage)
-        // Allow credentials (needed for auth flows)
         allowCredentials = true
     }
-    // Global exception handler - prevents leaking internal details (SQL errors, stack traces)
+}
+
+/** Global exception handler — prevents leaking internal details (SQL errors, stack traces). */
+private fun Application.installStatusPages() {
     install(StatusPages) {
         val logger = LoggerFactory.getLogger("StatusPages")
         exception<Throwable> { call, cause ->
@@ -148,62 +156,51 @@ fun Application.module() {
             )
         }
     }
-    configureSecurity()
-    configureOAuth()
+}
 
-    // Start privacy scheduled jobs (deletion execution, export cleanup)
-    val privacyJobScheduler: PrivacyJobScheduler by inject()
-    privacyJobScheduler.start()
+@OptIn(ExperimentalUuidApi::class)
+context(config: Configuration, database: R2dbcDatabase)
+private fun Application.installAppRouting() {
+    val authService: AuthService by inject()
+    val passwordResetService: PasswordResetService by inject()
+    val userService: UserService by inject()
+    val userRepository: UserRepository by inject()
+    val oauthService: OAuthService by inject()
+    val groupService: GroupService by inject()
+    val invitationService: InvitationService by inject()
+    val fileService: FileService by inject()
+    val consentService: ConsentService by inject()
+    val legalDocumentService: LegalDocumentService by inject()
+    val dataExportService: DataExportService by inject()
+    val accountDeletionService: AccountDeletionService by inject()
+    val membershipRepository: MembershipRepository by inject()
+    val assistantAgentService: AssistantAgentService by inject()
+    val chatAgentService: ChatAgentService by inject()
+    val documentIngestionService: DocumentIngestionService by inject()
+    val documentRepository: DocumentRepository by inject()
+
+    val roleChecker: suspend (String, String) -> Boolean = { userId, groupId ->
+        val membership = membershipRepository.findByUserAndGroup(
+            Uuid.parse(userId),
+            Uuid.parse(groupId),
+        )
+        membership != null && GroupRole.fromString(membership.role).level >= GroupRole.Admin.level
+    }
 
     routing {
-        // Unauthenticated health check endpoint
         healthRoutes(database, config.env)
-        val authService: AuthService by inject()
-        val passwordResetService: PasswordResetService by inject()
-        val userService: UserService by inject()
-        val userRepository: UserRepository by inject()
-        val oauthService: OAuthService by inject()
         authRoutes(authService, passwordResetService)
         oauthRoutes(oauthService, config.env.oauth)
         userRoutes(userService)
-        val groupService: GroupService by inject()
         groupRoutes(groupService)
-        val invitationService: InvitationService by inject()
         invitationRoutes(invitationService)
-        val fileService: FileService by inject()
         fileRoutes(fileService)
         avatarRoutes(userRepository, fileService)
-        // Privacy / GDPR routes
-        val consentService: ConsentService by inject()
-        val legalDocumentService: LegalDocumentService by inject()
-        val dataExportService: DataExportService by inject()
-        val accountDeletionService: AccountDeletionService by inject()
         consentRoutes(consentService)
         legalRoutes(legalDocumentService)
         exportRoutes(dataExportService)
         deletionRoutes(accountDeletionService)
-        // Shared role checker lambda for cross-module authorization
-        val membershipRepository: MembershipRepository by inject()
-        @OptIn(ExperimentalUuidApi::class)
-        val roleChecker: suspend (String, String) -> Boolean = { userId, groupId ->
-            val membership = membershipRepository.findByUserAndGroup(
-                Uuid.parse(userId),
-                Uuid.parse(groupId),
-            )
-            membership != null && GroupRole.fromString(membership.role).level >= GroupRole.Admin.level
-        }
-
-        val assistantAgentService: AssistantAgentService by inject()
-        val chatAgentService: ChatAgentService by inject()
-        aiRoutes(
-            assistantAgentService,
-            chatAgentService,
-            roleChecker = roleChecker,
-        )
-        // Document management routes for RAG pipeline
-        val documentIngestionService: DocumentIngestionService by inject()
-        val documentRepository: DocumentRepository by inject()
-        @OptIn(ExperimentalUuidApi::class)
+        aiRoutes(assistantAgentService, chatAgentService, roleChecker = roleChecker)
         documentRoutes(
             documentIngestionService = documentIngestionService,
             documentRepository = documentRepository,

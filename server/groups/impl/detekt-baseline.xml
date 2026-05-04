@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongMethod:GroupRoutes.kt$fun Route.groupRoutes(groupService: GroupService)</ID>
+    <ID>MagicNumber:InvitationRepository.kt$InvitationRepository$32</ID>
+    <ID>MaxLineLength:GroupRoutesTest.kt$GroupRoutesTest$setBody(CreateGroupRequest(name = "Test Group", slug = "test-group-create", description = "A test group"))</ID>
+    <ID>MaxLineLength:GroupRoutesTest.kt$GroupRoutesTest$val powerAdminId = createTestUser(userRepo, "poweradmin-access@test.com", "Power Admin", UserRole.PowerAdmin)</ID>
+    <ID>TooManyFunctions:GroupServiceImpl.kt$GroupServiceImpl : GroupService</ID>
+    <ID>UnusedPrivateProperty:GroupRoutesTest.kt$GroupRoutesTest$val groupRepo = org.koin.java.KoinJavaComponent.getKoin().get&lt;GroupRepository&gt;()</ID>
+    <ID>UnusedPrivateProperty:GroupRoutesTest.kt$GroupRoutesTest$val membershipRepo = org.koin.java.KoinJavaComponent.getKoin().get&lt;MembershipRepository&gt;()</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MaxLineLength:GroupService.kt$GroupService$suspend fun addMember(groupId: String, request: AddMemberRequest, userId: String, userRole: UserRole): MemberResponse</ID>
+    <ID>MaxLineLength:GroupService.kt$GroupService$suspend fun getMembers(groupId: String, userId: String, userRole: UserRole, cursor: String?, limit: Int): PaginatedMemberResponse</ID>
+    <ID>MaxLineLength:GroupService.kt$GroupService$suspend fun registerMember(groupId: String, request: RegisterMemberRequest, userId: String, userRole: UserRole): MemberResponse</ID>
+    <ID>MaxLineLength:GroupService.kt$GroupService$suspend fun updateGroup(groupId: String, request: UpdateGroupRequest, userId: String, userRole: UserRole): GroupResponse</ID>
+    <ID>MaxLineLength:InvitationService.kt$InvitationService$suspend fun createInvitation(groupId: String, request: CreateInvitationRequest, userId: String, userRole: UserRole): InvitationResponse</ID>
+    <ID>MaxLineLength:InvitationService.kt$InvitationService$suspend fun resendInvitation(groupId: String, invitationId: String, userId: String, userRole: UserRole): InvitationResponse</ID>
+    <ID>MaxLineLength:InvitationService.kt$InvitationService$suspend fun revokeInvitation(groupId: String, invitationId: String, userId: String, userRole: UserRole): Map&lt;String, String&gt;</ID>
+  </CurrentIssues>
+</SmellBaseline>

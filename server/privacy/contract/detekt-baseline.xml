@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>LongParameterList:ConsentRepository.kt$ConsentRepository$(userId: Uuid, consentType: String, granted: Boolean, legalDocumentVersion: String, ipAddress: String?, userAgent: String?)</ID>
+    <ID>MagicNumber:AccountDeletionRequestsTable.kt$AccountDeletionRequestsTable$20</ID>
+    <ID>MagicNumber:ConsentRecordsTable.kt$ConsentRecordsTable$20</ID>
+    <ID>MagicNumber:ConsentRecordsTable.kt$ConsentRecordsTable$45</ID>
+    <ID>MagicNumber:ConsentRecordsTable.kt$ConsentRecordsTable$50</ID>
+    <ID>MagicNumber:DataExportRequestsTable.kt$DataExportRequestsTable$20</ID>
+    <ID>MagicNumber:DataExportRequestsTable.kt$DataExportRequestsTable$512</ID>
+    <ID>MagicNumber:LegalDocumentsTable.kt$LegalDocumentsTable$20</ID>
+    <ID>MagicNumber:LegalDocumentsTable.kt$LegalDocumentsTable$5</ID>
+    <ID>MagicNumber:LegalDocumentsTable.kt$LegalDocumentsTable$50</ID>
+    <ID>MaxLineLength:ConsentRepository.kt$ConsentRepository$suspend fun insert(userId: Uuid, consentType: String, granted: Boolean, legalDocumentVersion: String, ipAddress: String?, userAgent: String?): Uuid</ID>
+    <ID>MaxLineLength:DataExportRepository.kt$DataExportRepository$suspend fun updateStatus(id: Uuid, status: String, fileKey: String? = null, completedAt: LocalDateTime? = null, expiresAt: LocalDateTime? = null): Boolean</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:Configuration.kt$Configuration$16</ID>
+    <ID>MagicNumber:Configuration.kt$Configuration$8</ID>
+    <ID>MagicNumber:Env.kt$Env.Email$1025</ID>
+    <ID>MagicNumber:Env.kt$Env.OAuth$9876</ID>
+    <ID>MaxLineLength:Error.kt$session.send(Frame.Text(Json.encodeToString(ErrorResponse(code = "AI_ERROR", message = error.toAppError().message))))</ID>
+  </CurrentIssues>
+</SmellBaseline>
