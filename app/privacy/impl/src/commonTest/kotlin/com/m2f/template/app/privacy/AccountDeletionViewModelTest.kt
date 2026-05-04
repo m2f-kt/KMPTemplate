@@ -9,8 +9,11 @@ import com.m2f.template.models.UserRole
 import com.m2f.template.models.dto.UserResponse
 import com.m2f.template.models.dto.privacy.DeletionResponse
 import com.m2f.template.models.dto.privacy.DeletionStatus
+import com.m2f.template.models.dto.privacy.VerifyPasswordResponse
 import com.m2f.template.models.localization.StringKey
 import kotlin.test.Test
+
+private const val TOKEN = "tok-123"
 
 class AccountDeletionViewModelTest : ViewModelTest() {
 
@@ -53,10 +56,11 @@ class AccountDeletionViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `reAuthenticate sets password and advances to REASON step`() {
+    fun `reAuthenticate sets confirmationToken and advances to REASON step`() {
         val sdk = fakeSdk {
             privacy {
                 getDeletionStatus { Either.Right(null) }
+                verifyPasswordForDeletion { Either.Right(VerifyPasswordResponse(confirmationToken = TOKEN)) }
             }
         }
         val viewModel = AccountDeletionViewModel(sdk)
@@ -65,7 +69,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             model(
                 AccountDeletionModel(
                     step = DeletionStep.REASON,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                 )
             )
         }
@@ -76,6 +80,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
         val sdk = fakeSdk {
             privacy {
                 getDeletionStatus { Either.Right(null) }
+                verifyPasswordForDeletion { Either.Right(VerifyPasswordResponse(confirmationToken = TOKEN)) }
             }
         }
         val viewModel = AccountDeletionViewModel(sdk)
@@ -84,14 +89,14 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             model(
                 AccountDeletionModel(
                     step = DeletionStep.REASON,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                 )
             )
             intent(AccountDeletionIntent.SetReason("No longer needed"))
             model(
                 AccountDeletionModel(
                     step = DeletionStep.CONFIRM,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                     reason = "No longer needed",
                 )
             )
@@ -109,6 +114,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             auth { logout { Either.Right(Unit) } }
             privacy {
                 getDeletionStatus { Either.Right(null) }
+                verifyPasswordForDeletion { Either.Right(VerifyPasswordResponse(confirmationToken = TOKEN)) }
                 requestAccountDeletion { Either.Right(deletionResponse) }
             }
         }
@@ -118,14 +124,14 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             model(
                 AccountDeletionModel(
                     step = DeletionStep.REASON,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                 )
             )
             intent(AccountDeletionIntent.SetReason("No longer needed"))
             model(
                 AccountDeletionModel(
                     step = DeletionStep.CONFIRM,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                     reason = "No longer needed",
                 )
             )
@@ -135,7 +141,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
     }
 
     @Test
-    fun `proceedToReAuth advances to RE_AUTH step without setting password`() {
+    fun `proceedToReAuth advances to RE_AUTH step without setting confirmationToken`() {
         val sdk = fakeSdk {
             privacy {
                 getDeletionStatus { Either.Right(null) }
@@ -147,7 +153,6 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             model(
                 AccountDeletionModel(
                     step = DeletionStep.RE_AUTH,
-                    password = "",
                 )
             )
         }
@@ -164,6 +169,7 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             auth { logout { Either.Right(Unit) } }
             privacy {
                 getDeletionStatus { Either.Right(null) }
+                verifyPasswordForDeletion { Either.Right(VerifyPasswordResponse(confirmationToken = TOKEN)) }
                 requestAccountDeletion { Either.Right(deletionResponse) }
             }
         }
@@ -173,21 +179,20 @@ class AccountDeletionViewModelTest : ViewModelTest() {
             model(
                 AccountDeletionModel(
                     step = DeletionStep.RE_AUTH,
-                    password = "",
                 )
             )
             intent(AccountDeletionIntent.ReAuthenticate("my-password"))
             model(
                 AccountDeletionModel(
                     step = DeletionStep.REASON,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                 )
             )
             intent(AccountDeletionIntent.SetReason("reason"))
             model(
                 AccountDeletionModel(
                     step = DeletionStep.CONFIRM,
-                    password = "my-password",
+                    confirmationToken = TOKEN,
                     reason = "reason",
                 )
             )
