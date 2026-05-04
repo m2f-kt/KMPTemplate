@@ -1,0 +1,1 @@
+{"nodes": [{"id": "emailmodule", "label": "EmailModule.kt", "file_type": "code", "source_file": "server/auth/impl/src/main/kotlin/com/m2f/server/auth/di/EmailModule.kt", "source_location": "L1"}], "edges": []}

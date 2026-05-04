@@ -23,3 +23,6 @@ __pycache__/
 http-client.env.json
 .env
 .worktrees/
+
+# graphify: only ignore the machine-specific Python interpreter path
+graphify-out/.graphify_python

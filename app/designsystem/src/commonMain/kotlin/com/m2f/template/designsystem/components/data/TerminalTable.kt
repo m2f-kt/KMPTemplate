@@ -79,9 +79,7 @@ fun TerminalTable(
                 BasicText(
                     text = header,
                     modifier = Modifier.weight(1f),
-                    style = TextStyle(
-                        fontFamily = typography.fontFamily,
-                        fontSize = 10.sp,
+                    style = typography.xxs.copy(
                         fontWeight = FontWeight.Medium,
                         letterSpacing = 0.5.sp,
                         color = colors.tableHeaderText,
@@ -362,9 +360,7 @@ fun TerminalSelectableTable(
                 BasicText(
                     text = header,
                     modifier = Modifier.weight(1f),
-                    style = TextStyle(
-                        fontFamily = typography.fontFamily,
-                        fontSize = 10.sp,
+                    style = typography.xxs.copy(
                         fontWeight = FontWeight.Medium,
                         letterSpacing = 0.5.sp,
                         color = colors.tableHeaderText,

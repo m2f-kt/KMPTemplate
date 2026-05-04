@@ -24,7 +24,7 @@ import kotlinx.serialization.json.Json
  *   401 refresh+retry with Mutex-based concurrency protection.
  *
  * @param authInterceptor The interceptor that attaches bearer tokens and handles 401 refresh+retry.
- * @param baseUrl The base URL for all API requests (e.g., "http://localhost:8080").
+ * @param baseUrl The base URL for all API requests (defaults to [defaultBaseUrl]).
  * @param localeProvider Lambda returning current locale tag (e.g., "en", "es") for Accept-Language header.
  */
 fun createApiClient(

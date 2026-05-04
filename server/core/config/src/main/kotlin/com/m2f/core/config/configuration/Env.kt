@@ -11,13 +11,21 @@ private val dotenv: Dotenv = Dotenv.configure()
 
 private fun env(key: String): String? = dotenv[key]
 
-private const val PORT: Int = 8080
+private const val DEFAULT_HOST: String = "0.0.0.0"
+private const val DEFAULT_PORT: Int = 8080
+private const val DEFAULT_APP_PORT: Int = 8081
 private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKeyForJWT123!@#$%^&*()"
 private const val AUTH_AUDIENCE: String = "jwt-audience"
 private const val AUTH_ISSUER: String = "IssuerName"
 private const val REALM: String = "Access to Your Application"
 private const val ACCESS_TOKEN_EXPIRY: Long = 86400000L // 1 day in milliseconds (24 * 60 * 60 * 1000)
 private const val REFRESH_TOKEN_EXPIRY: Long = 2592000000L // 30 days in milliseconds (30 * 24 * 60 * 60 * 1000)
+
+// Resolved once from the environment so derived URLs (BASE_URL, OAuth callbacks)
+// stay consistent with HOST/PORT without each consumer re-reading dotenv.
+private val resolvedHost: String = env("HOST") ?: DEFAULT_HOST
+private val resolvedPort: Int = env("PORT")?.toIntOrNull() ?: DEFAULT_PORT
+private val resolvedBaseUrl: String = env("BASE_URL") ?: "http://localhost:$resolvedPort"
 
 data class Env(
     val http: Http = Http(),
@@ -29,11 +37,21 @@ data class Env(
     val serverConfig: ServerConfig = ServerConfig(),
 ) {
     data class Http(
-        val host: String = env("HOST") ?: "0.0.0.0",
-        val port: Int = env("PORT")?.toIntOrNull() ?: PORT,
-        val baseUrl: String = env("BASE_URL") ?: "http://localhost:$port",
+        val host: String = resolvedHost,
+        val port: Int = resolvedPort,
+        val baseUrl: String = resolvedBaseUrl,
         /** Frontend app URL for generating user-facing links (e.g., invitation links). */
-        val appUrl: String = env("APP_URL") ?: "http://localhost:8081",
+        val appUrl: String = env("APP_URL") ?: "http://localhost:$DEFAULT_APP_PORT",
+        /**
+         * Comma-separated `host:port` entries appended to CORS `allowHost`. Use
+         * to whitelist additional dev origins (e.g. a LAN IP for phone testing).
+         * Example: `CORS_ALLOWED_ORIGINS=192.168.3.5:8080,my-laptop.local:8080`
+         */
+        val corsAllowedOrigins: List<String> = env("CORS_ALLOWED_ORIGINS")
+            ?.split(",")
+            ?.map { it.trim() }
+            ?.filter { it.isNotEmpty() }
+            ?: emptyList(),
     )
 
     data class Auth(
@@ -58,9 +76,9 @@ data class Env(
         val appleClientSecret: String = env("APPLE_CLIENT_SECRET") ?: "",
         val appleTeamId: String = env("APPLE_TEAM_ID") ?: "",
         val appleKeyId: String = env("APPLE_KEY_ID") ?: "",
-        /** WASM app URL for OAuth callback redirect. */
+        /** WASM app URL for OAuth callback redirect. Defaults to `${BASE_URL}/auth/callback`. */
         val wasmRedirectUrl: String = env("OAUTH_WASM_REDIRECT_URL")
-            ?: "http://localhost:8080/auth/callback",
+            ?: "$resolvedBaseUrl/auth/callback",
         /** Custom URL scheme for Android/iOS deep link callbacks. */
         val mobileScheme: String = env("OAUTH_MOBILE_SCHEME") ?: "template",
         /** Localhost port for desktop (JVM) OAuth callback. */

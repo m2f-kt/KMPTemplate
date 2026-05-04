@@ -16,6 +16,8 @@ import template.app.designsystem.generated.resources.Res
 @Immutable
 data class TerminalTypography(
     val fontFamily: FontFamily,
+    val chartAxis: TextStyle,
+    val xxs: TextStyle,
     val xs: TextStyle,
     val sm: TextStyle,
     val base: TextStyle,
@@ -26,6 +28,8 @@ data class TerminalTypography(
 val LocalTerminalTypography = staticCompositionLocalOf {
     TerminalTypography(
         fontFamily = FontFamily.Monospace,
+        chartAxis = TextStyle.Default,
+        xxs = TextStyle.Default,
         xs = TextStyle.Default,
         sm = TextStyle.Default,
         base = TextStyle.Default,
@@ -43,6 +47,8 @@ fun terminalTypography(): TerminalTypography {
     )
     return TerminalTypography(
         fontFamily = fontFamily,
+        chartAxis = TextStyle(fontFamily = fontFamily, fontSize = 9.sp, fontWeight = FontWeight.Normal),
+        xxs = TextStyle(fontFamily = fontFamily, fontSize = 10.sp, fontWeight = FontWeight.Normal),
         xs = TextStyle(fontFamily = fontFamily, fontSize = 11.sp, fontWeight = FontWeight.Normal),
         sm = TextStyle(fontFamily = fontFamily, fontSize = 12.sp, fontWeight = FontWeight.Normal),
         base = TextStyle(fontFamily = fontFamily, fontSize = 13.sp, fontWeight = FontWeight.Normal),

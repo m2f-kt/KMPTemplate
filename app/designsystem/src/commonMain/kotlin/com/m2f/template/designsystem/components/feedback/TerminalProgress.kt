@@ -51,9 +51,11 @@ fun TerminalProgress(
 ) {
     val colors = TerminalTheme.colors
     val typography = TerminalTheme.typography
+    val spacing = TerminalTheme.spacing
+    val radius = TerminalTheme.radius
 
-    val trackHeight = 8.dp
-    val shape = RoundedCornerShape(2.dp)
+    val trackHeight = spacing.sm
+    val shape = RoundedCornerShape(radius.xs)
     val trackColor = colors.accentMuted
     val fillColor = colors.accent
 
@@ -131,7 +133,7 @@ fun TerminalProgress(
                 ) {
                     val indicatorWidthPx = size.width * indicatorWidthFraction
                     val startX = offsetFraction * size.width
-                    val cornerRadiusPx = 2.dp.toPx()
+                    val cornerRadiusPx = radius.xs.toPx()
                     drawRoundRect(
                         brush = Brush.linearGradient(
                             colors = listOf(fillColor, fillColor.copy(alpha = 0.5f)),

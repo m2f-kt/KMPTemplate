@@ -90,7 +90,7 @@ fun TerminalSwitch(
             modifier = Modifier
                 .width(trackWidth)
                 .height(trackHeight)
-                .clip(RoundedCornerShape(10.dp))
+                .clip(CircleShape)
                 .background(trackColor),
         ) {
             Box(
@@ -104,7 +104,7 @@ fun TerminalSwitch(
         }
 
         if (label != null) {
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(TerminalTheme.spacing.sm))
             BasicText(
                 text = label,
                 style = typography.sm.copy(color = colors.text),

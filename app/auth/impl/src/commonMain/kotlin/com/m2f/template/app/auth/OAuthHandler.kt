@@ -6,7 +6,7 @@ package com.m2f.template.app.auth
  * Opens the server's OAuth URL in the platform browser and provides
  * the platform-specific redirect URI for receiving the callback.
  *
- * @param serverBaseUrl Base URL of the server (e.g., "http://localhost:8080").
+ * @param serverBaseUrl Base URL of the server (matches the server's `BASE_URL`).
  */
 expect class OAuthHandler(serverBaseUrl: String) {
     /**

@@ -1,0 +1,17 @@
+---
+source_file: "server/auth/contract/src/main/kotlin/com/m2f/server/auth/contract/repository/UserRepository.kt"
+type: "code"
+community: "UserRepository"
+location: "L12"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/UserRepository
+---
+
+# UserRecord
+
+## Connections
+- [[UserRepository.kt]] - `contains` [EXTRACTED]
+
+#graphify/code #graphify/EXTRACTED #community/UserRepository
