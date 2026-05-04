@@ -1,0 +1,28 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:DocumentRoutes.kt$fun Route.documentRoutes( documentIngestionService: DocumentIngestionService, documentRepository: DocumentRepository, fileUploader: suspend context(Raise&lt;DomainError&gt;) (userId: String, fileName: String, contentType: String, bytes: ByteArray) -&gt; String, fileDeleter: (String) -&gt; Unit, roleChecker: suspend (userId: String, groupId: String) -&gt; Boolean, aiDispatcher: kotlinx.coroutines.CoroutineDispatcher, )</ID>
+    <ID>ForbiddenComment:Models.kt$* Custom LLM model constants for this project. * * text-embedding-004 outputs 768 dimensions natively, matching the pgvector column * defined in DocumentEmbeddingsTable. We use this instead of gemini-embedding-001 * (which outputs 3072 dims by default) because Koog 0.6.2's GoogleEmbeddingRequest * does not support the outputDimensionality parameter. * * TODO: When Koog adds outputDimensionality support, migrate to gemini-embedding-001 * with 768 dims configured, or re-create pgvector column at 3072 dims.</ID>
+    <ID>LongMethod:AiRoutes.kt$fun Route.aiRoutes( assistantAgentService: AssistantAgentService, chatAgentService: ChatAgentService, roleChecker: suspend (userId: String, groupId: String) -&gt; Boolean = { _, _ -&gt; false }, )</ID>
+    <ID>LongMethod:DocumentRoutes.kt$fun Route.documentRoutes( documentIngestionService: DocumentIngestionService, documentRepository: DocumentRepository, fileUploader: suspend context(Raise&lt;DomainError&gt;) (userId: String, fileName: String, contentType: String, bytes: ByteArray) -&gt; String, fileDeleter: (String) -&gt; Unit, roleChecker: suspend (userId: String, groupId: String) -&gt; Boolean, aiDispatcher: kotlinx.coroutines.CoroutineDispatcher, )</ID>
+    <ID>LongMethod:TestHelpers.kt$suspend fun documentTestApp( database: R2dbcDatabase, roleChecker: suspend (userId: String, groupId: String) -&gt; Boolean = { _, _ -&gt; true }, block: suspend ApplicationTestBuilder.() -&gt; Unit, )</ID>
+    <ID>LongParameterList:ChatAgent.kt$ChatAgentService$( userId: String, conversationId: String, input: String, groupId: Uuid? = null, userUuid: Uuid? = null, isAdmin: Boolean = false, )</ID>
+    <ID>LongParameterList:DocumentRepository.kt$DocumentRepository$( groupId: Uuid, userId: Uuid, name: String, fileKey: String, contentType: String, scope: String, assignedToUserId: Uuid?, )</ID>
+    <ID>LongParameterList:DocumentRoutes.kt$( documentIngestionService: DocumentIngestionService, documentRepository: DocumentRepository, fileUploader: suspend context(Raise&lt;DomainError&gt;) (userId: String, fileName: String, contentType: String, bytes: ByteArray) -&gt; String, fileDeleter: (String) -&gt; Unit, roleChecker: suspend (userId: String, groupId: String) -&gt; Boolean, aiDispatcher: kotlinx.coroutines.CoroutineDispatcher, )</ID>
+    <ID>MagicNumber:ConversationsTable.kt$ConversationsTable$255</ID>
+    <ID>MatchingDeclarationName:Ai.kt$CreateConversationsTableMigration : Migration</ID>
+    <ID>MatchingDeclarationName:AssistantAgent.kt$AssistantAgentService</ID>
+    <ID>MatchingDeclarationName:ChatAgent.kt$ChatAgentService</ID>
+    <ID>MaxLineLength:DocumentRoutes.kt$com.m2f.server.ai.contract.errors.DocumentIngestionFailed("Unsupported file type. Only .txt and .md files are supported.")</ID>
+    <ID>MaxLineLength:DocumentRoutes.kt$fileUploader: suspend context(Raise&lt;DomainError&gt;) (userId: String, fileName: String, contentType: String, bytes: ByteArray) -&gt; String</ID>
+    <ID>MaxLineLength:RagService.kt$RagService$appendLine("Use them to provide accurate, informed answers. Do not mention these documents unless the user asks about them.")</ID>
+    <ID>MaxLineLength:StructuredOutputTest.kt$StructuredOutputTest$fun</ID>
+    <ID>ReturnCount:DocumentIngestionService.kt$DocumentIngestionService.Companion$fun chunkText( text: String, chunkSize: Int = DEFAULT_CHUNK_SIZE, overlap: Int = DEFAULT_OVERLAP, ): List&lt;String&gt;</ID>
+    <ID>TooGenericExceptionCaught:AiRoutes.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ChatAgent.kt$ChatAgentService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DocumentIngestionService.kt$DocumentIngestionService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:DocumentIngestionService.kt$DocumentIngestionService$updateError: Exception</ID>
+    <ID>TooGenericExceptionCaught:RagService.kt$RagService$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

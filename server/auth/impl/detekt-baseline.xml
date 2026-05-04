@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>DestructuringDeclarationWithTooManyEntries:AuthServiceImpl.kt$AuthServiceImpl$val (validEmail, validPassword, validFirstName, validLastName) = raise.withError( { errors: arrow.core.NonEmptyList&lt;FieldError&gt; -&gt; IncorrectInput( errors.map { fieldError -&gt; object : InvalidField { override val field: String = fieldError.field override val errors = nonEmptyListOf(fieldError.message) } } ) } ) { zipOrAccumulate( { validateEmail(request.email) }, { validatePassword(request.password) }, { validateName(request.firstName) }, { validateName(request.lastName) }, ) { email, password, firstName, lastName -&gt; RegisterFields(email, password, firstName, lastName) } }</ID>
+    <ID>MagicNumber:ExposedUserRepository.kt$3</ID>
+    <ID>MaxLineLength:AuthServiceImpl.kt$AuthServiceImpl$private val onRegistered: (suspend (raise: Raise&lt;DomainError&gt;, userId: String, request: RegisterRequest) -&gt; Unit)? = null</ID>
+    <ID>MaxLineLength:OAuthRoutes.kt$val result = either { oauthService.handleAppleCallback(call.principal&lt;OAuthAccessTokenResponse.OAuth2&gt;()) }</ID>
+    <ID>MaxLineLength:OAuthRoutes.kt$val result = either { oauthService.handleGoogleCallback(call.principal&lt;OAuthAccessTokenResponse.OAuth2&gt;()) }</ID>
+    <ID>TooGenericExceptionCaught:OAuthService.kt$OAuthService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:PasswordResetService.kt$PasswordResetService$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>

@@ -43,6 +43,12 @@ class DashboardViewModelTest : ViewModelTest() {
         val sdk = fakeSdk()
         val viewModel = DashboardViewModel(sdk)
         viewModel.test {
+            // Process init's LoadDashboard side effects first (init fires on the
+            // pre-runTest dispatcher; this drains the queued mutations so the
+            // event-only assertion below isn't racing the loading state).
+            intent(DashboardIntent.LoadDashboard)
+            model(DashboardModel(isLoading = true))
+            model(DashboardModel(isLoading = false))
             intent(DashboardIntent.LogoutClicked)
             event(DashboardEvent.NavigateToLogin)
         }

@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>MagicNumber:HealthRoutes.kt$200</ID>
+    <ID>MagicNumber:HealthRoutes.kt$2000</ID>
+    <ID>TooGenericExceptionCaught:HealthRoutes.kt$e: Exception</ID>
+  </CurrentIssues>
+</SmellBaseline>
