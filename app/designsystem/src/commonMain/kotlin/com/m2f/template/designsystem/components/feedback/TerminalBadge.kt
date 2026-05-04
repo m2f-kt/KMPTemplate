@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.m2f.template.designsystem.theme.TerminalPreview
 import com.m2f.template.designsystem.theme.TerminalTheme
 
@@ -88,19 +87,17 @@ fun TerminalBadge(
         if (icon != null) {
             BasicText(
                 text = icon,
-                style = typography.xs.copy(
+                style = typography.xxs.copy(
                     color = fgColor,
                     fontWeight = fontWeight,
-                    fontSize = 10.sp,
                 ),
             )
         }
         BasicText(
             text = text,
-            style = typography.xs.copy(
+            style = typography.xxs.copy(
                 color = fgColor,
                 fontWeight = fontWeight,
-                fontSize = 10.sp,
             ),
         )
     }

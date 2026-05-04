@@ -65,6 +65,36 @@ Kotlin Multiplatform (KMP) + Compose Multiplatform application with a Ktor backe
 Terminal-themed design system. Targets: Android, iOS, JVM Desktop, WASM.
 Architecture: MVI (Model-View-Intent) on the client side, feature modules on the server side.
 
+## Design ↔ Code Mapping (Pencil)
+
+Two paired skills enforce a deterministic bridge between `terminal_design_system.pen`
+and the `app:designsystem` Kotlin module:
+
+- **`terminal-design-generator`** (mandatory when *designing* in Pencil) — every
+  component is a `type:"ref"` to one of the 41 reusable IDs, every color/font/spacing
+  is a `$--` token. Read `.claude/skills/terminal-design-generator/REFERENCES.md`
+  (or `manifest.json`) before producing any node.
+
+- **`terminal-design-implementer`** (mandatory when *implementing* a design in
+  Compose) — every Pencil ref → exact Composable, every `$--` token →
+  `TerminalTheme.<group>.<property>`. Read
+  `.claude/skills/terminal-design-implementer/CODE-MAP.md` before writing any
+  Composable that mirrors a design.
+
+- **`terminal-design-sync`** (audit + self-update) — diffs Pencil components,
+  Pencil variables, Kotlin Composables, Kotlin theme tokens, and the manifest.
+  Defaults to read-only audit (writes a report at
+  `.claude/skills/terminal-design-sync/last-sync-report.md`). Pass `--apply`
+  to patch `manifest.json`/`REFERENCES.md`/`CODE-MAP.md`. Invoke via
+  `/sync-design` or by saying "sync the design system mapping". Run after
+  any change to `terminal_design_system.pen` or `app:designsystem/`.
+
+Together they guarantee a deterministic 1:1 mapping in both directions:
+design ref `SpHta` ↔ `TerminalButton(variant = ButtonVariant.Default)`,
+design token `$--terminal-bg` ↔ `TerminalTheme.colors.bg`. The chain holds in
+both reading and writing — no hex leaks, no hallucinated components — and
+`terminal-design-sync` keeps the chain honest as both sides evolve.
+
 ## Module Structure
 
 - `composeApp` -- Main Compose app entry point (all platform targets). Depends on wire modules only.
@@ -156,3 +186,11 @@ Each feature has 3 submodules:
 - `buildSrc` conventions: `kmp-library-convention`, `server-module-convention`, `kover-convention`
 - Context parameters enabled: `-Xcontext-parameters`
 
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `python3 -c "from graphify.watch import _rebuild_code; from pathlib import Path; _rebuild_code(Path('.'))"` to keep the graph current

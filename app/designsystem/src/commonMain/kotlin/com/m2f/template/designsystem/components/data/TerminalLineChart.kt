@@ -110,7 +110,7 @@ fun TerminalLineChart(
         }
     }
 
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(TerminalTheme.radius.sm)
     val isScrollable = xLabels.size > scrollThreshold
 
     // Compute y-axis range
@@ -169,8 +169,7 @@ fun TerminalLineChart(
                         }
                         BasicText(
                             text = s.label,
-                            style = typography.xs.copy(
-                                fontSize = 10.sp,
+                            style = typography.xxs.copy(
                                 color = colors.textMuted,
                             ),
                         )
@@ -206,8 +205,7 @@ fun TerminalLineChart(
                         modifier = Modifier
                             .width(60.dp)
                             .padding(end = 8.dp),
-                        style = typography.xs.copy(
-                            fontSize = 9.sp,
+                        style = typography.chartAxis.copy(
                             color = colors.chartAxisText,
                             textAlign = TextAlign.End,
                         ),
@@ -355,8 +353,7 @@ fun TerminalLineChart(
                         xLabels.forEach { label ->
                             BasicText(
                                 text = label,
-                                style = typography.xs.copy(
-                                    fontSize = 9.sp,
+                                style = typography.chartAxis.copy(
                                     color = colors.chartAxisText,
                                 ),
                             )

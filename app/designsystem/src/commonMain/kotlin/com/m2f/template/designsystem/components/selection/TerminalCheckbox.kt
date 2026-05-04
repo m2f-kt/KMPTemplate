@@ -130,7 +130,7 @@ fun TerminalCheckbox(
         }
 
         if (label != null) {
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(TerminalTheme.spacing.sm))
             BasicText(
                 text = label,
                 style = typography.sm.copy(color = colors.text),

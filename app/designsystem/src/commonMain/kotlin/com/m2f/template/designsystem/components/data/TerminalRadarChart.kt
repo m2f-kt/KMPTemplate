@@ -107,7 +107,7 @@ fun TerminalRadarChart(
         }
     }
 
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(TerminalTheme.radius.sm)
 
     // Axis labels from first series (defines the hexagon axes)
     val axisLabels = series.firstOrNull()?.points?.map { it.label } ?: emptyList()
@@ -155,8 +155,7 @@ fun TerminalRadarChart(
                         }
                         BasicText(
                             text = s.label,
-                            style = typography.xs.copy(
-                                fontSize = 10.sp,
+                            style = typography.xxs.copy(
                                 color = colors.textMuted,
                             ),
                         )
@@ -336,8 +335,7 @@ fun TerminalRadarChart(
                             modifier = Modifier
                                 .align(Alignment.Center)
                                 .offset(x = offsetX, y = offsetY),
-                            style = typography.xs.copy(
-                                fontSize = 10.sp,
+                            style = typography.xxs.copy(
                                 color = chartAxisTextColor,
                                 textAlign = textAlignment,
                             ),

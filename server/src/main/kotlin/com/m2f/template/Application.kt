@@ -109,11 +109,18 @@ fun Application.module() {
     install(ContentNegotiation) { json() }
     install(WebSockets)
     install(CORS) {
-        // Development origins (WASM dev server + backend)
+        // Development origins. Allow the API's own host (rare, but harmless),
+        // common WASM/JS dev-server defaults, and any APP_URL host.
+        allowHost("localhost:${config.env.http.port}", schemes = listOf("http"))
+        // WASM dev-server (Kotlin webpack-dev-server defaults to 8080).
         allowHost("localhost:8080", schemes = listOf("http"))
         allowHost("localhost:8081", schemes = listOf("http"))
         allowHost("localhost:8082", schemes = listOf("http"))
         allowHost("localhost:3000", schemes = listOf("http"))
+        // Extra origins from CORS_ALLOWED_ORIGINS env var (LAN IPs, ngrok, etc.)
+        config.env.http.corsAllowedOrigins.forEach { origin ->
+            allowHost(origin, schemes = listOf("http", "https"))
+        }
         // HTTP methods used by API endpoints
         allowMethod(HttpMethod.Get)
         allowMethod(HttpMethod.Post)

@@ -1,0 +1,1 @@
+{"nodes": [{"id": "kover_convention_gradle", "label": "kover-convention.gradle.kts", "file_type": "code", "source_file": "buildSrc/src/main/kotlin/kover-convention.gradle.kts", "source_location": "L1"}], "edges": []}

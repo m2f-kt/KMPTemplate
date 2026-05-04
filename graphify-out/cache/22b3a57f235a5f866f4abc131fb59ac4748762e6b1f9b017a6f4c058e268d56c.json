@@ -1,0 +1,1 @@
+{"nodes": [{"id": "authservice", "label": "AuthService.kt", "file_type": "code", "source_file": "server/auth/contract/src/main/kotlin/com/m2f/server/auth/contract/service/AuthService.kt", "source_location": "L1"}], "edges": []}

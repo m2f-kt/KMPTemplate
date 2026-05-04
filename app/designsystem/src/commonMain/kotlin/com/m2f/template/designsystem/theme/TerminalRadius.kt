@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 @Immutable
 data class TerminalRadius(
     val none: Dp,
+    val xs: Dp,
     val sm: Dp,
     val md: Dp,
     val lg: Dp,
@@ -21,6 +22,7 @@ val LocalTerminalRadius = staticCompositionLocalOf {
 
 val TerminalRadiusValues = TerminalRadius(
     none = 0.dp,
+    xs = 2.dp,
     sm = 4.dp,
     md = 6.dp,
     lg = 12.dp,

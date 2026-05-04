@@ -43,6 +43,23 @@ fun runCommand(vararg args: String): Int {
     return process.waitFor()
 }
 
+// Read a value from .env (or .env.example as a fallback) so dev tasks stay
+// aligned with the runtime configuration. Returns null when the key is absent.
+fun envValue(key: String): String? {
+    val source = listOf(file(".env"), file(".env.example")).firstOrNull { it.exists() }
+        ?: return null
+    return source.useLines { lines ->
+        lines.map { it.trim() }
+            .filterNot { it.isEmpty() || it.startsWith("#") }
+            .map { it.split("=", limit = 2) }
+            .firstOrNull { it.size == 2 && it[0] == key }
+            ?.get(1)
+            ?.trim()
+    }
+}
+
+val serverPort: Int = envValue("PORT")?.toIntOrNull() ?: 8080
+
 tasks.register("checkSetup") {
     group = "dev"
     description = "Check development prerequisites"
@@ -104,7 +121,7 @@ tasks.register("checkSetup") {
             9003 to "MinIO Console",
             1025 to "MailHog SMTP",
             8025 to "MailHog Web",
-            8080 to "Server"
+            serverPort to "Server"
         )
         for ((port, service) in ports) {
             val available = try {
@@ -204,7 +221,7 @@ tasks.register("verifySetup") {
 
         // Check server /health endpoint
         try {
-            val url = java.net.URI("http://localhost:8080/health").toURL()
+            val url = java.net.URI("http://localhost:$serverPort/health").toURL()
             val connection = url.openConnection() as java.net.HttpURLConnection
             connection.connectTimeout = 3000
             connection.readTimeout = 3000

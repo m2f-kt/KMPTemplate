@@ -1,0 +1,17 @@
+---
+source_file: "core/testing/src/commonTest/kotlin/com/m2f/template/core/testing/MviViewModelTestDslTest.kt"
+type: "code"
+community: "MviViewModelDsl"
+location: "L11"
+tags:
+  - graphify/code
+  - graphify/EXTRACTED
+  - community/MviViewModelDsl
+---
+
+# CounterIntent
+
+## Connections
+- [[MviViewModelTestDslTest.kt]] - `contains` [EXTRACTED]
+
+#graphify/code #graphify/EXTRACTED #community/MviViewModelDsl

@@ -95,7 +95,7 @@ fun TerminalBarChart(
         }
     }
 
-    val shape = RoundedCornerShape(4.dp)
+    val shape = RoundedCornerShape(TerminalTheme.radius.sm)
     val isScrollable = bars.size > scrollThreshold
 
     // Compute y-axis range
@@ -178,8 +178,7 @@ fun TerminalBarChart(
                         modifier = Modifier
                             .width(60.dp)
                             .padding(end = 8.dp),
-                        style = typography.xs.copy(
-                            fontSize = 9.sp,
+                        style = typography.chartAxis.copy(
                             color = colors.chartAxisText,
                             textAlign = TextAlign.End,
                         ),
@@ -300,8 +299,7 @@ fun TerminalBarChart(
                         bars.forEach { bar ->
                             BasicText(
                                 text = bar.label,
-                                style = typography.xs.copy(
-                                    fontSize = 9.sp,
+                                style = typography.chartAxis.copy(
                                     color = if (bar.highlight) {
                                         colors.chartBarHighlight
                                     } else {
