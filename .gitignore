@@ -3,6 +3,10 @@
 .gradle
 **/build/
 xcuserdata
+
+# JVM crash dumps (hs_err_pid<N>.log / replay_pid<N>.log) — local artifacts, never commit
+hs_err_pid*.log
+replay_pid*.log
 !src/**/build/
 local.properties
 .idea
@@ -23,6 +27,9 @@ __pycache__/
 http-client.env.json
 .env
 .worktrees/
+
+# detekt CLI jars cached by the detekt-on-edit autofix hook (fetched on first use)
+.claude/hooks/.detekt/
 
 # graphify: only ignore the machine-specific Python interpreter path
 graphify-out/.graphify_python

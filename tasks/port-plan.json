@@ -1,0 +1,429 @@
+{
+  "executiveSummary": "NoType forked Template and evolved it along five axes that yield genuinely generic, reusable improvements worth porting back: (1) client-core transport/navigation/testing hardening, (2) server-core config/security/migration hardening, (3) a structurally-superset \"Aurora\" design system, (4) a complete generic Langfuse+OpenTelemetry observability layer, and (5) Apple/desktop platform + permissions infra. The four in-scope server FEATURE modules (auth/groups/files/privacy) are byte-identical after package normalization (verified via recursive diff + SHA), so there is essentially nothing to port there except a TLS-1.3 enforcement test. Likewise the client MVI feature cores are nearly identical; the real client deltas are in shared layers (core:navigation, core:sdk, core:storage, core:testing, app:designsystem) and the app shell.\n\nThe plan is ordered strictly by dependency: foundational build/env tooling first (EnvLoader, detekt hook, settings.json fix, version catalog), then shared-core hardening (SDK transport, ErrorMapper, navigation primitives, test fakes), then the design-system swap (tokens before effect-modifiers before components before screen rewiring), then server-core hardening, then a Koog 1.0 bump (hard prerequisite) followed by a new server:core:observability module and its wiring, then a new core:permissions + core:platform-macos module set plus desktop-shell capabilities and packaging, and finally docs/setup.sh and skill additions. I prefer many small, independently-verifiable phases over a few giant ones.\n\nCRITICAL CROSS-CUTTING CONSTRAINT verified against source: Template keeps wasmJs as a first-class target; NoType dropped it. Therefore NoType's build.gradle.kts files must NEVER be copied wholesale \u2014 only additive deps are cherry-picked, Template's wasmJs blocks are kept, and every expect declaration ported from NoType MUST gain a wasmJs actual or commonMain will not compile. This is the single highest-frequency failure mode and is called out in nearly every phase.\n\nVERIFICATION SPOT-CHECKS performed: Template's ApiClient has no HttpTimeout/WebSockets/requireSecureBaseUrl (NoType added all three); Template's ErrorMapper uses response.body<ErrorResponse>() and loses the body on parse failure (NoType captures raw body first); Template's core:navigation is just Route.kt (NoType added NavSelectionSignal/NavigateAdd/NavigationModule); Template's settings.json invokes the bash detekt hook via `node` (latent no-op bug NoType fixed to `bash`); Template Env.Ai is lean (enabled+googleApiKey); Template has no `auth-jwt` named JWT provider; Koog is 0.6.2 (NoType 1.0.0-preview7/beta-preview7 split); 21 Template feature-screen files reference Terminal* primitives (the design-swap surface); the design system is named \"Aurora\" everywhere in code (AuroraTheme/AuroraColors), whereas the user said \"Aura\" verbally \u2014 see designSystemDecision and openQuestions.",
+  "designSystemDecision": "RECOMMENDATION: Do a full REPLACE of Terminal with the Aurora system, but resolve the name first. There is a real naming conflict: the user said \"Aura\" verbally, but every symbol in NoType's code is \"Aurora\" (verified: AuroraTheme, AuroraColors, AuroraTypography, AuroraGlows, AuroraMotion, etc. \u2014 there are zero \"Aura\"-without-r symbols). Three options, in order of recommendation:\n\n(A) PREFERRED \u2014 Adopt a NEUTRAL design-system name for the Template baseline (e.g. keep \"Terminal\" OR pick a brand-agnostic name like \"Studio\"/\"Base\"). Rationale: Template is a GENERIC starter; baking NoType's brand identity (\"Aurora\") into the template is itself a leak. Port the Aurora STRUCTURE (new token groups, expanded palette slots, 3-family typography, new components) into Template's existing Terminal system, keeping Terminal* names and supplying NEUTRAL default values (no neon trio as defaults, no midnight-canonical surfaces, single-font default for all three families unless fonts are added). This is the lowest-risk path and keeps Template brand-free.\n\n(B) If the user truly wants the template rebranded to a real brand: name it \"Aurora\" (match the code, do NOT introduce \"Aura\" \u2014 that would mean renaming every NoType symbol for no benefit and would diverge from the verified codebase). Treat \"Aura\" as a verbal shorthand for \"Aurora\".\n\n(C) Only choose \"Aura\" if the user explicitly wants a new, distinct brand name different from NoType's \u2014 then it is a global rename Aurora*->Aura* on top of the port.\n\nSCOPE: The swap is large but mostly mechanical. Token data-class shapes are near-identical, so the theme API surface is forward-compatible \u2014 21 Template feature-screen files call Terminal* primitives and need only a mechanical rename to re-skin automatically. Borders and Shadows token groups are byte-identical between systems \u2014 do NOT re-port them. Only Radius (adds xl=28dp slot), Colors (adds textFaint/bgElev2/borderStrong/fgOnNeon + neon accent slots), and Typography (3 families + semantic scale, with legacy names re-pointed for back-compat) actually changed; Glows and Motion are net-new groups.\n\nMIGRATION ORDER (must be respected or ports won't compile): (1) token groups first \u2014 add Motion (drop-in), Glows (structure + neutral defaults), then Color slots (textFaint/bgElev2/borderStrong/fgOnNeon + accent slots) and the Radius xl slot, then the 3-family Typography KEEPING the legacy-name aliasing trick (load-bearing \u2014 it's what makes the swap non-breaking); (2) effect modifiers (auroraBorder/selectedAccent/PulseDot/auroraBrush, generalized to take theme colors \u2014 these depend on the Glows group); (3) new generic components (SegmentedControl, RangeSlider, ModalSheet, ChipsInput, KbdCombo, NavRail, DiffEventRow, ModeBadge \u2014 each depends on the token slots it references); (4) finally the 1:1 Terminal*->chosen-name rename across the 21 feature screens, after which they re-skin automatically.\n\nEXCLUDE (product brand/voice): RecordingHudPill, HudPillSurface, RecordingPillWave, AuroraWaveform, AuroraBrandWaveform, HudIcons, AuroraBrandLogo, the neon trio as DEFAULT values, midnight #07080C as canonical surface, Space Grotesk/Manrope as DEFAULT fonts, the notype-design skill, and aurora-design-request.md. Keep the SLOTS/structure, not these literal brand values.\n\nDESIGN-SKILL CONSEQUENCE: If the design system is renamed/replaced, Template's terminal-design-generator/implementer/sync skill trio + terminal_design_system.pen + manifest.json/REFERENCES.md/CODE-MAP.md and the CLAUDE.md \"Design <-> Code Mapping (Pencil)\" section all become stale and must be re-authored for the new token set, OR the swap must update them in lockstep. This is a non-trivial sub-project (see openQuestions and Phase D5).",
+  "openQuestions": [
+    "DESIGN-SYSTEM NAME: You said 'Aura' but the NoType code says 'Aurora' everywhere (verified: no 'Aura'-without-r symbols exist). Pick one: (A) keep a NEUTRAL/Terminal name and only port Aurora's structure with brand-free defaults [recommended for a generic template]; (B) rebrand the template to 'Aurora' to match the code; or (C) introduce a genuinely new 'Aura' brand requiring a global Aurora*->Aura* rename. This decision gates the entire design-system phase set and the Pencil-skill re-authoring.",
+    "REBRAND INTENT: Is the goal to harvest Aurora's GENERIC improvements into Template's existing Terminal system (keep Terminal naming, neutral defaults) OR to literally replace Terminal with the Aurora look-and-feel (neon palette, dark-canonical surfaces, Space Grotesk/Manrope fonts)? The former is brand-free and low-risk; the latter bakes NoType's identity into the 'generic' template.",
+    "FONTS: Adopting the 3-family typography either (a) ships Space Grotesk + Manrope .ttf assets into Template's composeResources/font, or (b) keeps Template's single JetBrains Mono font as the default for all three families. Which? (a) makes the template look like NoType; (b) keeps the structure generic.",
+    "REQUEST TIMEOUT DEFAULT: NoType sets requestTimeoutMillis=INFINITE (deliberate, for long LLM bodies). For a generic template, do you want a sane finite default (e.g. 30s) with connect/request timeouts exposed as constructor params, or mirror INFINITE? Recommended: finite default + params.",
+    "KOOG BUMP SCOPE: Porting the observability layer requires bumping Koog from 0.6.2 to the 1.0.0-preview7 line (an ALPHA/preview, with two non-binary-compatible streams). Do you want the generic template baseline to depend on a preview Koog, or should the observability module be optional/opt-in (shipped but not wired into the default server) so the template baseline stays on stable Koog until 1.0 GA?",
+    "OBSERVABILITY DEPTH: Should Template ship the FULL observability stack (OTel SDK + SpanAdapter + Langfuse REST clients + prompt-provider + eval/judge harness + self-hosted Langfuse docker profile) or only the lower tiers (OTel SDK + SpanAdapter + Env fields), deferring prompt-management/eval to when a project actually adds an LLM feature?",
+    "COMPOSE HOT RELOAD BUMP: The compose-hot-reload MCP server needs the :composeApp:hotMcpServerJvm task, which likely requires bumping composeHotReload 1.0.0 -> 1.2.0-alpha01 (an alpha) in the template baseline. Accept an alpha plugin in the generic baseline, or hold until a stable release?",
+    "CROSS-PLATFORM CI: Several ported dev/CI scripts (server-watch.sh, check-binary-size.sh, check-idle-rss.sh, run-dev-bundle.sh) are macOS-only (BSD stat -f, ps -o rss=, dmg/.app paths). If Template's CI runs on Linux, do you want Linux fallback branches added, or are these acceptable as macOS-only dev helpers?",
+    "NEW MODULES: Approve introducing new shared modules \u2014 server:core:observability, core:permissions, core:platform-macos (or core:native), core:securestorage \u2014 and promoting InMemorySettings into core:testing? These are the right homes for the generic infra but add to the module graph.",
+    "PERMISSIONS GENERALIZATION: Approve generalizing AppError.Audio.PermissionDenied -> AppError.Permission.Denied(permission) and adding a generic Permission enum (Microphone/Camera/Accessibility/Notifications/Location) + PermissionController expect/actual in core:models/core:permissions? This is the clean generic shape but touches core:models."
+  ],
+  "globalRisks": [
+    "wasmJs regression (HIGHEST FREQUENCY): Template keeps wasmJs as a first-class target; NoType dropped it. NEVER copy NoType build.gradle.kts files wholesale (they delete the wasmJs target and the kotlin-js-store/wasm/yarn.lock). Cherry-pick only additive deps and KEEP Template's wasmJs blocks. Every expect declaration ported from NoType (rememberSystemDarkTheme, allAppModules, sharedModule, permission seams, reduced-motion, cross-feature content slots) MUST gain a wasmJs actual or commonMain will not compile.",
+    "Package rename: every ported file is com.m2f.notype.*; rewrite to com.m2f.template.* (and rootProject 'notype'->'template' coordinates). Easy to miss in copied files.",
+    "EnvLoader ordering: copy EnvLoader.kt into Template/buildSrc BEFORE adding any :server:run / run-task doFirst block that references it, or the build script won't compile. EnvLoader is plain Kotlin (no buildSrc/build.gradle.kts change needed).",
+    "detekt hook is inert without the settings.json fix: Template invokes the bash hook via `node` (verified) which silently does nothing. The hook rewrite REQUIRES flipping that command to `bash` in the same change, else the upgrade does not run. DETEKT_VERSION is hardcoded (1.23.8) \u2014 keep it in sync with libs.versions.toml.",
+    "Design-system token-before-component ordering: Glows must land before auroraGlow/selectedAccent/SegmentedControl; textFaint before KbdCombo; bgElev2/borderStrong/fgOnNeon before any component referencing them; the legacy-typography aliasing trick must be preserved or it becomes a breaking change across all 21 screens. Borders/Shadows are byte-identical \u2014 do not re-port.",
+    "Koog 1.0 is a hard prerequisite for the ENTIRE observability tracing stack \u2014 none of the SpanAdapter/OTel-SDK code compiles on 0.6.2. The two Koog streams (core preview7 vs ext beta-preview7) are NOT binary-compatible; pin both and do not mix. Koog OTel API is preview/unstable.",
+    "Observability is a single interlocking fix: process-lifetime SDK + NonClosingOpenTelemetry + simple (not batch) span processor + setShutdownOnAgentClose(true), plus two verified self-hosted-Langfuse-v3 gotchas (trace.output must be set on the INFERENCE span not just the root; promptVersion must go through freeform metadata not the reserved int field). Porting piecemeal reintroduces flat traces or per-call leaks. Reconcile with the existing koog-langfuse-tracing / langfuse-prompt-management skills \u2014 do not fork a third copy of the adapter.",
+    "Module placement: server:core:observability must depend on server:core:config, not the reverse; keep server:core:config dependency-light (only gains Langfuse Env fields + LangfuseConfig value type). The new secret-storage backend belongs in a new core:securestorage, NOT lifted from core:audio with its AES audio-key logic.",
+    "core:models coupling for permissions: the gates/probes/deep-links return Either<AppError,_> using AppError.Native.* and AppError.Audio.PermissionDenied. Define generic AppError.Permission.* / AppError.Native.* in Template's core:models BEFORE porting the seams, or they won't compile. Prefer generalizing to AppError.Permission.Denied(permission) during the port.",
+    "macOS entitlements footgun: a custom entitlementsFile REPLACES Compose Desktop's default wholesale \u2014 if you port entitlements.plist you MUST keep the three JVM hardened-runtime keys (allow-jit, allow-unsigned-executable-memory, disable-library-validation) or the bundled JVM won't launch. Strip the mic-specific keys, keep the JVM keys.",
+    "Do NOT port NoType's NoType-local regressions: the workflow_dispatch-only CI triggers (a billing block, keep Template's push/PR triggers), the wasmJs/ktor-client-js removal, the macos-native-gate.yml, and the Aurora*->Terminal* rename leaking into shared skills/code-reviewer.md (port only the verification paragraph, discard the rename).",
+    "Directionality: Template has MORE RECENT commits than NoType on some server features (quick-7 inline export, quick-9 password verification) and the password->token rename is already consistent in BOTH repos \u2014 confirm Template is the up-to-date baseline before assuming a delta, and do not re-apply the token rename.",
+    "InMemorySettings is duplicated per-module in NoType \u2014 promote ONCE to core:testing rather than copying per feature. Also verify whether multiplatform-settings-test/MapSettings is published for Template's target set before adopting the hand-rolled fake.",
+    "Several reusable seams (permission/accessibility/reduced-motion) live inside the hidden app:dictation:impl module in NoType; on port they must move UP into shared core modules (core:permissions, core:platform-macos, app:designsystem) so other features can consume them \u2014 don't replicate the impl-hidden placement.",
+    "Notarization is only partially present in NoType (hardened-runtime entitlements + dev re-sign script + asc-* skills, but NO end-to-end notarize/staple Gradle task). If the template promises 'notarization resolved', that last mile still needs authoring; the entitlements/signing groundwork is a starting point, not a complete pipeline."
+  ],
+  "phases": [
+    {
+      "phase": "P0 \u2014 Build/env foundation: EnvLoader + detekt hook + settings.json fix + version catalog + gitignore",
+      "goal": "Land the zero-coupling build tooling that everything else benefits from, with no behavioral risk to wasmJs or the module graph.",
+      "workItems": [
+        "Copy buildSrc/src/main/kotlin/EnvLoader.kt verbatim into Template/buildSrc/src/main/kotlin/ (plain Kotlin, no buildSrc/build.gradle.kts change). Source: /Users/marc/IdeaProjects/NoType/buildSrc/src/main/kotlin/EnvLoader.kt",
+        "Rewrite Template/.claude/hooks/detekt-on-edit.sh from NoType's version (standalone detekt CLI per-edited-file, two passes, cached jars, nearest baseline). Source: /Users/marc/IdeaProjects/NoType/.claude/hooks/detekt-on-edit.sh. Keep DETEKT_VERSION in sync with Template libs.versions.toml (1.23.8).",
+        "Fix Template/.claude/settings.json PostToolUse detekt command from `node .claude/hooks/detekt-on-edit.sh` to `bash .claude/hooks/detekt-on-edit.sh` (verified latent bug). Source: /Users/marc/IdeaProjects/NoType/.claude/settings.json",
+        "Add gitignore globs: hs_err_pid*.log, replay_pid*.log, .claude/hooks/.detekt/. Do NOT remove /kotlin-js-store/wasm/yarn.lock (Template keeps wasmJs). Source: /Users/marc/IdeaProjects/NoType/.gitignore",
+        "Add version-catalog aliases ktor-client-mock and ktor-client-websockets (version.ref=ktor, already 3.4.0). Do NOT remove ktor-client-js. Source: /Users/marc/IdeaProjects/NoType/gradle/libs.versions.toml"
+      ],
+      "dependsOn": "none",
+      "effort": "S",
+      "verification": "./gradlew help (build scripts still compile with EnvLoader present); edit a .kt file and confirm the detekt hook runs (non-blocking, ~1-2s) via `bash .claude/hooks/detekt-on-edit.sh <file>`; ./gradlew detekt still passes."
+    },
+    {
+      "phase": "P1 \u2014 Server :server:run .env injection (EnvLoader wiring) + Env.kt robust discovery",
+      "goal": "Make the committed .env authoritative over ambient shell vars for local :server:run, and fix Gradle CWD not seeing the root .env (12-factor precedence).",
+      "workItems": [
+        "Add the ~13-line `tasks.named<JavaExec>(\"run\") { doFirst { EnvLoader.load(rootProject.projectDir).forEach { (k,v) -> environment(k,v) } } }` block to Template/server/build.gradle.kts (execution-time doFirst, config-cache safe). Do NOT port the adjacent product `implementation(projects.server.transcripts.wire)` line. Genericize the LANGFUSE_* example comment. Source: /Users/marc/IdeaProjects/NoType/server/build.gradle.kts",
+        "Port ONLY the dotenvDirectory walk-up block + .directory(dotenvDirectory) + the env() change to System.getenv(key) ?: dotenv[key] in Env.kt. Do NOT port any Ai/Stt/Langfuse/ZDR/cap fields. Source: /Users/marc/IdeaProjects/NoType/server/core/config/src/main/kotlin/com/m2f/core/config/configuration/Env.kt",
+        "Port EnvTest's dotenv-fixture recipe (temp .env round-trip) retargeted to a generic key (NoType asserts DEEPGRAM_* \u2014 rename). Source: /Users/marc/IdeaProjects/NoType/server/core/config/src/test/kotlin/com/m2f/core/config/EnvTest.kt"
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :server:run with a project-root .env containing a test var and the same var exported in the shell to a different value \u2014 confirm the .env value wins inside the JVM; ./gradlew :server:core:config:test passes the new EnvTest."
+    },
+    {
+      "phase": "P2 \u2014 core:sdk transport hardening (HttpTimeout + WebSockets + requireSecureBaseUrl)",
+      "goal": "Bound the connect phase, add a WebSockets client plugin for future streaming, and refuse cleartext non-loopback baseUrls \u2014 generic transport-security and resilience baseline.",
+      "workItems": [
+        "Add `implementation(libs.ktor.client.websockets)` to Template core:sdk commonMain (additive only \u2014 KEEP Template's wasmJs blocks; do NOT copy NoType's build.gradle wholesale). Source delta: /Users/marc/IdeaProjects/NoType/core/sdk/build.gradle.kts",
+        "In createApiClient: install(HttpTimeout){ connectTimeoutMillis = CONNECT_TIMEOUT_MS; requestTimeoutMillis = <finite default, e.g. 30s> } with both exposed as constructor params (do NOT hardcode INFINITE \u2014 that's a NoType product call). Source: /Users/marc/IdeaProjects/NoType/core/sdk/src/commonMain/kotlin/com/m2f/notype/sdk/ApiClient.kt",
+        "install(WebSockets){ pingIntervalMillis = ... } on the shared client.",
+        "Copy requireSecureBaseUrl + LOOPBACK_HOSTS verbatim, call at top of createApiClient, strip audio/transcript wording from the doc comment. Same source file."
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :core:sdk:allTests (all targets incl. wasmJs compile/link); add a quick unit test that requireSecureBaseUrl(\"http://example.com\") throws and (\"http://localhost:8080\") / (\"http://10.0.2.2\") pass."
+    },
+    {
+      "phase": "P3 \u2014 core:sdk ErrorMapper raw-body capture + body-code dispatch hook",
+      "goal": "Stop discarding error bodies that don't match the {code,message} ErrorResponse shape; add a generic (no-op default) body-code dispatch extension point.",
+      "workItems": [
+        "Rewrite mapHttpError to read response.bodyAsText() ONCE, decode ErrorResponse from that string with ignoreUnknownKeys, preserve the raw body (BODY_PREVIEW_CHARS-truncated) in the AppError.Client.Unknown fallback. Source: /Users/marc/IdeaProjects/NoType/core/sdk/src/commonMain/kotlin/com/m2f/notype/sdk/ErrorMapper.kt",
+        "Add the body-code dispatch as a GENERIC no-op/pluggable hook (errorResponse?.let { domainCodeMapper(it)?.let { return it } }). DROP mapAiErrorCode/mapCleanupStreamErrorCode (AI_/AUDIO_ codes are product-specific). apiCall()/mapException() unchanged.",
+        "Verified baseline: Template currently does response.body<ErrorResponse>() and loses the body on parse failure."
+      ],
+      "dependsOn": "P2",
+      "effort": "S",
+      "verification": "./gradlew :core:sdk:allTests; add a unit test (MockEngine) returning a non-ErrorResponse-shaped 400 body and assert the raw body is preserved in AppError.Client.Unknown.detail."
+    },
+    {
+      "phase": "P4 \u2014 core:navigation primitives (NavSelectionSignal + navigateAdd + navigationModule)",
+      "goal": "Add the reusable cross-feature signalling + append-only back-stack toolkit Template lacks (Template's core:navigation is just Route.kt \u2014 verified).",
+      "workItems": [
+        "Add `implementation(libs.koin.core)` + `implementation(libs.kotlinx.coroutines.core)` to Template core:navigation commonMain (additive; KEEP wasmJs target).",
+        "Copy NavSelectionSignal.kt (+ its commonTest NavSelectionSignalTest.kt), NavigateAdd.kt, NavigationModule.kt; rename package; genericize KDocs (strip DashboardRoute/tray/WR-04/macOS-AX references, keep the WHY a route push can't swap a pane). Keep NavSelectionSignal STRING-typed (do not 'improve' to an enum \u2014 that reintroduces the feature cycle). Sources under /Users/marc/IdeaProjects/NoType/core/navigation/src/commonMain/kotlin/com/m2f/notype/navigation/",
+        "Wire navigationModule into the shared DI aggregator (sharedModule) as a plain val include (do NOT convert sharedModule to expect/actual just for this).",
+        "Port these ONCE \u2014 they overlap across the navigation, app-features, and app-shell findings."
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :core:navigation:allTests (incl. wasmJs link + the NavSelectionSignalTest); confirm koinInject<NavSelectionSignal>() resolves in a shared DI smoke test."
+    },
+    {
+      "phase": "P5 \u2014 Shared test infra: InMemorySettings (-> core:testing), PreferencesStorage tests, WS/streaming test deps",
+      "goal": "Promote reusable test fakes and add the dependency blocks that let the template support WS/streaming SDK tests, without dragging product types.",
+      "workItems": [
+        "Promote InMemorySettings to core:testing (single canonical copy) instead of per-module duplication. Sources: /Users/marc/IdeaProjects/NoType/core/storage/src/commonTest/.../InMemorySettings.kt and the app/privacy/impl duplicate. Verify first whether multiplatform-settings-test/MapSettings is published for Template's target set; if so prefer it.",
+        "Port a SLIMMED PreferencesStorageTest exercising only Template's existing prefs (theme, language) + persist-across-fresh-instance; DROP product prefs. Source: /Users/marc/IdeaProjects/NoType/core/storage/src/commonTest/.../PreferencesStorageTest.kt",
+        "Port the core:sdk jvmTest dependency block (ktor-client-mock, ktor-server-test-host, ktor-server-websockets, ktor-server-content-negotiation, turbine, kotest-arrow) so the template SUPPORTS WS/streaming tests \u2014 additive only, keep wasmJs. Source delta: /Users/marc/IdeaProjects/NoType/core/sdk/build.gradle.kts",
+        "OPTIONAL: include a renamed generic StreamingApiTest example (in-process Ktor WS harness) but NOT SttApiStreamTest's product types.",
+        "Add kotlin-test + kotest to core:storage commonTest deps."
+      ],
+      "dependsOn": "P4",
+      "effort": "M",
+      "verification": "./gradlew :core:storage:allTests and :core:testing:allTests (incl. wasmJs); ./gradlew :core:sdk:jvmTest compiles with the new jvmTest deps."
+    },
+    {
+      "phase": "P6 \u2014 Optional: generic reactive consent/boolean-preference + WS->Flow pattern docs",
+      "goal": "Capture the reactive-preference recipe and the WebSocket->Flow streaming skeleton as generic patterns (mechanism, not NoType's keys).",
+      "workItems": [
+        "If desired, add a single generic telemetryConsent/analyticsConsent Boolean pref to PreferencesStorage following the MutableStateFlow + write-through + observe + default-false recipe (do NOT port NoType's tracingConsent/hudSize/appToneMap keys). Source pattern: /Users/marc/IdeaProjects/NoType/core/storage/src/commonMain/.../PreferencesStorage.kt",
+        "Document the WebSocket->Flow SDK pattern (channelFlow + launched sender + closeReason->typed-error + CancellationException rethrow + mapException) as a CLAUDE.md/skill note or tiny generic example; do NOT port SttApiImpl. Source pattern: /Users/marc/IdeaProjects/NoType/core/sdk/src/commonMain/kotlin/com/m2f/notype/sdk/api/SttApiImpl.kt"
+      ],
+      "dependsOn": "P5",
+      "effort": "S",
+      "verification": "./gradlew :core:storage:allTests if a pref is added; otherwise docs-only (no build impact)."
+    },
+    {
+      "phase": "D1 \u2014 Design tokens: Motion + Glows groups",
+      "goal": "Add the two net-new token groups (Motion is drop-in; Glows is structure + neutral defaults). MUST precede any effect-modifier or component that references them.",
+      "workItems": [
+        "Copy AuroraMotion.kt -> TerminalMotion (durQuickMs/durBaseMs/durSlowMs/easeOut/easeInOut), add LocalTerminalMotion provider + accessor to TerminalTheme. Consider adding a reducedMotion Boolean while porting. Source: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/AuroraMotion.kt",
+        "Copy AuroraGlows.kt -> TerminalGlows (Glow(color,blur,spread) + Glows bundle), add LocalTerminalGlows + the glow modifier; supply NEUTRAL default glow colors (not the neon trio). Source: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/AuroraGlows.kt",
+        "Respect the chosen design-system name from the openQuestions decision (Terminal/Aurora/Aura)."
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :app:designsystem:allTests (incl. wasmJs); a @Preview using TerminalTheme.motion / TerminalTheme.glows renders."
+    },
+    {
+      "phase": "D2 \u2014 Design tokens: Color slots + Radius xl",
+      "goal": "Add the generic structural color slots (textFaint, bgElev2, borderStrong, fgOnNeon + neutral accent slots) and the xl radius slot. Borders/Shadows are byte-identical \u2014 do NOT touch.",
+      "workItems": [
+        "Add textFaint (4th text tier), bgElev2 (3rd elevation), borderStrong, fgOnNeon, and accent2/accent3 SLOTS (with NEUTRAL default hues, not the neon trio) to TerminalColors \u2014 both light+dark variants + the LocalXxxColors Unspecified defaults. Source: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/AuroraColors.kt",
+        "Add the xl=28dp slot to TerminalRadius; keep Template's own radius VALUES unless adopting Aurora's rounder look wholesale. Source: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/AuroraRadius.kt",
+        "Do NOT make dark the canonical theme or adopt #07080C unless rebranding (see designSystemDecision)."
+      ],
+      "dependsOn": "D1",
+      "effort": "M",
+      "verification": "./gradlew :app:designsystem:allTests; previews in light + dark render with new slots; existing screens still compile (slots are additive)."
+    },
+    {
+      "phase": "D3 \u2014 Design tokens: 3-family typography with back-compat aliasing",
+      "goal": "Upgrade to display/body/mono families + semantic scale WHILE preserving the legacy style names (xxs/xs/sm/base/md/xxl/chartAxis) re-pointed onto the new families \u2014 the load-bearing trick that keeps the swap non-breaking.",
+      "workItems": [
+        "Port the 3-family + semantic-scale STRUCTURE (display1/display2/h1/h2/h3/body/bodySm/caption/eyebrow/mono with line-heights + letter-spacing). MUST keep legacy-name aliases. Source: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/AuroraTypography.kt",
+        "FONTS DECISION (openQuestion): either add Space Grotesk + Manrope .ttf to composeResources/font + Res references, OR default all three families to Template's existing JetBrains Mono (keeps it generic).",
+        "Add the 4th @Preview (Desktop + dark) to TerminalPreview. Source: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/AuroraPreview.kt"
+      ],
+      "dependsOn": "D2",
+      "effort": "M",
+      "verification": "./gradlew :app:designsystem:allTests; build the whole client (./gradlew :composeApp:assemble or :app:*:allTests) to confirm legacy typography names still resolve across all 21 feature screens."
+    },
+    {
+      "phase": "D4 \u2014 Effect modifiers + new generic components",
+      "goal": "Port the brand-stroke effect toolkit (generalized to theme colors) and the ~8 net-new generic components, each gated on the token groups it needs.",
+      "workItems": [
+        "Effect modifiers: auroraBorder (conic ring), auroraStaticBorder, selectedCyan -> generalize to selectedAccent(color=theme.accent), PulseDot, auroraBrush; port ringPath/drawSweepRing geometry verbatim. Default colors to theme accents, not the neon trio. Sources: /Users/marc/IdeaProjects/NoType/app/designsystem/.../modifier/AuroraEffects.kt + AuroraSelection.kt",
+        "Components (rename + generalize accent/brand bits): SegmentedControl, RangeSlider, ModalSheet, ChipsInput, KbdCombo (needs textFaint), NavRail (make logo slot + items caller-supplied), DiffEventRow, ModeBadge (generalize Cloud/OnDevice variants). Sources under /Users/marc/IdeaProjects/NoType/app/designsystem/.../components/",
+        "EXCLUDE all HUD/waveform/brand-logo/HudIcons components (product)."
+      ],
+      "dependsOn": "D3",
+      "effort": "L",
+      "verification": "./gradlew :app:designsystem:allTests (incl. wasmJs link); a preview screen instantiating each new component renders in all 4 preview modes."
+    },
+    {
+      "phase": "D5 \u2014 Design-system rename across feature screens + Pencil-skill reconciliation",
+      "goal": "Execute the 1:1 Terminal*->chosen-name rename across the 21 feature-screen files (re-skin automatically) and reconcile the Pencil design-mapping skills + CLAUDE.md.",
+      "workItems": [
+        "Mechanical rename across the 21 verified feature-screen files calling Terminal* primitives (LoginScreen, DashboardScreen, ProfileScreen, AdminPanelScreen, PrivacySettings, ConsentGate, etc.) \u2014 apply against Template's Terminal* imports; do NOT drag Aurora names blindly if keeping a neutral name.",
+        "If the system is renamed/replaced: re-author terminal-design-generator/implementer/sync skills + terminal_design_system.pen + manifest.json/REFERENCES.md/CODE-MAP.md for the new token set, and update the CLAUDE.md 'Design <-> Code Mapping (Pencil)' section. If keeping Terminal naming with added slots, update the manifest/REFERENCES/CODE-MAP via /sync-design --apply.",
+        "Decision-gated by the designSystemDecision/openQuestions."
+      ],
+      "dependsOn": "D4",
+      "effort": "L",
+      "verification": "./gradlew :composeApp:assemble for all targets (incl. wasmJs) \u2014 every screen compiles and re-skins; /sync-design audit reports no drift between .pen, Kotlin theme/components, and the manifest."
+    },
+    {
+      "phase": "S1 \u2014 Server-core hardening: migration dedup + SecurityPlugin named auth-jwt provider",
+      "goal": "Two low-risk, fully-generic server-infra fixes with no product coupling.",
+      "workItems": [
+        "Apply the 3-line migration dedup-by-version guard in MigrationRegistry.register() (skip if version already present). Source: /Users/marc/IdeaProjects/NoType/server/core/database/.../migrations/Migration.kt",
+        "Refactor configureSecurity() to extract the shared JWT validateBlock and register BOTH the default unnamed provider and a named jwt(name=\"auth-jwt\") provider (verified: Template has neither). Keep \"auth-jwt\" as the convention for future authenticated WebSocket routes. Source: /Users/marc/IdeaProjects/NoType/server/core/security/.../SecurityPlugin.kt"
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :server:core:database:test and :server:core:security:test; ./gradlew :server:test to confirm boot + auth still work; re-running a feature's registerXxxMigrations() twice in a test no longer crashes on duplicate version."
+    },
+    {
+      "phase": "S2 \u2014 Boot-time invariant framework + Application boot validation + safe key-length logging",
+      "goal": "Add a generic fail-fast startup-validation mechanism and never-log-raw-secrets diagnostic, with no ZDR/product content.",
+      "workItems": [
+        "Create a generic BootError sealed interface with .message (drop MissingZdrFlag; use MissingRequiredEnv(name)/InvalidConfig(field,reason)). Source shape: /Users/marc/IdeaProjects/NoType/server/core/config/.../server/BootError.kt",
+        "Add Configuration.validate(env): Either<BootError, Env> with no-op or a couple of generic checks (JWT secret != default in production, required URLs parseable). Drop all ZDR/cleanup-endpoint logic + isThirdPartyCleanupEndpoint. Source: /Users/marc/IdeaProjects/NoType/server/core/config/.../configuration/Configuration.kt",
+        "Wire validate().fold(...) at the top of Application.module() (defense-in-depth). Add a startup log of key LENGTHS + boolean flags (never raw values), retargeted to Template's fields (googleApiKey.length, ai.enabled). Drop transcripts/STT/cleanup route+DI installs. Source: /Users/marc/IdeaProjects/NoType/server/src/main/kotlin/com/m2f/notype/Application.kt",
+        "Port ConfigurationZdrAssertionTest's STRUCTURE (kotest arrow shouldBeLeft/shouldBeRight table) retargeted to the generic validate() rules. Source: .../ConfigurationZdrAssertionTest.kt"
+      ],
+      "dependsOn": "S1",
+      "effort": "M",
+      "verification": "./gradlew :server:core:config:test (new validate() table tests pass); ./gradlew :server:run boots and logs key lengths (no raw secrets); a deliberately bad config (default JWT secret in prod mode) aborts boot."
+    },
+    {
+      "phase": "S3 \u2014 TLS 1.3 enforcement test",
+      "goal": "Add a baseline outbound-HTTPS security NFR test (generic part only).",
+      "workItems": [
+        "Port the unconditional first test (`JVM SSLContext supports TLS 1_3`) as-is. For the live-handshake test, replace api.deepgram.com with a neutral TLS-1.3 host or drop it, KEEPING the RUN_NETWORK_TESTS gate. Strip NFR-12/Plan-01-06 doc references; rename package. Source: /Users/marc/IdeaProjects/NoType/server/auth/impl/src/test/kotlin/com/m2f/server/auth/TlsTest.kt"
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :server:auth:impl:test (the SSLContext assertion runs offline-safe; the live test no-ops without RUN_NETWORK_TESTS)."
+    },
+    {
+      "phase": "O0 \u2014 Koog 1.0 bump (prerequisite for all observability)",
+      "goal": "Bump Koog from 0.6.2 to the 1.0.0-preview7 line \u2014 a HARD prerequisite; none of the tracing code compiles on 0.6.2. Gated by the openQuestion on accepting a preview dependency.",
+      "workItems": [
+        "Bump koog to 1.0.0-preview7 and add koog-ext=1.0.0-beta-preview7 (the two streams are NOT binary-compatible \u2014 pin both, do not mix). Add koog-agents-otel (agents-features-opentelemetry) and otel-exporter-otlp 1.61.0. Source: /Users/marc/IdeaProjects/NoType/gradle/libs.versions.toml",
+        "Migrate Template's existing server:ai usages (agents/rag/structured) from 0.6.2 APIs to 1.0.0-preview7. Consult the koog skill for migration specifics.",
+        "If the openQuestion answer is 'keep stable Koog baseline', SKIP this phase and make the observability module an opt-in side-module pinned to preview Koog instead."
+      ],
+      "dependsOn": "S1",
+      "effort": "L",
+      "verification": "./gradlew :server:ai:allTests and :server:test compile + pass against Koog 1.0.0-preview7; no binary-incompatibility errors between core and ext streams."
+    },
+    {
+      "phase": "O1 \u2014 New server:core:observability module: OTel SDK + Langfuse SpanAdapter",
+      "goal": "Extract the hard-won generic OTel plumbing into a new dependency-light module (depends on server:core:config + koog-agents-otel + Java OTLP exporter + ktor-client).",
+      "workItems": [
+        "Create server:core:observability; add to settings.gradle.kts; depend on server:core:config (not the reverse).",
+        "Extract buildProcessLifetimeSdk + NonClosingOpenTelemetry as generic ProcessLifetimeOtelSdk taking OtelExporterConfig(host, headers, serviceName, serviceVersion). Keep the interlocking fix as ONE unit: process-lifetime SDK + NonClosing wrapper + SIMPLE span processor + setShutdownOnAgentClose(true) + JVM shutdown hook + reproduced resource attributes. Source: /Users/marc/IdeaProjects/NoType/server/ai/cleanup/.../PostProcessProvider.kt",
+        "Port the generified SpanAdapter from the koog-langfuse-tracing skill (references/TraceIoLangfuseSpanAdapter.kt), NOT NoType's product class. Generalize trace-output extraction to a pluggable (lastCompletion:String)->String finalizer (identity default). Strip unwrapStructured/{cleaned}/{translated} and tone/language metadata. Keep the two verified v3 gotchas as comments (trace.output on INFERENCE span; promptVersion via freeform metadata).",
+        "Reconcile with the koog-langfuse-tracing skill \u2014 do not fork a third adapter copy."
+      ],
+      "dependsOn": "O0",
+      "effort": "L",
+      "verification": "./gradlew :server:core:observability:test (SpanAdapter + SDK unit tests with fakes); a smoke test wiring install(OpenTelemetry) against a MockEngine OTLP endpoint completes flush on close."
+    },
+    {
+      "phase": "O2 \u2014 Trace-privacy redaction gate + Langfuse Env config",
+      "goal": "Add the generic consent/environment redaction policy and the opt-in Langfuse Env fields.",
+      "workItems": [
+        "Port traceContentAllowed(environment, consent) + its test verbatim (generic). Port buildPostProcessTraceAttributes as a GENERIC TraceAttributes builder taking (sessionId, userId, traceName, input, contentAllowed, extraMetadata:Map) \u2014 drop ToneId/cleanup/translate/lang coupling. Keep LANGFUSE_PROD_ENVIRONMENT constant. Sources: /Users/marc/IdeaProjects/NoType/server/ai/cleanup/.../TracePrivacy.kt + TracePrivacyTest.kt",
+        "Add langfuseHost/langfusePublicKey?/langfuseSecretKey?/langfuseEnvironment + derived langfuseEnabled to Template's Env.Ai (opt-in: keyless -> no exporter installed -> graph runs byte-identically). Add the generic LangfuseConfig value type. Do NOT bundle ZDR/cap fields. Source: /Users/marc/IdeaProjects/NoType/server/core/config/.../Env.kt"
+      ],
+      "dependsOn": "O1",
+      "effort": "M",
+      "verification": "./gradlew :server:core:observability:test (TracePrivacyTest passes); ./gradlew :server:run with no Langfuse keys boots with the exporter NOT installed (log confirms disabled)."
+    },
+    {
+      "phase": "O3 \u2014 Langfuse REST clients + prompt-provider + eval/judge harness (optional depth)",
+      "goal": "Port the prompt-management + eval surface as a pluggable mechanism with an empty/example catalog and interface-based judges. Gated by the observability-depth openQuestion.",
+      "workItems": [
+        "Port LangfuseRestClient (verbatim) + LangfusePromptClient/ScoresClient/DatasetClient + their MockEngine tests (tests double as wire-shape contracts). Keep bounded-timeout DI rule. Sources under /Users/marc/IdeaProjects/NoType/server/ai/cleanup/.../langfuse/",
+        "Port PromptProvider + LangfusePromptProvider (hot-path-free AtomicReference, stale-on-error, fallback-to-constant) + PromptRefreshScheduler (injected dispatcher). Make the catalog a pluggable interface (Set<PromptSpec>); ship Template with an EMPTY/example ConstantPromptProvider. Source files in the same dir.",
+        "Port the eval harness as generic: PromotionGate, PromptPromoter, ExperimentSummary/summarizeExperiment, JudgeVerdict, JudgeSuite, JudgeModel seam, KoogJudgeModel, allPass(). Refactor Judge from enum to an interface (id + systemPrompt + userPrompt(sample)); ship Faithfulness/InjectionResistance as OPTIONAL defaults; product supplies sample type + domain judges. Sources under .../eval/",
+        "EXCLUDE cleanup/translate prompt CONTENT, ConstantPromptCatalog contents, the {cleaned}/{translated} envelope, the 4 domain judges, EvalSample shape, PostProcessProvider graph/gates/tone.",
+        "Reconcile with the langfuse-prompt-management skill."
+      ],
+      "dependsOn": "O2",
+      "effort": "L",
+      "verification": "./gradlew :server:core:observability:test (REST-client MockEngine tests + prompt-provider tests + PromotionGate truth-table tests with a fake JudgeModel all pass)."
+    },
+    {
+      "phase": "O4 \u2014 Self-hosted Langfuse docker profile + .env.example + seed task + docs",
+      "goal": "Ship the generic opt-in observability infra (docker profile, env docs, seed mechanism) without NoType's AI keys.",
+      "workItems": [
+        "Add an opt-in `langfuse` docker-compose profile (web:3000 + self-contained postgres/clickhouse/redis/minio) + a devUpLangfuse Gradle task. Genericize away NoType project pins. Source: /Users/marc/IdeaProjects/NoType docker-compose + root build",
+        "Add generic LANGFUSE_* entries to Template's .env.example (with the precedence gotcha comment); do NOT add OPENAI_/ANTHROPIC_/DEEPGRAM_/CLEANUP_/TRANSLATION/cap keys.",
+        "Port docs/langfuse-self-hosting.md (generic).",
+        "Port the seedLangfusePrompts JavaExec task as a generic mechanism, parameterized to whatever catalog the project supplies (empty by default)."
+      ],
+      "dependsOn": "O3",
+      "effort": "M",
+      "verification": "./gradlew devUpLangfuse brings up the langfuse profile; ./gradlew help shows the seed task; the default ./gradlew :server:run (no langfuse profile) is unaffected."
+    },
+    {
+      "phase": "A1 \u2014 core:models AppError generalization for permissions/native",
+      "goal": "Define the generic error types the permission/native seams return, BEFORE porting any seam.",
+      "workItems": [
+        "Add AppError.Permission.Denied(permission) (generalize NoType's AppError.Audio.PermissionDenied) and a generic AppError.Native.* group (Unavailable, etc.) to Template's core:models. Verified: Template core:models has the base AppError hierarchy at /Users/marc/IdeaProjects/Template/core/models/.../AppError.kt",
+        "Add a generic Permission enum (Microphone, Camera, Accessibility, Notifications, Location) and a sealed PermissionStatus (Granted/Denied/Restricted/NotDetermined/Unknown). Gated by the permissions-generalization openQuestion.",
+        "EXCLUDE AppError.AI/Audio leaf subtypes (product)."
+      ],
+      "dependsOn": "P0",
+      "effort": "S",
+      "verification": "./gradlew :core:models:allTests (incl. wasmJs); the new error/enum types compile on all targets."
+    },
+    {
+      "phase": "A2 \u2014 New core:platform-macos (JNA bridge) + reduced-motion accessibility",
+      "goal": "Extract the foundational macOS JNA scaffolding (isMacOsHost + ObjcBridge + CF-constant resolution + AppKit/ApplicationServices bindings) and the fully-generic reduced-motion seam.",
+      "workItems": [
+        "Create core:platform-macos (or core:native); add libs.jna + libs.jna.platform. Move isMacOsHost + the JNA Library interfaces + CF-constant lazies + AppKitLib/ApplicationServicesLib bindings out of the product-flavored MacOsNative.kt. Leave CGEventTap/hotkey constants behind (product). Source: /Users/marc/IdeaProjects/NoType/app/dictation/impl/src/jvmMain/.../native/MacOsNative.kt",
+        "Port reduced-motion expect/actual into app:designsystem (it's a UI/accessibility concern; designsystem already targets all platforms): internal expect fun prefersReducedMotion() + @Composable rememberPrefersReducedMotion(); JVM actual reads NSWorkspace via the JNA bridge, iOS via UIAccessibility, Android/others conservative false, ADD a wasmJs actual (false). Sources: /Users/marc/IdeaProjects/NoType/app/dictation/impl/.../native/ReducedMotion*.kt"
+      ],
+      "dependsOn": "A1",
+      "effort": "M",
+      "verification": "./gradlew :core:platform-macos:test (JVM); ./gradlew :app:designsystem:allTests (incl. wasmJs actual for reduced-motion compiles)."
+    },
+    {
+      "phase": "A3 \u2014 core:permissions module (gate + status-probe + AX deep-link)",
+      "goal": "Provide the generic prompt-once-vs-status-probe permission abstraction + the 'open System Settings' deep-link helper, replacing NoType's mic-named classes.",
+      "workItems": [
+        "Create core:permissions; expose PermissionController expect class { suspend fun request(p:Permission): Either<AppError,Unit>; fun status(p:Permission): PermissionStatus }. JVM actual dispatches by Permission to AVFoundation (mic/camera, parameterize the media-type symbol) or AX (accessibility) via the core:platform-macos bridge; Android/iOS documented no-ops; ADD a wasmJs actual. Keep the pure status-mapping helper separate for unit-testability. Sources: NoType MicrophonePermissionGate(.jvm/.apple) + MicrophonePermissionStatus(.jvm) under app/dictation/impl",
+        "Port AccessibilityPermission isTrusted()/promptAndCheck()/openSystemSettings() generalized to take the pane anchor (Privacy_Accessibility/Privacy_Microphone/Privacy_Camera/Privacy_ScreenCapture); graceful degrade to AppError.Native.Unavailable off-macOS. Source: /Users/marc/IdeaProjects/NoType/app/dictation/impl/.../native/AccessibilityPermission*.kt",
+        "EXCLUDE mic-named classes + AppError.Audio."
+      ],
+      "dependsOn": "A2",
+      "effort": "M",
+      "verification": "./gradlew :core:permissions:allTests (status-mapping unit tests; all targets incl. wasmJs link); a JVM test calls status(Permission.Microphone) without mutating TCC."
+    },
+    {
+      "phase": "A4 \u2014 core:securestorage module (Keychain/DPAPI/Keystore backend layer)",
+      "goal": "Extract ONLY the service/account-parameterized secret-storage backend layer; leave NoType's AES audio-key logic behind.",
+      "workItems": [
+        "Create core:securestorage; expose SecretStore { suspend fun get(service,account): ByteArray?; suspend fun put(service,account,bytes) }. Port MacSecurityCliKeychainBackend (KEEP the hardening verbatim: hex secret via mode-0600 temp file on stdin not argv, stderr capture, errSecItemNotFound exit-44 distinguished from transient failure), WindowsDpapiBackend (add libs.jna.platform), AndroidKeyStore actual, Apple Security.framework cinterop actual (platform.Security klib, kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly), and the system-property-guarded raw-file dev fallback that THROWS in release. Keep InMemoryKeychainBackend for tests. Sources under /Users/marc/IdeaProjects/NoType/core/audio/.../crypto/ (KeyVault*.kt, MacSecurityCliKeychainBackend.kt, DpapiBackend.kt)",
+        "EXCLUDE loadOrCreateAudioKey/AeadCipher/EncryptedBlob/OpusEncoder (product). Carry over the test-gating note: don't gate CI on iOS-simulator keychain round-trips (errSecNotAvailable -25291 outside an .app); macosX64/macosArm64 are the safe targets. ADD a wasmJs actual or restrict the module's target set appropriately.",
+        "OPTIONAL: migrate Template's TokenStorage to back onto SecretStore instead of plaintext multiplatform-settings."
+      ],
+      "dependsOn": "A1",
+      "effort": "XL",
+      "verification": "./gradlew :core:securestorage:test on jvm + macosX64/macosArm64 (round-trip via the real Keychain CLI); JVM tests use InMemoryKeychainBackend; do NOT gate on iOS-simulator keychain."
+    },
+    {
+      "phase": "A5 \u2014 Desktop shell capabilities (title-bar inset, dark-mode detect, single-instance, file logging, decision helpers)",
+      "goal": "Port the generic JVM-desktop shell primitives Template lacks (Template's main.kt is a 12-line Window{App()}).",
+      "workItems": [
+        "Move LocalTitleBarInset into app:designsystem (theme primitive, default 0.dp); the JVM main provides the real inset (28.dp on macOS) + apple.awt.* transparent-title-bar props; parameterize background to theme.colors.bg and title to rootProject. Sources: /Users/marc/IdeaProjects/NoType/app/designsystem/.../theme/LocalTitleBarInset.kt + composeApp/src/jvmMain/.../main.kt",
+        "Port rememberSystemDarkTheme() expect/actual (JVM polls AppleInterfaceStyle every 2s; Android/iOS delegate to isSystemInDarkTheme()); MUST ADD a wasmJs actual delegating to isSystemInDarkTheme(). Wire into the root theme call in App.kt. Sources: /Users/marc/IdeaProjects/NoType/composeApp/.../theme/SystemDarkTheme*.kt",
+        "Port SingleInstanceGuard (+ test) parameterizing the app-name + cross-platform lock dir (macOS Library/Application Support, Windows %APPDATA%, Linux ~/.local/share). Fails OPEN. Source: /Users/marc/IdeaProjects/NoType/composeApp/.../SingleInstanceGuard.kt",
+        "Port FileLogWriter + installFileLogging() parameterizing app name + cross-platform log dir. Source: /Users/marc/IdeaProjects/NoType/composeApp/.../logging/FileLogWriter.kt",
+        "Port the pure decision helpers shouldHideOnClose / shouldRegisterPreferencesHandler (+ tests) into a neutral package. Sources: /Users/marc/IdeaProjects/NoType/composeApp/.../WindowLifecycle.kt + PreferencesHandlerGate.kt",
+        "EXCLUDE mic entitlement/NSMicrophone/--add-opens/dictation boot wiring."
+      ],
+      "dependsOn": "A2",
+      "effort": "L",
+      "verification": "./gradlew :composeApp:run (desktop) shows the transparent title bar + correct inset; toggling macOS appearance re-themes live; launching a 2nd instance is refused; the log file appears under the platform log dir; ./gradlew :composeApp:jvmTest passes the guard + decision-helper tests; wasmJsBrowserDevelopmentRun still compiles (dark-mode actual)."
+    },
+    {
+      "phase": "A6 \u2014 Desktop packaging recipe + plist-lint buildSrc helper",
+      "goal": "Add generic Compose Desktop packaging hygiene (window min-size, JLink narrowing, heap caps, per-OS icons, entitlements skeleton) and a reusable plist-lint mechanism.",
+      "workItems": [
+        "Port the min-window-size pinning, modules.clear()+JLink module list, heap/GC caps, and per-OS iconFile wiring into Template composeApp build/main.kt (numbers are tunable defaults). EXCLUDE mic entitlement/NSMicrophone/--add-opens/java.net.http-if-unused. Sources: /Users/marc/IdeaProjects/NoType/composeApp/build.gradle.kts + main.kt",
+        "Port entitlements.plist as a skeleton KEEPING the three mandatory JVM hardened-runtime keys (allow-jit, allow-unsigned-executable-memory, disable-library-validation); drop audio-input. Keep the distilled lesson comment ('custom entitlementsFile replaces Compose defaults \u2014 repeat the 3 JVM keys').",
+        "Extract a buildSrc plistLint(file, requiredKeys: List<String>) helper (DocumentBuilderFactory + no-op EntityResolver, no network) with an EMPTY default key list, so Template ships the mechanism without NoType's NSMicrophone assertion. Wire optional check tasks. Source skeleton: /Users/marc/IdeaProjects/NoType/composeApp/build.gradle.kts (~lines 381-430)"
+      ],
+      "dependsOn": "A5",
+      "effort": "M",
+      "verification": "./gradlew :composeApp:packageReleaseDistributionForCurrentOS produces a launchable bundle (JVM keys present); ./gradlew :composeApp:createDistributable then the optional plist-lint task runs (no-op with empty key list, or asserts a provided key)."
+    },
+    {
+      "phase": "A7 \u2014 Optional: floating-overlay/tray/Compose-in-Swing generic scaffolds + pure HUD math",
+      "goal": "Optionally extract the reusable desktop window mechanisms (minus dictation content). Lower priority; high effort due to severing wire dependencies.",
+      "workItems": [
+        "Port pure computeHudOrigin() placement math (multi-monitor, clamped) + its test directly (no dependencies). Source: /Users/marc/IdeaProjects/NoType/composeApp/.../dictation/hud/HudWindowBootstrap.kt + HudPlacementTest.kt",
+        "If desired: extract a generic SystemTray helper (mount()->Boolean + menu DSL + frame animation, AWTException-safe/headless-safe) from TrayIconBootstrap; a 'floating non-activating overlay window' helper from HudWindowBootstrap (relocate the NSPanel JNA shim out of app:dictation:wire into core:platform-macos first); a 'Compose-in-JFrame' one-liner from CapNoteWindow. Strip all dictation/Aurora-HUD content.",
+        "EXCLUDE all dictation HUD/recording/cap-note content."
+      ],
+      "dependsOn": "A6",
+      "effort": "L",
+      "verification": "./gradlew :composeApp:jvmTest (HudPlacementTest passes); if scaffolds extracted, a smoke test mounts a tray icon (no-op headless) and shows a floating overlay window."
+    },
+    {
+      "phase": "G1 \u2014 setup.sh whitelabel wizard upgrade",
+      "goal": "Port the substantially-improved fork-rename wizard (includes real bug fixes) \u2014 the single highest-value scaffolding port.",
+      "workItems": [
+        "Port setup.sh wholesale: sed_in_matched_files() helper, the move_package_dir() src==dest guard (prevents rm -rf wiping the tree \u2014 real footgun), OAuth-scheme rename (AndroidManifest scheme, .env, server Env.kt defaults, scheme://auth/callback literals), Compose-generated-resource-package rename + packageOfResClass overrides, JVM window title, WASM <title>, devcontainer name, broadened verification grep (yml/md/json/xcconfig + graphify-out exclusion), residual bare-'template' scanner, build verification excluding the :server:distZip/distTar duplicate-jar failure. Source: /Users/marc/IdeaProjects/NoType/setup.sh",
+        "RESET OLD_* constants to Template defaults (OLD_PROJECT_NAME_LOWER=template, OLD_OAUTH_SCHEME=template, OLD_DB_NAME=application, com.m2f.template). Re-verify whether the :server:distZip/distTar exclude is still needed in Template (likely yes \u2014 described as a template-level Gradle issue)."
+      ],
+      "dependsOn": "P0",
+      "effort": "M",
+      "verification": "Run setup.sh in a throwaway clone with test names; confirm package dirs move (no tree wipe when names unchanged), OAuth scheme + generated-resource-package renamed, and the verification grep finds no residual bare 'template' literals; ./gradlew help in the renamed clone succeeds."
+    },
+    {
+      "phase": "G2 \u2014 DI seam (expect/actual allAppModules) \u2014 only if per-platform DI omission is needed",
+      "goal": "Optionally adopt the generic per-platform DI pattern, with the build-hierarchy prerequisite. Lower priority; only if Template needs to omit modules per target.",
+      "workItems": [
+        "FIRST add the nonWasmJsMain source set + applyDefaultHierarchyTemplate { common { group(\"nonWasmJs\"){ withJvm(); withAndroidTarget(); withApple() } } } + iosMain/androidMain dependsOn(nonWasmJsMain) bridges in composeApp/build.gradle.kts (KEEP wasmJs). THEN convert allAppModules to expect val with a nonWasmJs actual = [sharedModule, appModule, navigationModule, ...] and a wasmJs actual = [sharedModule, appModule]. Sources: /Users/marc/IdeaProjects/NoType/composeApp/.../di/AppModule*.kt",
+        "Do NOT convert sharedModule to expect/actual just to add navigationModule (over-engineering \u2014 P4 already includes it as a plain val). Only adopt the seam if real per-platform omission is required. EXCLUDE NoType's product module actuals (aiModule, dictationModule, etc.)."
+      ],
+      "dependsOn": "P4",
+      "effort": "M",
+      "verification": "./gradlew :composeApp:assemble for all targets incl. wasmJs (the wasmJs actual omits modules cleanly; nonWasmJs actual resolves)."
+    },
+    {
+      "phase": "G3 \u2014 Dev/CI scripts + .claude/launch.json + .mcp.json + compose hot-reload MCP",
+      "goal": "Port generic dev-launcher tooling and the Compose-Desktop UI-verification MCP, with macOS-only caveats addressed.",
+      "workItems": [
+        "Port server-watch.sh parameterizing APP_MAIN to com.m2f.template.ApplicationKt; add a Linux stat -c %Y fallback if cross-platform CI matters. Source: /Users/marc/IdeaProjects/NoType/scripts/server-watch.sh",
+        "Port check-binary-size.sh (drop NFR-05 wording; macOS dmg/BSD-stat \u2014 optional desktop gate) and optionally check-idle-rss.sh (generalize the app name). Sources: /Users/marc/IdeaProjects/NoType/scripts/",
+        "Port the generic .claude/launch.json entries (server, server-watch, composeApp-desktop-plain via :composeApp:run, composeApp-web wasmJsBrowserDevelopmentRun, docker-services->devUp, docs-static); drop/adapt NoType-only script-backed entries. Source: /Users/marc/IdeaProjects/NoType/.claude/launch.json",
+        "Append the compose-hot-reload stdio MCP server block (:composeApp:hotMcpServerJvm) to Template/.mcp.json. PREREQUISITE: verify/ bump composeHotReload (Template 1.0.0 -> 1.2.0-alpha01) so hotMcpServerJvm exists \u2014 gated by the openQuestion on accepting an alpha plugin. Source: /Users/marc/IdeaProjects/NoType/.mcp.json"
+      ],
+      "dependsOn": "P0",
+      "effort": "M",
+      "verification": "./gradlew :composeApp:hotMcpServerJvm starts (after the plugin bump); server-watch.sh restarts :server:run on a source edit; the launch.json entries resolve their Gradle tasks."
+    },
+    {
+      "phase": "G4 \u2014 CLAUDE.md generic sections + skill verification steps + skills-lock convention",
+      "goal": "Port the generic engineering guidance, live-verification skill steps, and the skill-vendoring lockfile convention (empty/curated contents).",
+      "workItems": [
+        "Port CLAUDE.md numbered Rules 1-12 verbatim (zero adaptation; merge with Template's existing Core Principles/Workflow Orchestration). Port the Review-Hardened Patterns library genericized (drop DeferredOnDeviceProvider/Whisper/GGUF examples). Selectively port the Conventions/Code-Style/Architecture reference RECONCILED against Template's real module graph + Terminal naming + actual API counts (do NOT paste NoType module names/AuroraTheme). Port the Running & UI Verification section stripped of one-instance/CGEvent/HUD specifics. Source: /Users/marc/IdeaProjects/NoType/CLAUDE.md",
+        "Port ONLY the appended live-verification paragraph into Template's compose-screen + feature skills (MCP get_semantic_tree + take_screenshot loop, ref launch-desktop); DISCARD any Aurora*->Terminal* rename leak (verified the only non-rename delta is the verification paragraph). Sources: NoType .claude/skills/compose-screen + feature SKILL.md",
+        "Port skills-lock.json FORMAT/convention with EMPTY or template-relevant contents (the asc-* App Store Connect skills are iOS-publishing-specific \u2014 ship empty `skills: {}`). Source: /Users/marc/IdeaProjects/NoType/skills-lock.json"
+      ],
+      "dependsOn": "G3",
+      "effort": "M",
+      "verification": "Docs/skills only \u2014 no build impact. Confirm CLAUDE.md references Template's actual modules/Terminal naming (no NoType/Aurora leaks); the compose-screen/feature skills reference the compose-hot-reload MCP added in G3."
+    },
+    {
+      "phase": "G5 \u2014 Reusable skill additions (launch-*, asc-*, langfuse, permissions)",
+      "goal": "Add the genuinely-reusable skills as a curated set, tokenizing product identity. FLAGGED skill additions.",
+      "workItems": [
+        "launch-desktop: port together with the compose-hot-reload MCP (G3) + the Running&UI-Verification CLAUDE.md section; STRIP the one-instance CGEvent-freeze rule, HUD/recording-pill NSWindow fallback, global dictation-hotkey fallback; swap main class to com.m2f.template.MainKt. Source: NoType .claude/skills/launch-desktop",
+        "launch-android / launch-ios: port the generic simctl/adb/xcodebuild-target methodology; tokenize package/bundle (com.m2f.template), launcher/scheme; DROP OAuth-deeplink/App-Group-IPC/keyboard-extension recipes if not applicable. Sources: NoType .claude/skills/launch-android + launch-ios",
+        "asc-* pack (6 skills: cli-usage, id-resolver, build-lifecycle, submission-health, notarization, workflow): port the .claude/skills copies only (NOT the .agents duplicate) + skills-lock.json provenance. Fully generic for iOS/macOS distribution. Sources: NoType .claude/skills/asc-*",
+        "langfuse skills: the koog-langfuse-tracing + langfuse-prompt-management skills already exist globally and encode the know-how \u2014 reconcile the O1/O3 ported code with their references (single source of truth); no new skill copy needed.",
+        "permissions skill: OPTIONAL \u2014 author a short skill documenting the prompt-once-vs-status-probe pattern + the openSystemSettings deep-link + the macOS entitlements/TCC gotchas (custom entitlementsFile replaces defaults; dev-launch identity attributes to the IDE), pairing with the core:permissions/core:platform-macos modules.",
+        "EXCLUDE notype-design skill (product brand)."
+      ],
+      "dependsOn": "G4",
+      "effort": "M",
+      "verification": "Skills only \u2014 invoke launch-desktop against the running app and confirm the MCP drive loop works; confirm asc-* skills reference no NoType identifiers; confirm skills-lock.json records asc-* provenance with computed hashes."
+    }
+  ]
+}
