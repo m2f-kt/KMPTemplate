@@ -3,12 +3,11 @@ package com.m2f.server.ai.agents
 import ai.koog.agents.core.agent.AIAgentService
 import ai.koog.agents.core.agent.config.AIAgentConfig
 import ai.koog.agents.core.tools.ToolRegistry
-import ai.koog.agents.core.tools.reflect.tools
 import ai.koog.agents.ext.agent.reActStrategy
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.clients.google.GoogleLLMClient
 import ai.koog.prompt.executor.clients.google.GoogleModels
-import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
+import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import com.m2f.core.config.server.DomainError
@@ -33,7 +32,7 @@ class AssistantAgentService(
     """.trimMargin()
 
     private val executor by lazy {
-        SingleLLMPromptExecutor(GoogleLLMClient(googleApiKey))
+        MultiLLMPromptExecutor(GoogleLLMClient(googleApiKey))
     }
 
     private val toolRegistry = ToolRegistry {

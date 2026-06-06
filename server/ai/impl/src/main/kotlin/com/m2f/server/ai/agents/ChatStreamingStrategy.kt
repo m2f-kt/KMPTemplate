@@ -1,13 +1,14 @@
 package com.m2f.server.ai.agents
 
 import ai.koog.agents.core.agent.entity.AIAgentGraphStrategy
-import ai.koog.agents.core.dsl.builder.forwardTo
+import ai.koog.agents.core.dsl.builder.node
 import ai.koog.agents.core.dsl.builder.strategy
-import ai.koog.agents.core.dsl.extension.nodeExecuteMultipleTools
+import ai.koog.agents.core.dsl.extension.nodeExecuteTools
 import ai.koog.agents.core.dsl.extension.nodeLLMRequestStreaming
-import ai.koog.agents.core.dsl.extension.nodeLLMSendMultipleToolResults
-import ai.koog.agents.core.dsl.extension.onMultipleToolCalls
+import ai.koog.agents.core.dsl.extension.nodeLLMSendToolResults
+import ai.koog.agents.core.dsl.extension.onToolCalls
 import ai.koog.prompt.message.Message
+import ai.koog.prompt.message.MessagePart
 import ai.koog.prompt.message.ResponseMetaInfo
 import ai.koog.prompt.streaming.StreamFrame
 import kotlinx.coroutines.flow.Flow
@@ -21,19 +22,24 @@ import kotlinx.coroutines.flow.toList
  * Streams text frames via the processFrame callback for WebSocket delivery.
  */
 fun chatStreamingStrategy(
-    processFrame: (StreamFrame.Append) -> Unit
+    processFrame: (StreamFrame.TextDelta) -> Unit,
 ): AIAgentGraphStrategy<String, Any> =
     strategy(name = "chat-streaming") {
         val nodeStreaming by nodeLLMRequestStreaming()
-        val executeMultipleTools by nodeExecuteMultipleTools(parallelTools = true)
-        val sendToolResults by nodeLLMSendMultipleToolResults()
+        val executeTools by nodeExecuteTools(parallel = true)
+        val sendToolResults by nodeLLMSendToolResults()
 
-        val processFrames by node<Flow<StreamFrame>, List<Message.Response>> { frames ->
+        // Koog 1.0: tool calls are now Message parts (MessagePart.Tool.Call) rather than
+        // standalone Message.Response values, and the multi-tool node/edge builders were
+        // consolidated (nodeExecuteMultipleTools -> nodeExecuteTools, onMultipleToolCalls ->
+        // onToolCalls). The streamed frames are collected into a single Message.Assistant so the
+        // graph edges can dispatch on its tool-call parts.
+        val processFrames by node<Flow<StreamFrame>, Message.Assistant> { frames ->
             var end: StreamFrame.End? = null
-            frames
+            val toolCalls = frames
                 .mapNotNull { frame ->
                     when (frame) {
-                        is StreamFrame.Append -> {
+                        is StreamFrame.TextDelta -> {
                             processFrame(frame)
                             null
                         }
@@ -41,27 +47,31 @@ fun chatStreamingStrategy(
                             end = frame
                             null
                         }
-                        is StreamFrame.ToolCall -> frame
+                        is StreamFrame.ToolCallComplete -> frame
+                        else -> null
                     }
                 }
                 .map { toolCall ->
-                    Message.Tool.Call(
+                    MessagePart.Tool.Call(
                         id = toolCall.id,
                         tool = toolCall.name,
-                        content = toolCall.content,
-                        metaInfo = end?.metaInfo ?: ResponseMetaInfo.Empty,
+                        args = toolCall.content,
                     )
                 }
                 .toList()
+            Message.Assistant(
+                parts = toolCalls,
+                metaInfo = end?.metaInfo ?: ResponseMetaInfo.Empty,
+            )
         }
 
         edge(nodeStart forwardTo nodeStreaming)
         edge(nodeStreaming forwardTo processFrames)
-        edge(processFrames forwardTo executeMultipleTools onMultipleToolCalls { true })
-        edge(executeMultipleTools forwardTo sendToolResults)
+        edge(processFrames forwardTo executeTools onToolCalls { true })
+        edge(executeTools forwardTo sendToolResults)
         edge(
             processFrames forwardTo nodeFinish onCondition {
-                it.filterIsInstance<Message.Tool.Call>().isEmpty()
-            }
+                it.parts.none { part -> part is MessagePart.Tool.Call }
+            },
         )
     }

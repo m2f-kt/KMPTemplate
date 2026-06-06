@@ -2,7 +2,7 @@ package com.m2f.server.ai
 
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.clients.google.GoogleLLMClient
-import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
+import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import com.m2f.server.ai.rag.RelevanceCheck
 import com.m2f.server.ai.rag.RelevanceDetector
 import com.m2f.server.ai.structured.StructuredOutputService
@@ -10,7 +10,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.serializer
 import org.junit.Assume
 import org.junit.Test
@@ -51,7 +50,7 @@ class StructuredOutputTest {
         // since we have no real API key. The RelevanceDetector should fail open.
         val apiKey = "test-invalid-key"
         val client = GoogleLLMClient(apiKey)
-        val executor = SingleLLMPromptExecutor(client)
+        val executor = MultiLLMPromptExecutor(client)
         val service = StructuredOutputService(executor)
         val detector = RelevanceDetector(service)
 
@@ -69,7 +68,7 @@ class StructuredOutputTest {
         Assume.assumeNotNull("Set AI_GOOGLE_API_KEY to run structured output integration tests", apiKey)
 
         val client = GoogleLLMClient(apiKey!!)
-        val executor = SingleLLMPromptExecutor(client)
+        val executor = MultiLLMPromptExecutor(client)
         val service = StructuredOutputService(executor)
 
         val checkPrompt = prompt("test-structured") {
@@ -94,7 +93,7 @@ class StructuredOutputTest {
         Assume.assumeNotNull("Set AI_GOOGLE_API_KEY to run structured output integration tests", apiKey)
 
         val client = GoogleLLMClient(apiKey!!)
-        val executor = SingleLLMPromptExecutor(client)
+        val executor = MultiLLMPromptExecutor(client)
         val service = StructuredOutputService(executor)
         val detector = RelevanceDetector(service)
 

@@ -4,7 +4,6 @@ package com.m2f.server.ai.rag
 
 import ai.koog.embeddings.base.Vector
 import ai.koog.rag.base.DocumentWithPayload
-import ai.koog.rag.vector.VectorStorage
 import com.m2f.core.database.tables.DocumentEmbeddingsTable
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -46,9 +45,9 @@ class PgVectorStorage(
     private val groupId: Uuid,
     private val userId: Uuid?,
     private val isAdmin: Boolean,
-) : VectorStorage<String> {
+) {
 
-    override suspend fun store(document: String, data: Vector): String {
+    suspend fun store(document: String, data: Vector): String {
         val id = Uuid.random()
         suspendTransaction(db = db) {
             DocumentEmbeddingsTable.insert {
@@ -61,7 +60,7 @@ class PgVectorStorage(
         return id.toString()
     }
 
-    override suspend fun delete(documentId: String): Boolean {
+    suspend fun delete(documentId: String): Boolean {
         val uuid = Uuid.parse(documentId)
         val affected = suspendTransaction(db = db) {
             DocumentEmbeddingsTable.deleteWhere {
@@ -71,7 +70,7 @@ class PgVectorStorage(
         return affected > 0
     }
 
-    override suspend fun read(documentId: String): String? {
+    suspend fun read(documentId: String): String? {
         val uuid = Uuid.parse(documentId)
         return suspendTransaction(db = db) {
             DocumentEmbeddingsTable
@@ -83,7 +82,7 @@ class PgVectorStorage(
         }
     }
 
-    override suspend fun getPayload(documentId: String): Vector? {
+    suspend fun getPayload(documentId: String): Vector? {
         val uuid = Uuid.parse(documentId)
         return suspendTransaction(db = db) {
             DocumentEmbeddingsTable
@@ -96,7 +95,7 @@ class PgVectorStorage(
         }
     }
 
-    override suspend fun readWithPayload(documentId: String): DocumentWithPayload<String, Vector>? {
+    suspend fun readWithPayload(documentId: String): DocumentWithPayload<String, Vector>? {
         val uuid = Uuid.parse(documentId)
         return suspendTransaction(db = db) {
             DocumentEmbeddingsTable
@@ -113,7 +112,7 @@ class PgVectorStorage(
         }
     }
 
-    override fun allDocuments(): Flow<String> = flow {
+    fun allDocuments(): Flow<String> = flow {
         val results = suspendTransaction(db = db) {
             DocumentEmbeddingsTable
                 .select(DocumentEmbeddingsTable.content)
@@ -125,7 +124,7 @@ class PgVectorStorage(
         }
     }
 
-    override fun allDocumentsWithPayload(): Flow<DocumentWithPayload<String, Vector>> = flow {
+    fun allDocumentsWithPayload(): Flow<DocumentWithPayload<String, Vector>> = flow {
         val results = suspendTransaction(db = db) {
             DocumentEmbeddingsTable
                 .select(DocumentEmbeddingsTable.content, DocumentEmbeddingsTable.embedding)
