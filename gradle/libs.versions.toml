@@ -56,6 +56,8 @@ kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 
 # SLF4J Simple (desktop logging)
 slf4j-simple = { module = "org.slf4j:slf4j-simple", version = "2.0.16" }
+# SLF4J API (logging seam for server:core:observability prompt provider + refresh scheduler)
+slf4j-api = { module = "org.slf4j:slf4j-api", version = "2.0.16" }
 
 # Log4j (server JSON logging)
 log4j-api = { module = "org.apache.logging.log4j:log4j-api", version.ref = "log4j" }
