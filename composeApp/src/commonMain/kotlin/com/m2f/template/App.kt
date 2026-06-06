@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.di.allAppModules
 import com.m2f.template.localization.LocalAppLocale
 import com.m2f.template.localization.setAppLocale
@@ -91,7 +91,7 @@ fun App() {
 
         CompositionLocalProvider(LocalAppLocale provides currentLocale) {
             key(currentLocale) {
-                TerminalTheme {
+                AuraTheme {
                     AppNavHost(
                         backStack = backStack,
                     )

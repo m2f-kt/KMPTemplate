@@ -24,19 +24,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalList
-import com.m2f.template.designsystem.components.data.TerminalListItem
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
-import com.m2f.template.designsystem.components.display.TerminalAvatar
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraList
+import com.m2f.template.designsystem.components.data.AuraListItem
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
+import com.m2f.template.designsystem.components.display.AuraAvatar
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.dashboard.generated.resources.Res
 import template.app.dashboard.generated.resources.common_brand_name
@@ -96,7 +96,7 @@ fun DashboardScreen(
     onAdminClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = modifier.fillMaxSize().background(colors.bg),
@@ -226,15 +226,15 @@ private fun DesktopHeader(
     avatarUrl: String?,
     onProfileClick: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.dashboard_system_overview),
             style = typography.xxl.copy(fontWeight = FontWeight.Bold),
             color = colors.text,
@@ -247,12 +247,12 @@ private fun DesktopHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            TerminalText(
+            AuraText(
                 text = userName,
                 style = typography.sm,
                 color = colors.textMuted,
             )
-            TerminalAvatar(
+            AuraAvatar(
                 initials = userName.take(1).uppercase(),
                 imageUrl = avatarUrl,
                 size = 32.dp,
@@ -270,8 +270,8 @@ private fun MobileDashboard(
     onProfileClick: () -> Unit,
     onAdminClick: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Scrollable content area
@@ -292,19 +292,19 @@ private fun MobileDashboard(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.common_brand_prompt),
                         style = typography.md.copy(fontWeight = FontWeight.Bold),
                         color = colors.accent,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.common_brand_name),
                         style = typography.md.copy(fontWeight = FontWeight.SemiBold),
                         color = colors.text,
                     )
                 }
 
-                TerminalAvatar(
+                AuraAvatar(
                     initials = state.userName.take(1).uppercase(),
                     imageUrl = state.avatarUrl,
                     size = 32.dp,
@@ -317,13 +317,13 @@ private fun MobileDashboard(
                 "dashboard" -> {
                     // Title block
                     Column {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.dashboard_system_overview),
                             style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                             color = colors.text,
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.dashboard_nodes_active),
                             style = typography.xs,
                             color = colors.textDim,
@@ -389,13 +389,13 @@ private fun MobileMetricsGrid(metrics: List<DashboardMockData.MetricItem>) {
 
 @Composable
 private fun MobileProcessList(processes: List<DashboardMockData.ProcessItem>) {
-    TerminalList(title = stringResource(Res.string.dashboard_active_processes), count = processes.size) {
+    AuraList(title = stringResource(Res.string.dashboard_active_processes), count = processes.size) {
         processes.forEachIndexed { index, process ->
-            TerminalListItem(
+            AuraListItem(
                 text = process.name,
                 subtitle = "PID: ${process.pid} | CPU: ${process.cpu} | ${process.memory}",
                 trailingContent = { color ->
-                    TerminalBadge(
+                    AuraBadge(
                         text = process.status,
                         variant = BadgeVariant.Success,
                     )
@@ -412,8 +412,8 @@ private fun PlaceholderContent(
     title: String,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier
@@ -422,12 +422,12 @@ private fun PlaceholderContent(
             .padding(32.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-        TerminalText(
+        AuraText(
             text = title,
             style = typography.xxl.copy(fontWeight = FontWeight.Bold),
             color = colors.text,
         )
-        TerminalCard(
+        AuraCard(
             title = title.removePrefix("> "),
             description = stringResource(Res.string.dashboard_under_construction),
             variant = CardVariant.Default,
@@ -436,7 +436,7 @@ private fun PlaceholderContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                TerminalBadge(
+                AuraBadge(
                     text = stringResource(Res.string.dashboard_status_pending),
                     variant = BadgeVariant.Warning,
                     icon = "\u25D0",
@@ -448,15 +448,15 @@ private fun PlaceholderContent(
 
 @Composable
 private fun MobilePlaceholderContent(title: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
-    TerminalText(
+    AuraText(
         text = title,
         style = typography.xxl.copy(fontWeight = FontWeight.Bold),
         color = colors.text,
     )
-    TerminalCard(
+    AuraCard(
         title = title.removePrefix("> "),
         description = stringResource(Res.string.dashboard_under_construction),
         variant = CardVariant.Default,
@@ -465,7 +465,7 @@ private fun MobilePlaceholderContent(title: String) {
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            TerminalBadge(
+            AuraBadge(
                 text = stringResource(Res.string.dashboard_status_pending),
                 variant = BadgeVariant.Warning,
                 icon = "\u25D0",
@@ -496,23 +496,23 @@ private fun MetricCard(
     metric: DashboardMockData.MetricItem,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     val variant = if (metric.isHighlighted) CardVariant.Highlighted else CardVariant.Default
 
-    TerminalCard(
+    AuraCard(
         title = stringResource(metric.labelRes),
         variant = variant,
         modifier = modifier,
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            TerminalText(
+            AuraText(
                 text = metric.value,
                 style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                 color = if (metric.isHighlighted) colors.accent else colors.text,
             )
-            TerminalBadge(
+            AuraBadge(
                 text = metric.change,
                 variant = if (metric.isUp) BadgeVariant.Success else BadgeVariant.Warning,
                 icon = if (metric.isUp) "\u2191" else "\u2193",
@@ -523,17 +523,17 @@ private fun MetricCard(
 
 @Composable
 private fun ProcessTable(processes: List<DashboardMockData.ProcessItem>) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.dashboard_active_processes),
             style = typography.md.copy(fontWeight = FontWeight.Medium),
             color = colors.text,
         )
 
-        TerminalTable(
+        AuraTable(
             headers = listOf(
                 stringResource(Res.string.dashboard_table_pid),
                 stringResource(Res.string.dashboard_table_name),
@@ -544,15 +544,15 @@ private fun ProcessTable(processes: List<DashboardMockData.ProcessItem>) {
             modifier = Modifier.fillMaxWidth(),
         ) {
             processes.forEachIndexed { index, process ->
-                TerminalTableRow(
+                AuraTableRow(
                     showBottomBorder = index < processes.lastIndex,
                 ) {
-                    TerminalTableCell(text = process.pid.toString(), secondary = true)
-                    TerminalTableCell(text = process.name)
-                    TerminalTableCell(text = process.cpu, secondary = true)
-                    TerminalTableCell(text = process.memory, secondary = true)
+                    AuraTableCell(text = process.pid.toString(), secondary = true)
+                    AuraTableCell(text = process.name)
+                    AuraTableCell(text = process.cpu, secondary = true)
+                    AuraTableCell(text = process.memory, secondary = true)
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(
+                        AuraBadge(
                             text = process.status,
                             variant = BadgeVariant.Success,
                         )
@@ -565,21 +565,21 @@ private fun ProcessTable(processes: List<DashboardMockData.ProcessItem>) {
 
 @Composable
 private fun DeploymentCard(deployment: DashboardMockData.DeploymentStatus) {
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.dashboard_deployment_status),
         description = stringResource(Res.string.dashboard_deployment_subtitle),
         modifier = Modifier.fillMaxWidth(),
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-            TerminalProgress(
+            AuraProgress(
                 progress = deployment.build,
                 label = stringResource(Res.string.dashboard_deployment_build),
             )
-            TerminalProgress(
+            AuraProgress(
                 progress = deployment.tests,
                 label = stringResource(Res.string.dashboard_deployment_tests),
             )
-            TerminalProgress(
+            AuraProgress(
                 progress = deployment.deploy,
                 label = stringResource(Res.string.dashboard_deployment_deploy),
             )
@@ -589,9 +589,9 @@ private fun DeploymentCard(deployment: DashboardMockData.DeploymentStatus) {
 
 @Composable
 private fun ActivityList(activities: List<DashboardMockData.ActivityItem>) {
-    TerminalList(title = stringResource(Res.string.dashboard_recent_activity), count = activities.size) {
+    AuraList(title = stringResource(Res.string.dashboard_recent_activity), count = activities.size) {
         activities.forEachIndexed { index, activity ->
-            TerminalListItem(
+            AuraListItem(
                 text = stringResource(activity.titleRes),
                 subtitle = "${activity.location} \u2022 ${activity.time}",
                 leadingContent = { iconColor ->
@@ -611,9 +611,9 @@ private fun ActivityIcon(icon: String, color: androidx.compose.ui.graphics.Color
         "arrow-up-right" -> "\u2197"
         else -> ">"
     }
-    TerminalText(
+    AuraText(
         text = symbol,
-        style = TerminalTheme.typography.sm,
+        style = AuraTheme.typography.sm,
         color = color,
     )
 }

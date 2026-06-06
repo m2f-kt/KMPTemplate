@@ -16,20 +16,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
 import com.m2f.template.designsystem.util.toDisplayDate
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.documents.generated.resources.Res
 import template.app.documents.generated.resources.documents_back
@@ -53,7 +53,7 @@ import template.app.documents.generated.resources.documents_uploading
 /**
  * Stateless documents management screen for viewing and managing RAG documents.
  *
- * Uses design system components (TerminalCard, TerminalTable, TerminalBadge, TerminalButton)
+ * Uses design system components (AuraCard, AuraTable, AuraBadge, AuraButton)
  * to render a document list with upload and delete actions.
  *
  * @param state Current documents state with document list, loading, and error flags.
@@ -72,8 +72,8 @@ fun DocumentsScreen(
     showUploadSuccess: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Box(modifier = modifier.fillMaxSize()) {
         Column(
@@ -89,11 +89,11 @@ fun DocumentsScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.documents_back),
                     onClick = onBack,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.documents_title),
                     style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                     color = colors.text,
@@ -102,7 +102,7 @@ fun DocumentsScreen(
 
             // Loading state (initial load)
             if (state.isLoading && state.documents.isEmpty()) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.documents_loading),
                     style = typography.md,
                     color = colors.textMuted,
@@ -112,12 +112,12 @@ fun DocumentsScreen(
 
             // Error state (no data loaded)
             if (state.error != null && state.documents.isEmpty()) {
-                TerminalCard(
+                AuraCard(
                     title = stringResource(Res.string.documents_error_title),
                     description = stringResource(Res.string.documents_error_description),
                     variant = CardVariant.Default,
                 ) {
-                    TerminalBadge(
+                    AuraBadge(
                         text = "error: ${resolveStringKey(state.error)}",
                         variant = BadgeVariant.Error,
                     )
@@ -127,7 +127,7 @@ fun DocumentsScreen(
 
             // Upload success message
             if (showUploadSuccess) {
-                TerminalAlert(
+                AuraAlert(
                     message = stringResource(Res.string.documents_upload_success),
                     variant = AlertVariant.Success,
                 )
@@ -137,7 +137,7 @@ fun DocumentsScreen(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalButton(
+                AuraButton(
                     text = if (state.isUploading) {
                         stringResource(Res.string.documents_uploading)
                     } else {
@@ -151,7 +151,7 @@ fun DocumentsScreen(
 
             // Empty state
             if (state.documents.isEmpty()) {
-                TerminalCard(
+                AuraCard(
                     title = stringResource(Res.string.documents_empty),
                     description = stringResource(Res.string.documents_empty_description),
                     variant = CardVariant.Default,
@@ -160,7 +160,7 @@ fun DocumentsScreen(
             }
 
             // Documents table
-            TerminalTable(
+            AuraTable(
                 headers = listOf(
                     stringResource(Res.string.documents_table_name),
                     stringResource(Res.string.documents_table_type),
@@ -172,13 +172,13 @@ fun DocumentsScreen(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 state.documents.forEachIndexed { index, document ->
-                    TerminalTableRow(
+                    AuraTableRow(
                         showBottomBorder = index < state.documents.lastIndex,
                     ) {
-                        TerminalTableCell(text = document.name)
-                        TerminalTableCell(text = document.contentType, secondary = true)
+                        AuraTableCell(text = document.name)
+                        AuraTableCell(text = document.contentType, secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(
+                            AuraBadge(
                                 text = document.status,
                                 variant = when (document.status.lowercase()) {
                                     "ingested" -> BadgeVariant.Success
@@ -188,16 +188,16 @@ fun DocumentsScreen(
                                 },
                             )
                         }
-                        TerminalTableCell(
+                        AuraTableCell(
                             text = document.chunkCount.toString(),
                             secondary = true,
                         )
-                        TerminalTableCell(
+                        AuraTableCell(
                             text = document.createdAt.toDisplayDate(),
                             secondary = true,
                         )
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalButton(
+                            AuraButton(
                                 text = stringResource(Res.string.documents_delete),
                                 onClick = { onDeleteDocument(document.id) },
                                 variant = ButtonVariant.Ghost,
@@ -209,7 +209,7 @@ fun DocumentsScreen(
 
             // Inline error (when documents are already loaded but a new error occurs)
             if (state.error != null && state.documents.isNotEmpty()) {
-                TerminalAlert(
+                AuraAlert(
                     message = resolveStringKey(state.error),
                     variant = AlertVariant.Error,
                 )

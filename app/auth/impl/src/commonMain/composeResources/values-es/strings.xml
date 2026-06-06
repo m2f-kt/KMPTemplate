@@ -148,6 +148,13 @@
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>
 
+    <!-- Permission / native errors -->
+    <string name="error_permission_denied">Permiso denegado</string>
+    <string name="error_permission_restricted">Permiso restringido</string>
+    <string name="error_permission_not_determined">Permiso aún no solicitado</string>
+    <string name="error_native_unavailable">Esta función no está disponible en tu dispositivo</string>
+    <string name="error_native_failure">Se produjo un error del sistema</string>
+
     <!-- ======================== Invite Accept Screen ======================== -->
     <string name="invite_title">$ aceptar_invitación</string>
     <string name="invite_subtitle">// has sido invitado a unirte a un grupo</string>

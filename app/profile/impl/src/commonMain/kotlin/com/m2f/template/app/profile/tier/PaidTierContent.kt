@@ -10,18 +10,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.app.profile.ProfileModel
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalList
-import com.m2f.template.designsystem.components.data.TerminalListItem
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraList
+import com.m2f.template.designsystem.components.data.AuraListItem
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
 import template.app.profile.generated.resources.tier_paid_analytics_desc
@@ -66,15 +66,15 @@ fun PaidTierContent(
     state: ProfileModel,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // Team access section
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_paid_team_title),
             description = stringResource(Res.string.tier_paid_team_desc),
         ) {
@@ -82,7 +82,7 @@ fun PaidTierContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalTable(
+                AuraTable(
                     headers = listOf(
                         stringResource(Res.string.tier_paid_table_name),
                         stringResource(Res.string.tier_paid_table_email),
@@ -91,28 +91,28 @@ fun PaidTierContent(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    TerminalTableRow(showBottomBorder = true) {
-                        TerminalTableCell(text = state.name.ifBlank { "You" })
-                        TerminalTableCell(text = state.email, secondary = true)
-                        TerminalTableCell(text = "owner")
+                    AuraTableRow(showBottomBorder = true) {
+                        AuraTableCell(text = state.name.ifBlank { "You" })
+                        AuraTableCell(text = state.email, secondary = true)
+                        AuraTableCell(text = "owner")
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = stringResource(Res.string.tier_paid_status_active), variant = BadgeVariant.Success)
+                            AuraBadge(text = stringResource(Res.string.tier_paid_status_active), variant = BadgeVariant.Success)
                         }
                     }
-                    TerminalTableRow(showBottomBorder = true) {
-                        TerminalTableCell(text = "Alex Chen")
-                        TerminalTableCell(text = "alex@team.dev", secondary = true)
-                        TerminalTableCell(text = "editor")
+                    AuraTableRow(showBottomBorder = true) {
+                        AuraTableCell(text = "Alex Chen")
+                        AuraTableCell(text = "alex@team.dev", secondary = true)
+                        AuraTableCell(text = "editor")
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = stringResource(Res.string.tier_paid_status_active), variant = BadgeVariant.Success)
+                            AuraBadge(text = stringResource(Res.string.tier_paid_status_active), variant = BadgeVariant.Success)
                         }
                     }
-                    TerminalTableRow(showBottomBorder = false) {
-                        TerminalTableCell(text = "Sam Rivera")
-                        TerminalTableCell(text = "sam@team.dev", secondary = true)
-                        TerminalTableCell(text = "viewer")
+                    AuraTableRow(showBottomBorder = false) {
+                        AuraTableCell(text = "Sam Rivera")
+                        AuraTableCell(text = "sam@team.dev", secondary = true)
+                        AuraTableCell(text = "viewer")
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = stringResource(Res.string.tier_paid_status_pending), variant = BadgeVariant.Warning)
+                            AuraBadge(text = stringResource(Res.string.tier_paid_status_pending), variant = BadgeVariant.Warning)
                         }
                     }
                 }
@@ -121,12 +121,12 @@ fun PaidTierContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_paid_seats_used),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
-                    TerminalText(
+                    AuraText(
                         text = "3 / 5",
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.text,
@@ -136,7 +136,7 @@ fun PaidTierContent(
         }
 
         // Analytics preview
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_paid_analytics_title),
             description = stringResource(Res.string.tier_paid_analytics_desc),
         ) {
@@ -149,7 +149,7 @@ fun PaidTierContent(
                 AnalyticRow(label = stringResource(Res.string.tier_paid_error_rate), value = "0.12%")
                 AnalyticRow(label = stringResource(Res.string.tier_paid_uptime), value = "99.97%")
 
-                TerminalProgress(
+                AuraProgress(
                     progress = 0.9997f,
                     label = stringResource(Res.string.tier_paid_uptime_label),
                     modifier = Modifier.fillMaxWidth(),
@@ -158,37 +158,37 @@ fun PaidTierContent(
         }
 
         // Export options
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_paid_export_title),
             description = stringResource(Res.string.tier_paid_export_desc),
         ) {
-            TerminalList {
-                TerminalListItem(
+            AuraList {
+                AuraListItem(
                     text = stringResource(Res.string.tier_paid_export_team_data),
                     subtitle = stringResource(Res.string.tier_paid_export_team_data_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_paid_export_available), variant = BadgeVariant.Accent)
+                        AuraBadge(text = stringResource(Res.string.tier_paid_export_available), variant = BadgeVariant.Accent)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_paid_export_analytics),
                     subtitle = stringResource(Res.string.tier_paid_export_analytics_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_paid_export_available), variant = BadgeVariant.Accent)
+                        AuraBadge(text = stringResource(Res.string.tier_paid_export_available), variant = BadgeVariant.Accent)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_paid_export_audit_log),
                     subtitle = stringResource(Res.string.tier_paid_export_audit_log_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_paid_export_locked), variant = BadgeVariant.Default)
+                        AuraBadge(text = stringResource(Res.string.tier_paid_export_locked), variant = BadgeVariant.Default)
                     },
                 )
             }
         }
 
         // Premium upgrade info
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_paid_upgrade_title),
             variant = CardVariant.Accent,
         ) {
@@ -196,7 +196,7 @@ fun PaidTierContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.tier_paid_upgrade_description),
                     style = typography.sm,
                     color = colors.textMuted,
@@ -208,19 +208,19 @@ fun PaidTierContent(
 
 @Composable
 private fun AnalyticRow(label: String, value: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm,
             color = colors.textMuted,
         )
-        TerminalText(
+        AuraText(
             text = value,
             style = typography.sm.copy(fontWeight = FontWeight.Medium),
             color = colors.text,

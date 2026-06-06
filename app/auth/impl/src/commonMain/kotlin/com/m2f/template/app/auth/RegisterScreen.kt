@@ -32,16 +32,16 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.display.TerminalDivider
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.display.AuraDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.input.TerminalInput
-import com.m2f.template.designsystem.components.input.TerminalPasswordInput
-import com.m2f.template.designsystem.components.selection.TerminalCheckbox
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.input.AuraInput
+import com.m2f.template.designsystem.components.input.AuraPasswordInput
+import com.m2f.template.designsystem.components.selection.AuraCheckbox
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.auth.generated.resources.Res
 import template.app.auth.generated.resources.common_brand_name
@@ -88,7 +88,7 @@ import template.app.auth.generated.resources.register_title
  * Mobile (<=840dp): Centered card layout with compact form.
  *
  * Uses accumulated field validation via zipOrAccumulate (multiple errors shown at once).
- * Uses only Foundation-level TerminalTheme design system components.
+ * Uses only Foundation-level AuraTheme design system components.
  * Matches Pencil design B1nWB (desktop) and KXp69 (mobile).
  */
 @Composable
@@ -107,7 +107,7 @@ fun RegisterScreen(
     onViewPrivacyPolicy: () -> Unit,
     onViewTermsOfService: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = Modifier
@@ -168,7 +168,7 @@ private fun RegisterDesktopLayout(
     onViewPrivacyPolicy: () -> Unit,
     onViewTermsOfService: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     Row(modifier = Modifier.fillMaxSize()) {
         // Left brand panel
@@ -217,8 +217,8 @@ private fun RegisterDesktopLayout(
 
 @Composable
 private fun RegisterBrandPanel(modifier: Modifier = Modifier) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier
@@ -231,12 +231,12 @@ private fun RegisterBrandPanel(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_brand_prompt),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontSize = 20.sp, fontWeight = FontWeight.Medium),
                 color = colors.text,
@@ -247,17 +247,17 @@ private fun RegisterBrandPanel(modifier: Modifier = Modifier) {
         Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
             // Tagline
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.register_brand_tagline_1),
                     style = typography.xxl.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
                     color = colors.text,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.register_brand_tagline_2),
                     style = typography.xxl.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
                     color = colors.text,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.register_brand_tagline_3),
                     style = typography.xxl.copy(fontSize = 28.sp, fontWeight = FontWeight.Bold),
                     color = colors.accent,
@@ -295,22 +295,22 @@ private fun FeatureBullet(
     title: String,
     description: String,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        TerminalText(
+        AuraText(
             text = icon,
             style = typography.md,
             color = colors.accent,
         )
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            TerminalText(
+            AuraText(
                 text = title,
                 style = typography.sm.copy(fontWeight = FontWeight.SemiBold),
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = description,
                 style = typography.xs,
                 color = colors.textDim,
@@ -339,8 +339,8 @@ private fun RegisterMobileLayout(
     onViewPrivacyPolicy: () -> Unit,
     onViewTermsOfService: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = Modifier
@@ -353,19 +353,19 @@ private fun RegisterMobileLayout(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.common_brand_prompt),
                 style = typography.md.copy(fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.register_command),
             style = typography.xs,
             color = colors.textDim,
@@ -374,13 +374,13 @@ private fun RegisterMobileLayout(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Title block
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.register_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
         )
         Spacer(modifier = Modifier.height(4.dp))
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.register_subtitle),
             style = typography.sm,
             color = colors.textDim,
@@ -451,8 +451,8 @@ private fun RegisterFormContent(
     onViewPrivacyPolicy: () -> Unit,
     onViewTermsOfService: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -460,12 +460,12 @@ private fun RegisterFormContent(
     ) {
         // Title block
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.register_form_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.register_form_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
@@ -474,7 +474,7 @@ private fun RegisterFormContent(
 
         // Server error alert
         if (state.serverError != null) {
-            TerminalAlert(
+            AuraAlert(
                 message = resolveStringKey(state.serverError),
                 variant = AlertVariant.Error,
             )
@@ -516,13 +516,13 @@ private fun RegisterFormContent(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalDivider(modifier = Modifier.weight(1f))
-            TerminalText(
+            AuraDivider(modifier = Modifier.weight(1f))
+            AuraText(
                 text = stringResource(Res.string.common_or),
                 style = typography.xs,
                 color = colors.textDim,
             )
-            TerminalDivider(modifier = Modifier.weight(1f))
+            AuraDivider(modifier = Modifier.weight(1f))
         }
 
         SocialButtonsRow(
@@ -564,7 +564,7 @@ private fun RegisterFormFields(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            TerminalInput(
+            AuraInput(
                 value = state.firstName,
                 onValueChange = onFirstNameChange,
                 modifier = Modifier.weight(1f),
@@ -573,7 +573,7 @@ private fun RegisterFormFields(
                 isError = firstNameError != null,
                 errorMessage = firstNameError?.let { resolveStringKey(it) },
             )
-            TerminalInput(
+            AuraInput(
                 value = state.lastName,
                 onValueChange = onLastNameChange,
                 modifier = Modifier.weight(1f),
@@ -585,7 +585,7 @@ private fun RegisterFormFields(
         }
 
         // Email
-        TerminalInput(
+        AuraInput(
             value = state.email,
             onValueChange = onEmailChange,
             label = stringResource(Res.string.register_email_label),
@@ -596,7 +596,7 @@ private fun RegisterFormFields(
         )
 
         // Password
-        TerminalPasswordInput(
+        AuraPasswordInput(
             value = state.password,
             onValueChange = onPasswordChange,
             label = stringResource(Res.string.register_password_label),
@@ -606,7 +606,7 @@ private fun RegisterFormFields(
         )
 
         // Confirm password
-        TerminalPasswordInput(
+        AuraPasswordInput(
             value = state.confirmPassword,
             onValueChange = onConfirmPasswordChange,
             label = stringResource(Res.string.register_confirm_password_label),
@@ -624,8 +624,8 @@ private fun RegisterFormFields(
                 onViewTermsOfService = onViewTermsOfService,
             )
             if (termsError != null) {
-                val colors = TerminalTheme.colors
-                val typography = TerminalTheme.typography
+                val colors = AuraTheme.colors
+                val typography = AuraTheme.typography
                 Spacer(modifier = Modifier.height(4.dp))
                 BasicText(
                     text = resolveStringKey(termsError),
@@ -635,7 +635,7 @@ private fun RegisterFormFields(
         }
 
         // Register button
-        TerminalButton(
+        AuraButton(
             text = if (state.isLoading) stringResource(Res.string.register_button_loading) else stringResource(Res.string.register_button),
             onClick = onRegisterClick,
             modifier = Modifier.fillMaxWidth(),
@@ -652,8 +652,8 @@ private fun TermsCheckboxWithLinks(
     onViewPrivacyPolicy: () -> Unit,
     onViewTermsOfService: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     val prefix = stringResource(Res.string.register_terms_prefix)
     val privacyPolicy = stringResource(Res.string.register_terms_privacy_policy)
@@ -681,7 +681,7 @@ private fun TermsCheckboxWithLinks(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TerminalCheckbox(
+        AuraCheckbox(
             checked = checked,
             onCheckedChange = onCheckedChange,
         )
@@ -704,14 +704,14 @@ private fun TermsCheckboxWithLinks(
 
 @Composable
 private fun LoginLinkRow(onLogin: () -> Unit) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
     ) {
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.register_login_prompt),
             style = typography.sm,
             color = colors.textDim,

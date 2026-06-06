@@ -10,22 +10,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.app.profile.ProfileModel
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalList
-import com.m2f.template.designsystem.components.data.TerminalListItem
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraList
+import com.m2f.template.designsystem.components.data.AuraListItem
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
 import template.app.profile.generated.resources.tier_poweradmin_access_admin_col
@@ -105,15 +105,15 @@ fun PowerAdminTierContent(
     state: ProfileModel,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // Platform stats
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_poweradmin_stats_title),
             description = stringResource(Res.string.tier_poweradmin_stats_desc),
             variant = CardVariant.Highlighted,
@@ -128,7 +128,7 @@ fun PowerAdminTierContent(
                 PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_avg_latency), value = "23ms")
                 PlatformStatRow(label = stringResource(Res.string.tier_poweradmin_stats_error_rate), value = "0.002%")
 
-                TerminalProgress(
+                AuraProgress(
                     progress = 0.9999f,
                     label = stringResource(Res.string.tier_poweradmin_stats_health_label),
                     modifier = Modifier.fillMaxWidth(),
@@ -137,11 +137,11 @@ fun PowerAdminTierContent(
         }
 
         // User directory
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_poweradmin_directory_title),
             description = stringResource(Res.string.tier_poweradmin_directory_desc),
         ) {
-            TerminalTable(
+            AuraTable(
                 headers = listOf(
                     stringResource(Res.string.tier_poweradmin_table_id),
                     stringResource(Res.string.tier_poweradmin_table_name),
@@ -151,66 +151,66 @@ fun PowerAdminTierContent(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "#001", secondary = true)
-                    TerminalTableCell(text = state.name.ifBlank { "Root Admin" })
-                    TerminalTableCell(text = state.email, secondary = true)
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "#001", secondary = true)
+                    AuraTableCell(text = state.name.ifBlank { "Root Admin" })
+                    AuraTableCell(text = state.email, secondary = true)
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "power_admin", variant = BadgeVariant.Accent)
+                        AuraBadge(text = "power_admin", variant = BadgeVariant.Accent)
                     }
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "online", variant = BadgeVariant.Success)
-                    }
-                }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "#002", secondary = true)
-                    TerminalTableCell(text = "Sarah Admin")
-                    TerminalTableCell(text = "sarah@platform.dev", secondary = true)
-                    Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "admin", variant = BadgeVariant.Accent)
-                    }
-                    Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "online", variant = BadgeVariant.Success)
+                        AuraBadge(text = "online", variant = BadgeVariant.Success)
                     }
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "#003", secondary = true)
-                    TerminalTableCell(text = "Mike Premium")
-                    TerminalTableCell(text = "mike@company.io", secondary = true)
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "#002", secondary = true)
+                    AuraTableCell(text = "Sarah Admin")
+                    AuraTableCell(text = "sarah@platform.dev", secondary = true)
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "premium", variant = BadgeVariant.Success)
+                        AuraBadge(text = "admin", variant = BadgeVariant.Accent)
                     }
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "online", variant = BadgeVariant.Success)
-                    }
-                }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "#047", secondary = true)
-                    TerminalTableCell(text = "Ana Paid")
-                    TerminalTableCell(text = "ana@startup.co", secondary = true)
-                    Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "paid", variant = BadgeVariant.Default)
-                    }
-                    Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "offline", variant = BadgeVariant.Warning)
+                        AuraBadge(text = "online", variant = BadgeVariant.Success)
                     }
                 }
-                TerminalTableRow(showBottomBorder = false) {
-                    TerminalTableCell(text = "#128", secondary = true)
-                    TerminalTableCell(text = "New User")
-                    TerminalTableCell(text = "new@example.com", secondary = true)
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "#003", secondary = true)
+                    AuraTableCell(text = "Mike Premium")
+                    AuraTableCell(text = "mike@company.io", secondary = true)
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "free", variant = BadgeVariant.Default)
+                        AuraBadge(text = "premium", variant = BadgeVariant.Success)
                     }
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = "offline", variant = BadgeVariant.Warning)
+                        AuraBadge(text = "online", variant = BadgeVariant.Success)
+                    }
+                }
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "#047", secondary = true)
+                    AuraTableCell(text = "Ana Paid")
+                    AuraTableCell(text = "ana@startup.co", secondary = true)
+                    Box(modifier = Modifier.weight(1f)) {
+                        AuraBadge(text = "paid", variant = BadgeVariant.Default)
+                    }
+                    Box(modifier = Modifier.weight(1f)) {
+                        AuraBadge(text = "offline", variant = BadgeVariant.Warning)
+                    }
+                }
+                AuraTableRow(showBottomBorder = false) {
+                    AuraTableCell(text = "#128", secondary = true)
+                    AuraTableCell(text = "New User")
+                    AuraTableCell(text = "new@example.com", secondary = true)
+                    Box(modifier = Modifier.weight(1f)) {
+                        AuraBadge(text = "free", variant = BadgeVariant.Default)
+                    }
+                    Box(modifier = Modifier.weight(1f)) {
+                        AuraBadge(text = "offline", variant = BadgeVariant.Warning)
                     }
                 }
             }
         }
 
         // Admin identity card
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_poweradmin_identity_title),
             description = stringResource(Res.string.tier_poweradmin_identity_desc),
         ) {
@@ -228,11 +228,11 @@ fun PowerAdminTierContent(
         }
 
         // Access matrix
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_poweradmin_access_title),
             description = stringResource(Res.string.tier_poweradmin_access_desc),
         ) {
-            TerminalTable(
+            AuraTable(
                 headers = listOf(
                     stringResource(Res.string.tier_poweradmin_access_resource_col),
                     stringResource(Res.string.tier_poweradmin_access_read_col),
@@ -242,96 +242,96 @@ fun PowerAdminTierContent(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_users))
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_poweradmin_res_users))
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_billing))
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_poweradmin_res_billing))
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_infra))
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_poweradmin_res_infra))
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_audit_logs))
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_poweradmin_res_audit_logs))
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = false) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_poweradmin_res_system_config))
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = false) {
+                    AuraTableCell(text = stringResource(Res.string.tier_poweradmin_res_system_config))
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
                 }
             }
         }
 
         // System status
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_poweradmin_status_title),
             description = stringResource(Res.string.tier_poweradmin_status_desc),
         ) {
-            TerminalList {
-                TerminalListItem(
+            AuraList {
+                AuraListItem(
                     text = stringResource(Res.string.tier_poweradmin_status_api_gateway),
                     subtitle = stringResource(Res.string.tier_poweradmin_status_api_gateway_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_poweradmin_status_db),
                     subtitle = stringResource(Res.string.tier_poweradmin_status_db_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_poweradmin_status_cache),
                     subtitle = stringResource(Res.string.tier_poweradmin_status_cache_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_poweradmin_status_worker),
                     subtitle = stringResource(Res.string.tier_poweradmin_status_worker_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_poweradmin_status_healthy), variant = BadgeVariant.Success)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_poweradmin_status_storage),
                     subtitle = stringResource(Res.string.tier_poweradmin_status_storage_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_poweradmin_status_warning), variant = BadgeVariant.Warning)
+                        AuraBadge(text = stringResource(Res.string.tier_poweradmin_status_warning), variant = BadgeVariant.Warning)
                     },
                 )
             }
         }
 
         // Danger zone
-        TerminalAlert(
+        AuraAlert(
             message = stringResource(Res.string.tier_poweradmin_danger_alert_message),
             variant = AlertVariant.Error,
             title = stringResource(Res.string.tier_poweradmin_danger_alert_title),
         )
 
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_poweradmin_danger_title),
             description = stringResource(Res.string.tier_poweradmin_danger_desc),
         ) {
@@ -344,18 +344,18 @@ fun PowerAdminTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_poweradmin_danger_purge_cache),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_poweradmin_danger_purge_cache_sub),
                             style = typography.xs,
                             color = colors.textMuted,
                         )
                     }
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.tier_poweradmin_btn_purge),
                         onClick = { /* Static demo */ },
                         variant = ButtonVariant.Destructive,
@@ -367,18 +367,18 @@ fun PowerAdminTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_poweradmin_danger_reset_rate),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_poweradmin_danger_reset_rate_sub),
                             style = typography.xs,
                             color = colors.textMuted,
                         )
                     }
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.tier_poweradmin_btn_reset),
                         onClick = { /* Static demo */ },
                         variant = ButtonVariant.Destructive,
@@ -390,18 +390,18 @@ fun PowerAdminTierContent(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_poweradmin_danger_force_logout),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_poweradmin_danger_force_logout_sub),
                             style = typography.xs,
                             color = colors.textMuted,
                         )
                     }
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.tier_poweradmin_btn_logout_all),
                         onClick = { /* Static demo */ },
                         variant = ButtonVariant.Destructive,
@@ -414,19 +414,19 @@ fun PowerAdminTierContent(
 
 @Composable
 private fun PlatformStatRow(label: String, value: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm,
             color = colors.textMuted,
         )
-        TerminalText(
+        AuraText(
             text = value,
             style = typography.sm.copy(fontWeight = FontWeight.Medium),
             color = colors.text,

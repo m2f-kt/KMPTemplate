@@ -19,17 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.display.TerminalDivider
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.display.AuraDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.components.selection.TerminalSwitch
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.components.selection.AuraSwitch
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.designsystem.util.toDisplayDateTime
 import com.m2f.template.models.dto.privacy.ConsentStatus
 import com.m2f.template.models.dto.privacy.ConsentType
@@ -55,7 +55,7 @@ fun PrivacySettingsScreen(
     onToggleConsent: (ConsentStatus) -> Unit,
     onBack: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = Modifier
@@ -106,8 +106,8 @@ fun PrivacySettingsContent(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
@@ -119,13 +119,13 @@ fun PrivacySettingsContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_settings_title),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
                 color = colors.text,
             )
 
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_settings_back),
                 onClick = onBack,
                 variant = ButtonVariant.Ghost,
@@ -134,12 +134,12 @@ fun PrivacySettingsContent(
 
         // Loading
         if (state.loading) {
-            TerminalProgress(label = stringResource(Res.string.privacy_settings_loading))
+            AuraProgress(label = stringResource(Res.string.privacy_settings_loading))
         }
 
         // Error
         if (state.error != null) {
-            TerminalAlert(
+            AuraAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
                 title = stringResource(Res.string.privacy_settings_error_title),
@@ -157,12 +157,12 @@ fun PrivacySettingsContent(
             )
         }
 
-        TerminalDivider()
+        AuraDivider()
 
         // Section: Data Export
         SectionHeader(title = stringResource(Res.string.privacy_settings_export_header))
 
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.privacy_settings_export_desc),
             style = typography.sm,
             color = colors.textDim,
@@ -174,12 +174,12 @@ fun PrivacySettingsContent(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.privacy_settings_export_status),
                     style = typography.sm,
                     color = colors.text,
                 )
-                TerminalBadge(
+                AuraBadge(
                     text = exportStatusLabel(state.exportStatus.status),
                     variant = when (state.exportStatus.status) {
                         ExportStatus.COMPLETED -> BadgeVariant.Success
@@ -191,14 +191,14 @@ fun PrivacySettingsContent(
             }
 
             if (state.exportStatus.status == ExportStatus.COMPLETED) {
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.privacy_settings_export_download),
                     onClick = onDownloadExport,
                     variant = ButtonVariant.Success,
                 )
             }
         } else {
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_settings_export_request),
                 onClick = onRequestExport,
                 variant = ButtonVariant.Secondary,
@@ -206,18 +206,18 @@ fun PrivacySettingsContent(
             )
         }
 
-        TerminalDivider()
+        AuraDivider()
 
         // Section: Delete Account
         SectionHeader(title = stringResource(Res.string.privacy_settings_delete_header))
 
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.privacy_settings_delete_desc),
             style = typography.sm,
             color = colors.textDim,
         )
 
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_settings_delete_button),
             onClick = onRequestDeletion,
             variant = ButtonVariant.Destructive,
@@ -239,10 +239,10 @@ private fun exportStatusLabel(status: ExportStatus): String = when (status) {
 
 @Composable
 private fun SectionHeader(title: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
-    TerminalText(
+    AuraText(
         text = "> $title",
         style = typography.md.copy(fontWeight = FontWeight.Bold),
         color = colors.accent,
@@ -255,8 +255,8 @@ private fun ConsentStatusRow(
     onViewDocument: () -> Unit,
     onToggle: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
     val isOptional = consent.type == ConsentType.MARKETING || consent.type == ConsentType.ANALYTICS
 
     Row(
@@ -268,13 +268,13 @@ private fun ConsentStatusRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
-            TerminalText(
+            AuraText(
                 text = consentTypeLabel(consent.type),
                 style = typography.sm.copy(fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
             if (consent.grantedAt != null) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.privacy_consent_granted_prefix, consent.grantedAt?.toDisplayDateTime() ?: ""),
                     style = typography.xs,
                     color = colors.textDim,
@@ -286,19 +286,19 @@ private fun ConsentStatusRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_consent_view),
                 onClick = onViewDocument,
                 variant = ButtonVariant.Ghost,
             )
 
             if (isOptional) {
-                TerminalSwitch(
+                AuraSwitch(
                     checked = consent.granted,
                     onCheckedChange = { onToggle() },
                 )
             } else {
-                TerminalBadge(
+                AuraBadge(
                     text = stringResource(Res.string.privacy_consent_required_badge),
                     variant = BadgeVariant.Default,
                 )

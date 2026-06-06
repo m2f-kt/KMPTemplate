@@ -27,18 +27,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.display.TerminalDivider
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.display.AuraDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.components.input.TerminalPasswordInput
-import com.m2f.template.designsystem.components.input.TerminalTextarea
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.components.input.AuraPasswordInput
+import com.m2f.template.designsystem.components.input.AuraTextarea
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.designsystem.util.toDisplayDate
 import org.jetbrains.compose.resources.stringResource
 import template.app.privacy.generated.resources.Res
@@ -62,7 +62,7 @@ fun AccountDeletionScreen(
     onLogout: () -> Unit,
     onBack: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = Modifier
@@ -155,7 +155,7 @@ private fun StepContent(
     onBack: () -> Unit,
 ) {
     if (state.loading) {
-        TerminalProgress(label = stringResource(Res.string.privacy_deletion_processing))
+        AuraProgress(label = stringResource(Res.string.privacy_deletion_processing))
     }
 
     when (state.step) {
@@ -203,39 +203,39 @@ private fun WarningStep(
     onCancel: () -> Unit,
     loading: Boolean,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     // Step label
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_step_1),
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
     // Title
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_title),
         style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold, letterSpacing = (-0.5).sp),
         color = colors.text,
     )
 
     // Danger alert
-    TerminalAlert(
+    AuraAlert(
         message = stringResource(Res.string.privacy_deletion_warning_danger_message),
         variant = AlertVariant.Error,
         title = "[${stringResource(Res.string.privacy_deletion_warning_danger_title)}]",
     )
 
     // Scope label
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_warning_scope_label),
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
     // Scope card
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.privacy_deletion_warning_scope_card_title),
         description = stringResource(Res.string.privacy_deletion_warning_scope_card_desc),
         variant = CardVariant.Default,
@@ -248,7 +248,7 @@ private fun WarningStep(
                 stringResource(Res.string.privacy_deletion_warning_scope_item4),
             )
             items.forEach { item ->
-                TerminalText(
+                AuraText(
                     text = "▸ $item",
                     style = typography.sm.copy(lineHeight = (typography.sm.fontSize.value * 1.8).sp),
                     color = colors.text,
@@ -258,7 +258,7 @@ private fun WarningStep(
     }
 
     // Grace period text
-    TerminalText(
+    AuraText(
         text = "▸ ${stringResource(Res.string.privacy_deletion_warning_grace)}",
         style = typography.sm.copy(fontSize = 13.sp),
         color = colors.textDim,
@@ -269,14 +269,14 @@ private fun WarningStep(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_warning_understand),
             onClick = onContinue,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
             enabled = !loading,
         )
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_cancel),
             onClick = onCancel,
             modifier = Modifier.weight(1f),
@@ -293,33 +293,33 @@ private fun ReAuthStep(
     onBack: () -> Unit,
     loading: Boolean,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
     var password by remember { mutableStateOf("") }
 
     // Step label
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_step_2),
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
     // Title
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_reauth_title),
         style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
         color = colors.text,
     )
 
     // Subtitle
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_reauth_subtitle),
         style = typography.sm.copy(fontSize = 13.sp),
         color = colors.textDim,
     )
 
     // Password input
-    TerminalPasswordInput(
+    AuraPasswordInput(
         value = password,
         onValueChange = { password = it },
         label = stringResource(Res.string.privacy_deletion_reauth_label),
@@ -329,7 +329,7 @@ private fun ReAuthStep(
 
     // Error alert
     if (error != null) {
-        TerminalAlert(
+        AuraAlert(
             message = stringResource(Res.string.privacy_deletion_reauth_error_message),
             variant = AlertVariant.Error,
             title = "[${stringResource(Res.string.privacy_deletion_reauth_error_title)}]",
@@ -341,14 +341,14 @@ private fun ReAuthStep(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_reauth_verify),
             onClick = { onReAuthenticate(password) },
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
             enabled = password.isNotBlank() && !loading,
         )
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_back),
             onClick = onBack,
             modifier = Modifier.weight(1f),
@@ -366,33 +366,33 @@ private fun ReasonStep(
     onBack: () -> Unit,
     loading: Boolean,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
     var localReason by remember(reason) { mutableStateOf(reason) }
 
     // Step label
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_step_3),
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
     // Title
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_reason_title),
         style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
         color = colors.text,
     )
 
     // Subtitle
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_reason_subtitle),
         style = typography.sm.copy(fontSize = 13.sp),
         color = colors.textDim,
     )
 
     // Textarea
-    TerminalTextarea(
+    AuraTextarea(
         value = localReason,
         onValueChange = { localReason = it },
         label = stringResource(Res.string.privacy_deletion_reason_label),
@@ -402,7 +402,7 @@ private fun ReasonStep(
 
     // Buttons
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_reason_continue),
             onClick = { onSetReason(localReason) },
             modifier = Modifier.fillMaxWidth(),
@@ -413,14 +413,14 @@ private fun ReasonStep(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_deletion_reason_skip),
                 onClick = onSkipReason,
                 modifier = Modifier.weight(1f),
                 variant = ButtonVariant.Ghost,
                 enabled = !loading,
             )
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_deletion_back),
                 onClick = onBack,
                 modifier = Modifier.weight(1f),
@@ -438,50 +438,50 @@ private fun ConfirmStep(
     onCancel: () -> Unit,
     loading: Boolean,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     val scheduledDate = "7 days"
 
     // Step label
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_confirm_step),
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
     // Title
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_confirm_title),
         style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
         color = colors.text,
     )
 
     // Subtitle
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_confirm_subtitle),
         style = typography.xs.copy(fontSize = 12.sp),
         color = colors.textDim,
     )
 
     // Deletion summary card
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.privacy_deletion_confirm_card_title),
         description = stringResource(Res.string.privacy_deletion_confirm_card_desc),
         variant = CardVariant.Accent,
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_confirm_account, userEmail),
                 style = typography.sm,
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_confirm_scheduled, scheduledDate),
                 style = typography.sm,
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_confirm_grace),
                 style = typography.sm,
                 color = colors.text,
@@ -490,7 +490,7 @@ private fun ConfirmStep(
     }
 
     // Warning alert
-    TerminalAlert(
+    AuraAlert(
         message = stringResource(Res.string.privacy_deletion_confirm_warn, scheduledDate),
         variant = AlertVariant.Warning,
         title = "[WARN]",
@@ -501,14 +501,14 @@ private fun ConfirmStep(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_confirm_button),
             onClick = onConfirmDeletion,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Destructive,
             enabled = !loading,
         )
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_cancel),
             onClick = onCancel,
             modifier = Modifier.weight(1f),
@@ -524,43 +524,43 @@ private fun ScheduledStep(
     onCancelDeletion: () -> Unit,
     onLogout: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     val displayDate = scheduledAt?.toDisplayDate() ?: ""
 
     // Step label
-    TerminalText(
+    AuraText(
         text = stringResource(Res.string.privacy_deletion_scheduled_step),
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
     )
 
     // Success alert
-    TerminalAlert(
+    AuraAlert(
         message = stringResource(Res.string.privacy_deletion_scheduled_success_message),
         variant = AlertVariant.Success,
         title = "[SUCCESS] ${stringResource(Res.string.privacy_deletion_scheduled_success_title)}",
     )
 
     // Info card
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.privacy_deletion_scheduled_card_title),
         description = stringResource(Res.string.privacy_deletion_scheduled_card_desc),
         variant = CardVariant.Info,
     ) {
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_scheduled_card_line1, displayDate),
                 style = typography.sm,
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_scheduled_card_line2),
                 style = typography.sm,
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_scheduled_card_line3),
                 style = typography.sm,
                 color = colors.text,
@@ -570,13 +570,13 @@ private fun ScheduledStep(
 
     // Buttons
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_scheduled_cancel),
             onClick = onCancelDeletion,
             modifier = Modifier.fillMaxWidth(),
             variant = ButtonVariant.Default,
         )
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.privacy_deletion_scheduled_logout),
             onClick = onLogout,
             modifier = Modifier.fillMaxWidth(),
@@ -591,25 +591,25 @@ private fun ScheduledStep(
 
 @Composable
 private fun DesktopRightPanel(step: DeletionStep) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     when (step) {
         DeletionStep.WARNING -> {
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step1_header))
             PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step1_title))
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step1_desc),
                 style = typography.sm,
                 color = colors.textDim,
             )
-            TerminalDivider()
+            AuraDivider()
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet1))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet2))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet3))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step1_bullet4))
             Spacer(modifier = Modifier.height(8.dp))
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step1_note),
                 style = typography.xs,
                 color = colors.textDim,
@@ -619,12 +619,12 @@ private fun DesktopRightPanel(step: DeletionStep) {
         DeletionStep.RE_AUTH -> {
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step2_header))
             PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step2_title))
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step2_desc),
                 style = typography.sm,
                 color = colors.textDim,
             )
-            TerminalDivider()
+            AuraDivider()
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step2_bullet1))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step2_bullet2))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step2_bullet3))
@@ -633,12 +633,12 @@ private fun DesktopRightPanel(step: DeletionStep) {
         DeletionStep.REASON -> {
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step3_header))
             PanelTitle(stringResource(Res.string.privacy_deletion_desktop_step3_title))
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step3_desc),
                 style = typography.sm,
                 color = colors.textDim,
             )
-            TerminalDivider()
+            AuraDivider()
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step3_bullet1))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step3_bullet2))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step3_bullet3))
@@ -646,12 +646,12 @@ private fun DesktopRightPanel(step: DeletionStep) {
 
         DeletionStep.CONFIRM -> {
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step4_header))
-            TerminalDivider()
+            AuraDivider()
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step4_bullet1))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step4_bullet2))
             PanelBullet(stringResource(Res.string.privacy_deletion_desktop_step4_bullet3))
             Spacer(modifier = Modifier.height(8.dp))
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step4_note),
                 style = typography.xs,
                 color = colors.textDim,
@@ -660,24 +660,24 @@ private fun DesktopRightPanel(step: DeletionStep) {
 
         DeletionStep.SCHEDULED -> {
             PanelHeader(stringResource(Res.string.privacy_deletion_desktop_step5_header))
-            TerminalDivider()
-            TerminalText(
+            AuraDivider()
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step5_step1),
                 style = typography.sm,
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step5_step2),
                 style = typography.sm,
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step5_step3),
                 style = typography.sm,
                 color = colors.text,
             )
             Spacer(modifier = Modifier.height(8.dp))
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.privacy_deletion_desktop_step5_cancel),
                 style = typography.xs,
                 color = colors.textDim,
@@ -688,9 +688,9 @@ private fun DesktopRightPanel(step: DeletionStep) {
 
 @Composable
 private fun PanelStepIndicator(text: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    TerminalText(
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    AuraText(
         text = text,
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.textDim,
@@ -699,9 +699,9 @@ private fun PanelStepIndicator(text: String) {
 
 @Composable
 private fun PanelHeader(text: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    TerminalText(
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    AuraText(
         text = text,
         style = typography.xs.copy(fontSize = 10.sp, letterSpacing = 2.sp),
         color = colors.accent,
@@ -710,9 +710,9 @@ private fun PanelHeader(text: String) {
 
 @Composable
 private fun PanelTitle(text: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    TerminalText(
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    AuraText(
         text = text,
         style = typography.md.copy(fontSize = 16.sp, fontWeight = FontWeight.Bold),
         color = colors.text,
@@ -721,9 +721,9 @@ private fun PanelTitle(text: String) {
 
 @Composable
 private fun PanelBullet(text: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    TerminalText(
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    AuraText(
         text = "▸ $text",
         style = typography.sm,
         color = colors.text,

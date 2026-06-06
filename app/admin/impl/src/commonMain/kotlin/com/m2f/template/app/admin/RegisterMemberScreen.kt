@@ -15,13 +15,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.AuraText
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.input.TerminalInput
-import com.m2f.template.designsystem.components.input.TerminalPasswordInput
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.input.AuraInput
+import com.m2f.template.designsystem.components.input.AuraPasswordInput
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.models.GroupRole
 import org.jetbrains.compose.resources.stringResource
 import template.app.admin.generated.resources.Res
@@ -70,8 +70,8 @@ fun RegisterMemberScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier
@@ -85,11 +85,11 @@ fun RegisterMemberScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.register_member_back),
                 onClick = onBack,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.register_member_title),
                 style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                 color = colors.text,
@@ -98,7 +98,7 @@ fun RegisterMemberScreen(
 
         // First Name
         val firstNameError = state.fieldErrors["firstName"]
-        TerminalInput(
+        AuraInput(
             value = state.firstName,
             onValueChange = onFirstNameChange,
             label = stringResource(Res.string.register_member_first_name_label),
@@ -109,7 +109,7 @@ fun RegisterMemberScreen(
 
         // Last Name
         val lastNameError = state.fieldErrors["lastName"]
-        TerminalInput(
+        AuraInput(
             value = state.lastName,
             onValueChange = onLastNameChange,
             label = stringResource(Res.string.register_member_last_name_label),
@@ -120,7 +120,7 @@ fun RegisterMemberScreen(
 
         // Email
         val emailError = state.fieldErrors["email"]
-        TerminalInput(
+        AuraInput(
             value = state.email,
             onValueChange = onEmailChange,
             label = stringResource(Res.string.register_member_email_label),
@@ -131,7 +131,7 @@ fun RegisterMemberScreen(
 
         // Password
         val passwordError = state.fieldErrors["password"]
-        TerminalPasswordInput(
+        AuraPasswordInput(
             value = state.password,
             onValueChange = onPasswordChange,
             label = stringResource(Res.string.register_member_password_label),
@@ -142,13 +142,13 @@ fun RegisterMemberScreen(
 
         // Role selector
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.register_member_role_label),
                 style = typography.sm.copy(fontWeight = FontWeight.Medium),
                 color = colors.textMuted,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                TerminalBadge(
+                AuraBadge(
                     text = stringResource(Res.string.register_member_role_member),
                     variant = if (state.role is GroupRole.Member) BadgeVariant.Success else BadgeVariant.Default,
                     modifier = Modifier.clickable(
@@ -156,7 +156,7 @@ fun RegisterMemberScreen(
                         interactionSource = remember { MutableInteractionSource() },
                     ) { onRoleChange(GroupRole.Member) },
                 )
-                TerminalBadge(
+                AuraBadge(
                     text = stringResource(Res.string.register_member_role_admin),
                     variant = if (state.role is GroupRole.Admin) BadgeVariant.Success else BadgeVariant.Default,
                     modifier = Modifier.clickable(
@@ -169,14 +169,14 @@ fun RegisterMemberScreen(
 
         // Server error
         if (state.serverError != null) {
-            TerminalBadge(
+            AuraBadge(
                 text = resolveStringKey(state.serverError),
                 variant = BadgeVariant.Error,
             )
         }
 
         // Submit button
-        TerminalButton(
+        AuraButton(
             text = if (state.isLoading) stringResource(Res.string.register_member_button_loading) else stringResource(Res.string.register_member_button),
             onClick = onSubmit,
             modifier = Modifier.fillMaxWidth(),

@@ -244,4 +244,11 @@
     <!-- Generic fallback -->
     <string name="error_generic">An unexpected error occurred</string>
 
+    <!-- Permission / native errors -->
+    <string name="error_permission_denied">Permission denied</string>
+    <string name="error_permission_restricted">Permission restricted</string>
+    <string name="error_permission_not_determined">Permission not requested yet</string>
+    <string name="error_native_unavailable">This feature isn't available on your device</string>
+    <string name="error_native_failure">A system error occurred</string>
+
 </resources>

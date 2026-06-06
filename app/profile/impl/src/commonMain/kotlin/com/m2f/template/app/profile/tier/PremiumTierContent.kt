@@ -10,19 +10,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.app.profile.ProfileModel
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalList
-import com.m2f.template.designsystem.components.data.TerminalListItem
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraList
+import com.m2f.template.designsystem.components.data.AuraListItem
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
 import template.app.profile.generated.resources.tier_premium_active_badge
@@ -69,22 +69,22 @@ fun PremiumTierContent(
     state: ProfileModel,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // Premium success alert
-        TerminalAlert(
+        AuraAlert(
             message = stringResource(Res.string.tier_premium_alert_message),
             variant = AlertVariant.Success,
             title = stringResource(Res.string.tier_premium_alert_title),
         )
 
         // Webhook configuration
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_premium_webhook_title),
             description = stringResource(Res.string.tier_premium_webhook_desc),
         ) {
@@ -92,7 +92,7 @@ fun PremiumTierContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalTable(
+                AuraTable(
                     headers = listOf(
                         stringResource(Res.string.tier_premium_table_endpoint),
                         stringResource(Res.string.tier_premium_table_events),
@@ -100,25 +100,25 @@ fun PremiumTierContent(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    TerminalTableRow(showBottomBorder = true) {
-                        TerminalTableCell(text = "https://api.example.com/hooks/deploy")
-                        TerminalTableCell(text = "deploy.success, deploy.fail", secondary = true)
+                    AuraTableRow(showBottomBorder = true) {
+                        AuraTableCell(text = "https://api.example.com/hooks/deploy")
+                        AuraTableCell(text = "deploy.success, deploy.fail", secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = stringResource(Res.string.tier_premium_status_active), variant = BadgeVariant.Success)
+                            AuraBadge(text = stringResource(Res.string.tier_premium_status_active), variant = BadgeVariant.Success)
                         }
                     }
-                    TerminalTableRow(showBottomBorder = true) {
-                        TerminalTableCell(text = "https://api.example.com/hooks/alerts")
-                        TerminalTableCell(text = "alert.critical, alert.warning", secondary = true)
+                    AuraTableRow(showBottomBorder = true) {
+                        AuraTableCell(text = "https://api.example.com/hooks/alerts")
+                        AuraTableCell(text = "alert.critical, alert.warning", secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = stringResource(Res.string.tier_premium_status_active), variant = BadgeVariant.Success)
+                            AuraBadge(text = stringResource(Res.string.tier_premium_status_active), variant = BadgeVariant.Success)
                         }
                     }
-                    TerminalTableRow(showBottomBorder = false) {
-                        TerminalTableCell(text = "https://slack.example.com/webhook")
-                        TerminalTableCell(text = "all", secondary = true)
+                    AuraTableRow(showBottomBorder = false) {
+                        AuraTableCell(text = "https://slack.example.com/webhook")
+                        AuraTableCell(text = "all", secondary = true)
                         Box(modifier = Modifier.weight(1f)) {
-                            TerminalBadge(text = stringResource(Res.string.tier_premium_status_paused), variant = BadgeVariant.Warning)
+                            AuraBadge(text = stringResource(Res.string.tier_premium_status_paused), variant = BadgeVariant.Warning)
                         }
                     }
                 }
@@ -126,7 +126,7 @@ fun PremiumTierContent(
         }
 
         // API keys
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_premium_api_keys_title),
             description = stringResource(Res.string.tier_premium_api_keys_desc),
         ) {
@@ -134,7 +134,7 @@ fun PremiumTierContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalTable(
+                AuraTable(
                     headers = listOf(
                         stringResource(Res.string.tier_premium_table_name),
                         stringResource(Res.string.tier_premium_table_key),
@@ -143,30 +143,30 @@ fun PremiumTierContent(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    TerminalTableRow(showBottomBorder = true) {
-                        TerminalTableCell(text = "production")
-                        TerminalTableCell(text = "tk_prod_***...x8f2", secondary = true)
-                        TerminalTableCell(text = "15/01/2024", secondary = true)
-                        TerminalTableCell(text = "2 hours ago", secondary = true)
+                    AuraTableRow(showBottomBorder = true) {
+                        AuraTableCell(text = "production")
+                        AuraTableCell(text = "tk_prod_***...x8f2", secondary = true)
+                        AuraTableCell(text = "15/01/2024", secondary = true)
+                        AuraTableCell(text = "2 hours ago", secondary = true)
                     }
-                    TerminalTableRow(showBottomBorder = true) {
-                        TerminalTableCell(text = "staging")
-                        TerminalTableCell(text = "tk_stg_***...m4d1", secondary = true)
-                        TerminalTableCell(text = "20/02/2024", secondary = true)
-                        TerminalTableCell(text = "5 days ago", secondary = true)
+                    AuraTableRow(showBottomBorder = true) {
+                        AuraTableCell(text = "staging")
+                        AuraTableCell(text = "tk_stg_***...m4d1", secondary = true)
+                        AuraTableCell(text = "20/02/2024", secondary = true)
+                        AuraTableCell(text = "5 days ago", secondary = true)
                     }
-                    TerminalTableRow(showBottomBorder = false) {
-                        TerminalTableCell(text = "development")
-                        TerminalTableCell(text = "tk_dev_***...q7a9", secondary = true)
-                        TerminalTableCell(text = "01/03/2024", secondary = true)
-                        TerminalTableCell(text = "never", secondary = true)
+                    AuraTableRow(showBottomBorder = false) {
+                        AuraTableCell(text = "development")
+                        AuraTableCell(text = "tk_dev_***...q7a9", secondary = true)
+                        AuraTableCell(text = "01/03/2024", secondary = true)
+                        AuraTableCell(text = "never", secondary = true)
                     }
                 }
             }
         }
 
         // Priority support card
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_premium_support_title),
             variant = CardVariant.Highlighted,
         ) {
@@ -178,12 +178,12 @@ fun PremiumTierContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_premium_response_time),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_premium_response_time_val),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.accent,
@@ -193,12 +193,12 @@ fun PremiumTierContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_premium_support_channel),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_premium_support_channel_val),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.text,
@@ -208,12 +208,12 @@ fun PremiumTierContent(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_premium_tickets_open),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.tier_premium_tickets_open_val),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.success,
@@ -223,35 +223,35 @@ fun PremiumTierContent(
         }
 
         // Full feature list
-        TerminalList(title = stringResource(Res.string.tier_premium_features_title)) {
-            TerminalListItem(
+        AuraList(title = stringResource(Res.string.tier_premium_features_title)) {
+            AuraListItem(
                 text = stringResource(Res.string.tier_premium_feature_unlimited_api),
                 trailingContent = { color ->
-                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
+                    AuraBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
-            TerminalListItem(
+            AuraListItem(
                 text = stringResource(Res.string.tier_premium_feature_team_access),
                 trailingContent = { color ->
-                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
+                    AuraBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
-            TerminalListItem(
+            AuraListItem(
                 text = stringResource(Res.string.tier_premium_feature_webhooks),
                 trailingContent = { color ->
-                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
+                    AuraBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
-            TerminalListItem(
+            AuraListItem(
                 text = stringResource(Res.string.tier_premium_feature_api_keys),
                 trailingContent = { color ->
-                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
+                    AuraBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
-            TerminalListItem(
+            AuraListItem(
                 text = stringResource(Res.string.tier_premium_feature_priority_support),
                 trailingContent = { color ->
-                    TerminalBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
+                    AuraBadge(text = stringResource(Res.string.tier_premium_active_badge), variant = BadgeVariant.Success)
                 },
             )
         }

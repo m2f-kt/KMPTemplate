@@ -21,13 +21,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.feedback.AlertVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.input.TerminalInput
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.input.AuraInput
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.auth.generated.resources.Res
 import template.app.auth.generated.resources.common_brand_name
@@ -46,7 +46,7 @@ import template.app.auth.generated.resources.forgot_title
  * Forgot password screen with centered card layout.
  *
  * Accepts email input and shows success state after submission.
- * Uses only Foundation-level TerminalTheme design system components.
+ * Uses only Foundation-level AuraTheme design system components.
  */
 @Composable
 fun ForgotPasswordScreen(
@@ -55,8 +55,8 @@ fun ForgotPasswordScreen(
     onSubmit: () -> Unit,
     onBackToLogin: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Box(
         modifier = Modifier
@@ -76,12 +76,12 @@ fun ForgotPasswordScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.common_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.common_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.Medium),
                     color = colors.text,
@@ -89,14 +89,14 @@ fun ForgotPasswordScreen(
             }
 
             // Title
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.forgot_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
 
             // Description
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.forgot_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
@@ -122,7 +122,7 @@ fun ForgotPasswordScreen(
                 ) {
                     // Success alert
                     if (state.emailSent) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = stringResource(Res.string.forgot_success_message),
                             variant = AlertVariant.Success,
                         )
@@ -130,7 +130,7 @@ fun ForgotPasswordScreen(
 
                     // Server error alert
                     if (state.serverError != null) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = resolveStringKey(state.serverError),
                             variant = AlertVariant.Error,
                         )
@@ -138,7 +138,7 @@ fun ForgotPasswordScreen(
 
                     // Email input
                     if (!state.emailSent) {
-                        TerminalInput(
+                        AuraInput(
                             value = state.email,
                             onValueChange = onEmailChange,
                             label = stringResource(Res.string.forgot_email_label),
@@ -148,7 +148,7 @@ fun ForgotPasswordScreen(
                         )
 
                         // Submit button
-                        TerminalButton(
+                        AuraButton(
                             text = if (state.isLoading) stringResource(Res.string.forgot_button_loading) else stringResource(Res.string.forgot_button),
                             onClick = onSubmit,
                             modifier = Modifier.fillMaxWidth(),
@@ -163,7 +163,7 @@ fun ForgotPasswordScreen(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.forgot_back_arrow),
                     style = typography.sm.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,

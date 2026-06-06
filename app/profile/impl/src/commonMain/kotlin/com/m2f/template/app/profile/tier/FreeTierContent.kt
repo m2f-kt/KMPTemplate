@@ -12,19 +12,19 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.app.profile.ProfileModel
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalList
-import com.m2f.template.designsystem.components.data.TerminalListItem
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraList
+import com.m2f.template.designsystem.components.data.AuraListItem
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
 import template.app.profile.generated.resources.tier_free_alert_message
@@ -70,22 +70,22 @@ fun FreeTierContent(
     state: ProfileModel,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // Warning alert
-        TerminalAlert(
+        AuraAlert(
             message = stringResource(Res.string.tier_free_alert_message),
             variant = AlertVariant.Warning,
             title = stringResource(Res.string.tier_free_alert_title),
         )
 
         // Usage limits card
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_free_usage_title),
             description = stringResource(Res.string.tier_free_usage_desc),
         ) {
@@ -98,18 +98,18 @@ fun FreeTierContent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_free_api_calls),
                             style = typography.sm,
                             color = colors.textMuted,
                         )
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_free_api_calls_value),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
                     }
-                    TerminalProgress(
+                    AuraProgress(
                         progress = 0.847f,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -120,18 +120,18 @@ fun FreeTierContent(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_free_storage),
                             style = typography.sm,
                             color = colors.textMuted,
                         )
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.tier_free_storage_value),
                             style = typography.sm.copy(fontWeight = FontWeight.Medium),
                             color = colors.text,
                         )
                     }
-                    TerminalProgress(
+                    AuraProgress(
                         progress = 0.468f,
                         modifier = Modifier.fillMaxWidth(),
                     )
@@ -140,7 +140,7 @@ fun FreeTierContent(
         }
 
         // Preferences section
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_free_preferences_title),
             description = stringResource(Res.string.tier_free_preferences_desc),
         ) {
@@ -168,46 +168,46 @@ fun FreeTierContent(
             modifier = Modifier.alpha(0.5f),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.tier_free_locked_features),
                 style = typography.md.copy(fontWeight = FontWeight.Medium),
                 color = colors.textMuted,
             )
 
-            TerminalList {
-                TerminalListItem(
+            AuraList {
+                AuraListItem(
                     text = stringResource(Res.string.tier_free_locked_team_access),
                     subtitle = stringResource(Res.string.tier_free_locked_team_access_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
+                        AuraBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_free_locked_webhooks),
                     subtitle = stringResource(Res.string.tier_free_locked_webhooks_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
+                        AuraBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_free_locked_api_keys),
                     subtitle = stringResource(Res.string.tier_free_locked_api_keys_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
+                        AuraBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_free_locked_priority_support),
                     subtitle = stringResource(Res.string.tier_free_locked_priority_support_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
+                        AuraBadge(text = stringResource(Res.string.tier_free_locked_badge), variant = BadgeVariant.Default)
                     },
                 )
             }
         }
 
         // Upgrade CTA
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_free_upgrade_title),
             variant = CardVariant.Accent,
         ) {
@@ -215,12 +215,12 @@ fun FreeTierContent(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.tier_free_upgrade_description),
                     style = typography.sm,
                     color = colors.textMuted,
                 )
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.tier_free_upgrade_button),
                     onClick = { /* Static demo */ },
                     variant = ButtonVariant.Default,
@@ -232,19 +232,19 @@ fun FreeTierContent(
 
 @Composable
 private fun PreferenceRow(label: String, value: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm,
             color = colors.textMuted,
         )
-        TerminalText(
+        AuraText(
             text = value,
             style = typography.sm.copy(fontWeight = FontWeight.Medium),
             color = colors.text,
