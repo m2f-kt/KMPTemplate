@@ -16,49 +16,54 @@ Plan + findings: `tasks/port-plan.json`, `tasks/port-findings.json`
 
 ## Phases
 
-### Wave 1 — Foundation (disjoint modules)
-- [ ] P0 Build/env foundation: EnvLoader, detekt hook rewrite, settings.json node→bash fix, version catalog, gitignore
-- [ ] P1 `:server:run` .env injection + Env.kt robust discovery
-- [ ] P2 core:sdk transport: HttpTimeout + WebSockets + requireSecureBaseUrl
-- [ ] P3 core:sdk ErrorMapper raw-body capture + body-code dispatch hook
-- [ ] P4 core:navigation primitives (NavSelectionSignal + navigateAdd + navigationModule)
-- [ ] S1 server-core: migration dedup + named auth-jwt provider
-- [ ] A1 core:models AppError generalization (Permission/Native + Permission enum + PermissionStatus)
+### Wave 1 — Foundation (disjoint modules) ✅ committed bc38bb6
+- [x] P0 Build/env foundation (EnvLoader, detekt hook, catalog, gitignore) — ✅ 7b9cca7 (settings.json node→bash still MANUAL: self-mod guard)
+- [x] P1 `:server:run` .env injection + Env.kt robust discovery
+- [x] P2 core:sdk transport: HttpTimeout + WebSockets + requireSecureBaseUrl
+- [x] P3 core:sdk ErrorMapper raw-body capture + body-code dispatch hook
+- [x] P4 core:navigation primitives (NavSelectionSignal + navigateAdd + navigationModule)
+- [x] S1 server-core: migration dedup + named auth-jwt provider
+- [x] A1 core:models AppError generalization (Permission/Native + Permission enum + PermissionStatus)
 
-### Wave 2 — Shared/server hardening
-- [ ] P5 InMemorySettings→core:testing, PreferencesStorage tests, WS/streaming test deps
-- [ ] P6 generic reactive consent pref + WS→Flow pattern docs
-- [ ] S2 boot-time invariant framework + boot validation + safe key-length logging
-- [ ] S3 TLS 1.3 enforcement test
+### Wave 2 — Shared/server hardening ✅ committed 0a60072
+- [x] P5 InMemorySettings→core:testing, PreferencesStorage tests, WS/streaming test deps
+- [x] P6 generic reactive consent pref + WS→Flow pattern docs
+- [x] S2 boot-time invariant framework + boot validation + safe key-length logging
+- [x] S3 TLS 1.3 enforcement test
 
-### Wave 3 — Design system (Aura) — SEQUENTIAL
-- [ ] D1 tokens: Motion + Glows groups
-- [ ] D2 tokens: Color slots (neon) + Radius xl
-- [ ] D3 tokens: 3-family typography + fonts (Space Grotesk + Manrope) + back-compat aliasing
-- [ ] D4 effect modifiers (auroraBorder etc.) + new generic components
-- [ ] D5 rename Terminal*→Aura* across 21 screens + Pencil skill/.pen reconciliation
+### Wave 3 — Design system (Aura) ✅ committed 9838eab (D1-D4)
+- [x] D1-D4 Aura tokens (neon + 3 fonts + glows/motion) + effects + new components + Terminal→Aura rename (designsystem + 23 consumers)
+- [ ] D5 Pencil skill re-author (terminal-design-* → aura, .pen, manifest/REFERENCES/CODE-MAP) — needs Pencil MCP
 
-### Wave 4 — Observability
-- [ ] O0 Koog 0.6.2 → 1.0.0-preview bump (prerequisite)
-- [ ] O1 server:core:observability module: OTel SDK + Langfuse SpanAdapter
-- [ ] O2 trace-privacy redaction gate + Langfuse Env config
-- [ ] O3 Langfuse REST clients + prompt-provider + eval/judge harness
-- [ ] O4 self-hosted Langfuse docker profile + .env.example + seed task + docs
+Verification fixes folded in: core:mvi event Eagerly; StringKeyResolver new keys; daemon heap 3G→6G; wasmJsBrowserTest disabled for core:navigation + core:testing (Compose-linking, no Compose plugin).
+NOTE: release iOS framework link OOMs >6G (pre-existing Compose K/N infra limit).
 
-### Wave 5 — Native / Apple / desktop
-- [ ] A2 core:platform-macos (JNA bridge) + reduced-motion accessibility
-- [ ] A3 core:permissions (gate + status-probe + AX deep-link)
-- [ ] A4 core:securestorage (Keychain/DPAPI/Keystore backends)
-- [ ] A5 desktop shell (title-bar inset, dark-mode detect, single-instance, file logging, decision helpers)
-- [ ] A6 desktop packaging recipe + plist-lint buildSrc helper
-- [ ] A7 floating-overlay/tray/Compose-in-Swing scaffolds + pure HUD math
+### Wave 4 — Observability ✅ committed (O0 0cbc79b · O1-O3 777574b · O4 7ae052f)
+- [x] O0 Koog 0.6.2 → 1.0.0-preview7 bump + server:ai migration
+- [x] O1 server:core:observability: OTel SDK + Langfuse SpanAdapter
+- [x] O2 trace-privacy redaction gate + Langfuse Env config
+- [x] O3 Langfuse REST clients + prompt-provider + eval/judge harness
+- [x] O4 self-hosted Langfuse docker profile + .env.example + devUpLangfuse + docs
 
-### Wave 6 — Tooling / docs / skills
-- [ ] G1 setup.sh whitelabel wizard upgrade
-- [ ] G2 DI seam (expect/actual allAppModules) — only if per-platform DI omission needed
-- [ ] G3 dev/CI scripts + launch.json + .mcp.json + compose hot-reload MCP
-- [ ] G4 CLAUDE.md generic sections + skill verification steps + skills-lock convention
-- [ ] G5 reusable skill additions (launch-*, asc-*, langfuse, permissions)
+### Wave 5 — Native / Apple / desktop ✅ committed (A2-A4 dc7accb · A5 aaa400c)
+- [x] A2 core:platform (JNA bridge) + reduced-motion accessibility
+- [x] A3 core:permissions (gate + status-probe + AX deep-link)
+- [x] A4 core:securestorage (Keychain/DPAPI/Keystore/Apple-Security backends)
+- [x] A5 desktop shell (title-bar inset, dark-mode detect, single-instance, file logging, decision helpers)
+- [ ] A6 desktop packaging recipe + plist-lint buildSrc helper — IN PROGRESS
+- [ ] A7 floating-overlay/tray scaffolds + pure HUD math — OPTIONAL (product-adjacent), deferred
+
+### Wave 6 — Tooling / docs / skills (G1 dc7accb · G3+G5 91cf574)
+- [x] G1 setup.sh whitelabel wizard upgrade
+- [ ] G2 DI seam (expect/actual allAppModules) — OPTIONAL, not needed (navigationModule wired as plain val); deferred
+- [x] G3 dev scripts + launch.json (.mcp.json compose-hot-reload MCP deferred — needs composeHotReload alpha bump)
+- [~] G4 CLAUDE.md design refs done; generic Rules/patterns prose — partial
+- [x] G5 reusable skill additions (asc-* + launch-*; langfuse skills already global)
+
+### Remaining / follow-up
+- [ ] D5 Pencil: re-author terminal-design-* skills → aura + .pen + manifest/REFERENCES/CODE-MAP (needs Pencil MCP)
+- [ ] MANUAL: .claude/settings.json detekt hook `node`→`bash` (self-mod guard)
+- [ ] Optional: .mcp.json compose-hot-reload MCP + composeHotReload 1.0.0→1.2.0-alpha01 bump
 
 ## Review
 (filled at end)

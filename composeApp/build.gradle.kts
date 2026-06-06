@@ -138,11 +138,81 @@ compose.desktop {
     application {
         mainClass = "com.m2f.template.MainKt"
 
+        // Desktop runtime footprint caps (tunable defaults): bound the heap, use the serial GC
+        // (lower baseline footprint than G1 for a single-window UI app), and let the JVM scale heap
+        // to at most 50% of host RAM (default is 25%). `-Xdock:name` sets the dev-run dock label so
+        // the tile reads the app name instead of "java" (packaged .app uses packageName instead).
+        jvmArgs += listOf(
+            "-Xmx256m",
+            "-Xms64m",
+            "-XX:+UseSerialGC",
+            "-XX:MaxRAMPercentage=50",
+            "-Xdock:name=template",
+        )
+
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "com.m2f.template"
             packageVersion = "1.0.0"
+
+            // Per-OS app icons for the packaged artifacts. Uncomment once real assets exist at the
+            // referenced paths (the build will fail if iconFile points at a missing file).
+            //   macOS .icns -> composeApp/src/jvmMain/resources/icons/macos.icns
+            //   windows .ico -> composeApp/src/jvmMain/resources/icons/windows.ico
+            //   linux .png  -> composeApp/src/jvmMain/resources/icons/linux.png
+            macOS {
+                // A custom entitlementsFile REPLACES Compose Desktop's defaults wholesale — the
+                // skeleton at composeApp/entitlements.plist repeats the 3 mandatory JVM
+                // hardened-runtime keys so the bundled JVM still launches.
+                entitlementsFile.set(project.file("entitlements.plist"))
+                // iconFile.set(project.file("src/jvmMain/resources/icons/macos.icns"))
+            }
+            windows {
+                // iconFile.set(project.file("src/jvmMain/resources/icons/windows.ico"))
+            }
+            linux {
+                // iconFile.set(project.file("src/jvmMain/resources/icons/linux.png"))
+            }
+
+            // Narrow the bundled JDK image: JLink strips every JDK module not listed here, shrinking
+            // the packaged runtime. `modules.clear()` resets Compose's default (additive) list so
+            // the list below is authoritative — without clear(), JLink won't narrow.
+            //
+            // - java.base: required, always included.
+            // - java.desktop: AWT/Swing — Compose Desktop renders through it.
+            // - java.naming: JNDI — pulled by SLF4J + some networking paths.
+            // - java.sql: JDBC drivers (jvm target).
+            // - java.management: JMX — used by GC and metrics in dev.
+            // - jdk.unsupported: sun.misc.Unsafe — atomicfu + kotlinx.coroutines reach for it.
+            //
+            // If a packaged-app runtime error surfaces (e.g. NoClassDefFoundError on a java.* class),
+            // add the missing module here and re-package.
+            modules.clear()
+            modules(
+                "java.base",
+                "java.desktop",
+                "java.naming",
+                "java.sql",
+                "java.management",
+                "jdk.unsupported",
+            )
         }
+    }
+}
+
+// Optional plist linter wired through the reusable buildSrc `plistLint` helper. Ships with an EMPTY
+// required-key list, so it is a no-op by default (the template carries the MECHANISM, not a specific
+// assertion). Add keys to `requiredKeys` to enforce them, and wire into `check` if desired.
+tasks.register("checkPlist") {
+    group = "verification"
+    description = "Lint composeApp/entitlements.plist for required keys (no-op until keys are added)."
+    val plist = file("entitlements.plist")
+    inputs.file(plist)
+    doLast {
+        val requiredKeys = emptyList<String>()
+        val problems = plistLint(plist, requiredKeys)
+        require(problems.isEmpty()) { problems.joinToString("\n") }
+        logger.lifecycle("checkPlist OK: ${plist.name} (${requiredKeys.size} required keys)")
     }
 }
 
