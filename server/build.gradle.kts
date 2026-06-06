@@ -13,6 +13,17 @@ application {
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
 }
 
+// `.env` is the source of truth for the local `:server:run`: inject it into the run JVM at EXECUTION
+// time so its values OVERRIDE any ambient shell var of the same name (e.g. a stray globally-exported
+// EXAMPLE_VAR). The server still reads dotenv-kotlin at runtime, but with the .env values already in
+// System.getenv, its `System.getenv(key) ?: dotenv[key]` precedence resolves to .env — killing the
+// silent shell override. Dev-only: production runs the fat JAR with real platform env, not this task.
+tasks.named<JavaExec>("run") {
+    doFirst {
+        EnvLoader.load(rootProject.projectDir).forEach { (k, v) -> environment(k, v) }
+    }
+}
+
 dependencies {
     implementation(projects.core.models)
     implementation(projects.shared)

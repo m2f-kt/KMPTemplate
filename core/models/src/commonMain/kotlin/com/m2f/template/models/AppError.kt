@@ -221,6 +221,57 @@ sealed class AppError {
         ) : AI()
     }
 
+    /**
+     * Errors raised when a runtime permission (microphone, camera, accessibility,
+     * notifications, location, etc.) cannot be used. Generic across platforms;
+     * the offending [Permission] is carried so UI can surface a targeted prompt.
+     */
+    @Serializable
+    sealed class Permission : AppError() {
+        @Serializable
+        data class Denied(
+            val permission: com.m2f.template.models.Permission,
+            override val code: String = "PERMISSION_DENIED",
+            override val message: String = "Permission was denied: ${permission.name}"
+        ) : Permission()
+
+        @Serializable
+        data class Restricted(
+            val permission: com.m2f.template.models.Permission,
+            override val code: String = "PERMISSION_RESTRICTED",
+            override val message: String = "Permission is restricted by policy: ${permission.name}"
+        ) : Permission()
+
+        @Serializable
+        data class NotDetermined(
+            val permission: com.m2f.template.models.Permission,
+            override val code: String = "PERMISSION_NOT_DETERMINED",
+            override val message: String = "Permission has not been requested yet: ${permission.name}"
+        ) : Permission()
+    }
+
+    /**
+     * Errors raised by platform-native bridges (system hotkeys, accessibility
+     * injection, native window/keyboard integrations). Each subtype is a discrete
+     * failure mode that downstream UI maps to a `StringKey` via `StringKey.fromCode`.
+     */
+    @Serializable
+    sealed class Native : AppError() {
+        @Serializable
+        data class Unavailable(
+            val reason: String? = null,
+            override val code: String = "NATIVE_UNAVAILABLE",
+            override val message: String = reason ?: "Native integration is not available on this platform"
+        ) : Native()
+
+        @Serializable
+        data class Failure(
+            val reason: String,
+            override val code: String = "NATIVE_FAILURE",
+            override val message: String = "Native integration failed: $reason"
+        ) : Native()
+    }
+
     @Serializable
     sealed class Document : AppError() {
         @Serializable

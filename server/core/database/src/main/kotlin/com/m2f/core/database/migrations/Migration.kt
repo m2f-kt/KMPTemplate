@@ -41,10 +41,21 @@ object Migrations {
 
     /**
      * Register a migration.
-     * @param migration The migration to register.
+     *
+     * Deduplicates by [Migration.version] — the registry is a process-global
+     * `mutableListOf` and feature modules call `registerXxxMigrations()`
+     * unconditionally on every test-class setup. Without this guard, repeated
+     * registrations push duplicate `Migration` instances onto the list and the
+     * subsequent `migrate()` call attempts to insert the same row into the
+     * `migrations` table, violating its primary key.
+     *
+     * @param migration The migration to register; ignored if a migration with
+     *   the same `version` is already registered.
      */
     fun register(migration: Migration) {
-        migs.add(migration)
+        if (migs.none { it.version == migration.version }) {
+            migs.add(migration)
+        }
     }
 
     /**
