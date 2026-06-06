@@ -41,6 +41,7 @@ include("server:core")
 include("server:core:config")
 include("server:core:database")
 include("server:core:security")
+include("server:core:observability")
 
 // Shared core modules
 include("core:models")

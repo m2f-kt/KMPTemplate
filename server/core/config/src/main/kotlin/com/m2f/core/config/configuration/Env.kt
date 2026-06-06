@@ -53,6 +53,7 @@ data class Env(
     val auth: Auth = Auth(),
     val oauth: OAuth = OAuth(),
     val ai: Ai = Ai(),
+    val observability: Observability = Observability(),
     val s3: S3 = S3(),
     val email: Email = Email(),
     val serverConfig: ServerConfig = ServerConfig(),
@@ -116,6 +117,32 @@ data class Env(
         val enabled: Boolean = env("AI_ENABLED")?.toBooleanStrictOrNull() ?: false,
         val googleApiKey: String = env("GOOGLE_API_KEY") ?: "",
     )
+
+    /**
+     * Observability (Langfuse + OpenTelemetry) configuration for `server:core:observability`.
+     *
+     * Keyless by default ⇒ [langfuseEnabled] is false ⇒ the OTLP exporter is NOT installed and the
+     * agent graph traces through nothing (byte-identical to the untraced path, zero tracing cost).
+     * Set both `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY` to turn tracing on.
+     *
+     * [langfuseEnvironment] alone drives content visibility (see the observability module's
+     * `traceContentAllowed`): `development` (and consented `production`) emit the transcript +
+     * generation content; `production` without per-request consent withholds them (zero-retention).
+     */
+    data class Observability(
+        /** Langfuse OTLP base URL (host only; the module appends the OTLP/REST paths). */
+        val langfuseHost: String = env("LANGFUSE_HOST") ?: "https://cloud.langfuse.com",
+        /** Langfuse project public key (`pk-lf-…`). Null/blank ⇒ tracing disabled. */
+        val langfusePublicKey: String? = env("LANGFUSE_PUBLIC_KEY"),
+        /** Langfuse project secret key (`sk-lf-…`). Null/blank ⇒ tracing disabled. */
+        val langfuseSecretKey: String? = env("LANGFUSE_SECRET_KEY"),
+        /** Langfuse environment tag (`development` / `production`). Drives content visibility. */
+        val langfuseEnvironment: String = env("LANGFUSE_ENVIRONMENT") ?: "development",
+    ) {
+        /** Tracing is ON only when BOTH keys are present — keyless deploys pay zero tracing cost. */
+        val langfuseEnabled: Boolean
+            get() = !langfusePublicKey.isNullOrBlank() && !langfuseSecretKey.isNullOrBlank()
+    }
 
     /**
      * S3-compatible object storage configuration.
