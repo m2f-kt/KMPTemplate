@@ -97,6 +97,26 @@ fun main() = SuspendApp {
 
 context(config: Configuration, database: R2dbcDatabase)
 fun Application.module() {
+    // Boot-time config validation: refuse to serve traffic when the JWT secret is
+    // left at its committed placeholder in production, or a configured URL is malformed.
+    // A Left aborts startup so orchestrators restart once the operator fixes the env.
+    Configuration.validate(config.env).fold(
+        ifLeft = { bootError -> error(bootError.message) },
+        ifRight = { /* OK — proceed with plugin installs */ },
+    )
+
+    // Startup diagnostic: log config key LENGTHS + boolean flags only — NEVER raw secrets.
+    LoggerFactory.getLogger("AppStartup").info(
+        "Config loaded: jwtSecret.len={}, ai.enabled={}, googleApiKey.len={}, " +
+            "s3.secretKey.len={}, smtp.password.len={}, baseUrl={}",
+        config.env.auth.secret.length,
+        config.env.ai.enabled,
+        config.env.ai.googleApiKey.length,
+        config.env.s3.secretKey.length,
+        config.env.email.password.length,
+        config.env.http.baseUrl,
+    )
+
     install(Koin) {
         modules(configurationModule, serverModule)
     }

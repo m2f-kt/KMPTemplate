@@ -29,7 +29,13 @@ private fun env(key: String): String? = System.getenv(key) ?: dotenv[key]
 private const val DEFAULT_HOST: String = "0.0.0.0"
 private const val DEFAULT_PORT: Int = 8080
 private const val DEFAULT_APP_PORT: Int = 8081
-private const val AUTH_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKeyForJWT123!@#$%^&*()"
+
+/**
+ * The committed placeholder JWT secret. Safe for local development, but boot-time
+ * validation refuses to start with this value in production (see
+ * [com.m2f.core.config.configuration.Configuration.validate]).
+ */
+const val DEFAULT_JWT_SECRET: String = "ThisIsAReallyReallyReallyStrongSecretKeyForJWT123!@#$%^&*()"
 private const val AUTH_AUDIENCE: String = "jwt-audience"
 private const val AUTH_ISSUER: String = "IssuerName"
 private const val REALM: String = "Access to Your Application"
@@ -70,7 +76,7 @@ data class Env(
     )
 
     data class Auth(
-        val secret: String = env("JWT_SECRET") ?: AUTH_SECRET,
+        val secret: String = env("JWT_SECRET") ?: DEFAULT_JWT_SECRET,
         val audience: String = env("JWT_AUDIENCE") ?: AUTH_AUDIENCE,
         val issuer: String = env("JWT_ISSUER") ?: AUTH_ISSUER,
         val jwtRealm: String = env("JWT_REALM") ?: REALM,

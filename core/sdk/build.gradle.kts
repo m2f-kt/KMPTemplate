@@ -100,6 +100,14 @@ kotlin {
             implementation(libs.turbine)
             implementation(libs.kotlinx.coroutines.test)
         }
+        // JVM-only test infra for WebSocket / streaming SDK tests. The server-test-host stack
+        // (and ktor-server-websockets) is JVM-only, so it can't live in commonTest. ktor-client-mock,
+        // turbine and kotest-arrow are inherited from commonTest above.
+        jvmTest.dependencies {
+            implementation(libs.ktor.server.test.host)
+            implementation(libs.ktor.server.websockets)
+            implementation(libs.ktor.server.content.negotiation)
+        }
     }
 }
 
