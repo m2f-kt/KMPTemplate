@@ -15,10 +15,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.components.data.TerminalDropdownMenu
-import com.m2f.template.designsystem.components.data.TerminalDropdownMenuItem
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.AuraText
+import com.m2f.template.designsystem.components.data.AuraDropdownMenu
+import com.m2f.template.designsystem.components.data.AuraDropdownMenuItem
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.composeapp.generated.resources.Res
 import template.composeapp.generated.resources.locale_english
@@ -41,8 +41,8 @@ fun LocaleSelector(
     onLocaleChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     val label = stringResource(Res.string.locale_label)
     val englishLabel = stringResource(Res.string.locale_english)
@@ -69,14 +69,14 @@ fun LocaleSelector(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TerminalText(
+        AuraText(
             text = "$label:",
             style = typography.sm,
             color = colors.textMuted,
         )
 
         Box {
-            TerminalText(
+            AuraText(
                 text = "> $currentLabel",
                 style = typography.sm,
                 color = colors.accent,
@@ -86,12 +86,12 @@ fun LocaleSelector(
                     .padding(horizontal = 12.dp, vertical = 6.dp),
             )
 
-            TerminalDropdownMenu(
+            AuraDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
             ) {
                 locales.forEach { (tag, name) ->
-                    TerminalDropdownMenuItem(
+                    AuraDropdownMenuItem(
                         text = name,
                         onClick = {
                             expanded = false

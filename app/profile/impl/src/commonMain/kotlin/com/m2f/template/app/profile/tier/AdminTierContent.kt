@@ -10,17 +10,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.m2f.template.app.profile.ProfileModel
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalList
-import com.m2f.template.designsystem.components.data.TerminalListItem
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.AuraText
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraList
+import com.m2f.template.designsystem.components.data.AuraListItem
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
 import template.app.profile.generated.resources.tier_admin_active_sessions
@@ -89,19 +89,19 @@ fun AdminTierContent(
     state: ProfileModel,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // User management table
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_admin_users_title),
             description = stringResource(Res.string.tier_admin_users_desc),
         ) {
-            TerminalTable(
+            AuraTable(
                 headers = listOf(
                     stringResource(Res.string.tier_admin_table_name),
                     stringResource(Res.string.tier_admin_table_email),
@@ -111,90 +111,90 @@ fun AdminTierContent(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = state.name.ifBlank { "Admin" })
-                    TerminalTableCell(text = state.email, secondary = true)
-                    TerminalTableCell(text = "admin")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = state.name.ifBlank { "Admin" })
+                    AuraTableCell(text = state.email, secondary = true)
+                    AuraTableCell(text = "admin")
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = stringResource(Res.string.tier_admin_status_active), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_admin_status_active), variant = BadgeVariant.Success)
                     }
-                    TerminalTableCell(text = "now", secondary = true)
+                    AuraTableCell(text = "now", secondary = true)
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Jordan Lee")
-                    TerminalTableCell(text = "jordan@org.dev", secondary = true)
-                    TerminalTableCell(text = "premium")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "Jordan Lee")
+                    AuraTableCell(text = "jordan@org.dev", secondary = true)
+                    AuraTableCell(text = "premium")
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = stringResource(Res.string.tier_admin_status_active), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_admin_status_active), variant = BadgeVariant.Success)
                     }
-                    TerminalTableCell(text = "2h ago", secondary = true)
+                    AuraTableCell(text = "2h ago", secondary = true)
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Riley Kim")
-                    TerminalTableCell(text = "riley@org.dev", secondary = true)
-                    TerminalTableCell(text = "paid")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "Riley Kim")
+                    AuraTableCell(text = "riley@org.dev", secondary = true)
+                    AuraTableCell(text = "paid")
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = stringResource(Res.string.tier_admin_status_active), variant = BadgeVariant.Success)
+                        AuraBadge(text = stringResource(Res.string.tier_admin_status_active), variant = BadgeVariant.Success)
                     }
-                    TerminalTableCell(text = "1d ago", secondary = true)
+                    AuraTableCell(text = "1d ago", secondary = true)
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = "Casey Morgan")
-                    TerminalTableCell(text = "casey@org.dev", secondary = true)
-                    TerminalTableCell(text = "free")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = "Casey Morgan")
+                    AuraTableCell(text = "casey@org.dev", secondary = true)
+                    AuraTableCell(text = "free")
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = stringResource(Res.string.tier_admin_status_inactive), variant = BadgeVariant.Warning)
+                        AuraBadge(text = stringResource(Res.string.tier_admin_status_inactive), variant = BadgeVariant.Warning)
                     }
-                    TerminalTableCell(text = "14d ago", secondary = true)
+                    AuraTableCell(text = "14d ago", secondary = true)
                 }
-                TerminalTableRow(showBottomBorder = false) {
-                    TerminalTableCell(text = "Drew Park")
-                    TerminalTableCell(text = "drew@org.dev", secondary = true)
-                    TerminalTableCell(text = "viewer")
+                AuraTableRow(showBottomBorder = false) {
+                    AuraTableCell(text = "Drew Park")
+                    AuraTableCell(text = "drew@org.dev", secondary = true)
+                    AuraTableCell(text = "viewer")
                     Box(modifier = Modifier.weight(1f)) {
-                        TerminalBadge(text = stringResource(Res.string.tier_admin_status_pending), variant = BadgeVariant.Warning)
+                        AuraBadge(text = stringResource(Res.string.tier_admin_status_pending), variant = BadgeVariant.Warning)
                     }
-                    TerminalTableCell(text = "never", secondary = true)
+                    AuraTableCell(text = "never", secondary = true)
                 }
             }
         }
 
         // Groups section
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_admin_groups_title),
             description = stringResource(Res.string.tier_admin_groups_desc),
         ) {
-            TerminalList {
-                TerminalListItem(
+            AuraList {
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_group_engineering),
                     subtitle = stringResource(Res.string.tier_admin_group_engineering_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "8", variant = BadgeVariant.Accent)
+                        AuraBadge(text = "8", variant = BadgeVariant.Accent)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_group_operations),
                     subtitle = stringResource(Res.string.tier_admin_group_operations_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "4", variant = BadgeVariant.Accent)
+                        AuraBadge(text = "4", variant = BadgeVariant.Accent)
                     },
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_group_security),
                     subtitle = stringResource(Res.string.tier_admin_group_security_sub),
                     trailingContent = { color ->
-                        TerminalBadge(text = "3", variant = BadgeVariant.Accent)
+                        AuraBadge(text = "3", variant = BadgeVariant.Accent)
                     },
                 )
             }
         }
 
         // Permissions matrix
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_admin_perms_title),
             description = stringResource(Res.string.tier_admin_perms_desc),
         ) {
-            TerminalTable(
+            AuraTable(
                 headers = listOf(
                     stringResource(Res.string.tier_admin_table_perm),
                     stringResource(Res.string.tier_admin_tier_free_col),
@@ -204,39 +204,39 @@ fun AdminTierContent(
                 ),
                 modifier = Modifier.fillMaxWidth(),
             ) {
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_admin_perm_read))
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_admin_perm_read))
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_admin_perm_write))
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_admin_perm_write))
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = true) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_admin_perm_admin))
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = true) {
+                    AuraTableCell(text = stringResource(Res.string.tier_admin_perm_admin))
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2713")
                 }
-                TerminalTableRow(showBottomBorder = false) {
-                    TerminalTableCell(text = stringResource(Res.string.tier_admin_perm_delete))
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2717")
-                    TerminalTableCell(text = "\u2713")
+                AuraTableRow(showBottomBorder = false) {
+                    AuraTableCell(text = stringResource(Res.string.tier_admin_perm_delete))
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2717")
+                    AuraTableCell(text = "\u2713")
                 }
             }
         }
 
         // Analytics
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_admin_analytics_title),
             description = stringResource(Res.string.tier_admin_analytics_desc),
         ) {
@@ -249,7 +249,7 @@ fun AdminTierContent(
                 AdminMetricRow(label = stringResource(Res.string.tier_admin_api_calls_today), value = "45,230")
                 AdminMetricRow(label = stringResource(Res.string.tier_admin_storage_used), value = "12.4 GB / 50 GB")
 
-                TerminalProgress(
+                AuraProgress(
                     progress = 0.248f,
                     label = stringResource(Res.string.tier_admin_storage_label),
                     modifier = Modifier.fillMaxWidth(),
@@ -258,28 +258,28 @@ fun AdminTierContent(
         }
 
         // Audit log
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_admin_audit_title),
             description = stringResource(Res.string.tier_admin_audit_desc),
         ) {
-            TerminalList {
-                TerminalListItem(
+            AuraList {
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_audit_role_changed),
                     subtitle = "// 2 hours ago | by ${state.email}",
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_audit_api_key),
                     subtitle = "// 5 hours ago | by jordan@org.dev",
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_audit_group_created),
                     subtitle = "// 1 day ago | by ${state.email}",
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_audit_user_invited),
                     subtitle = "// 2 days ago | by ${state.email}",
                 )
-                TerminalListItem(
+                AuraListItem(
                     text = stringResource(Res.string.tier_admin_audit_webhook_added),
                     subtitle = "// 3 days ago | by riley@org.dev",
                 )
@@ -287,7 +287,7 @@ fun AdminTierContent(
         }
 
         // Org settings
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.tier_admin_settings_title),
             description = stringResource(Res.string.tier_admin_settings_desc),
         ) {
@@ -308,19 +308,19 @@ fun AdminTierContent(
 
 @Composable
 private fun AdminMetricRow(label: String, value: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm,
             color = colors.textMuted,
         )
-        TerminalText(
+        AuraText(
             text = value,
             style = typography.sm.copy(fontWeight = FontWeight.Medium),
             color = colors.text,

@@ -23,22 +23,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.button.TerminalIconButton
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.button.AuraIconButton
 import com.m2f.template.designsystem.components.card.CardVariant
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.data.TerminalTable
-import com.m2f.template.designsystem.components.data.TerminalTableCell
-import com.m2f.template.designsystem.components.data.TerminalTableRow
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.data.AuraTable
+import com.m2f.template.designsystem.components.data.AuraTableCell
+import com.m2f.template.designsystem.components.data.AuraTableRow
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalTooltip
-import com.m2f.template.designsystem.components.input.TerminalInput
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraTooltip
+import com.m2f.template.designsystem.components.input.AuraInput
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.designsystem.util.toDisplayDate
 import com.m2f.template.designsystem.util.trimIsoSuffix
 import com.m2f.template.models.GroupRole
@@ -111,7 +111,7 @@ import template.app.admin.generated.resources.admin_title
 /**
  * Stateless admin panel screen displaying group info and a paginated member table.
  *
- * Uses design system components (TerminalCard, TerminalTable, TerminalBadge, TerminalButton)
+ * Uses design system components (AuraCard, AuraTable, AuraBadge, AuraButton)
  * to render group details and member list with cursor-based pagination.
  *
  * @param state Current admin panel state with group info, members, and loading/error flags.
@@ -151,8 +151,8 @@ fun AdminPanelScreen(
     onExecuteRemoveMember: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val isMobile = maxWidth < 600.dp
@@ -170,11 +170,11 @@ fun AdminPanelScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.admin_back),
                     onClick = onBack,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.admin_title),
                     style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                     color = colors.text,
@@ -183,7 +183,7 @@ fun AdminPanelScreen(
 
             // Loading state (initial load)
             if (state.isLoading && state.members.isEmpty()) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.admin_loading),
                     style = typography.md,
                     color = colors.textMuted,
@@ -193,7 +193,7 @@ fun AdminPanelScreen(
 
             // Success message after group creation
             if (state.createGroupSuccess) {
-                TerminalAlert(
+                AuraAlert(
                     message = stringResource(Res.string.admin_create_group_success),
                     variant = AlertVariant.Success,
                 )
@@ -201,14 +201,14 @@ fun AdminPanelScreen(
 
             // No group selected — system admin without group memberships
             if (state.groupId.isBlank() && !state.isLoading && state.error == null) {
-                TerminalCard(
+                AuraCard(
                     title = stringResource(Res.string.admin_no_group_title),
                     description = stringResource(Res.string.admin_no_group_description),
                     variant = CardVariant.Default,
                 ) {}
 
                 // Create Group button (for system admins without a group)
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.admin_create_group),
                     onClick = onOpenCreateGroup,
                     variant = ButtonVariant.Secondary,
@@ -218,12 +218,12 @@ fun AdminPanelScreen(
 
             // Error state (no data loaded)
             if (state.error != null && state.members.isEmpty()) {
-                TerminalCard(
+                AuraCard(
                     title = stringResource(Res.string.admin_error_title),
                     description = stringResource(Res.string.admin_error_description),
                     variant = CardVariant.Default,
                 ) {
-                    TerminalBadge(
+                    AuraBadge(
                         text = "error: ${resolveStringKey(state.error)}",
                         variant = BadgeVariant.Error,
                     )
@@ -233,20 +233,20 @@ fun AdminPanelScreen(
 
             // Group info card
             if (state.groupName.isNotBlank()) {
-                TerminalCard(
+                AuraCard(
                     title = state.groupName,
                     description = stringResource(Res.string.admin_slug_prefix, state.groupSlug),
                     variant = CardVariant.Default,
                 ) {
                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         if (state.groupDescription.isNotBlank()) {
-                            TerminalText(
+                            AuraText(
                                 text = state.groupDescription,
                                 style = typography.sm,
                                 color = colors.textMuted,
                             )
                         }
-                        TerminalBadge(
+                        AuraBadge(
                             text = stringResource(Res.string.admin_member_count, state.memberCount),
                             variant = BadgeVariant.Accent,
                         )
@@ -257,7 +257,7 @@ fun AdminPanelScreen(
             // Action buttons row: Invite Member
             // Note: Create Group is intentionally hidden when a group exists.
             // Multi-group support deferred to future iteration.
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.admin_invite_member),
                 onClick = onOpenInvite,
                 variant = ButtonVariant.Secondary,
@@ -272,20 +272,20 @@ fun AdminPanelScreen(
                     if (!isMobile) add(stringResource(Res.string.admin_table_joined))
                     add(stringResource(Res.string.admin_table_actions))
                 }
-                TerminalTable(
+                AuraTable(
                     headers = memberHeaders,
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     state.members.forEachIndexed { index, member ->
-                        TerminalTableRow(
+                        AuraTableRow(
                             showBottomBorder = index < state.members.lastIndex,
                         ) {
-                            TerminalTableCell(text = member.name)
+                            AuraTableCell(text = member.name)
                             if (!isMobile) {
-                                TerminalTableCell(text = member.email, secondary = true)
+                                AuraTableCell(text = member.email, secondary = true)
                             }
                             Box(modifier = Modifier.weight(1f)) {
-                                TerminalBadge(
+                                AuraBadge(
                                     text = when (member.role) {
                                         is GroupRole.Owner -> stringResource(Res.string.admin_role_owner)
                                         is GroupRole.Admin -> stringResource(Res.string.admin_role_admin)
@@ -298,7 +298,7 @@ fun AdminPanelScreen(
                                 )
                             }
                             if (!isMobile) {
-                                TerminalTableCell(
+                                AuraTableCell(
                                     text = member.joinedAt.toDisplayDate(),
                                     secondary = true,
                                 )
@@ -306,20 +306,20 @@ fun AdminPanelScreen(
                             Box(modifier = Modifier.weight(1f)) {
                                 if (member.role != GroupRole.Owner) {
                                     if (isMobile) {
-                                        TerminalTooltip(text = stringResource(Res.string.admin_remove_button)) {
-                                            TerminalIconButton(
+                                        AuraTooltip(text = stringResource(Res.string.admin_remove_button)) {
+                                            AuraIconButton(
                                                 onClick = { onConfirmRemoveMember(member) },
                                                 variant = ButtonVariant.Destructive,
                                             ) {
-                                                TerminalText(
+                                                AuraText(
                                                     "\u2715",
-                                                    style = TerminalTheme.typography.sm,
-                                                    color = TerminalTheme.colors.btnDestructiveText,
+                                                    style = AuraTheme.typography.sm,
+                                                    color = AuraTheme.colors.btnDestructiveText,
                                                 )
                                             }
                                         }
                                     } else {
-                                        TerminalButton(
+                                        AuraButton(
                                             text = stringResource(Res.string.admin_remove_button),
                                             onClick = { onConfirmRemoveMember(member) },
                                             variant = ButtonVariant.Destructive,
@@ -335,13 +335,13 @@ fun AdminPanelScreen(
             // Load more button
             if (state.hasMoreMembers) {
                 if (state.isLoadingMore) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.admin_loading),
                         style = typography.sm,
                         color = colors.textMuted,
                     )
                 } else {
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.admin_load_more),
                         onClick = onLoadMore,
                     )
@@ -424,8 +424,8 @@ private fun CreateGroupDialog(
     onSubmit: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Box(
         modifier = Modifier
@@ -438,7 +438,7 @@ private fun CreateGroupDialog(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.admin_create_group_title),
             modifier = Modifier
                 .widthIn(max = 400.dp)
@@ -452,13 +452,13 @@ private fun CreateGroupDialog(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 if (error != null) {
-                    TerminalAlert(
+                    AuraAlert(
                         message = resolveStringKey(error),
                         variant = AlertVariant.Error,
                     )
                 }
 
-                TerminalInput(
+                AuraInput(
                     value = groupName,
                     onValueChange = onNameChange,
                     label = stringResource(Res.string.admin_create_group_name_label),
@@ -469,13 +469,13 @@ private fun CreateGroupDialog(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.admin_create_group_cancel),
                         onClick = onCancel,
                         variant = ButtonVariant.Ghost,
                         enabled = !isCreating,
                     )
-                    TerminalButton(
+                    AuraButton(
                         text = if (isCreating) "..." else stringResource(Res.string.admin_create_group_submit),
                         onClick = onSubmit,
                         enabled = !isCreating && groupName.isNotBlank(),
@@ -503,8 +503,8 @@ private fun InviteDialog(
     onSend: () -> Unit,
     onClose: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Box(
         modifier = Modifier
@@ -517,7 +517,7 @@ private fun InviteDialog(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.admin_invite_title),
             modifier = Modifier
                 .widthIn(max = 400.dp)
@@ -532,24 +532,24 @@ private fun InviteDialog(
             ) {
                 if (success) {
                     // Success state - link was emailed to the invitee
-                    TerminalAlert(
+                    AuraAlert(
                         message = stringResource(Res.string.admin_invite_success),
                         variant = AlertVariant.Success,
                     )
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.admin_invite_done),
                         onClick = onClose,
                     )
                 } else {
                     // Input state
                     if (error != null) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = resolveStringKey(error),
                             variant = AlertVariant.Error,
                         )
                     }
 
-                    TerminalInput(
+                    AuraInput(
                         value = email,
                         onValueChange = onEmailChange,
                         label = stringResource(Res.string.admin_invite_email_label),
@@ -560,13 +560,13 @@ private fun InviteDialog(
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
-                        TerminalButton(
+                        AuraButton(
                             text = stringResource(Res.string.admin_invite_cancel),
                             onClick = onClose,
                             variant = ButtonVariant.Ghost,
                             enabled = !isSending,
                         )
-                        TerminalButton(
+                        AuraButton(
                             text = if (isSending) "..." else stringResource(Res.string.admin_invite_send),
                             onClick = onSend,
                             enabled = !isSending && email.isNotBlank(),
@@ -581,7 +581,7 @@ private fun InviteDialog(
 /**
  * Section displaying pending group invitations in a table.
  *
- * Shows a TerminalCard with header "Pending Invitations" and a table with
+ * Shows a AuraCard with header "Pending Invitations" and a table with
  * Email, Role, Status, and Actions columns. On mobile, the Role column is hidden
  * and action text buttons become icon buttons with tooltips.
  */
@@ -593,21 +593,21 @@ private fun InvitationsSection(
     onConfirmRevoke: (InvitationResponse) -> Unit,
     onResend: (InvitationResponse) -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.admin_invitations_title),
         variant = CardVariant.Default,
     ) {
         if (isLoading) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.admin_loading),
                 style = typography.sm,
                 color = colors.textMuted,
             )
         } else if (invitations.isEmpty()) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.admin_invitations_none),
                 style = typography.sm,
                 color = colors.textMuted,
@@ -619,17 +619,17 @@ private fun InvitationsSection(
                 add(stringResource(Res.string.admin_invitations_status))
                 add(stringResource(Res.string.admin_invitations_actions))
             }
-            TerminalTable(
+            AuraTable(
                 headers = invitationHeaders,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 invitations.forEachIndexed { index, invitation ->
-                    TerminalTableRow(
+                    AuraTableRow(
                         showBottomBorder = index < invitations.lastIndex,
                     ) {
-                        TerminalTableCell(text = invitation.email)
+                        AuraTableCell(text = invitation.email)
                         if (!isMobile) {
-                            TerminalTableCell(
+                            AuraTableCell(
                                 text = when (invitation.role.uppercase()) {
                                     "OWNER" -> stringResource(Res.string.admin_role_owner)
                                     "ADMIN" -> stringResource(Res.string.admin_role_admin)
@@ -640,15 +640,15 @@ private fun InvitationsSection(
                         }
                         Box(modifier = Modifier.weight(1f)) {
                             when {
-                                invitation.isAccepted -> TerminalBadge(
+                                invitation.isAccepted -> AuraBadge(
                                     text = stringResource(Res.string.admin_invitations_accepted),
                                     variant = BadgeVariant.Success,
                                 )
-                                invitation.isRevoked -> TerminalBadge(
+                                invitation.isRevoked -> AuraBadge(
                                     text = stringResource(Res.string.admin_invitations_revoked),
                                     variant = BadgeVariant.Error,
                                 )
-                                invitation.isExpired -> TerminalBadge(
+                                invitation.isExpired -> AuraBadge(
                                     text = stringResource(Res.string.admin_invitations_expired),
                                     variant = BadgeVariant.Warning,
                                 )
@@ -659,7 +659,7 @@ private fun InvitationsSection(
                                         daysLeft == 1 -> stringResource(Res.string.admin_invitations_expires_tomorrow)
                                         else -> stringResource(Res.string.admin_invitations_expires_days, daysLeft)
                                     }
-                                    TerminalBadge(
+                                    AuraBadge(
                                         text = expiryText,
                                         variant = BadgeVariant.Accent,
                                     )
@@ -670,20 +670,20 @@ private fun InvitationsSection(
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 if (!invitation.isAccepted && !invitation.isRevoked && !invitation.isExpired) {
                                     if (isMobile) {
-                                        TerminalTooltip(text = stringResource(Res.string.admin_revoke_button)) {
-                                            TerminalIconButton(
+                                        AuraTooltip(text = stringResource(Res.string.admin_revoke_button)) {
+                                            AuraIconButton(
                                                 onClick = { onConfirmRevoke(invitation) },
                                                 variant = ButtonVariant.Destructive,
                                             ) {
-                                                TerminalText(
+                                                AuraText(
                                                     "\u2715",
-                                                    style = TerminalTheme.typography.sm,
-                                                    color = TerminalTheme.colors.btnDestructiveText,
+                                                    style = AuraTheme.typography.sm,
+                                                    color = AuraTheme.colors.btnDestructiveText,
                                                 )
                                             }
                                         }
                                     } else {
-                                        TerminalButton(
+                                        AuraButton(
                                             text = stringResource(Res.string.admin_revoke_button),
                                             onClick = { onConfirmRevoke(invitation) },
                                             variant = ButtonVariant.Destructive,
@@ -692,20 +692,20 @@ private fun InvitationsSection(
                                 }
                                 if (!invitation.isAccepted && (invitation.isExpired || invitation.isRevoked)) {
                                     if (isMobile) {
-                                        TerminalTooltip(text = stringResource(Res.string.admin_resend_button)) {
-                                            TerminalIconButton(
+                                        AuraTooltip(text = stringResource(Res.string.admin_resend_button)) {
+                                            AuraIconButton(
                                                 onClick = { onResend(invitation) },
                                                 variant = ButtonVariant.Secondary,
                                             ) {
-                                                TerminalText(
+                                                AuraText(
                                                     "\u21BB",
-                                                    style = TerminalTheme.typography.sm,
-                                                    color = TerminalTheme.colors.btnSecondaryText,
+                                                    style = AuraTheme.typography.sm,
+                                                    color = AuraTheme.colors.btnSecondaryText,
                                                 )
                                             }
                                         }
                                     } else {
-                                        TerminalButton(
+                                        AuraButton(
                                             text = stringResource(Res.string.admin_resend_button),
                                             onClick = { onResend(invitation) },
                                             variant = ButtonVariant.Secondary,
@@ -745,7 +745,7 @@ private fun RevokeDialog(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.admin_revoke_title),
             modifier = Modifier
                 .widthIn(max = 400.dp)
@@ -758,21 +758,21 @@ private fun RevokeDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.admin_revoke_confirm, email),
-                    style = TerminalTheme.typography.sm,
-                    color = TerminalTheme.colors.text,
+                    style = AuraTheme.typography.sm,
+                    color = AuraTheme.colors.text,
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.admin_revoke_cancel),
                         onClick = onCancel,
                         variant = ButtonVariant.Ghost,
                         enabled = !isRevoking,
                     )
-                    TerminalButton(
+                    AuraButton(
                         text = if (isRevoking) "..." else stringResource(Res.string.admin_revoke_submit),
                         onClick = onRevoke,
                         variant = ButtonVariant.Destructive,
@@ -808,7 +808,7 @@ private fun RemoveMemberDialog(
             ),
         contentAlignment = Alignment.Center,
     ) {
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.admin_remove_member_title),
             modifier = Modifier
                 .widthIn(max = 400.dp)
@@ -821,21 +821,21 @@ private fun RemoveMemberDialog(
             Column(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.admin_remove_member_confirm, memberName),
-                    style = TerminalTheme.typography.sm,
-                    color = TerminalTheme.colors.text,
+                    style = AuraTheme.typography.sm,
+                    color = AuraTheme.colors.text,
                 )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.admin_remove_member_cancel),
                         onClick = onCancel,
                         variant = ButtonVariant.Ghost,
                         enabled = !isRemoving,
                     )
-                    TerminalButton(
+                    AuraButton(
                         text = if (isRemoving) "..." else stringResource(Res.string.admin_remove_member_submit),
                         onClick = onRemove,
                         variant = ButtonVariant.Destructive,

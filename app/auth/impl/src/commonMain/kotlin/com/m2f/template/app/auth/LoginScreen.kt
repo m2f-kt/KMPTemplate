@@ -29,18 +29,18 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.display.TerminalDivider
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.display.AuraDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.input.TerminalInput
-import com.m2f.template.designsystem.components.input.TerminalPasswordInput
-import com.m2f.template.designsystem.components.selection.TerminalCheckbox
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.input.AuraInput
+import com.m2f.template.designsystem.components.input.AuraPasswordInput
+import com.m2f.template.designsystem.components.selection.AuraCheckbox
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.auth.generated.resources.Res
 import template.app.auth.generated.resources.common_brand_name
@@ -76,7 +76,7 @@ import template.app.auth.generated.resources.login_subtitle
  * Desktop (>840dp): Split layout with brand panel left and login form right.
  * Mobile (<=840dp): Centered card layout with compact form.
  *
- * Uses only Foundation-level TerminalTheme design system components.
+ * Uses only Foundation-level AuraTheme design system components.
  * Matches Pencil design xNUU3 (desktop) and 9UXn1 (mobile).
  */
 @Composable
@@ -91,7 +91,7 @@ fun LoginScreen(
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = Modifier
@@ -140,7 +140,7 @@ private fun LoginDesktopLayout(
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     Row(modifier = Modifier.fillMaxSize()) {
         // Left brand panel
@@ -185,8 +185,8 @@ private fun LoginDesktopLayout(
 
 @Composable
 private fun LoginBrandPanel(modifier: Modifier = Modifier) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier
@@ -199,12 +199,12 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_brand_prompt),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontSize = 20.sp, fontWeight = FontWeight.Medium),
                 color = colors.text,
@@ -214,7 +214,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
         // Middle: ASCII art + quote
         Column(verticalArrangement = Arrangement.spacedBy(32.dp)) {
             // Status line
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_brand_status),
                 style = typography.xs,
                 color = colors.textDim,
@@ -227,32 +227,32 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
                 val successColor = colors.success
                 val textColor = colors.text
 
-                TerminalText(
+                AuraText(
                     text = "\u250C\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510",
                     style = typography.base,
                     color = dimColor,
                 )
-                TerminalText(
+                AuraText(
                     text = "\u2502  $ ssh user@system              \u2502",
                     style = typography.base,
                     color = accentColor,
                 )
-                TerminalText(
+                AuraText(
                     text = "\u2502  connecting...                  \u2502",
                     style = typography.base,
                     color = dimColor,
                 )
-                TerminalText(
+                AuraText(
                     text = "\u2502  connection established \u2713       \u2502",
                     style = typography.base,
                     color = successColor,
                 )
-                TerminalText(
+                AuraText(
                     text = "\u2502  welcome to the system.         \u2502",
                     style = typography.base,
                     color = textColor,
                 )
-                TerminalText(
+                AuraText(
                     text = "\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518",
                     style = typography.base,
                     color = dimColor,
@@ -261,17 +261,17 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
 
             // Quote block
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.login_brand_quote_1),
                     style = typography.md,
                     color = colors.textDim,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.login_brand_quote_2),
                     style = typography.md,
                     color = colors.textDim,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.login_brand_quote_author),
                     style = typography.sm.copy(fontWeight = FontWeight.Medium),
                     color = colors.accent,
@@ -285,7 +285,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_brand_version),
                 style = typography.xs,
                 color = colors.textDim,
@@ -298,7 +298,7 @@ private fun LoginBrandPanel(modifier: Modifier = Modifier) {
                 Canvas(modifier = Modifier.size(6.dp)) {
                     drawCircle(color = colors.success)
                 }
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.login_brand_status_operational),
                     style = typography.xs,
                     color = colors.textDim,
@@ -324,8 +324,8 @@ private fun LoginMobileLayout(
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = Modifier
@@ -338,19 +338,19 @@ private fun LoginMobileLayout(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.common_brand_prompt),
                 style = typography.md.copy(fontWeight = FontWeight.Bold),
                 color = colors.accent,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.common_brand_name),
                 style = typography.md.copy(fontWeight = FontWeight.Medium),
                 color = colors.text,
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.login_command),
             style = typography.xs,
             color = colors.textDim,
@@ -359,13 +359,13 @@ private fun LoginMobileLayout(
         Spacer(modifier = Modifier.height(32.dp))
 
         // Title block
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.login_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
         )
         Spacer(modifier = Modifier.height(4.dp))
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.login_subtitle),
             style = typography.sm,
             color = colors.textDim,
@@ -421,8 +421,8 @@ private fun LoginFormContent(
     onForgotPassword: () -> Unit,
     onRegister: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -431,12 +431,12 @@ private fun LoginFormContent(
         // Title block (desktop only -- mobile has its own outside the card)
         // Both layouts call this, so we show the form-level header
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_form_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_form_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
@@ -445,14 +445,14 @@ private fun LoginFormContent(
 
         // Server error alert
         if (state.serverError != null) {
-            TerminalAlert(
+            AuraAlert(
                 message = resolveStringKey(state.serverError),
                 variant = AlertVariant.Error,
             )
         }
 
         // Email input
-        TerminalInput(
+        AuraInput(
             value = state.email,
             onValueChange = onEmailChange,
             label = stringResource(Res.string.login_email_label),
@@ -463,7 +463,7 @@ private fun LoginFormContent(
         )
 
         // Password input
-        TerminalPasswordInput(
+        AuraPasswordInput(
             value = state.password,
             onValueChange = onPasswordChange,
             label = stringResource(Res.string.login_password_label),
@@ -478,7 +478,7 @@ private fun LoginFormContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalCheckbox(
+            AuraCheckbox(
                 checked = state.rememberMe,
                 onCheckedChange = onRememberMeChange,
                 label = stringResource(Res.string.login_remember_me),
@@ -496,7 +496,7 @@ private fun LoginFormContent(
         }
 
         // Login button
-        TerminalButton(
+        AuraButton(
             text = if (state.isLoading) stringResource(Res.string.login_button_loading) else stringResource(Res.string.login_button),
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth(),
@@ -510,13 +510,13 @@ private fun LoginFormContent(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalDivider(modifier = Modifier.weight(1f))
-            TerminalText(
+            AuraDivider(modifier = Modifier.weight(1f))
+            AuraText(
                 text = stringResource(Res.string.common_or),
                 style = typography.xs,
                 color = colors.textDim,
             )
-            TerminalDivider(modifier = Modifier.weight(1f))
+            AuraDivider(modifier = Modifier.weight(1f))
         }
 
         // Social buttons
@@ -530,7 +530,7 @@ private fun LoginFormContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally),
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.login_signup_prompt),
                 style = typography.sm,
                 color = colors.textDim,
@@ -565,14 +565,14 @@ internal fun SocialButtonsRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        TerminalButton(
+        AuraButton(
             text = stringResource(Res.string.login_google),
             onClick = onGoogleClick,
             modifier = Modifier.weight(1f),
             variant = ButtonVariant.Secondary,
         )
         if (showAppleSignIn()) {
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.login_apple),
                 onClick = onAppleClick,
                 modifier = Modifier.weight(1f),

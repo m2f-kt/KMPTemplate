@@ -18,9 +18,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.theme.TerminalTheme
-import com.m2f.template.designsystem.theme.rememberTerminalRipple
+import com.m2f.template.designsystem.components.AuraText
+import com.m2f.template.designsystem.theme.AuraTheme
+import com.m2f.template.designsystem.theme.rememberAuraRipple
 import org.jetbrains.compose.resources.stringResource
 import template.app.dashboard.generated.resources.Res
 import template.app.dashboard.generated.resources.bottom_nav_admin
@@ -49,7 +49,7 @@ fun DashboardBottomNav(
     onAdminClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     val tabs = buildList {
         add(BottomTab("dashboard", "~", stringResource(Res.string.bottom_nav_home)))
@@ -99,8 +99,8 @@ private fun BottomNavTab(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     val color = if (isSelected) colors.accent else colors.textDim
     val fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal
@@ -111,19 +111,19 @@ private fun BottomNavTab(
         modifier = Modifier
             .clickable(
                 interactionSource = interactionSource,
-                indication = rememberTerminalRipple(bounded = false),
+                indication = rememberAuraRipple(bounded = false),
                 onClick = onClick,
             )
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        TerminalText(
+        AuraText(
             text = tab.icon,
             style = typography.md.copy(fontWeight = FontWeight.Bold),
             color = color,
         )
         Spacer(modifier = Modifier.height(2.dp))
-        TerminalText(
+        AuraText(
             text = tab.label,
             style = typography.xs.copy(fontWeight = fontWeight),
             color = color,

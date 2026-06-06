@@ -28,8 +28,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.AuraText
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.models.UserTier
 import org.jetbrains.compose.resources.stringResource
 import template.app.profile.generated.resources.Res
@@ -106,10 +106,10 @@ fun ProfileSidebar(
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val spacing = TerminalTheme.spacing
-    val radius = TerminalTheme.radius
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    val spacing = AuraTheme.spacing
+    val radius = AuraTheme.radius
 
     Column(
         modifier = modifier
@@ -138,12 +138,12 @@ fun ProfileSidebar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.sidebar_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.sidebar_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.SemiBold),
                     color = colors.text,
@@ -183,13 +183,13 @@ fun ProfileSidebar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    TerminalText(
+                    AuraText(
                         text = userName,
                         style = typography.sm,
                         color = colors.text,
                         maxLines = 1,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_logout),
                         style = typography.xs,
                         color = colors.textDim,
@@ -280,9 +280,9 @@ private fun TierNavItems(
 
 @Composable
 private fun TierFooterContent(tier: UserTier) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val radius = TerminalTheme.radius
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    val radius = AuraTheme.radius
 
     when (tier) {
         is UserTier.Free -> {
@@ -295,12 +295,12 @@ private fun TierFooterContent(tier: UserTier) {
                     .padding(16.dp),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_footer_free_title),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.accent,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_footer_free_subtitle),
                         style = typography.xs,
                         color = colors.textMuted,
@@ -317,12 +317,12 @@ private fun TierFooterContent(tier: UserTier) {
                     .padding(16.dp),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_footer_paid_title),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.accent,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_footer_paid_subtitle),
                         style = typography.xs,
                         color = colors.textMuted,
@@ -339,12 +339,12 @@ private fun TierFooterContent(tier: UserTier) {
                     .padding(16.dp),
             ) {
                 Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_footer_premium_title),
                         style = typography.sm.copy(fontWeight = FontWeight.Medium),
                         color = colors.success,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.sidebar_footer_premium_subtitle),
                         style = typography.xs,
                         color = colors.textMuted,
@@ -364,9 +364,9 @@ private fun ProfileNavItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val radius = TerminalTheme.radius
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    val radius = AuraTheme.radius
 
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -396,12 +396,12 @@ private fun ProfileNavItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        TerminalText(
+        AuraText(
             text = ">",
             style = typography.sm,
             color = if (isSelected) colors.accent else colors.textDim,
         )
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm.copy(fontWeight = fontWeight),
             color = textColor,

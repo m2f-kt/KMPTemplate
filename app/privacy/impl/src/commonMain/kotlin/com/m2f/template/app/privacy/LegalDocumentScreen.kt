@@ -19,16 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.display.TerminalDivider
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.display.AuraDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
 import com.m2f.template.designsystem.components.feedback.BadgeVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalBadge
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraBadge
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.privacy.generated.resources.Res
 import template.app.privacy.generated.resources.*
@@ -45,7 +45,7 @@ fun LegalDocumentScreen(
     onSwitchLocale: (String) -> Unit,
     onBack: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = Modifier
@@ -88,8 +88,8 @@ private fun LegalDocumentContent(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier,
@@ -101,7 +101,7 @@ private fun LegalDocumentContent(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_document_back),
                 onClick = onBack,
                 variant = ButtonVariant.Ghost,
@@ -112,7 +112,7 @@ private fun LegalDocumentContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    TerminalBadge(
+                    AuraBadge(
                         text = "v${state.document.version}",
                         variant = BadgeVariant.Default,
                     )
@@ -122,12 +122,12 @@ private fun LegalDocumentContent(
 
         // Loading
         if (state.loading) {
-            TerminalProgress(label = stringResource(Res.string.privacy_document_loading))
+            AuraProgress(label = stringResource(Res.string.privacy_document_loading))
         }
 
         // Error
         if (state.error != null) {
-            TerminalAlert(
+            AuraAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
                 title = stringResource(Res.string.privacy_document_error_title),
@@ -137,7 +137,7 @@ private fun LegalDocumentContent(
         // Document content
         if (state.document != null) {
             // Document type title
-            TerminalText(
+            AuraText(
                 text = consentTypeLabel(state.document.type),
                 style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
                 color = colors.text,
@@ -149,7 +149,7 @@ private fun LegalDocumentContent(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.privacy_document_published_prefix, state.document.publishedAt),
                     style = typography.xs,
                     color = colors.textDim,
@@ -170,7 +170,7 @@ private fun LegalDocumentContent(
                 }
             }
 
-            TerminalDivider()
+            AuraDivider()
 
             // Scrollable content area
             Column(
@@ -179,7 +179,7 @@ private fun LegalDocumentContent(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState()),
             ) {
-                TerminalText(
+                AuraText(
                     text = state.document.content,
                     style = typography.sm,
                     color = colors.text,
@@ -197,7 +197,7 @@ private fun LocaleButton(
     isActive: Boolean,
     onClick: () -> Unit,
 ) {
-    TerminalButton(
+    AuraButton(
         text = locale.uppercase(),
         onClick = onClick,
         variant = if (isActive) ButtonVariant.Default else ButtonVariant.Secondary,

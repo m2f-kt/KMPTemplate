@@ -17,12 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
+import com.m2f.template.designsystem.components.button.AuraButton
 import com.m2f.template.designsystem.components.feedback.AlertVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.auth.generated.resources.Res
 import template.app.auth.generated.resources.common_brand_name
@@ -58,8 +58,8 @@ fun InviteAcceptScreen(
     onGoToRegister: () -> Unit,
     onRequestNewInvitation: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Box(
         modifier = Modifier
@@ -79,12 +79,12 @@ fun InviteAcceptScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.common_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.common_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.Medium),
                     color = colors.text,
@@ -92,14 +92,14 @@ fun InviteAcceptScreen(
             }
 
             // Title
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.invite_title),
                 style = typography.xxl.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
 
             // Subtitle
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.invite_subtitle),
                 style = typography.sm,
                 color = colors.textDim,
@@ -125,7 +125,7 @@ fun InviteAcceptScreen(
                 ) {
                     // Loading state
                     if (state.isLoadingInvitation) {
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.invite_loading),
                             style = typography.sm,
                             color = colors.textDim,
@@ -134,7 +134,7 @@ fun InviteAcceptScreen(
 
                     // Error alert
                     if (state.error != null) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = resolveStringKey(state.error),
                             variant = AlertVariant.Error,
                         )
@@ -142,18 +142,18 @@ fun InviteAcceptScreen(
 
                     // Expired alert
                     if (state.isExpired) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = stringResource(Res.string.invite_expired),
                             variant = AlertVariant.Warning,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.invite_expired_hint),
                             style = typography.sm,
                             color = colors.textDim,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        TerminalButton(
+                        AuraButton(
                             text = stringResource(Res.string.invite_request_new),
                             onClick = onRequestNewInvitation,
                             modifier = Modifier.fillMaxWidth(),
@@ -163,12 +163,12 @@ fun InviteAcceptScreen(
 
                     // Revoked alert
                     if (state.isRevoked) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = stringResource(Res.string.invite_revoked),
                             variant = AlertVariant.Error,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
-                        TerminalText(
+                        AuraText(
                             text = stringResource(Res.string.invite_revoked_hint),
                             style = typography.sm,
                             color = colors.textDim,
@@ -177,7 +177,7 @@ fun InviteAcceptScreen(
 
                     // Already accepted alert
                     if (state.isAlreadyAccepted) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = stringResource(Res.string.invite_already_accepted),
                             variant = AlertVariant.Info,
                         )
@@ -185,7 +185,7 @@ fun InviteAcceptScreen(
 
                     // Success alert
                     if (state.acceptSuccess) {
-                        TerminalAlert(
+                        AuraAlert(
                             message = stringResource(Res.string.invite_success_message),
                             variant = AlertVariant.Success,
                         )
@@ -218,7 +218,7 @@ fun InviteAcceptScreen(
                         if (!state.isExpired && !state.isAlreadyAccepted && !state.isRevoked && !state.acceptSuccess) {
                             if (state.isLoggedIn) {
                                 // Authenticated user: show Accept button
-                                TerminalButton(
+                                AuraButton(
                                     text = if (state.isAccepting) {
                                         stringResource(Res.string.invite_accept_button_loading)
                                     } else {
@@ -231,7 +231,7 @@ fun InviteAcceptScreen(
                                 )
                             } else {
                                 // Unauthenticated user: show Login/Register options
-                                TerminalText(
+                                AuraText(
                                     text = stringResource(Res.string.invite_auth_prompt),
                                     style = typography.sm,
                                     color = colors.textDim,
@@ -239,7 +239,7 @@ fun InviteAcceptScreen(
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                TerminalButton(
+                                AuraButton(
                                     text = stringResource(Res.string.invite_login_button),
                                     onClick = onGoToLogin,
                                     modifier = Modifier.fillMaxWidth(),
@@ -248,7 +248,7 @@ fun InviteAcceptScreen(
 
                                 Spacer(modifier = Modifier.height(8.dp))
 
-                                TerminalButton(
+                                AuraButton(
                                     text = stringResource(Res.string.invite_register_button),
                                     onClick = onGoToRegister,
                                     modifier = Modifier.fillMaxWidth(),
@@ -268,20 +268,20 @@ private fun InvitationDetailRow(
     label: String,
     value: String,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm.copy(fontWeight = FontWeight.Medium),
             color = colors.textDim,
         )
-        TerminalText(
+        AuraText(
             text = value,
             style = typography.sm.copy(fontWeight = FontWeight.Bold),
             color = colors.text,

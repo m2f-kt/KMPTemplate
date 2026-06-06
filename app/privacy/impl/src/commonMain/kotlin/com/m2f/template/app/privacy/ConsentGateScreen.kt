@@ -24,15 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.display.TerminalDivider
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.display.AuraDivider
 import com.m2f.template.designsystem.components.feedback.AlertVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.components.selection.TerminalCheckbox
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.components.selection.AuraCheckbox
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.models.dto.privacy.ConsentType
 import org.jetbrains.compose.resources.stringResource
 import template.app.privacy.generated.resources.Res
@@ -52,7 +52,7 @@ fun ConsentGateScreen(
     onViewDocument: (ConsentType) -> Unit,
     onDecline: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     BoxWithConstraints(
         modifier = Modifier
@@ -102,21 +102,21 @@ private fun ConsentGateContent(
     onDecline: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Column(
         modifier = modifier.verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(20.dp),
     ) {
         // Title
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.privacy_gate_title),
             style = typography.xxl.copy(fontSize = 22.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
         )
 
-        TerminalText(
+        AuraText(
             text = stringResource(Res.string.privacy_gate_subtitle),
             style = typography.sm,
             color = colors.textDim,
@@ -124,14 +124,14 @@ private fun ConsentGateContent(
 
         // Loading state
         if (state.loading) {
-            TerminalProgress(
+            AuraProgress(
                 label = stringResource(Res.string.privacy_gate_loading),
             )
         }
 
         // Error state
         if (state.error != null) {
-            TerminalAlert(
+            AuraAlert(
                 message = state.error.code,
                 variant = AlertVariant.Error,
                 title = stringResource(Res.string.privacy_gate_error_title),
@@ -140,7 +140,7 @@ private fun ConsentGateContent(
 
         // Consent items
         if (state.consents.isNotEmpty()) {
-            TerminalDivider()
+            AuraDivider()
 
             state.consents.forEach { item ->
                 ConsentRow(
@@ -150,10 +150,10 @@ private fun ConsentGateContent(
                 )
             }
 
-            TerminalDivider()
+            AuraDivider()
 
             // Accept All button
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_gate_accept_all),
                 onClick = onAcceptAll,
                 modifier = Modifier.fillMaxWidth(),
@@ -162,7 +162,7 @@ private fun ConsentGateContent(
             )
 
             // Decline button
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.privacy_gate_decline),
                 onClick = onDecline,
                 modifier = Modifier.fillMaxWidth(),
@@ -179,8 +179,8 @@ private fun ConsentRow(
     onToggle: () -> Unit,
     onViewDocument: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -191,7 +191,7 @@ private fun ConsentRow(
             modifier = Modifier.weight(1f),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            TerminalCheckbox(
+            AuraCheckbox(
                 checked = item.accepted,
                 onCheckedChange = { onToggle() },
                 label = consentTypeLabel(item.type),

@@ -57,12 +57,6 @@ fun <Intent, Model, Mutation, Event> MviViewModel<Intent, Model, Mutation, Event
             // Skip initial StateFlow emission
             modelTurbine.awaitItem()
 
-            // `event` is a shareIn(WhileSubscribed) with replay = 0: subscribing the turbine only
-            // *requests* the upstream relay to start; the start command needs one scheduler pass to
-            // take effect. Flush it now so a one-shot event emitted by the very first intent below
-            // isn't dropped before the relay is collecting (otherwise event assertions race + time out).
-            advanceUntilIdle()
-
             for (statement in ctx.statements) {
                 when (statement) {
                     is Statement.IntentStatement -> {

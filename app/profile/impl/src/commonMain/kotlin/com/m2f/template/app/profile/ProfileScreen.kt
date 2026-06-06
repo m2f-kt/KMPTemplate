@@ -35,18 +35,18 @@ import com.m2f.template.app.profile.tier.FreeTierContent
 import com.m2f.template.app.profile.tier.PaidTierContent
 import com.m2f.template.app.profile.tier.PowerAdminTierContent
 import com.m2f.template.app.profile.tier.PremiumTierContent
-import com.m2f.template.designsystem.components.TerminalText
+import com.m2f.template.designsystem.components.AuraText
 import com.m2f.template.designsystem.components.button.ButtonVariant
-import com.m2f.template.designsystem.components.button.TerminalButton
-import com.m2f.template.designsystem.components.card.TerminalCard
-import com.m2f.template.designsystem.components.display.TerminalAvatar
+import com.m2f.template.designsystem.components.button.AuraButton
+import com.m2f.template.designsystem.components.card.AuraCard
+import com.m2f.template.designsystem.components.display.AuraAvatar
 import com.m2f.template.designsystem.components.feedback.AlertVariant
-import com.m2f.template.designsystem.components.feedback.TerminalAlert
-import com.m2f.template.designsystem.components.feedback.TerminalProgress
-import com.m2f.template.designsystem.components.input.TerminalInput
+import com.m2f.template.designsystem.components.feedback.AuraAlert
+import com.m2f.template.designsystem.components.feedback.AuraProgress
+import com.m2f.template.designsystem.components.input.AuraInput
 import com.m2f.template.designsystem.components.picker.ImagePickerResult
 import com.m2f.template.designsystem.components.picker.rememberImagePickerLauncher
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.theme.AuraTheme
 import com.m2f.template.designsystem.util.rememberDecodedImage
 import com.m2f.template.models.UserTier
 import org.jetbrains.compose.resources.stringResource
@@ -117,7 +117,7 @@ fun ProfileScreen(
     localeSelector: (@Composable () -> Unit)? = null,
     privacyContent: (@Composable () -> Unit)? = null,
 ) {
-    val colors = TerminalTheme.colors
+    val colors = AuraTheme.colors
 
     val launchImagePicker = rememberImagePickerLauncher { result: ImagePickerResult? ->
         if (result != null) {
@@ -134,7 +134,7 @@ fun ProfileScreen(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    TerminalProgress()
+                    AuraProgress()
                 }
             }
             maxWidth > 840.dp -> {
@@ -197,8 +197,8 @@ private fun DesktopProfile(
     localeSelector: (@Composable () -> Unit)? = null,
     privacyContent: (@Composable () -> Unit)? = null,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     var selectedNavItem by remember { mutableStateOf("profile") }
 
@@ -236,7 +236,7 @@ private fun DesktopProfile(
                     .padding(32.dp),
                 verticalArrangement = Arrangement.spacedBy(24.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.profile_back),
                     style = typography.sm,
                     color = colors.textMuted,
@@ -285,9 +285,9 @@ private fun MobileProfile(
     onAvatarClick: () -> Unit,
     localeSelector: (@Composable () -> Unit)? = null,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val spacing = TerminalTheme.spacing
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    val spacing = AuraTheme.spacing
 
     Column(modifier = Modifier.fillMaxSize()) {
         // Back button header
@@ -299,13 +299,13 @@ private fun MobileProfile(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.profile_back),
                 style = typography.sm,
                 color = colors.textMuted,
                 modifier = Modifier.clickable(onClick = onBack),
             )
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.profile_logout),
                 style = typography.sm,
                 color = colors.textDim,
@@ -361,8 +361,8 @@ private fun ProfileHeader(
     state: ProfileModel,
     onAvatarClick: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -378,7 +378,7 @@ private fun ProfileHeader(
         ) {
             val initials = state.name.takeIf { it.isNotBlank() }?.take(2)?.uppercase()
                 ?: state.email.take(2).uppercase()
-            TerminalAvatar(
+            AuraAvatar(
                 initials = initials,
                 imageUrl = state.avatarUrl,
                 size = 64.dp,
@@ -392,30 +392,30 @@ private fun ProfileHeader(
                         .background(colors.bg.copy(alpha = 0.7f)),
                     contentAlignment = Alignment.Center,
                 ) {
-                    TerminalProgress()
+                    AuraProgress()
                 }
             }
         }
 
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-            TerminalText(
+            AuraText(
                 text = stringResource(Res.string.profile_command),
                 style = typography.xxl.copy(fontWeight = FontWeight.Bold),
                 color = colors.text,
             )
-            TerminalText(
+            AuraText(
                 text = "// ${state.tier.displayName} | ${state.email}",
                 style = typography.sm,
                 color = colors.textMuted,
             )
             if (!state.isUploadingAvatar) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.profile_avatar_tap_hint),
                     style = typography.xs,
                     color = colors.textDim,
                 )
             } else {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.profile_avatar_uploading),
                     style = typography.xs,
                     color = colors.accent,
@@ -430,11 +430,11 @@ private fun ProfileInfoCard(
     state: ProfileModel,
     onStartEditing: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     if (state.saveSuccess) {
-        TerminalAlert(
+        AuraAlert(
             message = stringResource(Res.string.profile_save_success),
             variant = AlertVariant.Success,
             title = stringResource(Res.string.profile_save_success_title),
@@ -443,7 +443,7 @@ private fun ProfileInfoCard(
     }
 
     if (state.serverError != null) {
-        TerminalAlert(
+        AuraAlert(
             message = resolveStringKey(state.serverError),
             variant = AlertVariant.Error,
             title = stringResource(Res.string.profile_error_title),
@@ -451,7 +451,7 @@ private fun ProfileInfoCard(
         Spacer(modifier = Modifier.height(8.dp))
     }
 
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.profile_account_info),
         description = stringResource(Res.string.profile_account_info_subtitle),
     ) {
@@ -466,7 +466,7 @@ private fun ProfileInfoCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            TerminalButton(
+            AuraButton(
                 text = stringResource(Res.string.profile_edit_button),
                 onClick = onStartEditing,
                 variant = ButtonVariant.Secondary,
@@ -477,20 +477,20 @@ private fun ProfileInfoCard(
 
 @Composable
 private fun InfoRow(label: String, value: String) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        TerminalText(
+        AuraText(
             text = "$label:",
             style = typography.sm,
             color = colors.textMuted,
             modifier = Modifier.width(80.dp),
         )
-        TerminalText(
+        AuraText(
             text = value,
             style = typography.sm,
             color = colors.text,
@@ -506,7 +506,7 @@ private fun EditProfileSection(
     onSaveProfile: () -> Unit,
     onCancelEditing: () -> Unit,
 ) {
-    TerminalCard(
+    AuraCard(
         title = stringResource(Res.string.profile_edit_title),
         description = stringResource(Res.string.profile_edit_subtitle),
     ) {
@@ -515,14 +515,14 @@ private fun EditProfileSection(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             if (state.serverError != null) {
-                TerminalAlert(
+                AuraAlert(
                     message = resolveStringKey(state.serverError),
                     variant = AlertVariant.Error,
                     title = stringResource(Res.string.profile_error_title),
                 )
             }
 
-            TerminalInput(
+            AuraInput(
                 value = state.editName,
                 onValueChange = onEditNameChange,
                 label = stringResource(Res.string.profile_name_label),
@@ -531,7 +531,7 @@ private fun EditProfileSection(
                 errorMessage = state.fieldErrors["name"]?.let { resolveStringKey(it) },
             )
 
-            TerminalInput(
+            AuraInput(
                 value = state.editEmail,
                 onValueChange = onEditEmailChange,
                 label = stringResource(Res.string.profile_email_label),
@@ -543,12 +543,12 @@ private fun EditProfileSection(
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.profile_save_button),
                     onClick = onSaveProfile,
                     variant = ButtonVariant.Default,
                 )
-                TerminalButton(
+                AuraButton(
                     text = stringResource(Res.string.profile_cancel_button),
                     onClick = onCancelEditing,
                     variant = ButtonVariant.Ghost,
@@ -580,8 +580,8 @@ private fun CropDialog(
     onConfirm: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
 
     // Decode image bytes to ImageBitmap using platform-specific decoder
     val imageBitmap = rememberDecodedImage(imageBytes)
@@ -594,7 +594,7 @@ private fun CropDialog(
             .clickable(enabled = false) { /* consume clicks */ },
         contentAlignment = Alignment.Center,
     ) {
-        TerminalCard(
+        AuraCard(
             title = stringResource(Res.string.profile_crop_dialog_title),
             description = stringResource(Res.string.profile_crop_dialog_desc),
             modifier = Modifier
@@ -623,13 +623,13 @@ private fun CropDialog(
                         )
                     } else if (imageBytes != null) {
                         // Fallback: show size if decoding failed
-                        TerminalText(
+                        AuraText(
                             text = "${imageBytes.size / 1024} KB",
                             style = typography.md,
                             color = colors.textMuted,
                         )
                     } else {
-                        TerminalText(
+                        AuraText(
                             text = "No image",
                             style = typography.sm,
                             color = colors.textMuted,
@@ -641,12 +641,12 @@ private fun CropDialog(
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.profile_crop_confirm),
                         onClick = onConfirm,
                         variant = ButtonVariant.Default,
                     )
-                    TerminalButton(
+                    AuraButton(
                         text = stringResource(Res.string.profile_crop_cancel),
                         onClick = onCancel,
                         variant = ButtonVariant.Ghost,

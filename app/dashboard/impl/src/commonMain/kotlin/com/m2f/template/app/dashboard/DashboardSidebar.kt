@@ -28,9 +28,9 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.m2f.template.designsystem.components.TerminalText
-import com.m2f.template.designsystem.components.display.TerminalAvatar
-import com.m2f.template.designsystem.theme.TerminalTheme
+import com.m2f.template.designsystem.components.AuraText
+import com.m2f.template.designsystem.components.display.AuraAvatar
+import com.m2f.template.designsystem.theme.AuraTheme
 import org.jetbrains.compose.resources.stringResource
 import template.app.dashboard.generated.resources.Res
 import template.app.dashboard.generated.resources.common_brand_name
@@ -72,10 +72,10 @@ fun DashboardSidebar(
     onLogout: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val spacing = TerminalTheme.spacing
-    val radius = TerminalTheme.radius
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    val spacing = AuraTheme.spacing
+    val radius = AuraTheme.radius
 
     Column(
         modifier = modifier
@@ -101,12 +101,12 @@ fun DashboardSidebar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.common_brand_prompt),
                     style = typography.md.copy(fontWeight = FontWeight.Bold),
                     color = colors.accent,
                 )
-                TerminalText(
+                AuraText(
                     text = stringResource(Res.string.common_brand_name),
                     style = typography.md.copy(fontWeight = FontWeight.SemiBold),
                     color = colors.text,
@@ -158,7 +158,7 @@ fun DashboardSidebar(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // Avatar (image or initials)
-                TerminalAvatar(
+                AuraAvatar(
                     initials = userName.take(1).uppercase(),
                     imageUrl = avatarUrl,
                     size = 32.dp,
@@ -167,13 +167,13 @@ fun DashboardSidebar(
                 Spacer(modifier = Modifier.width(12.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
-                    TerminalText(
+                    AuraText(
                         text = userName,
                         style = typography.sm,
                         color = colors.text,
                         maxLines = 1,
                     )
-                    TerminalText(
+                    AuraText(
                         text = stringResource(Res.string.dashboard_logout),
                         style = typography.xs,
                         color = colors.textDim,
@@ -191,9 +191,9 @@ private fun SidebarNavItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    val colors = TerminalTheme.colors
-    val typography = TerminalTheme.typography
-    val radius = TerminalTheme.radius
+    val colors = AuraTheme.colors
+    val typography = AuraTheme.typography
+    val radius = AuraTheme.radius
 
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -223,12 +223,12 @@ private fun SidebarNavItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        TerminalText(
+        AuraText(
             text = ">",
             style = typography.sm,
             color = if (isSelected) colors.accent else colors.textDim,
         )
-        TerminalText(
+        AuraText(
             text = label,
             style = typography.sm.copy(fontWeight = fontWeight),
             color = textColor,

@@ -45,6 +45,11 @@ import template.app.profile.generated.resources.error_privacy_consent_required
 import template.app.profile.generated.resources.error_privacy_deletion_pending
 import template.app.profile.generated.resources.error_privacy_export_not_ready
 import template.app.profile.generated.resources.error_validation_terms_not_accepted
+import template.app.profile.generated.resources.error_permission_denied
+import template.app.profile.generated.resources.error_permission_restricted
+import template.app.profile.generated.resources.error_permission_not_determined
+import template.app.profile.generated.resources.error_native_unavailable
+import template.app.profile.generated.resources.error_native_failure
 
 /**
  * Composable bridge that resolves a [StringKey] to its localized string
@@ -114,6 +119,13 @@ internal fun resolveStringKey(key: StringKey, vararg args: Any): String =
         StringKey.PRIVACY_CONSENT_REQUIRED -> stringResource(Res.string.error_privacy_consent_required, *args)
         StringKey.PRIVACY_DELETION_PENDING -> stringResource(Res.string.error_privacy_deletion_pending, *args)
         StringKey.PRIVACY_EXPORT_NOT_READY -> stringResource(Res.string.error_privacy_export_not_ready, *args)
+
+        // Permission / native errors
+        StringKey.PERMISSION_DENIED -> stringResource(Res.string.error_permission_denied, *args)
+        StringKey.PERMISSION_RESTRICTED -> stringResource(Res.string.error_permission_restricted, *args)
+        StringKey.PERMISSION_NOT_DETERMINED -> stringResource(Res.string.error_permission_not_determined, *args)
+        StringKey.NATIVE_UNAVAILABLE -> stringResource(Res.string.error_native_unavailable, *args)
+        StringKey.NATIVE_FAILURE -> stringResource(Res.string.error_native_failure, *args)
 
         // Generic fallback
         StringKey.GENERIC_ERROR -> stringResource(Res.string.error_generic, *args)

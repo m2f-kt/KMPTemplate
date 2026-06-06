@@ -93,6 +93,13 @@
     <!-- Generic fallback -->
     <string name="error_generic">Ocurrió un error inesperado</string>
 
+    <!-- Permission / native errors -->
+    <string name="error_permission_denied">Permiso denegado</string>
+    <string name="error_permission_restricted">Permiso restringido</string>
+    <string name="error_permission_not_determined">Permiso aún no solicitado</string>
+    <string name="error_native_unavailable">Esta función no está disponible en tu dispositivo</string>
+    <string name="error_native_failure">Se produjo un error del sistema</string>
+
     <!-- Brand -->
     <string name="sidebar_brand_prompt">&gt;_</string>
     <string name="sidebar_brand_name">perfil</string>

@@ -27,11 +27,15 @@ abstract class MviViewModel<Intent, Model, Mutation, Event>(
             .scan(initialState) { model, mutation -> reduce(model, mutation) }
             .stateIn(viewModelScope, modelSharingStarted, initialState)
 
+    // Eagerly (symmetric with `model` above): the relay collects the pipeline from construction, so a
+    // one-shot event emitted immediately after a subscriber attaches is not dropped during the
+    // WhileSubscribed start-up latency. replay = 0 is retained, so one-shot semantics are unchanged
+    // (events emitted with no active subscriber are still not delivered to a later subscriber).
     val event: SharedFlow<Event> =
         pipeline
             .filterIsInstance<Either.Left<Event>>()
             .map { it.value }
-            .shareIn(viewModelScope, SharingStarted.WhileSubscribed())
+            .shareIn(viewModelScope, SharingStarted.Eagerly)
 
     abstract fun take(intent: Intent)
 
