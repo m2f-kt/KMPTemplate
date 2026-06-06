@@ -2,9 +2,12 @@ package com.m2f.template
 
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
+import java.awt.Dimension
 import com.m2f.template.designsystem.theme.LocalTitleBarInset
 import com.m2f.template.desktop.SingleInstanceGuard
 import com.m2f.template.logging.installFileLogging
@@ -18,6 +21,12 @@ private const val APP_NAME = "template"
 // this height to clear them. Standard modern macOS title bar = 28pt.
 private val IS_MACOS: Boolean = System.getProperty("os.name").orEmpty().contains("mac", ignoreCase = true)
 private val MACOS_TITLE_BAR_INSET = 28.dp
+
+// The desktop window opens at this size AND cannot be dragged any narrower/shorter. The default size
+// equals the minimum so the window can only ever grow from a known-good layout (below it, responsive
+// layouts that sit beside a >840dp breakpoint start to clip). Tunable default.
+private val DEFAULT_WINDOW_SIZE = DpSize(960.dp, 600.dp)
+private val MIN_WINDOW_DIMENSION = Dimension(960, 600)
 
 /**
  * JVM Desktop entry point.
@@ -48,8 +57,12 @@ fun main() {
     }
 
     application {
+        // Open at the default size; window.minimumSize below pins the lower bound so the window
+        // can't be dragged smaller than the known-good layout floor.
+        val windowState = rememberWindowState(size = DEFAULT_WINDOW_SIZE)
         Window(
             onCloseRequest = ::exitApplication,
+            state = windowState,
             title = APP_NAME,
         ) {
             // Edge-to-edge title bar on macOS: fullWindowContent makes the Compose content fill the
@@ -58,6 +71,8 @@ fun main() {
             // client properties; harmless no-ops on other platforms.
             LaunchedEffect(Unit) {
                 runCatching {
+                    // Forbid shrinking below the known-good layout floor (all desktop OSes).
+                    window.minimumSize = MIN_WINDOW_DIMENSION
                     window.background = java.awt.Color(0x07, 0x08, 0x0C)
                     window.rootPane.putClientProperty("apple.awt.windowTitleVisible", false)
                     window.rootPane.putClientProperty("apple.awt.transparentTitleBar", true)
