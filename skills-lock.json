@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "asc-build-lifecycle": {
+      "source": "rudrankriyam/asc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/asc-build-lifecycle/SKILL.md",
+      "computedHash": "d9740c8403f1804242b38996bf5805a227ccd6b7141b280f512f0c0cd8693ce1"
+    },
+    "asc-cli-usage": {
+      "source": "rudrankriyam/asc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/asc-cli-usage/SKILL.md",
+      "computedHash": "4205f51d2fc9aa95bc4b89f38c7ddf409263e7967856532c8763f47f7c37e696"
+    },
+    "asc-id-resolver": {
+      "source": "rudrankriyam/asc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/asc-id-resolver/SKILL.md",
+      "computedHash": "4531c3721094ee029ab64a15692e87158498be45b429fcb40e28df9f9665454c"
+    },
+    "asc-notarization": {
+      "source": "rudrankriyam/asc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/asc-notarization/SKILL.md",
+      "computedHash": "5a352a16af1bc65d8edb39ee676f39a0388df43ef896a44d8f0a111be7568b06"
+    },
+    "asc-submission-health": {
+      "source": "rudrankriyam/asc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/asc-submission-health/SKILL.md",
+      "computedHash": "67e3c1c061c262dc176e8e51f58e2133af1e855be4e36be1470f9d355818dbfd"
+    },
+    "asc-workflow": {
+      "source": "rudrankriyam/asc-skills",
+      "sourceType": "github",
+      "skillPath": "skills/asc-workflow/SKILL.md",
+      "computedHash": "7527bb35c37a0821eba6145dc302da5c4f3b0fce0db7f4bd825fe2ba3c45693b"
+    }
+  }
+}
