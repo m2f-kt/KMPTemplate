@@ -66,4 +66,33 @@ NOTE: release iOS framework link OOMs >6G (pre-existing Compose K/N infra limit)
 - [ ] Optional: .mcp.json compose-hot-reload MCP + composeHotReload 1.0.0→1.2.0-alpha01 bump
 
 ## Review
-(filled at end)
+
+Branch `feat/port-notype-generics-aura` — 11 feature commits on top of master.
+Full cross-module integration build GREEN (1792 tasks; all modules, all safe targets
+incl. wasmJs + debug iOS). Only the optimized RELEASE iOS framework K/N link OOMs
+>6G — pre-existing Compose infra limit, unrelated to this work.
+
+DONE:
+- Build/env: EnvLoader (.env beats shell on :server:run), per-file detekt hook,
+  gitignore/catalog hardening, daemon heap 6G.
+- Shared core: HttpTimeout+WebSockets+requireSecureBaseUrl, ErrorMapper raw-body,
+  NavSelectionSignal/navigateAdd/navigationModule, InMemorySettings→core:testing,
+  telemetryConsent pref, MVI event Eagerly fix.
+- Server: migration dedup, named auth-jwt provider, BootError+validate() fail-fast,
+  safe key-length logging, TLS-1.3 test.
+- Design: FULL Aura re-skin (neon palette, 3 fonts, glows/motion, effects + 7 new
+  components, data-viz kept) — Terminal* → Aura* across designsystem + 23 consumers.
+- Observability: Koog 0.6.2→1.0-preview7 (+server:ai migration), new
+  server:core:observability (OTel SDK + Langfuse span adapter w/ v3 gotchas +
+  trace-privacy + REST/prompt-provider + eval/judge), self-hosted docker profile + docs.
+- Native: core:platform (macOS JNA), core:securestorage (Keychain/DPAPI/Keystore/
+  Apple-Security), core:permissions (mic/camera/AX gate), reduced-motion, desktop
+  shell (title-bar/dark-mode/single-instance/file-logging), packaging+entitlements+plist-lint.
+- Tooling/skills: setup.sh hardened wizard, dev scripts+launch.json, asc-* + launch-* skills.
+
+REMAINING / FOLLOW-UP:
+- D5 Pencil re-author (terminal-design-* skills + .pen + manifest → Aura) — design
+  AUTHORING tooling only; app code is fully Aura. Needs Pencil MCP. CLAUDE.md flags it.
+- MANUAL: .claude/settings.json detekt hook `node`→`bash` (self-mod guard blocked auto).
+- Optional/deferred: A7 overlay/tray (product-adjacent), G2 per-platform DI seam
+  (not needed), .mcp.json compose-hot-reload MCP (+ composeHotReload alpha bump).
