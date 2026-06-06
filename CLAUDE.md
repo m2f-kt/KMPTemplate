@@ -62,10 +62,18 @@
 ## Project Overview
 
 Kotlin Multiplatform (KMP) + Compose Multiplatform application with a Ktor backend.
-Terminal-themed design system. Targets: Android, iOS, JVM Desktop, WASM.
+Aura design system (neon, dark-first). Targets: Android, iOS, JVM Desktop, WASM.
 Architecture: MVI (Model-View-Intent) on the client side, feature modules on the server side.
 
 ## Design ↔ Code Mapping (Pencil)
+
+> ⚠️ PENDING AURA RE-AUTHOR (D5): the design system Kotlin code is now **Aura**
+> (`AuraTheme`, `Aura*` components, neon tokens). The Pencil bridge below still
+> references the old `terminal-*` skills + `terminal_design_system.pen` + `$--terminal-*`
+> tokens — these must be re-authored to Aura (rename skills `terminal-design-*` →
+> `aura-design-*`, regenerate the `.pen`, manifest/REFERENCES/CODE-MAP, and the
+> `TerminalTheme.*` → `AuraTheme.*` token map). Until then, treat the mapping below
+> as describing the *mechanism*, not the current token/symbol names.
 
 Two paired skills enforce a deterministic bridge between `terminal_design_system.pen`
 and the `app:designsystem` Kotlin module:
@@ -107,7 +115,7 @@ both reading and writing — no hex leaks, no hallucinated components — and
 - `core:storage` -- TokenStorage, PreferencesStorage (multiplatform-settings)
 - `core:platform` -- Generic platform seam: `isMacOs()` (commonMain) + JVM-only macOS JNA scaffolding (AppKitLib/ApplicationServicesLib/CoreFoundationLib/ObjcBridge, internal to jvmMain)
 - `app:auth`, `app:admin`, `app:dashboard`, `app:documents`, `app:profile` -- Client feature modules (each has contract/impl/wire submodules)
-- `app:designsystem` -- TerminalTheme, Foundation-only UI components
+- `app:designsystem` -- AuraTheme, Foundation-only UI components (neon palette, Space Grotesk/Manrope/JetBrains Mono, aurora-border + waveform signatures)
 - `server` -- Ktor server entry point
 - `server:core:config`, `server:core:database`, `server:core:security` -- Server infrastructure
 - `server:auth`, `server:groups`, `server:files`, `server:ai` -- Server feature modules
@@ -133,7 +141,7 @@ both reading and writing — no hex leaks, no hallucinated components — and
 - Server Koin modules: `authModule`, `groupModule`, `fileModule`, `aiModule` -> `serverModule`.
 - App Koin: `includes(featureModule)` in `appModule`. Wire modules provide `val xxxModule`.
 - Navigation 3 with manual `mutableStateListOf<Route>` back stack. Wire modules provide `EntryProviderScope<Route>` extensions called in AppNavHost.
-- Design system: `TerminalTheme` with Foundation-only components (no Material3).
+- Design system: `AuraTheme` with Foundation-only components (no Material3).
 - Responsive layouts: `BoxWithConstraints` with 840.dp breakpoint.
 - Compose screens: callbacks pattern (no direct ViewModel access in composables).
 

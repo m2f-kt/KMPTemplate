@@ -1,0 +1,42 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "server-watch",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["scripts/server-watch.sh"],
+      "port": 8080,
+      "autoPort": false
+    },
+    {
+      "name": "server",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": [":server:run"],
+      "port": 8080,
+      "autoPort": false
+    },
+    {
+      "name": "composeApp-desktop",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": [":composeApp:run"]
+    },
+    {
+      "name": "composeApp-web",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": [":composeApp:wasmJsBrowserDevelopmentRun", "--continuous"],
+      "port": 8080
+    },
+    {
+      "name": "docker-services",
+      "runtimeExecutable": "./gradlew",
+      "runtimeArgs": ["devUp"]
+    },
+    {
+      "name": "docs-static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8123", "--directory", "docs"],
+      "port": 8123,
+      "autoPort": false
+    }
+  ]
+}
