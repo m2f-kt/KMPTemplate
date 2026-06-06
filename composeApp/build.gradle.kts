@@ -96,6 +96,10 @@ kotlin {
             implementation(libs.kotlinx.coroutinesSwing)
             implementation(libs.slf4j.simple)
         }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotest.assertionsCore)
+        }
     }
 }
 
