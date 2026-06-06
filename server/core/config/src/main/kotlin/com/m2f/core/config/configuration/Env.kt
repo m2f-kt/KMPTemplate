@@ -1,15 +1,30 @@
 package com.m2f.core.config.configuration
 
 import io.github.cdimascio.dotenv.Dotenv
+import java.io.File
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+// Walk up from CWD to locate the .env file. Gradle's `:server:run` sets CWD to the
+// `server/` subproject, so a project-root .env is otherwise invisible. Falling back
+// to CWD preserves the previous behavior when no .env exists anywhere up the tree.
+private val dotenvDirectory: String = run {
+    val cwd = File(System.getProperty("user.dir"))
+    generateSequence(cwd) { it.parentFile }
+        .firstOrNull { File(it, ".env").isFile }
+        ?.absolutePath
+        ?: cwd.absolutePath
+}
+
 private val dotenv: Dotenv = Dotenv.configure()
+    .directory(dotenvDirectory)
     .ignoreIfMissing()
     .load()
 
-private fun env(key: String): String? = dotenv[key]
+// System environment takes precedence over the .env file (standard 12-factor behavior): a
+// launch-time override (e.g. an exported HOST=...) wins without editing the committed .env.
+private fun env(key: String): String? = System.getenv(key) ?: dotenv[key]
 
 private const val DEFAULT_HOST: String = "0.0.0.0"
 private const val DEFAULT_PORT: Int = 8080

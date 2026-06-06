@@ -45,6 +45,7 @@ kotlin {
             api(libs.kermit)
             api(libs.koin.core)
             api(projects.core.models)
+            api(projects.core.navigation)
             api(projects.core.sdk)
         }
         commonTest.dependencies {
