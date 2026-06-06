@@ -4,12 +4,11 @@ package com.m2f.server.ai.agents
 
 import ai.koog.agents.core.agent.AIAgent
 import ai.koog.agents.core.agent.config.AIAgentConfig
-import ai.koog.agents.core.agent.context.RollbackStrategy
 import ai.koog.agents.snapshot.feature.Persistence
 import ai.koog.prompt.dsl.prompt
 import ai.koog.prompt.executor.clients.google.GoogleLLMClient
 import ai.koog.prompt.executor.clients.google.GoogleModels
-import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
+import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import arrow.core.raise.Raise
 import arrow.core.raise.catch
 import com.m2f.core.config.server.DomainError
@@ -49,7 +48,7 @@ class ChatAgentService(
     """.trimMargin()
 
     private val executor by lazy {
-        SingleLLMPromptExecutor(GoogleLLMClient(googleApiKey))
+        MultiLLMPromptExecutor(GoogleLLMClient(googleApiKey))
     }
 
     private val agentConfig = AIAgentConfig(
@@ -119,7 +118,9 @@ class ChatAgentService(
                     install(Persistence) {
                         storage = persistenceStorage
                         enableAutomaticPersistence = true
-                        rollbackStrategy = RollbackStrategy.MessageHistoryOnly
+                        // Koog 1.0: PersistenceFeatureConfig dropped `rollbackStrategy`. Message-history-only
+                        // rollback is now the default (no `rollbackToolRegistry` configured), preserving the
+                        // prior RollbackStrategy.MessageHistoryOnly intent.
                     }
                 }
 

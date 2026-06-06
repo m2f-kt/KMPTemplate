@@ -81,7 +81,7 @@ object TestDatabase {
  * Fake LLMEmbeddingProvider that returns zero-vectors for testing.
  * Used to construct a real LLMEmbedder without needing a live Google API key.
  */
-private class FakeEmbeddingProvider : LLMEmbeddingProvider {
+private class FakeEmbeddingProvider : LLMEmbeddingProvider() {
     override suspend fun embed(text: String, model: LLModel): List<Double> {
         // Return a 768-dimension zero vector (matching text-embedding-004 output size)
         return List(768) { 0.0 }

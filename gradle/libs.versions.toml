@@ -28,7 +28,12 @@ dotenv = "6.4.2"
 jbcrypt = "0.4"
 multiplatform-settings = "1.3.0"
 jna = "5.14.0"
-koog = "0.6.2"
+# Koog 1.0 ships as TWO streams that are NOT binary-compatible across different cores. The Gemini
+# client lives ONLY on the beta stream (built against the 1.0.0-preview7 core). Pin core
+# `1.0.0-preview7` + beta extensions `1.0.0-beta-preview7` together so every artifact runs against
+# exactly the core it was compiled against.
+koog = "1.0.0-preview7"
+koog-ext = "1.0.0-beta-preview7"
 aws-s3 = "1.5.123"
 aws-smithy = "1.4.12"
 jakarta-mail = "2.0.2"
@@ -113,9 +118,19 @@ postgresql-r2dbc = { module = "org.postgresql:r2dbc-postgresql", version.ref = "
 dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenv" }
 jbcrypt = { group = "org.mindrot", name = "jbcrypt", version.ref = "jbcrypt" }
 
-# AI (Koog)
-koog-ktor = { module = "ai.koog:koog-ktor", version.ref = "koog" }
+# AI (Koog) — koog-ktor dropped (it was never imported / no install(Koog) anywhere).
 koog-agents = { module = "ai.koog:koog-agents", version.ref = "koog" }
+# OpenTelemetry feature (stable preview7 line — same core as koog-agents). Provides the
+# `install(OpenTelemetry)` agent feature + the Langfuse OTLP exporter (prerequisite for the
+# Langfuse/OTel observability module).
+koog-agents-otel = { module = "ai.koog:agents-features-opentelemetry", version.ref = "koog" }
+# Standard OpenTelemetry Java OTLP/HTTP span exporter (version aligned to the 1.61.0 SDK Koog pulls).
+# Koog's KMP OTLP/JSON exporter never completes the HTTP send on agent close; this Java exporter's
+# BatchSpanProcessor.shutdown() blocks until flush, so closing the agent reliably ships the trace.
+otel-exporter-otlp = { module = "io.opentelemetry:opentelemetry-exporter-otlp", version = "1.61.0" }
+# Beta-stream extensions (built against the 1.0.0-preview7 core): Gemini client + agents-ext.
+koog-agents-ext = { module = "ai.koog:agents-ext", version.ref = "koog-ext" }
+koog-google-client = { module = "ai.koog:prompt-executor-google-client", version.ref = "koog-ext" }
 
 # AWS S3
 aws-s3 = { module = "aws.sdk.kotlin:s3", version.ref = "aws-s3" }
@@ -232,9 +247,14 @@ di = [
     "koin-logger-slf4j",
 ]
 
+# Single server:ai module needs the union: chat (Gemini client + agents-ext) + structured/rag/
+# embeddings (in koog-agents) + otel (observability prerequisite).
 koog = [
-    "koog-ktor",
     "koog-agents",
+    "koog-agents-ext",
+    "koog-google-client",
+    "koog-agents-otel",
+    "otel-exporter-otlp",
 ]
 
 logging-server = [

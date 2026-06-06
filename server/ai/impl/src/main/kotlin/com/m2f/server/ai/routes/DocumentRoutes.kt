@@ -96,11 +96,12 @@ fun Route.documentRoutes(
                 // Validate scope
                 ensure(docScope in listOf("personal", "group")) { InvalidContent }
 
-                // Validate file type
+                // Validate file type. An unsupported type is a CLIENT error (well-formed request,
+                // unprocessable content) → 422 via the InvalidContent path, not 500. Previously this
+                // raised DocumentIngestionFailed, whose respond() is `unexpected` (500) — wrong class.
+                // Match the scope/null checks above.
                 val ext = fileName.substringAfterLast('.', "").lowercase()
-                ensure(contentType in ALLOWED_DOCUMENT_TYPES || ext in ALLOWED_EXTENSIONS) {
-                    com.m2f.server.ai.contract.errors.DocumentIngestionFailed("Unsupported file type. Only .txt and .md files are supported.")
-                }
+                ensure(contentType in ALLOWED_DOCUMENT_TYPES || ext in ALLOWED_EXTENSIONS) { InvalidContent }
 
                 // Authorization: group scope and assignedToUserId require admin
                 val isAdmin = roleChecker(userId, gid)

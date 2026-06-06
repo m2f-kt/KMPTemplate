@@ -2,7 +2,7 @@ package com.m2f.server.ai.di
 
 import ai.koog.embeddings.local.LLMEmbedder
 import ai.koog.prompt.executor.clients.google.GoogleLLMClient
-import ai.koog.prompt.executor.llms.SingleLLMPromptExecutor
+import ai.koog.prompt.executor.llms.MultiLLMPromptExecutor
 import com.m2f.core.config.configuration.Configuration
 import com.m2f.server.ai.TextEmbedding004
 import com.m2f.server.ai.agents.AssistantAgentService
@@ -23,7 +23,7 @@ import org.koin.dsl.module
  *
  * Shared infrastructure:
  * - GoogleLLMClient singleton (shared across agents, embedder, structured output)
- * - SingleLLMPromptExecutor for StructuredOutputService
+ * - MultiLLMPromptExecutor for StructuredOutputService
  *
  * Agent services:
  * - AssistantAgentService (ReAct agent with UserTools)
@@ -40,14 +40,14 @@ import org.koin.dsl.module
 val aiModule = module {
     // Shared Google LLM client and executor
     single { GoogleLLMClient(get<Configuration>().env.ai.googleApiKey) }
-    single { SingleLLMPromptExecutor(get<GoogleLLMClient>()) }
+    single { MultiLLMPromptExecutor(get<GoogleLLMClient>()) }
 
     // Agent infrastructure
     single { UserTools(get<UserRepository>()) }
     single { ExposedPersistenceStorage(get<R2dbcDatabase>()) }
 
     // Structured output and relevance detection
-    single { StructuredOutputService(get<SingleLLMPromptExecutor>()) }
+    single { StructuredOutputService(get<MultiLLMPromptExecutor>()) }
     single { RelevanceDetector(get<StructuredOutputService>()) }
 
     // RAG pipeline

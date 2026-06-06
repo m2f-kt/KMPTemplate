@@ -55,7 +55,10 @@ class DocumentRepository(private val db: R2dbcDatabase) {
                 it[DocumentsTable.id] = id
                 it[DocumentsTable.groupId] = groupId
                 it[DocumentsTable.userId] = userId
-                it[DocumentsTable.assignedToUserId] = assignedToUserId
+                // Only bind assignedToUserId when present. Exposed-R2DBC cannot encode a NULL of the
+                // custom `kotlin.uuid.Uuid` column type ("Cannot encode null parameter of type
+                // kotlin.uuid.Uuid"); omitting the column lets the nullable column default to NULL.
+                assignedToUserId?.let { uid -> it[DocumentsTable.assignedToUserId] = uid }
                 it[DocumentsTable.name] = name
                 it[DocumentsTable.fileKey] = fileKey
                 it[DocumentsTable.contentType] = contentType
