@@ -33,6 +33,16 @@ kotlin {
         androidMain.dependencies {
             implementation(libs.androidx.activity.compose)
         }
+        jvmMain.dependencies {
+            // JVM-desktop only: self-contained AppKit JNA bridge for the reduced-motion
+            // accessibility check (kept here rather than depending on core:platform, whose
+            // JNA objects are intentionally internal to its jvmMain).
+            implementation(libs.jna.platform)
+        }
+        jvmTest.dependencies {
+            implementation(libs.kotlin.test)
+            implementation(libs.kotest.assertionsCore)
+        }
     }
 }
 

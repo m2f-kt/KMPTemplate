@@ -50,6 +50,11 @@ include("core:testing")
 include("core:sdk")
 include("core:storage")
 
+// Native / platform integration (generic, reusable)
+include("core:platform")
+include("core:securestorage")
+include("core:permissions")
+
 // Server feature modules
 include("server:auth")
 include("server:auth:contract")
