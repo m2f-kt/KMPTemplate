@@ -105,6 +105,7 @@ both reading and writing — no hex leaks, no hallucinated components — and
 - `core:testing` -- ViewModelTest base, test{} DSL with Turbine, FakeSdkBuilder
 - `core:sdk` -- Sdk facade (by delegation), 6 API interfaces, apiCall() wrapper, AuthInterceptor
 - `core:storage` -- TokenStorage, PreferencesStorage (multiplatform-settings)
+- `core:platform` -- Generic platform seam: `isMacOs()` (commonMain) + JVM-only macOS JNA scaffolding (AppKitLib/ApplicationServicesLib/CoreFoundationLib/ObjcBridge, internal to jvmMain)
 - `app:auth`, `app:admin`, `app:dashboard`, `app:documents`, `app:profile` -- Client feature modules (each has contract/impl/wire submodules)
 - `app:designsystem` -- TerminalTheme, Foundation-only UI components
 - `server` -- Ktor server entry point

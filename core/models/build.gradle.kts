@@ -24,7 +24,10 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.arrow.core)
-            implementation(libs.kotlinx.serialization.json)
+            // api (not implementation): core:models exposes public @Serializable types (AppError,
+            // Permission, DTOs); consumers need kotlinx-serialization on their classpath to resolve
+            // the generated Companion (SerializerFactory) supertype — e.g. on the strict wasmJs target.
+            api(libs.kotlinx.serialization.json)
             implementation(libs.ktor.resources)
         }
         commonTest.dependencies {

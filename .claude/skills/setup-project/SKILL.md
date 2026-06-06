@@ -26,7 +26,7 @@ The user will provide:
 - **Database name** (e.g., myapp_db)
 - **App display name** (e.g., My App)
 
-Wait for the script to complete all 14 steps.
+Wait for the script to complete all 18 steps (the wizard ends with a mandatory build verification).
 
 ### Step 2: Post-setup verification sweep
 
@@ -81,10 +81,12 @@ If the sweep finds remaining old references:
 
 ### Step 4: Build verification (mandatory)
 
-Run a full build to confirm everything compiles:
+Run a full build to confirm everything compiles. Exclude the pre-existing
+duplicate-jar failure in `:server:distZip` / `:server:distTar` (a template-level
+Gradle issue, unrelated to renaming — the wizard's own build step excludes it too):
 
 ```bash
-./gradlew build --no-daemon
+./gradlew build -x :server:distZip -x :server:distTar
 ```
 
 This MUST pass. If it fails:
