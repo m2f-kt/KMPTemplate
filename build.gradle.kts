@@ -166,6 +166,12 @@ tasks.register<Exec>("devUp") {
     commandLine("docker", "compose", "up", "-d", "--wait", "postgres", "minio", "mailhog")
 }
 
+tasks.register<Exec>("devUpLangfuse") {
+    group = "dev"
+    description = "Start the opt-in self-hosted Langfuse stack (web on :3000). See docs/langfuse-self-hosting.md"
+    commandLine("docker", "compose", "--profile", "langfuse", "up", "-d", "--wait")
+}
+
 tasks.register<Exec>("seedData") {
     group = "dev"
     description = "Seed demo user (dev@example.com / password)"
