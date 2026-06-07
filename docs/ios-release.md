@@ -1,5 +1,9 @@
 # iOS / macOS release build & distribution
 
+> Guided entry point: the **`apple-release`** skill walks through asset/icon config + this
+> release flow on demand ("how do I set up the iOS/macOS app icon", "prepare a release",
+> "notarize"). This doc is the reference it points at.
+
 This template builds, signs, and notarizes Apple apps. Most of the chain is automated or
 skill-assisted; one knob (Kotlin/Native heap) needs raising for release builds.
 
