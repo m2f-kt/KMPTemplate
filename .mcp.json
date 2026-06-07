@@ -9,6 +9,12 @@
         "postgresql://postgres:postgres@localhost:5436/application"
       ],
       "env": {}
+    },
+    "compose-hot-reload": {
+      "type": "stdio",
+      "command": "./gradlew",
+      "args": ["-q", "--console=plain", ":composeApp:hotMcpServerJvm"],
+      "env": {}
     }
   }
 }
