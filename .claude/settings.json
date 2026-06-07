@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/detekt-on-edit.sh"
+            "command": "bash .claude/hooks/detekt-on-edit.sh"
           },
           {
             "type": "command",

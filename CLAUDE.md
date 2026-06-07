@@ -65,43 +65,16 @@ Kotlin Multiplatform (KMP) + Compose Multiplatform application with a Ktor backe
 Aura design system (neon, dark-first). Targets: Android, iOS, JVM Desktop, WASM.
 Architecture: MVI (Model-View-Intent) on the client side, feature modules on the server side.
 
-## Design ↔ Code Mapping (Pencil)
+## Design System (Aura)
 
-> ⚠️ PENDING AURA RE-AUTHOR (D5): the design system Kotlin code is now **Aura**
-> (`AuraTheme`, `Aura*` components, neon tokens). The Pencil bridge below still
-> references the old `terminal-*` skills + `terminal_design_system.pen` + `$--terminal-*`
-> tokens — these must be re-authored to Aura (rename skills `terminal-design-*` →
-> `aura-design-*`, regenerate the `.pen`, manifest/REFERENCES/CODE-MAP, and the
-> `TerminalTheme.*` → `AuraTheme.*` token map). Until then, treat the mapping below
-> as describing the *mechanism*, not the current token/symbol names.
-
-Two paired skills enforce a deterministic bridge between `terminal_design_system.pen`
-and the `app:designsystem` Kotlin module:
-
-- **`terminal-design-generator`** (mandatory when *designing* in Pencil) — every
-  component is a `type:"ref"` to one of the 41 reusable IDs, every color/font/spacing
-  is a `$--` token. Read `.claude/skills/terminal-design-generator/REFERENCES.md`
-  (or `manifest.json`) before producing any node.
-
-- **`terminal-design-implementer`** (mandatory when *implementing* a design in
-  Compose) — every Pencil ref → exact Composable, every `$--` token →
-  `TerminalTheme.<group>.<property>`. Read
-  `.claude/skills/terminal-design-implementer/CODE-MAP.md` before writing any
-  Composable that mirrors a design.
-
-- **`terminal-design-sync`** (audit + self-update) — diffs Pencil components,
-  Pencil variables, Kotlin Composables, Kotlin theme tokens, and the manifest.
-  Defaults to read-only audit (writes a report at
-  `.claude/skills/terminal-design-sync/last-sync-report.md`). Pass `--apply`
-  to patch `manifest.json`/`REFERENCES.md`/`CODE-MAP.md`. Invoke via
-  `/sync-design` or by saying "sync the design system mapping". Run after
-  any change to `terminal_design_system.pen` or `app:designsystem/`.
-
-Together they guarantee a deterministic 1:1 mapping in both directions:
-design ref `SpHta` ↔ `TerminalButton(variant = ButtonVariant.Default)`,
-design token `$--terminal-bg` ↔ `TerminalTheme.colors.bg`. The chain holds in
-both reading and writing — no hex leaks, no hallucinated components — and
-`terminal-design-sync` keeps the chain honest as both sides evolve.
+`app:designsystem` is the **Aura** design system: a neon, dark-first, Foundation-only
+(no Material3) Compose token system — `AuraTheme` with `colors`/`typography`/`spacing`/
+`radius`/`gap`/`shadows`/`opacity`/`borders`/`glows`/`motion` groups, accessed as
+`AuraTheme.<group>.<property>`. Components are `Aura*` (e.g. `AuraButton`, `AuraCard`,
+`AuraInput`, charts/table/list), brand signatures live in `modifier/` (`auraBorder`,
+`auraGlow`, `selectedAccent`). Fonts: Space Grotesk (display) / Manrope (body) /
+JetBrains Mono (mono). No external Pencil bridge — design directly in Compose against
+`AuraTheme` tokens; never hardcode hex/font/spacing values.
 
 ## Module Structure
 
