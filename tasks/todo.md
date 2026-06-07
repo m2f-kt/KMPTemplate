@@ -60,10 +60,20 @@ NOTE: release iOS framework link OOMs >6G (pre-existing Compose K/N infra limit)
 - [~] G4 CLAUDE.md design refs done; generic Rules/patterns prose — partial
 - [x] G5 reusable skill additions (asc-* + launch-*; langfuse skills already global)
 
-### Remaining / follow-up
-- [ ] D5 Pencil: re-author terminal-design-* skills → aura + .pen + manifest/REFERENCES/CODE-MAP (needs Pencil MCP)
-- [ ] MANUAL: .claude/settings.json detekt hook `node`→`bash` (self-mod guard)
-- [ ] Optional: .mcp.json compose-hot-reload MCP + composeHotReload 1.0.0→1.2.0-alpha01 bump
+### Final batch (committed 12478ec)
+- [x] D5 RESOLVED by removal — Pencil bridge dropped (Aura not authored in Pencil): deleted
+  terminal-design-* skills + .pen + sync-design command; CLAUDE.md → concise "Design System (Aura)".
+- [x] MANUAL settings.json detekt `node`→`bash` — DONE (hook now active).
+- [x] compose-hot-reload MCP wired (.mcp.json) + composeHotReload 1.0.0→1.2.0-alpha01.
+- [x] launch-app skill: backend+frontend on free ports (scripts/dev-run.sh, port-file→defaultBaseUrl),
+  hot-reload frontend driven via MCP.
+- [x] iOS release prep: gradle.properties heap hint + scripts/build-ios-release.sh (per-run heap
+  override) + docs/ios-release.md (Xcode archive + asc-* notarization chain).
+
+### Still optional / deferred (not requested as must-have)
+- [ ] A7 overlay/tray scaffolds — product-adjacent, deferred.
+- [ ] G2 per-platform DI seam — not needed (navigationModule wired as plain val).
+- [ ] iOS release icons: add real .icns/.ico/.png + uncomment iconFile hooks (needs assets).
 
 ## Review
 
