@@ -69,7 +69,7 @@ for i in $(seq 1 180); do
   if ! kill -0 "$SRV_PID" 2>/dev/null; then
     echo "[dev-run] ERROR: backend exited early — last log lines:"; tail -25 "$SRV_LOG"; rm -f "$PID_FILE"; exit 1
   fi
-  code="$(curl -s -o /dev/null -w '%{http_code}' "$SERVER_URL/" 2>/dev/null || printf '000')"
+  code="$(curl -s -o /dev/null -w '%{http_code}' "$SERVER_URL/" 2>/dev/null)"; code="${code:-000}"
   if [ "$code" != "000" ]; then echo "[dev-run] backend up (HTTP $code) after ${i}s"; UP=1; break; fi
   sleep 1
 done
