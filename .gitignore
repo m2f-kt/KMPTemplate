@@ -33,3 +33,6 @@ http-client.env.json
 
 # graphify: only ignore the machine-specific Python interpreter path
 graphify-out/.graphify_python
+
+# graphify: machine-generated AST cache (regenerated on rebuild)
+graphify-out/cache/
